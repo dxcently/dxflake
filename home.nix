@@ -14,11 +14,9 @@
     inputs.hyprland.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
-    ./home-manager/kitty.nix
-    ./home-manager/neovim.nix
+    ./home-manager/imports.nix
   ];
 
-  # TODO: Set your username
   home = {
     username = "khoa";
     homeDirectory = "/home/khoa";
