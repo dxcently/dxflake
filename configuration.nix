@@ -19,16 +19,15 @@
     ];
     config = {
       allowUnfree = true;
-    permittedInsecurePackages = [ "electron-25.9.0" ];
+      permittedInsecurePackages = [ "electron-25.9.0" ];
     };
 
   };
 
   nix = {
    nixPath = ["/etc/nix/path"];
-
    registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
-
+   #hyprland rebuild optimization, flakes, auto gc
    settings = {
     experimental-features = "nix-command flakes";
     auto-optimise-store = true;
@@ -44,11 +43,13 @@
      };
    };
 
+  #enable networking
   networking = {
    hostName = "nixos";
    networkmanager.enable = true;
    };
 
+  #boot
   boot = {
    initrd.kernelModules = [ "nvme" ];
    kernelPackages = pkgs.linuxPackages;
@@ -59,6 +60,7 @@
    kernel.sysctl = { "vm.max_map_count" = 2147483642; }; 
   };
 
+  #managing users
   users.users = {
     khoa = {
       isNormalUser = true;
