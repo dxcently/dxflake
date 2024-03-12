@@ -54,6 +54,7 @@
   lshw
   lsd
   neofetch
+  nitch 
   cowsay
   fzf
   ripgrep
@@ -65,6 +66,7 @@
   clinfo
   ydotool
   curl
+  starship
   /* libs/frameworks */
   qt6.qtwayland
   libsForQt5.qt5.qtwayland
@@ -74,20 +76,23 @@
   nodejs
   pkg-config
   v4l-utils
+  gimp
   ];
 
   #nix options pkgs
   programs = {
-   neovim.enable = true;
-   hyprland = {
-    enable = true;
-    xwayland.enable = true;
-    };
+    neovim.enable = true;
+    hyprland = {
+      enable = true;
+      xwayland.enable = true;
+      };
+    starship.enable = true;
     dconf.enable = true;
     bash.blesh.enable = true;
     fzf.fuzzyCompletion = true;
     nm-applet.enable = true;
   };
+
 
   #fonts
   fonts.packages = with pkgs; [

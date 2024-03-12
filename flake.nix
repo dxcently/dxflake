@@ -26,7 +26,7 @@
     username = "khoa";
     gitUsername = "dxcently";
     gitEmail = "dxcently@gmail.com";
-    theme = "uwunicorn";
+    theme = "ocean";
 
     pkgs = import nixpkgs {
       inherit system;

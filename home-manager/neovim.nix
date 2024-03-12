@@ -12,6 +12,7 @@ in {
     options = {
       clipboard="unnamedplus";
       number = true;         # Show line numbers
+      relativenumber = true; # Show relative line numbers
       shiftwidth = 2;        # Tab width should be 2
       softtabstop = 2;
       smartindent = true;
@@ -23,23 +24,7 @@ in {
       termguicolors = true;
       scrolloff = 8;
       updatetime = 50;
-      cursorline = true;
-      splitright = true;
-      splitbelow = true;
     };
-
-    autoCmd = [
-      {
-        event = "InsertEnter";
-        pattern = "*";
-        command = "set number norelativenumber";
-      }
-      {
-        event = "InsertLeave";
-        pattern = "*";
-        command = "set number relativenumber";
-      }
-    ];
 
     colorschemes.base16.enable = true;
     colorschemes.base16.customColorScheme = {
@@ -68,11 +53,9 @@ in {
 	enable = true;
 	keymaps = {
 	  "<leader>ff" = "find_files";
-          "<leader>lg" = "live_grep";
-          #"<leader>fb" = "file_browser";
+	  "<leader>lg" = "live_grep";
 	};
       };
-      neo-tree.enable = true;
       indent-blankline.enable = true;
       nvim-colorizer.enable = true;
       nvim-autopairs.enable = true;
@@ -84,22 +67,6 @@ in {
       startup = { 
 	enable = true;
 	theme = "dashboard";
-      };
-      lint = {
-        enable = true;
-        lintersByFt = {
-          text = ["vale"];
-          json = ["jsonlint"];
-          markdown = ["vale"];
-          rst = ["vale"];
-          ruby = ["ruby"];
-          janet = ["janet"];
-          inko = ["inko"];
-          clojure = ["clj-kondo"];
-          dockerfile = ["hadolint"];
-          terraform = ["tflint"];
-          typscriptreact = ["prettier_eslint"];
-        };
       };
       lsp = {
 	enable = true;
@@ -121,6 +88,7 @@ in {
 	  gopls.enable = true;
 	  jsonls.enable = true;
 	  pyright.enable = true;
+	  tailwindcss.enable = true;
 	};
       };
       lsp-lines.enable = true;
@@ -158,7 +126,7 @@ in {
         cyan   = '#${theme.base0C}',
         black  = '#${theme.base00}',
         white  = '#${theme.base05}',
-        red    = '#${theme.base03}',
+        red    = '#${theme.base08}',
         violet = '#${theme.base0E}',
         grey   = '#${theme.base02}',
       }
@@ -220,9 +188,9 @@ in {
     keymaps = [
       {
         mode = "n";
-        key = "<leader>fb";
+        key = "<space>fb";
         action = ":Telescope file_browser<CR>";
-        options.silent = false;
+        options.noremap = true;
       }
       {
         key = "<Tab>";
