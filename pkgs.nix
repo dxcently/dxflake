@@ -25,6 +25,7 @@
   lm_sensors
   cliphist
   brightnessctl
+  wallust
   /* audio */
   wireplumber
   pavucontrol
@@ -49,6 +50,8 @@
   socat
   bat
   gh #github cli
+  git
+  lazygit
   toybox
   xdg-utils
   lshw
@@ -71,7 +74,6 @@
   qt6.qtwayland
   libsForQt5.qt5.qtwayland
   ninja
-  git
   meson
   nodejs
   pkg-config

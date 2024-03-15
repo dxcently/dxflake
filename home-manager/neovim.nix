@@ -79,7 +79,6 @@ in {
 	    installRustc = true;
 	    installCargo = true;
 	  };
-	  nixd.enable = true;
 	  html.enable = true;
 	  ccls.enable = true;
 	  cmake.enable = true;
@@ -88,7 +87,7 @@ in {
 	  gopls.enable = true;
 	  jsonls.enable = true;
 	  pyright.enable = true;
-	  tailwindcss.enable = true;
+          nil_ls.enable = true;
 	};
       };
       lsp-lines.enable = true;
@@ -96,25 +95,38 @@ in {
 	enable = true;
 	nixGrammars = true;
       };
-      nvim-cmp = {
+      cmp = {
+        enable = true;
+        settings = {
+          snippet.expand = '' 
+            function(args)
+              require ('luasnip').lsp_expand(args.body)
+            end
+          '';
+        };
+      };
+      /* cmp = {
 	enable = true;
-	autoEnableSources = true;
-	sources = [
-	  { name = "nvim_lsp"; }
-	  { name = "path"; }
-	  { name = "buffer"; }
-	];
-	mapping = {
-	  "<CR>" = "cmp.mapping.confirm({ select = true })";
-	  "<Tab>" = {
+        settings = {
+          sources = [
+	    { name = "nvim_lsp"; }
+	    { name = "path"; }
+	    { name = "buffer"; }
+	  ];
+	  extraOptions.mapping = {
+	    "<CR>" = "cmp.mapping.confirm({ select = true })";
+	    "<Tab>" = {
 	    action = ''cmp.mapping.select_next_item()'';
 	    modes = [ "i" "s" ];
+	    };
 	  };
-	};
-      };
+        };
+      }; */
     };
 
-    extraPlugins = [ plugins.telescope-file-browser-nvim ];
+    extraPlugins = [ 
+      plugins.telescope-file-browser-nvim
+    ];
 
     # FOR NEOVIDE
     extraConfigLua = '' 
