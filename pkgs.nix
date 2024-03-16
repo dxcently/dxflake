@@ -46,6 +46,7 @@
   vim
   steam
   winetricks
+  gimp
   /* cli tools */
   socat
   bat
@@ -74,11 +75,11 @@
   qt6.qtwayland
   libsForQt5.qt5.qtwayland
   ninja
+  python3
   meson
   nodejs
   pkg-config
   v4l-utils
-  gimp
   ];
 
   #nix options pkgs

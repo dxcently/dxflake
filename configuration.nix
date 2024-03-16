@@ -8,14 +8,14 @@
 
   nixpkgs = {
     overlays = [
-     (self: super: (let
+    /* (self: super: (let
       patched_pkgs = import inputs.nixpkgs_patched {
       inherit (self) system;
       config.allowUnfree = true;
     };
     in {
       linuxPackages = patched_pkgs.linuxPackages;
-     }))
+     })) */
     ];
     config = {
       allowUnfree = true;
