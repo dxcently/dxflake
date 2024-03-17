@@ -47,7 +47,7 @@
   steam
   winetricks
   gimp
-  /* cli tools */
+  /* cli programs */
   socat
   bat
   gh #github cli
@@ -71,6 +71,7 @@
   ydotool
   curl
   starship
+  qmk
   /* libs/frameworks */
   qt6.qtwayland
   libsForQt5.qt5.qtwayland

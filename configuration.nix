@@ -83,31 +83,45 @@
   
   #services
   services = {
-   openssh = {
-     enable = true;
-     settings = {
-       # Forbid root login through SSH.
-       PermitRootLogin = "no";
-       # Use keys only. Remove if you want to SSH using password (not recommended)
-       PasswordAuthentication = true;
+    openssh = {
+      enable = true;
+      settings = {
+        # Forbid root login through SSH.
+        PermitRootLogin = "no";
+        # Use keys only. Remove if you want to SSH using password (not recommended)
+        PasswordAuthentication = true;
+      };
     };
-  };
-  pipewire = {
-   enable = true;
-   alsa.enable = true;
-   alsa.support32Bit = true;
-   pulse.enable = true;
-   jack.enable = true;
-  };  
-  devmon.enable = true;
-  gvfs.enable = true;
-  udisks2.enable = true;
-  flatpak.enable = true;
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+    };  
+    devmon.enable = true;
+    gvfs.enable = true;
+    udisks2.enable = true;
+    flatpak.enable = true;
+    #qmk shit
+    udev = {
+      packages = [
+        pkgs.qmk-udev-rules
+        /*(pkgs.writeTextFile {
+          name = "qmk-udev-rules";
+          destination = "/etc/udev/rules.d/50-qmk.rules";
+          #put contents of file in texts if needed
+          text = ''
+          /home/khoa/qmk_firmware/util/udev/50-qmk.rules
+          '';
+        })*/
+      ];
+    };
   };
 
   #hardware - nvidia settings
   services.xserver.videoDrivers = ["nvidia"];
-  hardware = {
+  hardware = { 
    opengl = {
     enable = true;
     driSupport = true;
@@ -133,6 +147,7 @@
 	};
     };
    };
+   keyboard.qmk.enable = true; 
   };
   
   #time stuff
