@@ -47,6 +47,7 @@
   steam
   winetricks
   gimp
+  spicetify-cli
   /* cli programs */
   socat
   bat
