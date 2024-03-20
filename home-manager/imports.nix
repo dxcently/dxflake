@@ -6,5 +6,6 @@
   ./neovim.nix
   ./swappy.nix
   ./spicetify.nix  
+  ./waybar.nix
   ];
 }

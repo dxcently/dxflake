@@ -48,6 +48,7 @@
   winetricks
   gimp
   spicetify-cli
+  hyprpicker
   /* cli programs */
   socat
   bat
