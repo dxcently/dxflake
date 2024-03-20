@@ -74,7 +74,7 @@
       padding-right: 6px;
       color: #7ebae4;
       }
-      #mode, #clock, #memory, #temperature,#cpu,#mpd, #custom-wall, #temperature, #backlight, #pulseaudio, #network, #battery, #custom-powermenu, #custom-cava-internal {
+      #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight, #wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
       padding-left: 10px;
       padding-right: 10px;
       }
@@ -101,7 +101,7 @@
       #backlight {
       color: #A2BD8B;
       }
-      #pulseaudio {
+      #wireplumber {
       color: #E9C98A;
       }
       #network {
@@ -128,18 +128,6 @@
       background: #3b4252;
       color: #DEE2EA;
       }
-      #mpd.paused {
-      color: rgb(192, 202, 245);
-      font-style: italic;
-      }
-      #mpd.stopped {
-      background: transparent;
-      }
-      #mpd {
-      color: #E4E8EF;
-
-      /* color: #c0caf5; */
-      }
       #custom-cava-internal{
       font-family: "Hack Nerd Font" ;
       }
@@ -152,14 +140,12 @@
         "hyprland/workspaces"
         "temperature"
         "custom/wall"
-        "mpd"
-        "custom/cava-internal"
       ];
       modules-center = [
         "clock"
       ];
       modules-right = [
-        "pulseaudio"
+        "wireplumber"
         "backlight"
         "memory"
         "cpu"
@@ -173,13 +159,13 @@
         "on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
         "tooltip" = false;
       };
-      "custom/wall" = {
-        "on-click" = "";/*"${sharedScripts.wallpaper_random}/bin/wallpaper_random";*/
-        "on-click-middle" = "";/* "${sharedScripts.default_wall}/bin/default_wall";*/
-        "on-click-right" = ""; /*"killall dynamic_wallpaper || ${sharedScripts.dynamic_wallpaper}/bin/dynamic_wallpaper &";*/
+     /* "custom/wall" = {
+        "on-click" = ${sharedScripts.wallpaper_random}/bin/wallpaper_random";
+        "on-click-middle" = "${sharedScripts.default_wall}/bin/default_wall";
+        "on-click-right" = killall dynamic_wallpaper || ${sharedScripts.dynamic_wallpaper}/bin/dynamic_wallpaper &";
         "format" = " 󰠖 ";
         "tooltip" = false;
-      };
+      }; */
       "custom/cava-internal" = {
         "exec" = ""; /*"sleep 1s && ${sharedScripts.cava-internal}/bin/cava-internal"; */
         "tooltip" = false;
@@ -197,7 +183,7 @@
         "format" = "{icon} {percent}%";
         "format-icons" = [ "󰃝" "󰃞" "󰃟" "󰃠" ];
       };
-      "pipewire" = {
+      "wireplumber" = {
         "scroll-step" = 1;
         "format" = "{icon} {volume}%";
         "format-muted" = "󰖁 Muted";
@@ -237,7 +223,7 @@
         "interval" = 1;
         "format" = "󰻠 {usage}%";
       };
-      "mpd" = {
+      /* "mpd" = {
         "max-length" = 25;
         "format" = "<span foreground='#bb9af7'></span> {title}";
         "format-paused" = " {title}";
@@ -250,7 +236,7 @@
         "on-scroll-down" = "mpc --quiet next";
         "smooth-scrolling-threshold" = 5;
         "tooltip-format" = "{title} - {artist} ({elapsedTime:%M:%S}/{totalTime:%H:%M:%S})";
-      };
+      }; */
       "network" = {
         "format-disconnected" = "󰯡 Disconnected";
         "format-ethernet" = "󰀂 {ifname} ({ipaddr})";
