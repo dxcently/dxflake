@@ -148,6 +148,7 @@
     };
    };
    keyboard.qmk.enable = true; 
+   opentabletdriver.enable = true;
   };
   
   #time stuff

@@ -37,7 +37,7 @@
       margin-left: 5px;
       margin-right: 5px;
       margin-top: 5px;
-      background-color: #3b4252;
+      background-color: rgb(30, 30, 46);
       }
       #workspaces {
       padding-left: 0px;
