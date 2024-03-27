@@ -88,6 +88,7 @@ in {
 	  jsonls.enable = true;
 	  pyright.enable = true;
           nil_ls.enable = true;
+          perlpls.enable = true;
 	};
       };
       lsp-lines.enable = true;

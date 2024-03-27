@@ -97,6 +97,7 @@
     bash.blesh.enable = true;
     fzf.fuzzyCompletion = true;
     nm-applet.enable = true;
+    yazi.enable = true;
   };
 
 
