@@ -6,7 +6,7 @@
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     nixpkgs_patched.url = "github:nixos/nixpkgs/468a37e6ba01c45c91460580f345d48ecdb5a4db";
-    nix-colors.url = "github:misterio77/nix-colors";    
+    nix-colors.url = "github:misterio77/nix-colors";
     spicetify-nix.url = "github:the-argus/spicetify-nix";
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -27,7 +27,7 @@
     username = "khoa";
     gitUsername = "dxcently";
     gitEmail = "dxcently@gmail.com";
-    theme = "oxocarbon-dark";
+    theme = "rose-pine";
 
     pkgs = import nixpkgs {
       inherit system;
@@ -40,19 +40,19 @@
     nixosConfigurations = {
       "${hostname}" = nixpkgs.lib.nixosSystem {
 	    specialArgs = {
-              inherit system; 
+              inherit system;
               inherit inputs;
-              inherit username; 
+              inherit username;
               inherit hostname;
-              inherit gitUsername; 
+              inherit gitUsername;
               inherit gitEmail;
         };
 	    modules = [ ./configuration.nix
               home-manager.nixosModules.home-manager {
 	      home-manager.extraSpecialArgs = {
-                inherit username; 
+                inherit username;
                 inherit gitEmail;
-                inherit inputs; 
+                inherit inputs;
                 inherit gitUsername;
                 inherit theme;
                 inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;

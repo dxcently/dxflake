@@ -1,5 +1,5 @@
 { config, pkgs, ... }: {
-  
+
   environment.systemPackages = with pkgs; [
   /* de stuff */
   swww
@@ -8,7 +8,7 @@
   networkmanagerapplet
   kitty
   dunst
-  rofi-wayland 
+  rofi-wayland
   slurp
   grim
   swappy
@@ -60,7 +60,7 @@
   lshw
   lsd
   neofetch
-  nitch 
+  nitch
   cowsay
   fzf
   ripgrep
@@ -74,6 +74,13 @@
   curl
   starship
   qmk
+  ffmpegthumbnailer
+  unar
+  jq
+  poppler
+  fd
+  file
+  ripgrep
   /* libs/frameworks */
   qt6.qtwayland
   libsForQt5.qt5.qtwayland
@@ -91,13 +98,15 @@
     hyprland = {
       enable = true;
       xwayland.enable = true;
-      };
+    };
+    yazi = {
+      enable = true;
+    };
     starship.enable = true;
     dconf.enable = true;
     bash.blesh.enable = true;
     fzf.fuzzyCompletion = true;
     nm-applet.enable = true;
-    yazi.enable = true;
   };
 
 

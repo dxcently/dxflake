@@ -10,7 +10,7 @@
     };
     style = ''
       * {
-      font-family: "ShureTechMono Nerd Font";
+      font-family: "JetBrainsMono Nerd Font";
       font-size: 12pt;
       font-weight: bold;
       border-radius: 0px;
@@ -37,7 +37,7 @@
       margin-left: 5px;
       margin-right: 5px;
       margin-top: 5px;
-      background-color: #191724;
+      background-color: rgb(30, 30, 46);
       }
       #workspaces {
       padding-left: 0px;
@@ -51,15 +51,15 @@
       color:#D8DEE9;
       }
       #workspaces button.active {
-      background-color: #ebbcba;
-      color: #191724;
+      background-color: rgb(181, 232, 224);
+      color: rgb(26, 24, 38);
       }
       #workspaces button.urgent {
       color: rgb(26, 24, 38);
       }
       #workspaces button:hover {
-      background-color:#e0def4;
-      color: #191724;
+      background-color: #B38DAC;
+      color: rgb(26, 24, 38);
       }
       tooltip {
       /* background: rgb(250, 244, 252); */
@@ -72,12 +72,17 @@
       font-size: 20px;
       padding-left: 8px;
       padding-right: 6px;
-      color: #ebbcba;
+      color: #7ebae4;
       }
       #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight, #wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
       padding-left: 10px;
       padding-right: 10px;
       }
+      /* #mode { */
+      /* 	margin-left: 10px; */
+      /* 	background-color: rgb(248, 189, 150); */
+      /*     color: rgb(26, 24, 38); */
+      /* } */
       #memory {
       color: #8EBBBA;
       }
@@ -113,7 +118,7 @@
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #eb6f92;
+      color: #BD6069;
       }
       #tray {
       padding-right: 8px;
@@ -133,6 +138,7 @@
       modules-left = [
         "custom/launcher"
         "hyprland/workspaces"
+        "temperature"
         "custom/wall"
       ];
       modules-center = [
@@ -144,13 +150,12 @@
         "memory"
         "cpu"
         "network"
-        "temperature"
         "battery"
         "custom/powermenu"
         "tray"
       ];
       "custom/launcher" = {
-        "format" = "󰫢 ";
+        "format" = " ";
         "on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
         "tooltip" = false;
       };
@@ -234,12 +239,11 @@
       }; */
       "network" = {
         "format-disconnected" = "󰯡 Disconnected";
-        "format-ethernet" = "󰀂 ({ipaddr})";
-        "format-linked" = "󰖪 (No IP)";
-        "format-wifi" = "󰖩 ";
+        "format-ethernet" = "󰀂 {ifname} ({ipaddr})";
+        "format-linked" = "󰖪 {essid} (No IP)";
+        "format-wifi" = "󰖩 {essid}";
         "interval" = 1;
-        "tooltip" = true;
-        "tooltip-format" = "󰖩  {essid} ({ipaddr})";
+        "tooltip" = false;
       };
       "temperature" = {
         #"critical-threshold"= 80;

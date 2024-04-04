@@ -6,6 +6,9 @@ let
 in {
   programs.nixvim = {
     enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
 
     globals.mapleader = " "; # Sets the leader key to space
     
@@ -16,7 +19,7 @@ in {
       shiftwidth = 2;        # Tab width should be 2
       softtabstop = 2;
       smartindent = true;
-      wrap = false;
+      wrap = true;
       swapfile = false;
       backup = false;
       hlsearch = false;
@@ -25,6 +28,32 @@ in {
       scrolloff = 8;
       updatetime = 50;
     };
+
+      autoCmd = [
+      # remove trailing whitespace on save
+      {
+        event = "BufWritePre";
+        pattern = "*";
+        command = "silent! %s/\\s\\+$//e";
+      }
+      # save on focus lost
+      {
+        event = "FocusLost";
+        pattern = "*";
+        command = "silent! wa";
+      }
+      # absolute line numbers in insert mode, relative otherwise
+      {
+        event = "InsertEnter";
+        pattern = "*";
+        command = "set number norelativenumber";
+      }
+      {
+        event = "InsertLeave";
+        pattern = "*";
+        command = "set number relativenumber";
+      }
+    ];
 
     colorschemes.base16.enable = true;
     colorschemes.base16.customColorScheme = {

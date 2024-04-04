@@ -5,7 +5,9 @@
   ./kitty.nix
   ./neovim.nix
   ./swappy.nix
-  ./spicetify.nix  
+  ./spicetify.nix
   ./waybar.nix
+  ./yazi.nix
+  #./bash.nix
   ];
 }

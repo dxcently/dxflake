@@ -123,6 +123,10 @@
       nssmdns = true;
       openFirewall = true;
     };
+    xserver = {
+      displayManager.autoLogin.user = "khoa"; 
+      displayManager.autoLogin.enable = true;
+    };
   };
 
   #hardware - nvidia settings
@@ -192,6 +196,9 @@
   security = {
    polkit.enable = true;
    rtkit.enable = true;
+   sudo.extraConfig = ''
+    khoa ALL=(ALL) NOPASSWD: /bin/bash -c 'yy'
+   '';
   };
   xdg.portal = {
   enable = true;
