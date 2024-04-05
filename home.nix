@@ -1,4 +1,4 @@
-{  inputs,  lib, config, pkgs, theme, gtkThemeFromScheme, ... }: 
+{  inputs,  lib, config, pkgs, theme, gtkThemeFromScheme, ... }:
 
 {
 
@@ -16,8 +16,8 @@
   ];
 
   home = {
-    username = "khoa";
-    homeDirectory = "/home/khoa";
+    username = "ethr";
+    homeDirectory = "/home/ethr";
   };
 
   # Add stuff for your user as you see fit:
@@ -44,7 +44,7 @@
     };
   };
 
-  
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "23.11";
 }

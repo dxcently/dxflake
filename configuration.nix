@@ -1,4 +1,4 @@
-{ inputs, lib, config, pkgs, ... }: 
+{ inputs, lib, config, pkgs, ... }:
 
 {
   imports = [
@@ -34,7 +34,7 @@
     substituters = ["https://hyprland.cachix.org"];
     trusted-public-keys = [
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];  
+      ];
     };
     gc = {
      automatic = true;
@@ -45,7 +45,7 @@
 
   #enable networking
   networking = {
-   hostName = "nixos";
+   hostName = "dxflake";
    networkmanager.enable = true;
    };
 
@@ -57,7 +57,7 @@
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
     };
-   kernel.sysctl = { "vm.max_map_count" = 2147483642; }; 
+   kernel.sysctl = { "vm.max_map_count" = 2147483642; };
   };
 
   #managing users
@@ -80,7 +80,7 @@
       PasswordAuthentication = true;
     };
   };*/
-  
+
   #services
   services = {
     openssh = {
@@ -98,7 +98,7 @@
       alsa.support32Bit = true;
       pulse.enable = true;
       jack.enable = true;
-    };  
+    };
     devmon.enable = true;
     gvfs.enable = true;
     udisks2.enable = true;
@@ -124,14 +124,14 @@
       openFirewall = true;
     };
     xserver = {
-      displayManager.autoLogin.user = "khoa"; 
+      displayManager.autoLogin.user = "ethr";
       displayManager.autoLogin.enable = true;
     };
   };
 
   #hardware - nvidia settings
   services.xserver.videoDrivers = ["nvidia"];
-  hardware = { 
+  hardware = {
    opengl = {
     enable = true;
     driSupport = true;
@@ -157,10 +157,10 @@
 	};
     };
    };
-   keyboard.qmk.enable = true; 
+   keyboard.qmk.enable = true;
    opentabletdriver.enable = true;
   };
-  
+
   #time stuff
   time = {
   timeZone = "America/New_York";
@@ -191,7 +191,7 @@
      })
     config.nix.registry;
   };
-  
+
   #auth agent/security/polkit
   security = {
    polkit.enable = true;
@@ -223,7 +223,7 @@
     };
   };
 
-  
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.11";
 }

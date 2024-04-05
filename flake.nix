@@ -23,8 +23,8 @@
     system = "x86_64-linux";
 
     # User Variables
-    hostname = "nixos";
-    username = "khoa";
+    hostname = "dxflake";
+    username = "ethr";
     gitUsername = "dxcently";
     gitEmail = "dxcently@gmail.com";
     theme = "rose-pine";
