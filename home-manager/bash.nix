@@ -25,7 +25,7 @@ in
     shellAliases = {
       sv="sudo nvim";
       flake-rebuild="nh os switch /home/khoa/dxflake/";
-      flake-update="nah os switch /home/khoa/dxflake/ --update";
+      flake-update="nh os switch /home/khoa/dxflake/ --update";
       gcCleanup="nh clean all";
       v="nvim";
       ls="lsd";

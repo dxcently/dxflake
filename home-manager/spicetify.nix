@@ -22,6 +22,8 @@ in
         shuffle # shuffle+ (special characters are sanitized out of ext names)
         hidePodcasts
         popupLyrics
+        lastfm
+        playlistIcons
       ];
     };
 }

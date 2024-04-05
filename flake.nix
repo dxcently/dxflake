@@ -24,7 +24,7 @@
 
     # User Variables
     hostname = "dxflake";
-    username = "ethr";
+    username = "khoa";
     gitUsername = "dxcently";
     gitEmail = "dxcently@gmail.com";
     theme = "rose-pine";

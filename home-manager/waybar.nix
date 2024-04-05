@@ -137,6 +137,7 @@
       ];
       modules-center = [
         "clock"
+        "hyprland/window"
       ];
       modules-right = [
         "wireplumber"
@@ -153,6 +154,11 @@
         "format" = "󰫢 ";
         "on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
         "tooltip" = false;
+      };
+      "hyprland/window" = {
+        max-length = 25;
+        separate-outputs = false;
+        rewrite = { "" = "~"; };
       };
      /* "custom/wall" = {
         "on-click" = ${sharedScripts.wallpaper_random}/bin/wallpaper_random";
