@@ -24,6 +24,7 @@ in
         popupLyrics
         lastfm
         playlistIcons
+        keyboardShortcut
       ];
     };
 }

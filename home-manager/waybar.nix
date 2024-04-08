@@ -158,7 +158,7 @@
       "hyprland/window" = {
         max-length = 25;
         separate-outputs = false;
-        rewrite = { "" = "~"; };
+        rewrite = { "" = "/ᐠ - ˕ -マ Ⳋ ⋆｡°✩♬ ♪"; };
       };
      /* "custom/wall" = {
         "on-click" = ${sharedScripts.wallpaper_random}/bin/wallpaper_random";

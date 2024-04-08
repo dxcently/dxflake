@@ -8,6 +8,6 @@
   ./spicetify.nix
   ./waybar.nix
   ./yazi.nix
-  #./bash.nix
+  ./bash.nix
   ];
 }
