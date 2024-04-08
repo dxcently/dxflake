@@ -11,7 +11,7 @@
           1
           1
         ];
-        sort_by = "alphabetical";
+        sort_by = "modified";
         sort_sensitive = false;
         sort_reverse = false;
         linemode = "size";
@@ -47,5 +47,6 @@
 
   home.shellAliases = {
     y = "yazi";
+    sy = "sudo yazi";
   };
 }

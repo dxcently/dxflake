@@ -9,9 +9,9 @@ in
     enable = true;
     enableCompletion = true;
     profileExtra = ''
-      #if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
-      #  exec Hyprland
-      #fi
+      if [ "$(tty)" = "/dev/tty1" ]; then
+        exec Hyprland &> /dev/null
+      fi
     '';
     initExtra = ''
       #neofetch
