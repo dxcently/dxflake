@@ -15,9 +15,9 @@ in
     '';
     initExtra = ''
       #neofetch
-      #if [ -f $HOME/.bashrc-personal ]; then
-      #  source $HOME/.bashrc-personal
-      #fi
+      if [ -f $HOME/.bashrc-personal ]; then
+      source $HOME/.bashrc-personal
+      fi
     '' ;
     bashrcExtra = ''
       eval "$(zoxide init bash)"
