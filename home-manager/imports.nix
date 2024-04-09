@@ -9,5 +9,6 @@
   ./waybar.nix
   ./yazi.nix
   ./bash.nix
+  ./xdg.nix
   ];
 }

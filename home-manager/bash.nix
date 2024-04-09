@@ -44,6 +44,7 @@ in
       reboot="systemctl reboot";
       shutdown="shutdown - now";
       neofetch="neofetch --ascii ~/.config/ascii-neofetch";
+      nix-list-generation="sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; #thank you iynaix :>
     };
   };
 }

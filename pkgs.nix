@@ -55,7 +55,6 @@
   gh #github cli
   git
   lazygit
-  toybox
   xdg-utils
   lshw
   lsd
@@ -98,9 +97,6 @@
     hyprland = {
       enable = true;
       xwayland.enable = true;
-    };
-    yazi = {
-      enable = true;
     };
     starship.enable = true;
     dconf.enable = true;
