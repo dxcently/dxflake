@@ -124,7 +124,7 @@
       openFirewall = true;
     };
     xserver = {
-      displayManager.autoLogin.user = "ethr";
+      displayManager.autoLogin.user = "khoa";
       displayManager.autoLogin.enable = true;
     };
   };

@@ -9,6 +9,7 @@
   ./waybar.nix
   ./yazi.nix
   ./bash.nix
-  ./xdg.nix
+  #./xdg.nix
+  ./gtk-qt.nix
   ];
 }

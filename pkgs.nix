@@ -40,6 +40,7 @@
   wine
   ncspot
   lutris
+  bottles
   protonup-qt
   anki-bin
   obsidian
