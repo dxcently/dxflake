@@ -158,7 +158,7 @@
         ];
         "custom/launcher" = {
           "format" = "󰫢 ";
-          "on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
+          #"on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
           "tooltip" = false;
         };
         "hyprland/window" = {
@@ -184,8 +184,8 @@
         "hyprland/workspaces" = {
           "format" = "{name}";
           "on-click" = "activate";
-          # "on-scroll-up" = "hyprctl dispatch workspace e+1";
-          # "on-scroll-down" = "hyprctl dispatch workspace e-1";
+          "on-scroll-up" = "hyprctl dispatch workspace e+1";
+          "on-scroll-down" = "hyprctl dispatch workspace e-1";
         };
         "backlight" = {
           "device" = "intel_backlight";

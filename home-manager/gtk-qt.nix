@@ -21,12 +21,26 @@
         package = pkgs.nerdfonts;
       };
       theme = {
-        name = "rose-pine";
-        package = pkgs.rose-pine-gtk-theme;
+        name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
+        package = pkgs.catppuccin-gtk.override {
+          accents = [ "rosewater" ];
+          tweaks = [
+            "rimless"
+            "normal"
+          ];
+          variant = "macchiato";
+          size = "compact";
+        };
       };
+      /*
+        theme = {
+          name = "${config.colorScheme.slug}";
+          package = gtkThemeFromScheme {scheme = config.colorScheme;};
+        };
+      */
       iconTheme = {
-        name = "rose-pine";
-        package = pkgs.rose-pine-icon-theme;
+        name = "Arc";
+        package = pkgs.arc-icon-theme;
       };
       gtk3 = {
         inherit extraConfig;
@@ -39,8 +53,16 @@
     enable = true;
     platformTheme = "gtk";
     style = {
-      name = "rose-pine";
-      package = pkgs.rose-pine-gtk-theme;
+      name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "rosewater" ];
+        tweaks = [
+          "rimless"
+          "normal"
+        ];
+        variant = "macchiato";
+        size = "compact";
+      };
     };
   };
   dconf.settings = {
@@ -49,11 +71,11 @@
     };
   };
 
-  /*
-    home.pointerCursor = {
-      gtk.enable = true;
-      x11.enable = true;
-      package =
-    };
-  */
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    name = "Catppuccin-Macchiato-Rosewater-Cursors";
+    package = pkgs.catppuccin-cursors.macchiatoRosewater;
+    size = 28;
+  };
 }

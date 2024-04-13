@@ -21,13 +21,13 @@ in
       foreground #${palette.base05}
       background #${palette.base00}
       color0  #${palette.base03}
-      color1  #${palette.base08}
-      color2  #${palette.base0B}
+      color1  #${palette.base0A}
+      color2  #${palette.base08}
       color3  #${palette.base09}
-      color4  #${palette.base0D}
-      color5  #${palette.base0E}
+      color4  #${palette.base05}
+      color5  #${palette.base0B}
       color6  #${palette.base0C}
-      color7  #${palette.base06}
+      color7  #${palette.base0D}
       color8  #${palette.base04}
       color9  #${palette.base08}
       color10 #${palette.base0B}
@@ -44,10 +44,10 @@ in
       color21 #${palette.base0E}
       color22 #${palette.base0C}
       color23 #${palette.base06}
-      cursor  #${palette.base07}
+      cursor  #${palette.base04}
       cursor_text_color #${palette.base00}
       selection_foreground #${palette.base01}
-      selection_background #${palette.base0D}
+      selection_background #${palette.base03}
       url_color #${palette.base0C}
       active_border_color #${palette.base04}
       inactive_border_color #${palette.base00}

@@ -19,14 +19,15 @@ in
       fi
     '';
     initExtra = ''
-      #neofetch
-      if [ -f $HOME/.bashrc-personal ]; then
-      source $HOME/.bashrc-personal
-      fi
+      neofetch
+      #if [ -f $HOME/.bashrc-personal ]; then
+      #source $HOME/.bashrc-personal
+      #fi
     '';
     bashrcExtra = ''
       eval "$(zoxide init bash)"
       eval "$(atuin init bash)"
+      set -o vi
     '';
     sessionVariables = {
       khoa = true;
@@ -48,7 +49,7 @@ in
       cp = "cp -i";
       reboot = "systemctl reboot";
       shutdown = "shutdown - now";
-      neofetch = "neofetch --ascii ~/.config/ascii-neofetch";
+      neofetch = "neofetch --ascii ~/dxflake/home-manager/extras/ascii-neofetch";
       nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
     };
   };
