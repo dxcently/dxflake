@@ -90,6 +90,7 @@
   nodejs
   pkg-config
   v4l-utils
+  nixfmt
   ];
 
   #nix options pkgs

@@ -11,7 +11,7 @@ in {
     vimAlias = true;
 
     globals.mapleader = " "; # Sets the leader key to space
-    
+
     options = {
       clipboard="unnamedplus";
       number = true;         # Show line numbers
@@ -74,7 +74,7 @@ in {
       base0E = "#${theme.base0E}";
       base0F = "#${theme.base0F}";
     };
-    
+
     plugins = {
       barbecue.enable = true;
       gitsigns.enable = true;
@@ -93,7 +93,7 @@ in {
       lualine = {
         enable = true;
       };
-      startup = { 
+      startup = {
 	enable = true;
 	theme = "dashboard";
       };
@@ -128,12 +128,15 @@ in {
       cmp = {
         enable = true;
         settings = {
-          snippet.expand = '' 
+          snippet.expand = ''
             function(args)
               require ('luasnip').lsp_expand(args.body)
             end
           '';
         };
+      };
+      formattersByFt = {
+        nix = [ "nixfmt" ];
       };
       /* cmp = {
 	enable = true;
@@ -154,12 +157,12 @@ in {
       }; */
     };
 
-    extraPlugins = [ 
+    extraPlugins = [
       plugins.telescope-file-browser-nvim
     ];
 
     # FOR NEOVIDE
-    extraConfigLua = '' 
+    extraConfigLua = ''
       vim.opt.guifont = "JetBrainsMono\\ NFM,Noto_Color_Emoji:h14"
       vim.g.neovide_cursor_animation_length = 0.05
 
@@ -248,5 +251,5 @@ in {
 
 
   };
- } 
+ }
 
