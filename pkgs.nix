@@ -104,7 +104,6 @@
     starship.enable = true;
     dconf.enable = true;
     bash.blesh.enable = true;
-    fzf.fuzzyCompletion = true;
     nm-applet.enable = true;
   };
 
