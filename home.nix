@@ -1,4 +1,12 @@
-{  inputs,  lib, config, pkgs, theme, gtkThemeFromScheme, ... }:
+{
+  inputs,
+  lib,
+  config,
+  pkgs,
+  theme,
+  gtkThemeFromScheme,
+  ...
+}:
 
 {
 
@@ -25,25 +33,24 @@
   # home.packages = with pkgs; [ steam ];
 
   # Enable home-manager and git
-   programs = {
+  programs = {
     home-manager.enable = true;
     git = {
-     enable = true;
-     userName = "dxcently";
-     userEmail = "dxcently@gmail.com";
-      };
-     };
+      enable = true;
+      userName = "dxcently";
+      userEmail = "dxcently@gmail.com";
+    };
+  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 
-    dconf.settings = {
+  dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = ["qemu:///system"];
-      uris = ["qemu:///system"];
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
     };
   };
-
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "23.11";

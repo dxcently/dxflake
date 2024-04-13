@@ -11,60 +11,68 @@
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
-      };
+    };
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-plugins = {
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
   };
-  outputs = inputs@{ nixpkgs, home-manager, spicetify-nix, ... }:
-  let
-    system = "x86_64-linux";
+  outputs =
+    inputs@{
+      nixpkgs,
+      home-manager,
+      spicetify-nix,
+      ...
+    }:
+    let
+      system = "x86_64-linux";
 
-    # User Variables
-    hostname = "dxflake";
-    username = "khoa";
-    gitUsername = "dxcently";
-    gitEmail = "dxcently@gmail.com";
-    theme = "rose-pine";
+      # User Variables
+      hostname = "dxflake";
+      username = "khoa";
+      gitUsername = "dxcently";
+      gitEmail = "dxcently@gmail.com";
+      theme = "rose-pine";
 
-    pkgs = import nixpkgs {
-      inherit system;
-      config = {
-        allowUnfree = true;
-      };
-    };
-
-  in {
-    nixosConfigurations = {
-      "${hostname}" = nixpkgs.lib.nixosSystem {
-	    specialArgs = {
-              inherit system;
-              inherit inputs;
-              inherit username;
-              inherit hostname;
-              inherit gitUsername;
-              inherit gitEmail;
+      pkgs = import nixpkgs {
+        inherit system;
+        config = {
+          allowUnfree = true;
         };
-	    modules = [ ./configuration.nix
-              home-manager.nixosModules.home-manager {
-	      home-manager.extraSpecialArgs = {
+      };
+    in
+    {
+      nixosConfigurations = {
+        "${hostname}" = nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            inherit system;
+            inherit inputs;
+            inherit username;
+            inherit hostname;
+            inherit gitUsername;
+            inherit gitEmail;
+          };
+          modules = [
+            ./configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.extraSpecialArgs = {
                 inherit username;
                 inherit gitEmail;
                 inherit inputs;
                 inherit gitUsername;
                 inherit theme;
-                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+                inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
                 inherit spicetify-nix;
-            };
-	      home-manager.useGlobalPkgs = true;
+              };
+              home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.backupFileExtension = "backup";
-	      home-manager.users.${username} = import ./home.nix;
-	      }
-	    ];
+              home-manager.users.${username} = import ./home.nix;
+            }
+          ];
+        };
       };
     };
-  };
 }

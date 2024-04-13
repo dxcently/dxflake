@@ -3,7 +3,8 @@
 let
   plugins = pkgs.vimPlugins;
   theme = config.colorScheme.palette;
-in {
+in
+{
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
@@ -13,10 +14,10 @@ in {
     globals.mapleader = " "; # Sets the leader key to space
 
     options = {
-      clipboard="unnamedplus";
-      number = true;         # Show line numbers
+      clipboard = "unnamedplus";
+      number = true; # Show line numbers
       relativenumber = true; # Show relative line numbers
-      shiftwidth = 2;        # Tab width should be 2
+      shiftwidth = 2; # Tab width should be 2
       softtabstop = 2;
       smartindent = true;
       wrap = true;
@@ -29,7 +30,7 @@ in {
       updatetime = 50;
     };
 
-      autoCmd = [
+    autoCmd = [
       # remove trailing whitespace on save
       {
         event = "BufWritePre";
@@ -79,11 +80,11 @@ in {
       barbecue.enable = true;
       gitsigns.enable = true;
       telescope = {
-	enable = true;
-	keymaps = {
-	  "<leader>ff" = "find_files";
-	  "<leader>lg" = "live_grep";
-	};
+        enable = true;
+        keymaps = {
+          "<leader>ff" = "find_files";
+          "<leader>lg" = "live_grep";
+        };
       };
       indent-blankline.enable = true;
       nvim-colorizer.enable = true;
@@ -94,36 +95,36 @@ in {
         enable = true;
       };
       startup = {
-	enable = true;
-	theme = "dashboard";
+        enable = true;
+        theme = "dashboard";
       };
       lsp = {
-	enable = true;
-	servers = {
-	  tsserver.enable = true;
-	  lua-ls.enable = true;
-	  bashls.enable = true;
-	  rust-analyzer = {
-	    enable = true;
-	    installRustc = true;
-	    installCargo = true;
-	  };
-	  html.enable = true;
-	  ccls.enable = true;
-	  cmake.enable = true;
-	  csharp-ls.enable = true;
-	  cssls.enable = true;
-	  gopls.enable = true;
-	  jsonls.enable = true;
-	  pyright.enable = true;
+        enable = true;
+        servers = {
+          tsserver.enable = true;
+          lua-ls.enable = true;
+          bashls.enable = true;
+          rust-analyzer = {
+            enable = true;
+            installRustc = true;
+            installCargo = true;
+          };
+          html.enable = true;
+          ccls.enable = true;
+          cmake.enable = true;
+          csharp-ls.enable = true;
+          cssls.enable = true;
+          gopls.enable = true;
+          jsonls.enable = true;
+          pyright.enable = true;
           nil_ls.enable = true;
           perlpls.enable = true;
-	};
+        };
       };
       lsp-lines.enable = true;
       treesitter = {
-	enable = true;
-	nixGrammars = true;
+        enable = true;
+        nixGrammars = true;
       };
       cmp = {
         enable = true;
@@ -135,31 +136,38 @@ in {
           '';
         };
       };
-      formattersByFt = {
-        nix = [ "nixfmt" ];
-      };
-      /* cmp = {
-	enable = true;
-        settings = {
-          sources = [
-	    { name = "nvim_lsp"; }
-	    { name = "path"; }
-	    { name = "buffer"; }
-	  ];
-	  extraOptions.mapping = {
-	    "<CR>" = "cmp.mapping.confirm({ select = true })";
-	    "<Tab>" = {
-	    action = ''cmp.mapping.select_next_item()'';
-	    modes = [ "i" "s" ];
-	    };
-	  };
+      conform-nvim = {
+        enable = true;
+        formatOnSave = {
+          lspFallback = true;
+          timeoutMs = 500;
         };
-      }; */
+        formattersByFt = {
+          nix = [ "nixfmt" ];
+        };
+      };
+      /*
+        cmp = {
+        	enable = true;
+                settings = {
+                  sources = [
+        	    { name = "nvim_lsp"; }
+        	    { name = "path"; }
+        	    { name = "buffer"; }
+        	  ];
+        	  extraOptions.mapping = {
+        	    "<CR>" = "cmp.mapping.confirm({ select = true })";
+        	    "<Tab>" = {
+        	    action = ''cmp.mapping.select_next_item()'';
+        	    modes = [ "i" "s" ];
+        	    };
+        	  };
+                };
+              };
+      */
     };
 
-    extraPlugins = [
-      plugins.telescope-file-browser-nvim
-    ];
+    extraPlugins = [ plugins.telescope-file-browser-nvim ];
 
     # FOR NEOVIDE
     extraConfigLua = ''
@@ -248,8 +256,5 @@ in {
         options.silent = false;
       }
     ];
-
-
   };
- }
-
+}

@@ -12,5 +12,5 @@
     paint_mode=brush
     early_exit=true
     fill_shape=false
-    '';
+  '';
 }

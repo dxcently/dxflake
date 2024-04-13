@@ -7,5 +7,3 @@
     mimeApps.enable = true;
   };
 }
-
-

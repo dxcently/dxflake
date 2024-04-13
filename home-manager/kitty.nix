@@ -2,7 +2,8 @@
 
 let
   palette = config.colorScheme.palette;
-in {
+in
+{
   # Configure Kitty
   programs.kitty = {
     enable = true;
@@ -63,4 +64,3 @@ in {
     '';
   };
 }
-
