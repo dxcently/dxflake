@@ -15,7 +15,7 @@
         sort_sensitive = false;
         sort_reverse = false;
         linemode = "size";
-        show_hidden = true;
+        show_hidden = false;
       };
     };
 
