@@ -27,6 +27,7 @@
     cliphist
     brightnessctl
     wallust
+    mpv
     # audio
     wireplumber
     pavucontrol
@@ -42,6 +43,7 @@
     ncspot
     lutris
     bottles
+    heroic
     protonup-qt
     anki-bin
     obsidian
@@ -51,6 +53,7 @@
     gimp
     spicetify-cli
     hyprpicker
+    neovide
     # cli programs
     socat
     bat
@@ -76,12 +79,14 @@
     starship
     qmk
     ffmpegthumbnailer
+    ffmpeg
     unar
     jq
     poppler
     fd
     file
     ripgrep
+    spotdl
     # libs/frameworks
     qt6.qtwayland
     libsForQt5.qt5.qtwayland

@@ -48,9 +48,10 @@ in
       rm = "rm -i";
       cp = "cp -i";
       reboot = "systemctl reboot";
-      shutdown = "shutdown - now";
+      shutdown = "shutdown -h now";
       neofetch = "neofetch --ascii ~/dxflake/home-manager/extras/ascii-neofetch";
       nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
+      sdl = "spotdl download";
     };
   };
 }
