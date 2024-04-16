@@ -54,6 +54,9 @@
     spicetify-cli
     hyprpicker
     neovide
+    soulseekqt
+    nicotine-plus
+    webcamoid
     # cli programs
     socat
     bat
