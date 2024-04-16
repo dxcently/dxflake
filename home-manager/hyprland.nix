@@ -38,8 +38,8 @@ in
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec-once = swww init & swww img ~/Downloads/wallhaven-z8x7pw.png
       exec-once = waybar
-      exec-once = nm-applet --indicator
-      exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store #Stores only image data
+      exec-once = nm-applet
+      exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = spotify
       exec-once = vesktop
       exec-once = firefox

@@ -278,6 +278,7 @@
           "interval" = 1;
           "tooltip" = true;
           "tooltip-format" = "󰖩  {essid} ({ipaddr})";
+          "on-click" = "nm-applet --indicator";
         };
         "temperature" = {
           #"critical-threshold"= 80;
