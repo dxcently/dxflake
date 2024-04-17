@@ -26,9 +26,9 @@ in
       $fileManager = thunar
       $menu = rofi -show drun
 
-      monitor =,preferred,auto,auto
-      monitor=DP-1,1920x1080@144,0x0,1
-      monitor=HDMI-A-1,1920x1080@60,1920x0,1
+      #monitor=, preferred, auto, 1
+      monitor=DP-1, 1920x1080@144, 0x0, 1
+      monitor=HDMI-A-1, 1920x1080@60, 1920x0, 1
 
       env = XCURSOR_SIZE,24
       env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
@@ -36,7 +36,7 @@ in
 
       exec-once = dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      exec-once = swww-daemon & swww img ~/Downloads/wallhaven-z8x7pw.png
+      exec-once = swww-daemon & swww img ~/Downloads/yuyu.png
       exec-once = waybar
       exec-once = nm-applet
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store

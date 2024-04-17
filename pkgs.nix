@@ -26,7 +26,6 @@
     lm_sensors
     cliphist
     brightnessctl
-    wallust
     mpv
     # audio
     wireplumber
@@ -39,15 +38,8 @@
     virt-manager
     ungoogled-chromium
     firefox
-    wine
-    ncspot
-    lutris
-    protonup-qt
     anki-bin
     obsidian
-    vim
-    steam
-    winetricks
     gimp
     spicetify-cli
     hyprpicker
@@ -56,6 +48,8 @@
     nicotine-plus
     webcamoid
     # cli programs
+    vim
+    ncspot
     socat
     bat
     gh # github cli
