@@ -38,12 +38,10 @@
     udiskie
     virt-manager
     ungoogled-chromium
-    firefox-bin
+    firefox
     wine
     ncspot
     lutris
-    bottles
-    heroic
     protonup-qt
     anki-bin
     obsidian

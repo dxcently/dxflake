@@ -27,8 +27,8 @@ in
       $menu = rofi -show drun
 
       monitor =,preferred,auto,auto
-      monitor=eDP-1,1920x1080, 0x0, 1
-      monitor=HDMI-A-1,1920x1080,1920x0,1
+      monitor=DP-1,1920x1080@144,0x0,1
+      monitor=HDMI-A-1,1920x1080@60,1920x0,1
 
       env = XCURSOR_SIZE,24
       env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
@@ -49,8 +49,8 @@ in
       windowrule = opacity 0.8, Spotify
       windowrule = opacity 0.9, neovide
       #workspaces window rules
-      windowrule = workspace 1, vesktop
-      windowrule = workspace 2, firefox
+      windowrule = workspace 2, vesktop
+      windowrule = workspace 1, firefox
       windowrule = workspace special:magic, Spotify
 
       bind = $mainMod, RETURN, exec, $terminal
