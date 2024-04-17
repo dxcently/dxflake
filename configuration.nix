@@ -58,7 +58,10 @@
 
   #boot
   boot = {
-    initrd.kernelModules = [ "nvme" ];
+    initrd.kernelModules = [
+      "nvme"
+      "amdgpu"
+    ];
     kernelPackages = pkgs.linuxPackages;
     loader = {
       systemd-boot.enable = true;
@@ -83,18 +86,6 @@
       ];
     };
   };
-
-  /*
-    services.openssh = {
-      enable = true;
-      settings = {
-        # Forbid root login through SSH.
-        PermitRootLogin = "no";
-        # Use keys only. Remove if you want to SSH using password (not recommended)
-        PasswordAuthentication = true;
-      };
-    };
-  */
 
   #services
   services = {
@@ -146,37 +137,47 @@
     };
   };
 
-  #hardware - nvidia settings
-  services.xserver.videoDrivers = [ "nvidia" ];
-  hardware = {
-    opengl = {
-      enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
-      extraPackages = with pkgs; [
-        rocm-opencl-icd
-        rocm-opencl-runtime
-      ];
-    };
-    nvidia = {
-      modesetting.enable = true;
-      powerManagement.enable = false;
-      powerManagement.finegrained = false;
-      open = false;
-      nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      prime = {
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
-        offload = {
-          enable = true;
-          enableOffloadCmd = true;
+  #hardware - AMD settings
+  services.xserver = {
+    enable = true;
+    videoDrivers = [ "amdgpu" ];
+  };
+  hardware.opengl = {
+    extraPackages = with pkgs; [ amdvlk ];
+    extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+  };
+  # For 32 bit applications
+  /*
+    hardware = {
+      opengl = {
+        enable = true;
+        driSupport = true;
+        driSupport32Bit = true;
+        extraPackages = with pkgs; [
+          rocm-opencl-icd
+          rocm-opencl-runtime
+        ];
+      };
+      nvidia = {
+        modesetting.enable = true;
+        powerManagement.enable = false;
+        powerManagement.finegrained = false;
+        open = false;
+        nvidiaSettings = true;
+        package = config.boot.kernelPackages.nvidiaPackages.stable;
+        prime = {
+          intelBusId = "PCI:0:2:0";
+          nvidiaBusId = "PCI:1:0:0";
+          offload = {
+            enable = true;
+            enableOffloadCmd = true;
+          };
         };
       };
+      keyboard.qmk.enable = true;
+      opentabletdriver.enable = true;
     };
-    keyboard.qmk.enable = true;
-    opentabletdriver.enable = true;
-  };
+  */
 
   #time stuff
   time = {
