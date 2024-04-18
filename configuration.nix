@@ -179,6 +179,9 @@
     };
   */
 
+  #vm
+  virtualisation.libvirtd.enable = true;
+
   #time stuff
   time = {
     timeZone = "America/New_York";

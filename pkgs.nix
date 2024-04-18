@@ -35,7 +35,6 @@
     # programs
     vesktop
     udiskie
-    virt-manager
     ungoogled-chromium
     firefox
     anki-bin
@@ -47,6 +46,10 @@
     soulseekqt
     nicotine-plus
     webcamoid
+    lutris
+    wine
+    winetricks
+    protonup-qt
     # cli programs
     vim
     ncspot
@@ -92,6 +95,8 @@
     pkg-config
     v4l-utils
     nixfmt-rfc-style
+    #vm
+    qemu
   ];
 
   #nix options pkgs
@@ -105,6 +110,8 @@
     dconf.enable = true;
     bash.blesh.enable = true;
     nm-applet.enable = true;
+    steam.enable = true;
+    virt-manager.enable = true;
   };
 
   #fonts
