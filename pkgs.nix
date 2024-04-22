@@ -116,6 +116,7 @@
     nm-applet.enable = true;
     steam.enable = true;
     virt-manager.enable = true;
+    k3b.enable = true;
   };
 
   #fonts

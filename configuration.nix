@@ -132,8 +132,9 @@
       openFirewall = true;
     };
     xserver = {
-      displayManager.autoLogin.user = "khoa";
-      displayManager.autoLogin.enable = true;
+      displayManager.lightdm = {
+        enable = true;
+      };
     };
   };
 
