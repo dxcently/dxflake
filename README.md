@@ -3,6 +3,6 @@
 
 
 Credit to other flakes I *heavily* referenced:
-https://github.com/Ruixi-rebirth/flakes
-https://gitlab.com/Zaney/zaneyos/-/tree/main?ref_type=heads
-https://github.com/iynaix/dotfiles/tree/main
+https://github.com/Ruixi-rebirth/flakes\
+https://gitlab.com/Zaney/zaneyos/-/tree/main?ref_type=heads\
+https://github.com/iynaix/dotfiles/tree/main\
