@@ -14,7 +14,7 @@
         ];
         sort_by = "modified";
         sort_sensitive = false;
-        sort_reverse = false;
+        sort_reverse = true;
         linemode = "size";
         show_hidden = false;
       };

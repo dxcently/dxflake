@@ -53,16 +53,20 @@
     enable = true;
     platformTheme = "gtk";
     style = {
-      name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "rosewater" ];
-        tweaks = [
-          "rimless"
-          "normal"
-        ];
-        variant = "macchiato";
-        size = "compact";
-      };
+      /*
+        name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
+        package = pkgs.catppuccin-gtk.override {
+          accents = [ "rosewater" ];
+          tweaks = [
+            "rimless"
+            "normal"
+          ];
+          variant = "macchiato";
+          size = "compact";
+        };
+      */
+      name = "adwaita-dark";
+      package = pkgs.adwaita-qt;
     };
   };
   dconf.settings = {

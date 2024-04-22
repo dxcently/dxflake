@@ -50,6 +50,10 @@
     wine
     winetricks
     protonup-qt
+    xfce.xfburn
+    vlc
+    clementine
+    soundconverter
     # cli programs
     vim
     ncspot
