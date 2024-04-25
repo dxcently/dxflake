@@ -57,7 +57,7 @@ in
       bind = $mainMod, SPACE, exec, $menu
       bind = $mainMod, T, exec, $fileManager
       bind = $mainMod, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
-      bind = $mainMod, S, exec, grim -g "$(slurp -d)" - |swappy -f - | wl-copy
+      bind = $mainMod, S, exec, grim -g "$(slurp -d)" - |swappy -f -
 
       bind = $mainMod, Q, killactive
       bind = $mainMod, ESC, exit

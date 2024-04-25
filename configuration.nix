@@ -83,6 +83,9 @@
         "wheel"
         "networkmanager"
         "libvirtd"
+        "cdrom"
+        "audio"
+        "video"
       ];
     };
   };

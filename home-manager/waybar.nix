@@ -272,7 +272,7 @@
         */
         "network" = {
           "format-disconnected" = "󰯡 Disconnected";
-          "format-ethernet" = "󰀂 ({ipaddr})";
+          "format-ethernet" = " Wired";
           "format-linked" = "󰖪 (No IP)";
           "format-wifi" = "󰖩 ";
           "interval" = 1;
