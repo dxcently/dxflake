@@ -54,6 +54,7 @@
     vlc
     clementine
     soundconverter
+    prismlauncher
     # cli programs
     vim
     ncspot

@@ -184,7 +184,10 @@
   */
 
   #vm
-  virtualisation.libvirtd.enable = true;
+  virtualisation = {
+    libvirtd.enable = true;
+    spiceUSBRedirection.enable = true;
+  };
 
   #time stuff
   time = {
