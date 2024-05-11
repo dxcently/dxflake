@@ -33,7 +33,6 @@
     xfce.thunar
     xfce.thunar-volman
     # programs
-    vesktop
     udiskie
     ungoogled-chromium
     firefox
@@ -55,6 +54,11 @@
     clementine
     soundconverter
     prismlauncher
+    guvcview
+    vencord
+    vesktop
+    discord
+    bottles
     # cli programs
     vim
     ncspot
@@ -66,7 +70,7 @@
     xdg-utils
     lshw
     lsd
-    neofetch
+    fastfetch
     nitch
     cowsay
     fzf
