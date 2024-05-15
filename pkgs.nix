@@ -30,8 +30,6 @@
     # audio
     wireplumber
     pavucontrol
-    xfce.thunar
-    xfce.thunar-volman
     # programs
     udiskie
     ungoogled-chromium
@@ -59,6 +57,8 @@
     vesktop
     discord
     bottles
+    qbittorrent
+    obs-studio
     # cli programs
     vim
     ncspot
@@ -122,6 +122,15 @@
     steam.enable = true;
     virt-manager.enable = true;
     k3b.enable = true;
+    thunar = {
+      enable = true;
+      plugins = with pkgs.xfce; [
+        thunar-archive-plugin
+        thunar-volman
+        thunar-media-tags-plugin
+      ];
+    };
+    file-roller.enable = true;
   };
 
   #fonts
