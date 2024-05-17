@@ -112,6 +112,7 @@
     gvfs.enable = true;
     udisks2.enable = true;
     flatpak.enable = true;
+    tumbler.enable = true;
     #qmk shit
     udev = {
       packages = [

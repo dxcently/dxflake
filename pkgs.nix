@@ -55,7 +55,6 @@
     guvcview
     vencord
     vesktop
-    discord
     bottles
     qbittorrent
     obs-studio

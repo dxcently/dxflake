@@ -49,6 +49,7 @@ in
       windowrule = opacity 0.9, neovide
       windowrule = opacity 0.8, bottles
       windowrule = opacity 0.8, fl64.exe
+      windowrulev2 = opacity 0.8, title:(FL Studio)
       #workspaces window rules
       windowrule = workspace 2, vesktop
       windowrule = workspace 1, firefox
