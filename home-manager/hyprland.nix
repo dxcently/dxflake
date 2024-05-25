@@ -51,9 +51,11 @@ in
       windowrule = opacity 0.8, fl64.exe
       windowrulev2 = opacity 0.8, title:(FL Studio)
       #workspaces window rules
-      windowrule = workspace 2, vesktop
+      windowrule = workspace 10, vesktop
       windowrule = workspace 1, firefox
       windowrule = workspace special:magic, Spotify
+      #workspace rules
+      workspace=10, monitor:HDMI-A-1, default:true
 
       bind = $mainMod, RETURN, exec, $terminal
       bind = $mainMod, SPACE, exec, $menu
