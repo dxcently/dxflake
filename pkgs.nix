@@ -27,6 +27,7 @@
     cliphist
     brightnessctl
     mpv
+    gparted
     # audio
     wireplumber
     pavucontrol
