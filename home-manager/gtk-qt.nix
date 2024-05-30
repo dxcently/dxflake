@@ -10,7 +10,7 @@
   gtk =
     let
       extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
+        gtk-application-prefer-light = 1;
       };
     in
     {
@@ -21,7 +21,7 @@
         package = pkgs.nerdfonts;
       };
       theme = {
-        name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
+        name = "Catppuccin-Macchiato-Compact-Rosewater-Light";
         package = pkgs.catppuccin-gtk.override {
           accents = [ "rosewater" ];
           tweaks = [
@@ -65,13 +65,13 @@
           size = "compact";
         };
       */
-      name = "adwaita-dark";
+      name = "adwaita-light";
       package = pkgs.adwaita-qt;
     };
   };
   dconf.settings = {
     "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
+      color-scheme = "prefer-light";
     };
   };
 

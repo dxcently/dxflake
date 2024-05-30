@@ -5,6 +5,10 @@
   ...
 }:
 
+let
+  palette = config.colorScheme.palette;
+in
+
 {
   programs.waybar = {
 
@@ -15,8 +19,8 @@
     };
     style = ''
       * {
-      font-family: "ShureTechMono Nerd Font";
-      font-size: 12pt;
+      font-family: "ComicShannsMono Nerd Font";
+      font-size: 15px;
       font-weight: bold;
       border-radius: 0px;
       transition-property: background-color;
@@ -39,10 +43,7 @@
       background-color: transparent;
       }
       window > box {
-      margin-left: 5px;
-      margin-right: 5px;
-      margin-top: 5px;
-      background-color: #191724;
+      background-color: #FFFFFF;
       }
       #workspaces {
       padding-left: 0px;
@@ -53,59 +54,62 @@
       padding-bottom: 5px;
       padding-left: 6px;
       padding-right: 6px;
-      color:#D8DEE9;
+      color:#${palette.base02};
       }
       #workspaces button.active {
-      background-color: #ebbcba;
-      color: #191724;
+      background-color: #FFFFFF;
+      color: #${palette.base07};
       }
       #workspaces button.urgent {
       color: rgb(26, 24, 38);
       }
       #workspaces button:hover {
-      background-color:#e0def4;
-      color: #191724;
+      background-color:#${palette.base01};
+      color: #${palette.base03};
       }
       tooltip {
       /* background: rgb(250, 244, 252); */
-      background: #3b4253;
+      background: #FFFFFF;
       }
       tooltip label {
-      color: #E4E8EF;
+      color: #${palette.base01};
       }
       #custom-launcher {
       font-size: 20px;
-      padding-left: 8px;
-      padding-right: 6px;
-      color: #ebbcba;
+      padding-left: 2px;
+      padding-right: 0px;
+      color: #${palette.base02};
       }
       #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight, #wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
-      padding-left: 10px;
-      padding-right: 10px;
+      padding-left: 8px;
+      padding-right: 8px;
       }
       #memory {
-      color: #8EBBBA;
+      color: #${palette.base0B};
       }
       #cpu {
-      color: #B38DAC;
+      color: #${palette.base0C};
       }
       #clock {
-      color: #E4E8EF;
+      color: #${palette.base07};
+      }
+      #window{
+        color: #${palette.base02};
       }
       #custom-wall {
       color: #B38DAC;
       }
       #temperature {
-      color: #80A0C0;
+      color: #${palette.base09};
       }
       #backlight {
       color: #A2BD8B;
       }
       #wireplumber {
-      color: #E9C98A;
+      color: #${palette.base08};
       }
       #network {
-      color: #99CC99;
+      color: #${palette.base0A};
       }
 
       #network.disconnected {
@@ -118,15 +122,15 @@
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #eb6f92;
+      color: #${palette.base0F};
       }
       #tray {
-      padding-right: 8px;
+      padding-right: 5px;
       padding-left: 10px;
       }
       #tray menu {
-      background: #191724;
-      color: #DEE2EA;
+      background: #FFFFFF;
+      color: #${palette.base01};
       }
       #custom-cava-internal{
       font-family: "Hack Nerd Font" ;
@@ -157,7 +161,7 @@
           "tray"
         ];
         "custom/launcher" = {
-          "format" = "󰫢 ";
+          "format" = "『🍓』";
           #"on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
           "tooltip" = false;
         };
@@ -182,7 +186,7 @@
           "tooltip" = false;
         };
         "hyprland/workspaces" = {
-          "format" = "{name}";
+          "format" = "𔓘";
           "on-click" = "activate";
           "on-scroll-up" = "hyprctl dispatch workspace e+1";
           "on-scroll-down" = "hyprctl dispatch workspace e-1";
@@ -200,14 +204,14 @@
           ];
         };
         "wireplumber" = {
-          "scroll-step" = 1;
+          "scroll-step" = 2;
           "format" = "{icon} {volume}%";
-          "format-muted" = "󰖁 Muted";
+          "format-muted" = "(° × ° )";
           "format-icons" = {
             "default" = [
-              ""
-              ""
-              ""
+              "♪"
+              "♪♫~"
+              "♬♪~"
             ];
           };
           "on-click" = "pavucontrol";
@@ -240,19 +244,20 @@
           "interval" = 1;
           "format" = "{:%I:%M %p  %A %b %d}";
           "tooltip" = true;
-          # "tooltip-format"= "{=%A; %d %B %Y}\n<tt>{calendar}</tt>"
-          "tooltip-format" = "上午：高数\n下午：Ps\n晚上：Golang\n<tt>{calendar}</tt>";
+          "tooltip-format" = "{=%A; %d %B %Y}\n<tt>{calendar}</tt>";
+          "on-click" = "{=%A; %d %B %Y}\n<tt>{calendar}</tt>";
+          #"tooltip-format" = "上午：高数\n下午：Ps\n晚上：Golang\n<tt>{calendar}</tt>";
         };
         "memory" = {
           "interval" = 1;
-          "format" = "󰍛 {percentage}%";
+          "format" = "✿ {percentage}%";
           "states" = {
             "warning" = 85;
           };
         };
         "cpu" = {
           "interval" = 1;
-          "format" = "󰻠 {usage}%";
+          "format" = "❀ {usage}%";
         };
         /*
           "mpd" = {
@@ -272,7 +277,7 @@
         */
         "network" = {
           "format-disconnected" = "󰯡 Disconnected";
-          "format-ethernet" = " Wired";
+          "format-ethernet" = "𖤣.𖥧.𖡼.⚘";
           "format-linked" = "󰖪 (No IP)";
           "format-wifi" = "󰖩 ";
           "interval" = 1;
@@ -283,10 +288,10 @@
         "temperature" = {
           #"critical-threshold"= 80;
           "tooltip" = false;
-          "format" = " {temperatureC}°C";
+          "format" = "⋆.˚ {temperatureC}°C";
         };
         "custom/powermenu" = {
-          "format" = "";
+          "format" = "𖹭";
           "on-click" = "wlogout";
           "tooltip" = false;
         };

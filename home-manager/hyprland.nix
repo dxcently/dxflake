@@ -136,11 +136,10 @@ in
 
       general {
         gaps_in = 4
-        gaps_out = 4
+        gaps_out = 6
         border_size = 2
-        col.active_border = rgba(${theme.base0A}ff)
-        col.inactive_border = rgb();
-
+        col.active_border = rgba(${theme.base02}ff)
+        col.inactive_border = rgba(${theme.base00}ff)
         layout = dwindle
         allow_tearing = true
       }
@@ -154,10 +153,11 @@ in
           xray = true
           new_optimizations = true
         }
-        drop_shadow = false
-        shadow_range = 4
-        shadow_render_power = 3
-        col.shadow = rgba(${theme.base02}ff)
+        drop_shadow = true
+        shadow_range = 2
+        shadow_render_power = 1
+        shadow_offset = 3 3
+        col.shadow = rgba(${theme.base06}ff)
       }
 
       animations {

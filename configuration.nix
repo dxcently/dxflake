@@ -140,7 +140,6 @@
         enable = true;
       };
     };
-    
   };
 
   #hardware - AMD settings

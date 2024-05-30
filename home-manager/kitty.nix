@@ -8,18 +8,18 @@ in
   programs.kitty = {
     enable = true;
     package = pkgs.kitty;
-    font.name = "ShureTechMono Nerd Font";
+    font.name = "ComicShannsMono Nerd Font";
     font.size = 12;
     settings = {
       scrollback_lines = 2000;
       wheel_scroll_min_lines = 1;
       window_padding_width = 6;
       confirm_os_window_close = 0;
-      background_opacity = "0.78";
+      background_opacity = "1";
     };
     extraConfig = ''
       foreground #${palette.base05}
-      background #${palette.base00}
+      background #FFFFFF
       color0  #${palette.base03}
       color1  #${palette.base0A}
       color2  #${palette.base08}
