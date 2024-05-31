@@ -7,6 +7,7 @@
 
 let
   palette = config.colorScheme.palette;
+  azuki_font = import ./extras/azuki-font.nix { inherit pkgs; };
 in
 
 {
@@ -19,7 +20,7 @@ in
     };
     style = ''
       * {
-      font-family: "ComicShannsMono Nerd Font";
+      font-family: "azuki_font";
       font-size: 15px;
       font-weight: bold;
       border-radius: 0px;
@@ -106,10 +107,10 @@ in
       color: #A2BD8B;
       }
       #wireplumber {
-      color: #${palette.base08};
+      color: #${palette.base02};
       }
       #network {
-      color: #${palette.base0A};
+      color: #${palette.base07};
       }
 
       #network.disconnected {
@@ -152,13 +153,13 @@ in
         modules-right = [
           "wireplumber"
           "backlight"
-          "memory"
-          "cpu"
+          #"memory"
+          #"cpu"
           "network"
-          "temperature"
+          #"temperature"
           "battery"
-          "custom/powermenu"
           "tray"
+          "custom/powermenu"
         ];
         "custom/launcher" = {
           "format" = "『🍓』";
@@ -210,8 +211,8 @@ in
           "format-icons" = {
             "default" = [
               "♪"
-              "♪♫~"
-              "♬♪~"
+              "♪~"
+              "┗┯~"
             ];
           };
           "on-click" = "pavucontrol";
@@ -248,17 +249,19 @@ in
           "on-click" = "{=%A; %d %B %Y}\n<tt>{calendar}</tt>";
           #"tooltip-format" = "上午：高数\n下午：Ps\n晚上：Golang\n<tt>{calendar}</tt>";
         };
-        "memory" = {
-          "interval" = 1;
-          "format" = "✿ {percentage}%";
-          "states" = {
-            "warning" = 85;
+        /*
+          "memory" = {
+            "interval" = 1;
+            "format" = "✿ {percentage}%";
+            "states" = {
+              "warning" = 85;
+            };
           };
-        };
-        "cpu" = {
-          "interval" = 1;
-          "format" = "❀ {usage}%";
-        };
+          "cpu" = {
+            "interval" = 1;
+            "format" = "❀ {usage}%";
+          };
+        */
         /*
           "mpd" = {
             "max-length" = 25;
@@ -285,11 +288,13 @@ in
           "tooltip-format" = "󰖩  {essid} ({ipaddr})";
           "on-click" = "nm-applet --indicator";
         };
-        "temperature" = {
-          #"critical-threshold"= 80;
-          "tooltip" = false;
-          "format" = "⋆.˚ {temperatureC}°C";
-        };
+        /*
+          "temperature" = {
+            #"critical-threshold"= 80;
+            "tooltip" = false;
+            "format" = "⋆.˚ {temperatureC}°C";
+          };
+        */
         "custom/powermenu" = {
           "format" = "𖹭";
           "on-click" = "wlogout";

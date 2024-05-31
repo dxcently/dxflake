@@ -2,22 +2,24 @@
 
 let
   palette = config.colorScheme.palette;
+  azuki_font = import ./extras/azuki-font.nix { inherit pkgs; };
 in
 {
   # Configure Kitty
   programs.kitty = {
     enable = true;
     package = pkgs.kitty;
-    font.name = "ComicShannsMono Nerd Font";
-    font.size = 12;
+    font.name = "azuki_font";
+    font.size = 14;
     settings = {
       scrollback_lines = 2000;
       wheel_scroll_min_lines = 1;
-      window_padding_width = 6;
       confirm_os_window_close = 0;
+      window_padding_width = 5;
       background_opacity = "1";
     };
     extraConfig = ''
+      adjust_column_width -10
       foreground #${palette.base05}
       background #FFFFFF
       color0  #${palette.base03}
