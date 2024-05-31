@@ -28,6 +28,8 @@
     brightnessctl
     mpv
     gparted
+    gwenview
+    feh
     # audio
     wireplumber
     pavucontrol
@@ -94,6 +96,7 @@
     file
     ripgrep
     spotdl
+
     # libs/frameworks
     qt6.qtwayland
     libsForQt5.qt5.qtwayland

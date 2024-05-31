@@ -42,6 +42,7 @@ in
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = spotify
       exec-once = firefox
+      exec-once = strawberry
 
       #opacity window rules
       windowrule = opacity 1 0.84, vesktop
@@ -55,6 +56,7 @@ in
       windowrule = workspace 10, vesktop
       windowrule = workspace 1, firefox
       windowrule = workspace special:magic, Spotify
+      windowrule = workspace special:magic, strawberry
       #workspace rules
       workspace=10, monitor:HDMI-A-1, default:true
 
