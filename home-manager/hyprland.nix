@@ -49,6 +49,7 @@ in
       windowrule = opacity 0.9, neovide
       windowrule = opacity 0.8, bottles
       windowrule = opacity 0.8, fl64.exe
+      windowrule = opacity 0.8, strawberry
       windowrulev2 = opacity 0.8, title:(FL Studio)
       #workspaces window rules
       windowrule = workspace 10, vesktop
@@ -137,7 +138,7 @@ in
       general {
         gaps_in = 4
         gaps_out = 6
-        border_size = 2
+        border_size = 0
         col.active_border = rgba(${theme.base02}ff)
         col.inactive_border = rgba(${theme.base00}ff)
         layout = dwindle
@@ -154,10 +155,11 @@ in
           new_optimizations = true
         }
         drop_shadow = true
-        shadow_range = 2
-        shadow_render_power = 1
-        shadow_offset = 3 3
-        col.shadow = rgba(${theme.base06}ff)
+        shadow_range = 140
+        shadow_render_power = 4
+        shadow_offset = 10 15
+        shadow_scale = 0.9
+        col.shadow = rgba(1a1a1aaf)
       }
 
       animations {

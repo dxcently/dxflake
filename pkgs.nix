@@ -50,7 +50,7 @@
     protonup-qt
     xfce.xfburn
     vlc
-    clementine
+    strawberry-qt6
     soundconverter
     prismlauncher
     guvcview

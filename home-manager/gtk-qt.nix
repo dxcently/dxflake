@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  palette = config.colorScheme.palette;
+in
 {
 
   gtk =
@@ -16,31 +19,33 @@
     {
       enable = true;
       font = {
-        name = "ShureTechMono Nerd Font";
+        name = "ComicShannsMono Nerd Font";
         size = 12;
         package = pkgs.nerdfonts;
       };
-      theme = {
-        name = "Catppuccin-Macchiato-Compact-Rosewater-Light";
-        package = pkgs.catppuccin-gtk.override {
-          accents = [ "rosewater" ];
-          tweaks = [
-            "rimless"
-            "normal"
-          ];
-          variant = "macchiato";
-          size = "compact";
-        };
-      };
       /*
         theme = {
-          name = "${config.colorScheme.slug}";
-          package = gtkThemeFromScheme {scheme = config.colorScheme;};
+          name = "Catppuccin-Macchiato-Compact-Rosewater-Light";
+          package = pkgs.catppuccin-gtk.override {
+            accents = [ "rosewater" ];
+            tweaks = [
+              "rimless"
+              "normal"
+            ];
+            variant = "macchiato";
+            size = "compact";
+          };
         };
       */
+
+      theme = {
+        name = "${config.colorScheme.slug}";
+        package = gtkThemeFromScheme { scheme = config.colorScheme; };
+      };
+
       iconTheme = {
-        name = "Arc";
-        package = pkgs.arc-icon-theme;
+        name = "elementary-xfce-icon-theme";
+        package = pkgs.elementary-xfce-icon-theme;
       };
       gtk3 = {
         inherit extraConfig;
