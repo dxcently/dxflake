@@ -152,8 +152,8 @@
       symbola
       jetbrains-mono
       nerdfonts
-      (pkgs.callPackage ./modules/azuki-fontB.nix { })
-      (pkgs.callPackage ./modules/azuki-font.nix { })
+      (pkgs.callPackage ./packages/azukifontB/azukifontB.nix { })
+      (pkgs.callPackage ./packages/azuki_font/azuki_font.nix { })
     ];
     fontconfig = {
       defaultFonts = {

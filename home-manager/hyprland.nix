@@ -21,19 +21,23 @@ in
     ];
     extraConfig = ''
 
+      #variables
       $mainMod = SUPER
       $terminal = kitty
       $fileManager = thunar
       $menu = rofi -show drun
 
+      #monitors
       #monitor=, preferred, auto, 1
       monitor=DP-1, 1920x1080@144, 0x0, 1
       monitor=HDMI-A-1, 1920x1080@60, 1920x0, 1
 
+      #env variables
       env = XCURSOR_SIZE,24
       env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
       env = WLR_NO_HARDWARE_CURSORS,1
 
+      #start programs
       exec-once = dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec-once = swww-daemon & swww img ~/Pictures/Wallpapers/kobato.png
@@ -61,6 +65,7 @@ in
       #workspace rules
       workspace=10, monitor:HDMI-A-1, default:true
 
+      #keybindings
       bind = $mainMod, RETURN, exec, $terminal
       bind = $mainMod, SPACE, exec, $menu
       bind = $mainMod, T, exec, $fileManager
@@ -115,6 +120,7 @@ in
       bindm = $mainMod, mouse:272, movewindow
       bindm = $mainMod, mouse:273, resizewindow
 
+      #looksmaxxing
       plugin {
 
       }
