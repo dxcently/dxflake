@@ -43,6 +43,7 @@ in
       exec-once = spotify
       exec-once = firefox
       exec-once = strawberry
+      exec-once = systemd
 
       #opacity window rules
       windowrule = opacity 1 0.84, vesktop

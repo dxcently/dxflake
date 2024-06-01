@@ -7,7 +7,6 @@
 
 let
   palette = config.colorScheme.palette;
-  azuki_font = import ./extras/azuki-font.nix { inherit pkgs; };
 in
 
 {
@@ -81,9 +80,13 @@ in
       padding-right: 0px;
       color: #${palette.base02};
       }
-      #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight, #wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
-      padding-left: 8px;
+      #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight,#wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
+      padding-left: 5px;
       padding-right: 8px;
+      }
+      #mpris {
+      padding-left: 5px;
+      padding-right: 0px;
       }
       #memory {
       color: #${palette.base0B};
@@ -105,6 +108,9 @@ in
       }
       #backlight {
       color: #A2BD8B;
+      }
+      #mpris {
+      color: #${palette.base02};
       }
       #wireplumber {
       color: #${palette.base02};
@@ -151,6 +157,7 @@ in
           "hyprland/window"
         ];
         modules-right = [
+          "mpris"
           "wireplumber"
           "backlight"
           #"memory"
@@ -204,6 +211,10 @@ in
             "󰃠"
           ];
         };
+        "mpris" = {
+          "format" = "♪【{artist} - {title}】";
+          "format-paused" = "・【{artist} - {title}】";
+        };
         "wireplumber" = {
           "scroll-step" = 2;
           "format" = "{icon} {volume}%";
@@ -245,9 +256,7 @@ in
           "interval" = 1;
           "format" = "{:%I:%M %p  %A %b %d}";
           "tooltip" = true;
-          "tooltip-format" = "{=%A; %d %B %Y}\n<tt>{calendar}</tt>";
-          "on-click" = "{=%A; %d %B %Y}\n<tt>{calendar}</tt>";
-          #"tooltip-format" = "上午：高数\n下午：Ps\n晚上：Golang\n<tt>{calendar}</tt>";
+          "tooltip-format" = "<tt>{calendar}</tt>";
         };
         /*
           "memory" = {

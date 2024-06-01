@@ -19,9 +19,8 @@ in
     {
       enable = true;
       font = {
-        name = "ComicShannsMono Nerd Font";
+        name = "azukifontB";
         size = 12;
-        package = pkgs.nerdfonts;
       };
       /*
         theme = {

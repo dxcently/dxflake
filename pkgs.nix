@@ -96,7 +96,7 @@
     file
     ripgrep
     spotdl
-
+    playerctl
     # libs/frameworks
     qt6.qtwayland
     libsForQt5.qt5.qtwayland
@@ -137,19 +137,30 @@
   };
 
   #fonts
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    noto-fonts-color-emoji
-    material-icons
-    liberation_ttf
-    font-awesome
-    fira-code
-    fira-code-symbols
-    hack-font
-    symbola
-    jetbrains-mono
-    nerdfonts
-  ];
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
+      noto-fonts-color-emoji
+      material-icons
+      liberation_ttf
+      font-awesome
+      fira-code
+      fira-code-symbols
+      hack-font
+      symbola
+      jetbrains-mono
+      nerdfonts
+      (pkgs.callPackage ./modules/azuki-fontB.nix { })
+      (pkgs.callPackage ./modules/azuki-font.nix { })
+    ];
+    fontconfig = {
+      defaultFonts = {
+        serif = [ "azukifontB" ];
+        sansSerif = [ "ComicShannsMono Nerd Font" ];
+        monospace = [ "ComicShannsMono Nerd Font" ];
+      };
+    };
+  };
 }

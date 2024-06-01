@@ -2,7 +2,6 @@
 
 let
   palette = config.colorScheme.palette;
-  azuki_font = import ./extras/azuki-font.nix { inherit pkgs; };
 in
 {
   # Configure Kitty
