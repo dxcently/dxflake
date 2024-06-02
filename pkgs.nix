@@ -136,22 +136,16 @@
     file-roller.enable = true;
   };
 
-  #fonts
+  #font packages
   fonts = {
     packages = with pkgs; [
-      noto-fonts
-      noto-fonts-cjk
-      noto-fonts-emoji
       noto-fonts-color-emoji
       material-icons
-      liberation_ttf
       font-awesome
-      fira-code
-      fira-code-symbols
-      hack-font
       symbola
-      jetbrains-mono
-      nerdfonts
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      (nerdfonts.override { fonts = [ "ComicShannsMono" ]; })
+      (nerdfonts.override { fonts = [ "ShareTechMono" ]; })
       (pkgs.callPackage ./packages/azukifontB/azukifontB.nix { })
       (pkgs.callPackage ./packages/azuki_font/azuki_font.nix { })
     ];
