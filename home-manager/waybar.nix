@@ -72,7 +72,7 @@ in
       background: #FFFFFF;
       }
       tooltip label {
-      color: #${palette.base01};
+      color: #${palette.base06};
       }
       #custom-launcher {
       font-size: 20px;
@@ -294,7 +294,7 @@ in
           "format-wifi" = "󰖩 ";
           "interval" = 1;
           "tooltip" = true;
-          "tooltip-format" = "󰖩  {essid} ({ipaddr})";
+          "tooltip-format" = "{essid} ({ipaddr})";
           "on-click" = "nm-applet --indicator";
         };
         /*

@@ -139,9 +139,13 @@
   #font packages
   fonts = {
     packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk
+      noto-fonts-emoji
       noto-fonts-color-emoji
       material-icons
       font-awesome
+      fira-code-symbols
       symbola
       (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
       (nerdfonts.override { fonts = [ "ComicShannsMono" ]; })
