@@ -1,9 +1,7 @@
-<div align="center">
-##dxflake
+<h2 align="center">dxflake</h2>
 <p align="center"><img src="https://i.imgur.com/2ZrAXlX.png" width=300px></p>
-</div>
 **04.04.24**
-![image](https://github.com/dxcently/dxflake/assets/84099299/9e3a3df8-b97d-40c1-b74c-c7a5514d19d7)
+<p align="center"><img src="https://github.com/dxcently/dxflake/assets/84099299/9e3a3df8-b97d-40c1-b74c-c7a5514d19d7" width=300px></p>
 **21.04.24**
 ![image](https://i.imgur.com/LJG42nP.png)
 **03.06.24**
