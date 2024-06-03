@@ -10,7 +10,7 @@
 **03.06.24**
 ![image](https://i.imgur.com/O41u2M4.png)
 ![image](https://i.imgur.com/O0lybJG.png)
-![image](https://i.imgur.com/xj577PR.png)
+![image](https://i.imgur.com/TOybKU3.png)
 
 ## Credit to other flakes/rices I've referenced:
 - https://github.com/Ruixi-rebirth/flakes
