@@ -1,5 +1,4 @@
 <h2 align="center">dxflake</h2>
-<div align="center">multi hosts, install instructions coming Soon™</div>
 <h2 align="center"><img src="https://i.imgur.com/2ZrAXlX.png" width=500px></h2>
 
 <div align="center">
@@ -21,3 +20,5 @@
 - https://gitlab.com/Zaney/zaneyos/-/tree/main?ref_type=heads
 - https://github.com/iynaix/dotfiles/tree/main
 - https://www.reddit.com/r/unixporn/comments/1cyujs8/fvwm_my_love_letter/#lightbox
+
+multi hosts, install instructions coming Soon™
