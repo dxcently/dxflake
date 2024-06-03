@@ -15,10 +15,10 @@
 ![image](https://i.imgur.com/TOybKU3.png)
 </div>
 
-## Credit to other flakes/rices I've referenced:
+## credit to other flakes/rices i've referenced:
 - https://github.com/Ruixi-rebirth/flakes
 - https://gitlab.com/Zaney/zaneyos/-/tree/main?ref_type=heads
 - https://github.com/iynaix/dotfiles/tree/main
 - https://www.reddit.com/r/unixporn/comments/1cyujs8/fvwm_my_love_letter/#lightbox
 
-multi hosts, install instructions coming Soon™
+multi hosts Soon™
