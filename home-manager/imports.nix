@@ -13,5 +13,6 @@
     #./xdg.nix
     ./gtk-qt.nix
     ./neofetch.nix
+    ./fastfetch.nix
   ];
 }
