@@ -13,7 +13,7 @@ in
   gtk =
     let
       extraConfig = {
-        gtk-application-prefer-light = 0;
+        #gtk-application-prefer-light = 0;
       };
     in
     {
