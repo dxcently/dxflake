@@ -1,9 +1,10 @@
 <h2 align="center">dxflake</h2>
 <h2 align="center"><img src="https://i.imgur.com/2ZrAXlX.png" width=500px></h2>
 
-## features
+## features:
 - looks pretty. i think
 
+## screenshots:
 
 **04.04.24 / yuyo v1**
 ![image](https://github.com/dxcently/dxflake/assets/84099299/9e3a3df8-b97d-40c1-b74c-c7a5514d19d7)
