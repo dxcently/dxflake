@@ -58,6 +58,7 @@
 
   #boot
   boot = {
+    #change if nvidia
     initrd.kernelModules = [
       "nvme"
       "amdgpu"
@@ -141,12 +142,22 @@
       };
     };
   };
-
-  #hardware - AMD settings
+  #hardware
+  hardware = {
+    #tablet
+    opentabletdriver = {
+      enable = true;
+      daemon.enable = true;
+    };
+    keyboard.qmk.enable = true;
+  };
+  #gpu - AMD configs
   services.xserver = {
     enable = true;
+    #change if nvidia
     videoDrivers = [ "amdgpu" ];
   };
+  #comment out if nvidia
   hardware.opengl = {
     extraPackages = with pkgs; [ amdvlk ];
     extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
@@ -158,10 +169,6 @@
         enable = true;
         driSupport = true;
         driSupport32Bit = true;
-        extraPackages = with pkgs; [
-          rocm-opencl-icd
-          rocm-opencl-runtime
-        ];
       };
       nvidia = {
         modesetting.enable = true;
@@ -170,6 +177,7 @@
         open = false;
         nvidiaSettings = true;
         package = config.boot.kernelPackages.nvidiaPackages.stable;
+        #make sure to have your correct bus ids if 2 gpus
         prime = {
           intelBusId = "PCI:0:2:0";
           nvidiaBusId = "PCI:1:0:0";
@@ -179,8 +187,6 @@
           };
         };
       };
-      keyboard.qmk.enable = true;
-      opentabletdriver.enable = true;
     };
   */
 
