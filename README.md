@@ -1,5 +1,6 @@
 <h2 align="center">dxflake</h2>
 <p align="center"><img src="https://i.imgur.com/2ZrAXlX.png" width=300px></p>
+<hr>
 
 <div align="center">
 
