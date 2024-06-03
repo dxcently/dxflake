@@ -2,7 +2,10 @@
 <h2 align="center"><img src="https://i.imgur.com/2ZrAXlX.png" width=500px></h2>
 
 ## features:
+- hyprland w/ waybar
 - looks pretty. i think
+- functional (kind of)
+- *does not come with fl studio*
 
 ## screenshots:
 
