@@ -19,7 +19,7 @@ in
       fi
     '';
     initExtra = ''
-      #neofetch
+      fastfetch
       #if [ -f $HOME/.bashrc-personal ]; then
       #source $HOME/.bashrc-personal
       #fi
@@ -49,6 +49,7 @@ in
       cp = "cp -i";
       reboot = "systemctl reboot";
       shutdown = "shutdown -h now";
+      fetch = "fastfetch";
       #neofetch = "neofetch --ascii ~/dxflake/home-manager/extras/ascii-neofetch";
       nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
       sdl = "spotdl download";
