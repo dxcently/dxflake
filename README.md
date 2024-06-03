@@ -1,6 +1,9 @@
 <h2 align="center">dxflake</h2>
 <h2 align="center"><img src="https://i.imgur.com/2ZrAXlX.png" width=500px></h2>
 
+##features
+- looks pretty. i think
+
 <div align="center">
 
 **04.04.24 / yuyo v1**
