@@ -141,6 +141,10 @@
         enable = true;
       };
     };
+    jellyfin = {
+      enable = true;
+      package = pkgs.jellyfin;
+    };
   };
   #hardware
   hardware = {

@@ -30,6 +30,7 @@
     gparted
     gwenview
     feh
+    oneko
     # audio
     wireplumber
     pavucontrol
@@ -61,6 +62,12 @@
     bottles
     qbittorrent
     obs-studio
+    jellyfin
+    jellyfin-web
+    jellyfin-ffmpeg
+    jellyfin-media-player
+    parsec-bin
+    zoom-us
     # cli programs
     vim
     ncspot
