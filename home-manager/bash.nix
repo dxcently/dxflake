@@ -25,7 +25,6 @@ in
       #fi
     '';
     bashrcExtra = ''
-      export PATH="$HOME/.config/emacs/bin:$PATH"
       eval "$(zoxide init bash)"
       eval "$(atuin init bash)"
       set -o vi

@@ -28,9 +28,9 @@ in
       $menu = rofi -show drun
 
       #monitors
-      #monitor=, preferred, auto, 1.5
-      monitor=eDP-1, 1920x1080@60, auto, 1
-      #monitor=HDMI-A-1, 1920x1080@60, 1920x0, 1
+      #monitor=, preferred, auto, 1
+      monitor=DP-1, 1920x1080@144, 0x0, 1
+      monitor=HDMI-A-1, 1920x1080@60, 1920x0, 1
 
       #env variables
       env = XCURSOR_SIZE,24
@@ -44,10 +44,10 @@ in
       exec-once = waybar
       exec-once = nm-applet
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
-      exec-once = thunderbird
+      exec-once = spotify
       exec-once = firefox
+      exec-once = strawberry
       exec-once = systemd
-      exec-once = youtube-music
 
       #opacity window rules
       windowrule = opacity 1 0.84, vesktop
@@ -56,15 +56,12 @@ in
       windowrule = opacity 0.8, bottles
       windowrule = opacity 0.8, fl64.exe
       windowrule = opacity 0.8, strawberry
-      windowrulev2 = opacity 0.8, title:(YouTube Music)
       windowrulev2 = opacity 0.8, title:(FL Studio)
       #workspaces window rules
       windowrule = workspace 10, vesktop
       windowrule = workspace 1, firefox
-      windowrule = workspace special:scratch, thunderbird
-      #windowrule = workspace special:magic, Spotify
-      #windowrule = workspace special:magic, strawberry
-      windowrulev2 = workspace special:magic, title:(YouTube Music)
+      windowrule = workspace special:magic, Spotify
+      windowrule = workspace special:magic, strawberry
       #workspace rules
       workspace=10, monitor:HDMI-A-1, default:true
 
@@ -191,7 +188,7 @@ in
       }
 
       master {
-        new_status = master
+        new_is_master = true
       }
 
       misc {

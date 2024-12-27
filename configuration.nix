@@ -59,7 +59,10 @@
   #boot
   boot = {
     #change if nvidia
-    initrd.kernelModules = [ "nvme" ];
+    initrd.kernelModules = [
+      "nvme"
+      "amdgpu"
+    ];
     kernelPackages = pkgs.linuxPackages;
     loader = {
       systemd-boot.enable = true;
@@ -81,9 +84,9 @@
         "wheel"
         "networkmanager"
         "libvirtd"
+        "cdrom"
         "audio"
         "video"
-        "docker"
       ];
     };
   };
@@ -105,39 +108,28 @@
       alsa.support32Bit = true;
       pulse.enable = true;
       jack.enable = true;
-      wireplumber = {
-        enable = true;
-        extraConfig = {
-          "10-disable-camera" = {
-            "wireplumber.profiles" = {
-              main."monitor.libcamera" = "disabled";
-            };
-          };
-        };
-      };
     };
-    blueman.enable = true;
     devmon.enable = true;
     gvfs.enable = true;
     udisks2.enable = true;
     flatpak.enable = true;
     tumbler.enable = true;
     #qmk shit
-    /*
-      udev = {
-        packages = [
-          pkgs.qmk-udev-rules
-            (pkgs.writeTextFile {
-              name = "qmk-udev-rules";
-              destination = "/etc/udev/rules.d/50-qmk.rules";
-              #put contents of file in texts if needed
-              text = ''
-              /home/khoa/qmk_firmware/util/udev/50-qmk.rules
-              '';
-            })
-        ];
-      };
-    */
+    udev = {
+      packages = [
+        pkgs.qmk-udev-rules
+        /*
+          (pkgs.writeTextFile {
+            name = "qmk-udev-rules";
+            destination = "/etc/udev/rules.d/50-qmk.rules";
+            #put contents of file in texts if needed
+            text = ''
+            /home/khoa/qmk_firmware/util/udev/50-qmk.rules
+            '';
+          })
+        */
+      ];
+    };
     printing.enable = true;
     avahi = {
       enable = true;
@@ -153,12 +145,6 @@
       enable = true;
       package = pkgs.jellyfin;
     };
-    syncthing = {
-      enable = true;
-      user = "khoa";
-      dataDir = "/home/khoa/org";
-      configDir = "/home/khoa/.config/syncthing";
-    };
   };
   #hardware
   hardware = {
@@ -168,30 +154,18 @@
       daemon.enable = true;
     };
     keyboard.qmk.enable = true;
-    bluetooth.enable = true;
   };
   #gpu - AMD configs
   services.xserver = {
     enable = true;
     #change if nvidia
-    #videoDrivers = [ "amdgpu" ];
+    videoDrivers = [ "amdgpu" ];
   };
   #comment out if nvidia
   hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      intel-vaapi-driver
-      libvdpau-va-gl
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [ intel-vaapi-driver ];
+    extraPackages = with pkgs; [ amdvlk ];
+    extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
   };
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override { enableHybridCodec = true; };
-  };
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD";
-  }; # Force intel-media-driver
   # For 32 bit applications
   /*
     hardware = {
@@ -224,10 +198,6 @@
   virtualisation = {
     libvirtd.enable = true;
     spiceUSBRedirection.enable = true;
-    podman = {
-      enable = true;
-      dockerCompat = true;
-    };
   };
 
   #time stuff

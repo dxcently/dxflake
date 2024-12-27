@@ -30,25 +30,32 @@
     gparted
     gwenview
     feh
+    oneko
     # audio
     wireplumber
     pavucontrol
     # programs
+    udiskie
     ungoogled-chromium
     firefox
     anki-bin
     obsidian
+    gimp
     spicetify-cli
+    hyprpicker
     neovide
+    soulseekqt
     nicotine-plus
     webcamoid
     lutris
     wine
+    winetricks
     protonup-qt
     xfce.xfburn
     vlc
     strawberry-qt6
     soundconverter
+    prismlauncher
     guvcview
     vencord
     vesktop
@@ -61,8 +68,6 @@
     jellyfin-media-player
     parsec-bin
     zoom-us
-    youtube-music
-    calibre
     # cli programs
     vim
     ncspot
@@ -99,7 +104,6 @@
     ripgrep
     spotdl
     playerctl
-    distrobox
     # libs/frameworks
     qt6.qtwayland
     libsForQt5.qt5.qtwayland
@@ -110,6 +114,8 @@
     pkg-config
     v4l-utils
     nixfmt-rfc-style
+    #vm
+    qemu
   ];
 
   #nix options pkgs
@@ -125,6 +131,7 @@
     nm-applet.enable = true;
     steam.enable = true;
     virt-manager.enable = true;
+    k3b.enable = true;
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [
@@ -140,16 +147,16 @@
   fonts = {
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk-sans
+      noto-fonts-cjk
       noto-fonts-emoji
       noto-fonts-color-emoji
       material-icons
       font-awesome
       fira-code-symbols
       symbola
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.comic-shanns-mono
-      nerd-fonts.shure-tech-mono
+      (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+      (nerdfonts.override { fonts = [ "ComicShannsMono" ]; })
+      (nerdfonts.override { fonts = [ "ShareTechMono" ]; })
       (pkgs.callPackage ./packages/azukifontB/azukifontB.nix { })
       (pkgs.callPackage ./packages/azuki_font/azuki_font.nix { })
     ];

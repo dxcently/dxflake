@@ -205,10 +205,10 @@ in
           "on-scroll-down" = "light -U 5";
           "format" = "{icon} {percent}%";
           "format-icons" = [
-            "☆"
-            "○"
-            "◎"
-            "●"
+            "󰃝"
+            "󰃞"
+            "󰃟"
+            "󰃠"
           ];
         };
         "mpris" = {
@@ -237,8 +237,8 @@ in
           };
           "format" = "{icon} {capacity}%";
           "format-icons" = [
-            "┸"
-            "┸"
+            "󰁺"
+            "󰁻"
             "󰁼"
             "󰁽"
             "󰁾"
@@ -249,7 +249,7 @@ in
             "󰁹"
           ];
           "format-full" = "{icon} {capacity}%";
-          "format-charging" = "┫ {capacity}%";
+          "format-charging" = "󰂄 {capacity}%";
           "tooltip" = false;
         };
         "clock" = {
@@ -288,10 +288,10 @@ in
           };
         */
         "network" = {
-          "format-disconnected" = "Disconnected :c";
+          "format-disconnected" = "󰯡 Disconnected";
           "format-ethernet" = "𖤣.𖥧.𖡼.⚘";
           "format-linked" = "󰖪 (No IP)";
-          "format-wifi" = "┰";
+          "format-wifi" = "󰖩 ";
           "interval" = 1;
           "tooltip" = true;
           "tooltip-format" = "{essid} ({ipaddr})";

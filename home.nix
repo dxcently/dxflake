@@ -16,9 +16,8 @@
   imports = [
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     inputs.nix-colors.homeManagerModules.default
-    #inputs.nixvim.homeManagerModules.nixvim
+    inputs.nixvim.homeManagerModules.nixvim
     #inputs.hyprland.homeManagerModules.default
-    #inputs.spicetify-nix.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
     ./home-manager/imports.nix
