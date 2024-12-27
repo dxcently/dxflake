@@ -34,19 +34,19 @@
         }
         {
           type = "gpu";
-          key = "  𖤣 gpu ......";
+          key = "  𖤣 gpu ";
         }
         {
           type = "host";
-          key = "  󰌢";
+          key = "  ┰ host ..................";
         }
         {
           type = "cpu";
-          key = "  ☘︎ cpu ..";
+          key = "  ☘︎ cpu .....";
         }
         {
           type = "memory";
-          key = "  𖥧 ram ...................";
+          key = "  𖥧 ram ....................";
         }
         { type = "break"; }
         {
