@@ -4,7 +4,6 @@
   environment.systemPackages = with pkgs; [
     # de stuff
     swww
-    eww
     waybar
     networkmanagerapplet
     kitty
@@ -34,18 +33,17 @@
     wireplumber
     pavucontrol
     # programs
+    vscodium
     ungoogled-chromium
     firefox
     anki-bin
     obsidian
-    spicetify-cli
     neovide
     nicotine-plus
     webcamoid
     lutris
     wine
     protonup-qt
-    xfce.xfburn
     vlc
     strawberry-qt6
     soundconverter
@@ -55,17 +53,16 @@
     bottles
     qbittorrent
     obs-studio
-    jellyfin
-    jellyfin-web
-    jellyfin-ffmpeg
-    jellyfin-media-player
-    parsec-bin
+    #jellyfin
+    #jellyfin-web
+    #jellyfin-ffmpeg
+    #jellyfin-media-player
+    #parsec-bin
     zoom-us
     youtube-music
     calibre
     # cli programs
     vim
-    ncspot
     socat
     bat
     gh # github cli
@@ -75,7 +72,6 @@
     lshw
     lsd
     fastfetch
-    nitch
     cowsay
     fzf
     ripgrep

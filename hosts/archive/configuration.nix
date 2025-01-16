@@ -13,7 +13,18 @@
   ];
 
   nixpkgs = {
-    overlays = [];
+    overlays = [
+      /*
+        (self: super: (let
+          patched_pkgs = import inputs.nixpkgs_patched {
+          inherit (self) system;
+          config.allowUnfree = true;
+        };
+        in {
+          linuxPackages = patched_pkgs.linuxPackages;
+         }))
+      */
+    ];
     config = {
       allowUnfree = true;
       permittedInsecurePackages = [ "electron-25.9.0" ];
@@ -138,14 +149,14 @@
         enable = true;
       };
     };
-    /*jellyfin = {
+    jellyfin = {
       enable = true;
       package = pkgs.jellyfin;
-    };*/
+    };
     syncthing = {
       enable = true;
       user = "khoa";
-      dataDir = "/home/khoa/Documents/school/s2025/refile";
+      dataDir = "/home/khoa/org";
       configDir = "/home/khoa/.config/syncthing";
     };
   };

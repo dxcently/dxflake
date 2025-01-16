@@ -166,12 +166,12 @@ in
           xray = true
           new_optimizations = true
         }
-        drop_shadow = true
-        shadow_range = 140
-        shadow_render_power = 4
-        shadow_offset = 10 15
-        shadow_scale = 0.9
-        col.shadow = rgba(1a1a1aaf)
+        #drop_shadow = true
+        #shadow_range = 140
+        #shadow_render_power = 4
+        #shadow_offset = 10 15
+        #shadow_scale = 0.9
+        #col.shadow = rgba(1a1a1aaf)
       }
 
       animations {

@@ -9,14 +9,168 @@
 {
   imports = [
     ./hardware.nix
-    ./pkgs.nix
   ];
 
   nixpkgs = {
-    overlays = [];
     config = {
       allowUnfree = true;
       permittedInsecurePackages = [ "electron-25.9.0" ];
+    };
+  };
+
+  #pkgs
+  environment.systemPackages = with pkgs; [
+    # de stuff
+    swww
+    waybar
+    networkmanagerapplet
+    kitty
+    dunst
+    rofi-wayland
+    slurp
+    grim
+    swappy
+    bash
+    thunderbird
+    wpgtk
+    wl-clipboard
+    wlogout
+    polkit_gnome
+    libnotify
+    unrar
+    unzip
+    yad
+    lm_sensors
+    cliphist
+    brightnessctl
+    mpv
+    gparted
+    gwenview
+    feh
+    # audio
+    wireplumber
+    pavucontrol
+    # programs
+    vscodium
+    ungoogled-chromium
+    firefox
+    anki-bin
+    obsidian
+    neovide
+    nicotine-plus
+    webcamoid
+    lutris
+    wine
+    protonup-qt
+    vlc
+    strawberry-qt6
+    soundconverter
+    guvcview
+    vencord
+    vesktop
+    bottles
+    qbittorrent
+    obs-studio
+    jellyfin
+    jellyfin-web
+    jellyfin-ffmpeg
+    jellyfin-media-player
+    parsec-bin
+    zoom-us
+    youtube-music
+    calibre
+    # cli programs
+    vim
+    socat
+    bat
+    gh # github cli
+    git
+    lazygit
+    xdg-utils
+    lshw
+    lsd
+    fastfetch
+    cowsay
+    fzf
+    ripgrep
+    atuin
+    zoxide
+    btop
+    nh
+    wget
+    clinfo
+    ydotool
+    curl
+    qmk
+    ffmpegthumbnailer
+    ffmpeg
+    unar
+    jq
+    poppler
+    fd
+    file
+    ripgrep
+    spotdl
+    playerctl
+    distrobox
+    # libs/frameworks
+    qt6.qtwayland
+    libsForQt5.qt5.qtwayland
+    ninja
+    python3
+    meson
+    nodejs
+    pkg-config
+    v4l-utils
+    nixfmt-rfc-style
+  ];
+
+  #nix options pkgs
+  programs = {
+    hyprland = {
+      enable = true;
+      xwayland.enable = true;
+    };
+    starship.enable = true;
+    dconf.enable = true;
+    bash.blesh.enable = true;
+    nm-applet.enable = true;
+    steam.enable = true;
+    virt-manager.enable = true;
+    thunar = {
+      enable = true;
+      plugins = with pkgs.xfce; [
+        thunar-archive-plugin
+        thunar-volman
+        thunar-media-tags-plugin
+      ];
+    };
+    file-roller.enable = true;
+  };
+
+  #font packages
+  fonts = {
+    packages = with pkgs; [
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-emoji
+      noto-fonts-color-emoji
+      material-icons
+      font-awesome
+      fira-code-symbols
+      symbola
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.comic-shanns-mono
+      nerd-fonts.shure-tech-mono
+      (pkgs.callPackage ./packages/azukifontB/azukifontB.nix { })
+      (pkgs.callPackage ./packages/azuki_font/azuki_font.nix { })
+    ];
+    fontconfig = {
+      defaultFonts = {
+        serif = [ "azukifontB" ];
+        sansSerif = [ "ComicShannsMono Nerd Font" ];
+        monospace = [ "ComicShannsMono Nerd Font" ];
+      };
     };
   };
 
@@ -138,10 +292,10 @@
         enable = true;
       };
     };
-    /*jellyfin = {
+    jellyfin = {
       enable = true;
       package = pkgs.jellyfin;
-    };*/
+    };
     syncthing = {
       enable = true;
       user = "khoa";
@@ -182,33 +336,6 @@
     LIBVA_DRIVER_NAME = "iHD";
   }; # Force intel-media-driver
   # For 32 bit applications
-  /*
-    hardware = {
-      opengl = {
-        enable = true;
-        driSupport = true;
-        driSupport32Bit = true;
-      };
-      nvidia = {
-        modesetting.enable = true;
-        powerManagement.enable = false;
-        powerManagement.finegrained = false;
-        open = false;
-        nvidiaSettings = true;
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
-        #make sure to have your correct bus ids if 2 gpus
-        prime = {
-          intelBusId = "PCI:0:2:0";
-          nvidiaBusId = "PCI:1:0:0";
-          offload = {
-            enable = true;
-            enableOffloadCmd = true;
-          };
-        };
-      };
-    };
-  */
-
   #vm
   virtualisation = {
     libvirtd.enable = true;
