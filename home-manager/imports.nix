@@ -10,6 +10,6 @@
     ./bash.nix
     ./gtk-qt.nix
     ./fastfetch.nix
-    ./nvim/neovim.nix
+    ./neovim.nix
   ];
 }
