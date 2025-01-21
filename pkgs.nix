@@ -33,6 +33,7 @@
     wireplumber
     pavucontrol
     # programs
+    floorp
     vscodium
     ungoogled-chromium
     firefox
@@ -106,11 +107,12 @@
     pkg-config
     v4l-utils
     nixfmt-rfc-style
+    typst
+    tinymist
   ];
 
   #nix options pkgs
   programs = {
-    neovim.enable = true;
     hyprland = {
       enable = true;
       xwayland.enable = true;

@@ -45,7 +45,7 @@ in
       exec-once = nm-applet
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = thunderbird
-      exec-once = firefox
+      exec-once = [workspace 1 silent] floorp
       exec-once = systemd
       exec-once = youtube-music
 
@@ -60,9 +60,8 @@ in
       windowrulev2 = opacity 0.8, title:(FL Studio)
       #workspaces window rules
       windowrule = workspace 10, vesktop
-      windowrule = workspace 1, firefox
+      #windowrule = workspace 1, firefox
       windowrule = workspace special:scratch, thunderbird
-      #windowrule = workspace special:magic, Spotify
       #windowrule = workspace special:magic, strawberry
       windowrulev2 = workspace special:magic, title:(YouTube Music)
       #workspace rules

@@ -11,5 +11,6 @@
     ./gtk-qt.nix
     ./fastfetch.nix
     ./neovim.nix
+    ./floorp.nix
   ];
 }

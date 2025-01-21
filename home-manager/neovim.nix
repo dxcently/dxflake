@@ -1,4 +1,4 @@
-{ pkgs, inpurts, ... }:
+{ pkgs, inputs, ... }:
 
 {
 programs = {
@@ -19,6 +19,7 @@ programs = {
 	rust-analyzer
 	marksman
 	yaml-language-server
+	tinymist
 	];
 
 	plugins = with pkgs.vimPlugins; [
@@ -51,7 +52,8 @@ programs = {
         nvim-tree-lua
         telescope-fzf-native-nvim
         vim-tmux-navigator
-
+	typst-preview-nvim
+	typst-vim
 	];
    };
  };
