@@ -6,10 +6,7 @@
   theme,
   gtkThemeFromScheme,
   ...
-}:
-
-{
-
+}: {
   colorScheme = inputs.nix-colors.colorSchemes."${theme}";
 
   # You can import other home-manager modules here
@@ -26,9 +23,12 @@
   home = {
     username = "khoa";
     homeDirectory = "/home/khoa";
+    file."hyprand.conf" = {
+      source = config.lib.file.mkOutOfStoreSymlink "~/.config/hypr/hyprland.conf";
+    };
   };
 
-  # Enable home-manager and git
+  # Enable ssome-manager and git
   programs = {
     home-manager.enable = true;
     git = {
@@ -43,8 +43,8 @@
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 
