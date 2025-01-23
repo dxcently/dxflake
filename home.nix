@@ -18,7 +18,6 @@
     inputs.nix-colors.homeManagerModules.default
     #inputs.nixvim.homeManagerModules.nixvim
     #inputs.hyprland.homeManagerModules.default
-    #inputs.spicetify-nix.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
     ./home-manager/imports.nix
@@ -28,10 +27,6 @@
     username = "khoa";
     homeDirectory = "/home/khoa";
   };
-
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  # home.packages = with pkgs; [ steam ];
 
   # Enable home-manager and git
   programs = {

@@ -33,6 +33,7 @@
     wireplumber
     pavucontrol
     # programs
+    virtualbox
     floorp
     vscodium
     ungoogled-chromium
@@ -137,6 +138,7 @@
   #font packages
   fonts = {
     packages = with pkgs; [
+      corefonts
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-emoji

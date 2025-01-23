@@ -8,7 +8,7 @@ in
   programs.kitty = {
     enable = true;
     package = pkgs.kitty;
-    font.name = "azuki_font";
+    font.name = "ShureTechMono Nerd Font";
     font.size = 14;
     settings = {
       scrollback_lines = 2000;

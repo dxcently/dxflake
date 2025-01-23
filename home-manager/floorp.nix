@@ -1,9 +1,9 @@
-{ pkgs, config, ... }:
-
 {
-
-programs.floorp = {
-enable = true;
-};
-
+  pkgs,
+  config,
+  ...
+}: {
+  programs.floorp = {
+    enable = true;
+  };
 }
