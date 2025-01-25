@@ -23,7 +23,7 @@
   home = {
     username = "khoa";
     homeDirectory = "/home/khoa";
-    file."hyprand.conf" = {
+    file."~/.config/hypr/hyprand.conf" = {
       source = config.lib.file.mkOutOfStoreSymlink "~/.config/hypr/hyprland.conf";
     };
   };

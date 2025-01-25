@@ -5,13 +5,9 @@
   lib,
   host,
   ...
-}:
-
-let
+}: let
   theme = config.colorScheme.palette;
-  hyprplugins = inputs.hyprland-plugins.packages.${pkgs.system};
-in
-{
+in {
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -165,12 +161,14 @@ in
           xray = true
           new_optimizations = true
         }
-        #drop_shadow = true
-        #shadow_range = 140
-        #shadow_render_power = 4
-        #shadow_offset = 10 15
-        #shadow_scale = 0.9
-        #col.shadow = rgba(1a1a1aaf)
+        shadow {
+          enabled = true
+          range = 140
+          render_power = 4
+          offset = 10 15
+          scale = 0.9
+          color = rgba(1a1a1aaf)
+         }
       }
 
       animations {
