@@ -3,71 +3,65 @@
   config,
   gtkThemeFromScheme,
   ...
-}:
-
-let
+}: let
   palette = config.colorScheme.palette;
-in
-{
-
-  gtk =
-    let
-      extraConfig = {
-        #gtk-application-prefer-light = 0;
-      };
-    in
-    {
-      enable = true;
-      font = {
-        name = "azukifontB";
-        size = 12;
-      };
-      /*
-        theme = {
-          name = "Catppuccin-Macchiato-Compact-Rosewater-Light";
-          package = pkgs.catppuccin-gtk.override {
-            accents = [ "rosewater" ];
-            tweaks = [
-              "rimless"
-              "normal"
-            ];
-            variant = "macchiato";
-            size = "compact";
-          };
-        };
-      */
-
-      theme = {
-        name = "${config.colorScheme.slug}";
-        package = gtkThemeFromScheme { scheme = config.colorScheme; };
-      };
-
-      iconTheme = {
-        name = "elementary-xfce-icon-theme";
-        package = pkgs.elementary-xfce-icon-theme;
-      };
-      gtk3 = {
-        inherit extraConfig;
-      };
-      gtk4 = {
-        inherit extraConfig;
+in {
+  gtk = let
+    extraConfig = {
+      #gtk-application-prefer-light = 0;
+    };
+  in {
+    enable = true;
+    font = {
+      name = "ShureTechMono Nerd Font";
+      size = 12;
+    };
+    /*
+    theme = {
+      name = "Catppuccin-Macchiato-Compact-Rosewater-Light";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "rosewater" ];
+        tweaks = [
+          "rimless"
+          "normal"
+        ];
+        variant = "macchiato";
+        size = "compact";
       };
     };
+    */
+
+    theme = {
+      name = "${config.colorScheme.slug}";
+      package = gtkThemeFromScheme {scheme = config.colorScheme;};
+    };
+
+    iconTheme = {
+      name = "elementary-xfce-icon-theme";
+      package = pkgs.elementary-xfce-icon-theme;
+    };
+    gtk3 = {
+      inherit extraConfig;
+    };
+    gtk4 = {
+      inherit extraConfig;
+    };
+  };
   qt = {
     enable = true;
     platformTheme = "gtk";
     style = {
       /*
-        name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
-        package = pkgs.catppuccin-gtk.override {
-          accents = [ "rosewater" ];
-          tweaks = [
-            "rimless"
-            "normal"
-          ];
-          variant = "macchiato";
-          size = "compact";
-        };
+      name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "rosewater" ];
+        tweaks = [
+          "rimless"
+          "normal"
+        ];
+        variant = "macchiato";
+        size = "compact";
+      };
       */
       name = "adwaita-light";
       package = pkgs.adwaita-qt;
