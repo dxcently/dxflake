@@ -9,6 +9,7 @@
   theme = config.colorScheme.palette;
 in {
   wayland.windowManager.hyprland = {
+    mutable = true;
     enable = true;
     xwayland.enable = true;
     systemd.enable = true;
