@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
 {
-
+  config,
+  pkgs,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
     # de stuff
     swww
@@ -36,6 +38,7 @@
     virtualbox
     floorp
     vscodium
+    arduino-ide
     ungoogled-chromium
     firefox
     anki-bin
@@ -64,6 +67,7 @@
     youtube-music
     calibre
     # cli programs
+    arduino-cli
     vim
     socat
     bat
@@ -150,14 +154,14 @@
       nerd-fonts.jetbrains-mono
       nerd-fonts.comic-shanns-mono
       nerd-fonts.shure-tech-mono
-      (pkgs.callPackage ./packages/azukifontB/azukifontB.nix { })
-      (pkgs.callPackage ./packages/azuki_font/azuki_font.nix { })
+      (pkgs.callPackage ./packages/azukifontB/azukifontB.nix {})
+      (pkgs.callPackage ./packages/azuki_font/azuki_font.nix {})
     ];
     fontconfig = {
       defaultFonts = {
-        serif = [ "azukifontB" ];
-        sansSerif = [ "ComicShannsMono Nerd Font" ];
-        monospace = [ "ComicShannsMono Nerd Font" ];
+        serif = ["azukifontB"];
+        sansSerif = ["ComicShannsMono Nerd Font"];
+        monospace = ["ComicShannsMono Nerd Font"];
       };
     };
   };

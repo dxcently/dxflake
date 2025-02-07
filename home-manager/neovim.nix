@@ -41,7 +41,7 @@
         lightbulb.enable = true;
         lspsaga.enable = false;
         trouble.enable = true;
-        lspSignature.enable = true;
+        lspSignature.enable = false;
         otter-nvim.enable = false;
         lsplines.enable = false;
         nvim-docs-view.enable = false;
