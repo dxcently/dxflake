@@ -35,6 +35,7 @@
     wireplumber
     pavucontrol
     # programs
+    osu-lazer
     virtualbox
     floorp
     vscodium
