@@ -35,7 +35,7 @@
     wireplumber
     pavucontrol
     # programs
-    osu-lazer
+    osu-lazer-bin
     virtualbox
     floorp
     vscodium
@@ -138,6 +138,7 @@
       ];
     };
     file-roller.enable = true;
+    system-config-printer.enable = true;
   };
 
   #font packages

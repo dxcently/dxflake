@@ -3,13 +3,10 @@
   lib,
   pkgs,
   ...
-}:
-
-let
+}: let
   cfg = config.programs.bash;
   cfge = config.environment;
-in
-{
+in {
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -25,10 +22,18 @@ in
       #fi
     '';
     bashrcExtra = ''
-      export PATH="$HOME/.config/emacs/bin:$PATH"
-      eval "$(zoxide init bash)"
-      eval "$(atuin init bash)"
-      set -o vi
+           export PATH="$HOME/.config/emacs/bin:$PATH"
+           eval "$(zoxide init bash)"
+           eval "$(atuin init bash)"
+           set -o vi
+           function y() {
+      local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+      yazi "$@" --cwd-file="$tmp"
+      if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+      	builtin cd -- "$cwd"
+      fi
+      rm -f -- "$tmp"
+         }
     '';
     sessionVariables = {
       khoa = true;

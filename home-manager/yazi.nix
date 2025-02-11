@@ -1,6 +1,8 @@
-{ config, lib, ... }:
-
 {
+  config,
+  lib,
+  ...
+}: {
   programs.yazi = {
     enable = true;
     enableBashIntegration = true;
@@ -12,7 +14,7 @@
           1
           1
         ];
-        sort_by = "modified";
+        sort_by = "mtime";
         sort_sensitive = false;
         sort_reverse = true;
         linemode = "size";
