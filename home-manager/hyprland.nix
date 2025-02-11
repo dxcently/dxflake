@@ -125,6 +125,7 @@ in {
 
       input {
         kb_layout = us
+        kb_options = compose:caps
 
         follow_mouse = 1
         sensitivity = 0

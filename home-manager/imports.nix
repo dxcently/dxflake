@@ -1,6 +1,8 @@
-{ pkgs, config, ... }:
-
 {
+  pkgs,
+  config,
+  ...
+}: {
   imports = [
     ./hyprland.nix
     ./kitty.nix
@@ -12,5 +14,6 @@
     ./fastfetch.nix
     ./neovim.nix
     ./floorp.nix
+    ./composekey.nix
   ];
 }
