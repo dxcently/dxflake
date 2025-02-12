@@ -25,9 +25,9 @@
         <Multi_key> <T> <T> : "⊤"
         <Multi_key> <F> <F> : "⊥"
         <Multi_key> <exclam> <exclam> : "¬"
-        <Multi_key> <ampersand> <ampersand> : "∧"
-        <Multi_key> <bar> <bar> : "∨"
-        <Multi_key> <asciicircum> <asciicircum> : "⊻"
+        <Multi_key> <a> <ampersand>: "∧"
+        <Multi_key> <o> <v> <v> : "∨"
+        <Multi_key> <x> <asciicircum> : "⊻"
 
         # Misc
         <Multi_key> <r> <e> <v> : "⇌"
