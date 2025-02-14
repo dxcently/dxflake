@@ -25,7 +25,6 @@ in {
            export PATH="$HOME/.config/emacs/bin:$PATH"
            eval "$(zoxide init bash)"
            eval "$(atuin init bash)"
-           set -o vi
            function y() {
       local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
       yazi "$@" --cwd-file="$tmp"
