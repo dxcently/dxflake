@@ -5,6 +5,7 @@
   pkgs,
   theme,
   gtkThemeFromScheme,
+  home-manager,
   ...
 }: {
   colorScheme = inputs.nix-colors.colorSchemes."${theme}";

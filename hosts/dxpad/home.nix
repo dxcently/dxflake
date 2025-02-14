@@ -11,9 +11,8 @@
 
   imports = [
     inputs.nix-colors.homeManagerModules.default
-    #inputs.hyprland.homeManagerModules.default
     # You can also split up your configuration and import pieces of it here:
-    ./home-manager/imports.nix
+    ../../home-manager/imports.nix
   ];
 
   home = {

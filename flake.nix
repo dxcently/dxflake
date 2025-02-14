@@ -9,18 +9,13 @@
     nix-colors.url = "github:misterio77/nix-colors";
     nvf.url = "github:notashelf/nvf";
   };
-  outputs = inputs @ {
+  outputs = {
     nixpkgs,
     home-manager,
     ...
-  }: let
+  } @ inputs: let
     system = "x86_64-linux";
-
-    # User Variables
-    hostname = "dxflake";
     username = "khoa";
-    gitUsername = "dxcently";
-    gitEmail = "dxcently@gmail.com";
     theme = "sakura";
 
     pkgs = import nixpkgs {
@@ -31,34 +26,62 @@
     };
   in {
     nixosConfigurations = {
-      "${hostname}" = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit system;
-          inherit inputs;
-          inherit username;
-          inherit hostname;
-          inherit gitUsername;
-          inherit gitEmail;
-        };
+      dxpad = nixpkgs.lib.nixosSystem {
+        inherit system;
         modules = [
-          ./configuration.nix
+          ./hosts/dxpad
           home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs = {
-              inherit username;
-              inherit gitEmail;
-              inherit inputs;
-              inherit gitUsername;
-              inherit theme;
-              inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+            home-manager = {
+              users.${username} = import ./hosts/dxpad/home.nix;
+              extraSpecialArgs = {
+                inherit username inputs theme system;
+                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+              };
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "l_backup";
             };
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.${username} = import ./home.nix;
           }
         ];
+        specialArgs = {
+          host = "dxpad";
+          inherit username inputs;
+        };
       };
     };
   };
+
+  /*
+    nixosConfigurations = {
+    "${hostname}" = nixpkgs.lib.nixosSystem {
+      specialArgs = {
+        inherit system;
+        inherit inputs;
+        inherit username;
+        inherit hostname;
+        inherit gitUsername;
+        inherit gitEmail;
+      };
+      modules = [
+        ./configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.extraSpecialArgs = {
+            inherit username;
+            inherit gitEmail;
+            inherit inputs;
+            inherit gitUsername;
+            inherit theme;
+            inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+          };
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
+          home-manager.users.${username} = import ./home.nix;
+        }
+      ];
+    };
+  };
+  */
 }

@@ -49,6 +49,8 @@
     wireplumber
     pavucontrol
     # programs
+    osu-lazer-bin
+    floorp
     vscodium
     ungoogled-chromium
     firefox
@@ -119,6 +121,8 @@
     pkg-config
     v4l-utils
     nixfmt-rfc-style
+    typst
+    tinymist
   ];
 
   #nix options pkgs
@@ -158,8 +162,8 @@
       nerd-fonts.jetbrains-mono
       nerd-fonts.comic-shanns-mono
       nerd-fonts.shure-tech-mono
-      (pkgs.callPackage ./packages/azukifontB/azukifontB.nix {})
-      (pkgs.callPackage ./packages/azuki_font/azuki_font.nix {})
+      (pkgs.callPackage ../../packages/azukifontB/azukifontB.nix {})
+      (pkgs.callPackage ../../packages/azuki_font/azuki_font.nix {})
     ];
     fontconfig = {
       defaultFonts = {
