@@ -18,6 +18,5 @@
     ./floorp.nix
     ./composekey.nix
     ./nh.nix
-    #./programs.nix
   ];
 }
