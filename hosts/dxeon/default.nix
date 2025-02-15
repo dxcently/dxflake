@@ -4,7 +4,8 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   imports = [
     ./hardware.nix
     ../pkgs.nix
@@ -17,24 +18,28 @@
       allowUnfree = true;
       #permittedInsecurePackages = [ "electron-25.9.0" ];
     };
-    hostPlatform = lib.mkDefault "x86_64-linux";
   };
 
   #host specific packages
   environment.systemPackages = with pkgs; [
+    prismlauncher
+    xfce.xfburn
+    soundconverter
+    winetricks
+    udiskie
   ];
 
   nix = {
-    nixPath = ["/etc/nix/path"];
-    registry = (lib.mapAttrs (_: flake: {inherit flake;})) (
+    nixPath = [ "/etc/nix/path" ];
+    registry = (lib.mapAttrs (_: flake: { inherit flake; })) (
       (lib.filterAttrs (_: lib.isType "flake")) inputs
     );
     #hyprland rebuild optimization, flakes, auto gc
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
-      substituters = ["https://hyprland.cachix.org"];
-      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+      substituters = [ "https://hyprland.cachix.org" ];
+      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
     };
     gc = {
       automatic = true;
@@ -46,14 +51,17 @@
   #enable networking
   networking = {
     #change if changing hostname
-    hostName = "dxpad";
+    hostName = "dxeon";
     networkmanager.enable = true;
   };
 
   #boot
   boot = {
     #change if nvidia
-    initrd.kernelModules = ["nvme"];
+    initrd.kernelModules = [
+      "nvme"
+      "amdgpu"
+    ];
     kernelPackages = pkgs.linuxPackages;
     loader = {
       systemd-boot.enable = true;
@@ -78,6 +86,7 @@
         "audio"
         "video"
         "docker"
+        "cdrom"
       ];
     };
   };
@@ -99,16 +108,6 @@
       alsa.support32Bit = true;
       pulse.enable = true;
       jack.enable = true;
-      wireplumber = {
-        enable = true;
-        extraConfig = {
-          "10-disable-camera" = {
-            "wireplumber.profiles" = {
-              main."monitor.libcamera" = "disabled";
-            };
-          };
-        };
-      };
     };
     blueman.enable = true;
     devmon.enable = true;
@@ -151,21 +150,12 @@
   #gpu
   services.xserver = {
     enable = true;
+    videoDrivers = [ "amdgpu" ];
   };
   hardware.opengl = {
     enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      intel-vaapi-driver
-      libvdpau-va-gl
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [intel-vaapi-driver];
-  };
-  nixpkgs.config.packageOverrides = pkgs: {
-    intel-vaapi-driver = pkgs.intel-vaapi-driver.override {enableHybridCodec = true;};
-  };
-  environment.sessionVariables = {
-    LIBVA_DRIVER_NAME = "iHD";
+    extraPackages = with pkgs; [ amdvlk ];
+    extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
   };
   #vm
   virtualisation = {
@@ -199,12 +189,10 @@
   #environment (REMEMBER THE "N" in enviroNment)
   environment = {
     variables.EDITOR = "nvim";
-    etc =
-      lib.mapAttrs' (name: value: {
-        name = "nix/path/${name}";
-        value.source = value.flake;
-      })
-      config.nix.registry;
+    etc = lib.mapAttrs' (name: value: {
+      name = "nix/path/${name}";
+      value.source = value.flake;
+    }) config.nix.registry;
   };
 
   #auth agent/security/polkit
@@ -225,9 +213,9 @@
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
-      wantedBy = ["graphical-session.target"];
-      wants = ["graphical-session.target"];
-      after = ["graphical-session.target"];
+      wantedBy = [ "graphical-session.target" ];
+      wants = [ "graphical-session.target" ];
+      after = [ "graphical-session.target" ];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
