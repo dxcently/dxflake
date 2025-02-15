@@ -4,8 +4,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   imports = [
     ./hardware.nix
     ../pkgs.nix
@@ -30,16 +29,16 @@
   ];
 
   nix = {
-    nixPath = [ "/etc/nix/path" ];
-    registry = (lib.mapAttrs (_: flake: { inherit flake; })) (
+    nixPath = ["/etc/nix/path"];
+    registry = (lib.mapAttrs (_: flake: {inherit flake;})) (
       (lib.filterAttrs (_: lib.isType "flake")) inputs
     );
     #hyprland rebuild optimization, flakes, auto gc
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
-      substituters = [ "https://hyprland.cachix.org" ];
-      trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
     gc = {
       automatic = true;
@@ -150,12 +149,12 @@
   #gpu
   services.xserver = {
     enable = true;
-    videoDrivers = [ "amdgpu" ];
+    videoDrivers = ["amdgpu"];
   };
   hardware.opengl = {
     enable = true;
-    extraPackages = with pkgs; [ amdvlk ];
-    extraPackages32 = with pkgs; [ driversi686Linux.amdvlk ];
+    extraPackages = with pkgs; [amdvlk];
+    extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
   };
   #vm
   virtualisation = {
@@ -189,10 +188,12 @@
   #environment (REMEMBER THE "N" in enviroNment)
   environment = {
     variables.EDITOR = "nvim";
-    etc = lib.mapAttrs' (name: value: {
-      name = "nix/path/${name}";
-      value.source = value.flake;
-    }) config.nix.registry;
+    etc =
+      lib.mapAttrs' (name: value: {
+        name = "nix/path/${name}";
+        value.source = value.flake;
+      })
+      config.nix.registry;
   };
 
   #auth agent/security/polkit
@@ -213,9 +214,9 @@
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
       description = "polkit-gnome-authentication-agent-1";
-      wantedBy = [ "graphical-session.target" ];
-      wants = [ "graphical-session.target" ];
-      after = [ "graphical-session.target" ];
+      wantedBy = ["graphical-session.target"];
+      wants = ["graphical-session.target"];
+      after = ["graphical-session.target"];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
