@@ -34,6 +34,7 @@
         };
         modules = [
           ./hosts/dxpad
+          inputs.stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           {
             home-manager = {

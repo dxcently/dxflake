@@ -195,7 +195,7 @@
 
   #enable networking
   networking = {
-    #change if changing host name
+    #change if changing hostname
     hostName = "dxpad";
     networkmanager.enable = true;
   };
