@@ -17,7 +17,6 @@
       allowUnfree = true;
       #permittedInsecurePackages = [ "electron-25.9.0" ];
     };
-    hostPlatform = lib.mkDefault "x86_64-linux";
   };
 
   #host specific packages
