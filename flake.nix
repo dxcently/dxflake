@@ -8,6 +8,7 @@
     nixpkgs_patched.url = "github:nixos/nixpkgs/468a37e6ba01c45c91460580f345d48ecdb5a4db";
     nix-colors.url = "github:misterio77/nix-colors";
     nvf.url = "github:notashelf/nvf";
+    stylix.url = "github:danth/stylix";
   };
   outputs = {
     nixpkgs,
@@ -27,7 +28,10 @@
   in {
     nixosConfigurations = {
       dxpad = nixpkgs.lib.nixosSystem {
-        inherit system;
+        specialArgs = {
+          host = "dxpad";
+          inherit username inputs system;
+        };
         modules = [
           ./hosts/dxpad
           home-manager.nixosModules.home-manager
@@ -44,10 +48,6 @@
             };
           }
         ];
-        specialArgs = {
-          host = "dxpad";
-          inherit username inputs;
-        };
       };
     };
   };

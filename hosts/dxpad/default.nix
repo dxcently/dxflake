@@ -14,6 +14,7 @@
       allowUnfree = true;
       #permittedInsecurePackages = [ "electron-25.9.0" ];
     };
+    hostPlatform = lib.mkDefault "x86_64-linux";
   };
 
   #pkgs
@@ -194,7 +195,8 @@
 
   #enable networking
   networking = {
-    hostName = "dxflake";
+    #change if changing host name
+    hostName = "dxpad";
     networkmanager.enable = true;
   };
 
