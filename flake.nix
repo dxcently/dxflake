@@ -51,37 +51,4 @@
       };
     };
   };
-
-  /*
-    nixosConfigurations = {
-    "${hostname}" = nixpkgs.lib.nixosSystem {
-      specialArgs = {
-        inherit system;
-        inherit inputs;
-        inherit username;
-        inherit hostname;
-        inherit gitUsername;
-        inherit gitEmail;
-      };
-      modules = [
-        ./configuration.nix
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.extraSpecialArgs = {
-            inherit username;
-            inherit gitEmail;
-            inherit inputs;
-            inherit gitUsername;
-            inherit theme;
-            inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
-          };
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.backupFileExtension = "backup";
-          home-manager.users.${username} = import ./home.nix;
-        }
-      ];
-    };
-  };
-  */
 }
