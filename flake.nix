@@ -50,6 +50,29 @@
           }
         ];
       };
+      dxeon = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          host = "dxeon";
+          inherit username inputs system;
+        };
+        modules = [
+          ./hosts/dxeon
+          inputs.stylix.nixosModules.stylix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              users.${username} = import ./hosts/dxeon/home.nix;
+              extraSpecialArgs = {
+                inherit username inputs theme system;
+                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+              };
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "d_backup";
+            };
+          }
+        ];
+      };
     };
   };
 }
