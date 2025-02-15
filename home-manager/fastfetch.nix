@@ -1,5 +1,8 @@
-{ pkgs, configs, ... }:
 {
+  pkgs,
+  configs,
+  ...
+}: {
   programs.fastfetch = {
     enable = true;
     package = pkgs.fastfetch;
@@ -27,7 +30,7 @@
           type = "os";
           key = "  𖹭 os .. ";
         }
-        { type = "break"; }
+        {type = "break";}
         {
           type = "custom";
           format = "  hardware -------------------------------------------";
@@ -48,7 +51,7 @@
           type = "memory";
           key = "  𖥧 ram ....................";
         }
-        { type = "break"; }
+        {type = "break";}
         {
           type = "custom";
           format = "  software -------------------------------------------";
