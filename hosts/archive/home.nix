@@ -5,11 +5,9 @@
   pkgs,
   theme,
   gtkThemeFromScheme,
+  home-manager,
   ...
-}:
-
-{
-
+}: {
   colorScheme = inputs.nix-colors.colorSchemes."${theme}";
 
   # You can import other home-manager modules here
@@ -18,7 +16,6 @@
     inputs.nix-colors.homeManagerModules.default
     #inputs.nixvim.homeManagerModules.nixvim
     #inputs.hyprland.homeManagerModules.default
-    #inputs.spicetify-nix.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
     ./home-manager/imports.nix
@@ -27,13 +24,12 @@
   home = {
     username = "khoa";
     homeDirectory = "/home/khoa";
+    file."~/.config/hypr/hyprand.conf" = {
+      source = config.lib.file.mkOutOfStoreSymlink "~/.config/hypr/hyprland.conf";
+    };
   };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  # home.packages = with pkgs; [ steam ];
-
-  # Enable home-manager and git
+  # Enable ssome-manager and git
   programs = {
     home-manager.enable = true;
     git = {
@@ -48,8 +44,8 @@
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 
