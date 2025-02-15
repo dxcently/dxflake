@@ -10,6 +10,7 @@ in {
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    #blesh.enable = true;
     profileExtra = ''
       if [ "$(tty)" = "/dev/tty1" ]; then
         exec Hyprland &> /dev/null

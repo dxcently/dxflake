@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs,
   home-manager,
   ...
 }: {
@@ -17,5 +18,6 @@
     ./floorp.nix
     ./composekey.nix
     ./nh.nix
+    #./programs.nix
   ];
 }
