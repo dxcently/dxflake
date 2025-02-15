@@ -95,7 +95,6 @@
     atuin
     zoxide
     btop
-    nh
     wget
     clinfo
     ydotool

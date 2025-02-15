@@ -16,5 +16,6 @@
     ./neovim.nix
     ./floorp.nix
     ./composekey.nix
+    ./nh.nix
   ];
 }
