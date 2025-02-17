@@ -40,7 +40,7 @@ in {
       exec-once = waybar
       exec-once = nm-applet
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
-      exec-once = thunderbird
+      #exec-once = thunderbird
       exec-once = [workspace 1 silent] floorp
       exec-once = systemd
       exec-once = youtube-music
