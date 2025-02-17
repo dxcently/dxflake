@@ -147,7 +147,7 @@
 
       ui = {
         borders.enable = true;
-        noice.enable = false;
+        noice.enable = true;
         colorizer.enable = true;
         illuminate.enable = true;
         breadcrumbs = {
