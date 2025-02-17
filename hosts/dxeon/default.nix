@@ -148,7 +148,16 @@
   #gpu
   hardware.graphics = {
     enable = true;
+<<<<<<< HEAD
     enable32Bit = true;
+=======
+    videoDrivers = ["amdgpu"];
+  };
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [amdvlk];
+    extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
+>>>>>>> refs/remotes/origin/main
   };
   #vm
   virtualisation = {
