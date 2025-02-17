@@ -58,6 +58,8 @@
   boot = {
     initrd.kernelModules = [
       "nvme"
+      "amdgpu"
+      "amdgpu"
     ];
     kernelPackages = pkgs.linuxPackages;
     loader = {
@@ -146,10 +148,12 @@
     bluetooth.enable = true;
   };
   #gpu
+  services.xserver = {
+    videoDrivers = ["amdgpu"];
+  };
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
-    videoDrivers = ["amdgpu"];
   };
   hardware.opengl = {
     enable = true;
