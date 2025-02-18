@@ -22,6 +22,7 @@ in {
       $terminal = kitty
       $fileManager = thunar
       $menu = rofi -show drun
+      $windowswitcher = rofi -show
 
       #monitors
       #monitor=, preferred, auto, 1.5
@@ -68,6 +69,7 @@ in {
       bind = $mainMod, SPACE, exec, $menu
       bind = $mainMod, T, exec, $fileManager
       bind = $mainMod, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
+      bind = $mainMod, Tab, exec, $windowswitcher
       bind = $mainMod, S, exec, grim -g "$(slurp -d)" - |swappy -f -
 
       bind = $mainMod, Q, killactive
