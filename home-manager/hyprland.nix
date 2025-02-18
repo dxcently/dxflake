@@ -57,7 +57,7 @@ in {
       #workspaces window rules
       windowrule = workspace 10, vesktop
       #windowrule = workspace 1, firefox
-      windowrule = workspace special:scratch, thunderbird
+      windowrule = workspace special:scratch, Steam
       #windowrule = workspace special:magic, strawberry
       windowrulev2 = workspace special:magic, title:(YouTube Music)
       #workspace rules
