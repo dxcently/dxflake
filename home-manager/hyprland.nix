@@ -198,4 +198,6 @@ in {
 
     '';
   };
+  #command to remove symlink to edit
+  #cp --remove-destination `readlink hyprland.conf` hyprland.conf
 }
