@@ -26,6 +26,7 @@
     soundconverter
     winetricks
     udiskie
+    nvtop
   ];
 
   nix = {
