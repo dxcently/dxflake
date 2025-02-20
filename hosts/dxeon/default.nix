@@ -22,12 +22,12 @@
   #host specific packages
   environment.systemPackages = with pkgs; [
     prismlauncher
-    xfce.xfburn
     soundconverter
     winetricks
     udiskie
     nvtop-amd
   ];
+  #programs.k3b.enable = true;
 
   nix = {
     nixPath = ["/etc/nix/path"];
