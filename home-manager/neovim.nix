@@ -26,6 +26,7 @@
 
       options = {
         autoindent = true;
+        wrap = false;
         tabstop = 4;
         shiftwidth = 4;
       };
@@ -89,7 +90,7 @@
       statusline = {
         lualine = {
           enable = true;
-          theme = "papercolor_light";
+          theme = "auto";
         };
       };
 
