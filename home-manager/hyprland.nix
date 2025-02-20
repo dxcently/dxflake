@@ -131,7 +131,8 @@ in {
 
         follow_mouse = 1
         sensitivity = 0
-        accel_profile = false
+        accel_profile = flat
+        force_no_accel = true
 
         touchpad {
           natural_scroll = true
