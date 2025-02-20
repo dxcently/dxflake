@@ -18,15 +18,11 @@ in {
     '';
     initExtra = ''
       fastfetch
-      #if [ -f $HOME/.bashrc-personal ]; then
-      #source $HOME/.bashrc-personal
-      #fi
     '';
     bashrcExtra = ''
-           export PATH="$HOME/.config/emacs/bin:$PATH"
-           eval "$(zoxide init bash)"
-           eval "$(atuin init bash)"
-           function y() {
+      eval "$(zoxide init bash)"
+      eval "$(atuin init bash)"
+      function y() {
       local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
       yazi "$@" --cwd-file="$tmp"
       if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
@@ -50,13 +46,9 @@ in {
       la = "lsd -a";
       lal = "lsd -al";
       ".." = "cd ..";
-      mv = " mv -i";
-      rm = "rm -i";
-      cp = "cp -i";
       reboot = "systemctl reboot";
       shutdown = "shutdown -h now";
       fetch = "fastfetch";
-      #neofetch = "neofetch --ascii ~/dxflake/home-manager/extras/ascii-neofetch";
       nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
       sdl = "spotdl download";
     };

@@ -49,7 +49,6 @@
   };
 
   home.shellAliases = {
-    y = "yazi";
     sy = "sudo yazi";
   };
 }
