@@ -31,6 +31,8 @@
         shiftwidth = 4;
       };
 
+      syntaxHighlighting = true;
+
       telescope.enable = true;
       spellcheck = {
         enable = true;
@@ -56,6 +58,11 @@
 
         python.enable = true;
         ts.enable = true;
+        markdown.enable = true;
+        rust.enable = true;
+        clang.enable = true;
+        bash.enable = true;
+        lua.enable = true;
         nix = {
           enable = true;
           format = {
@@ -63,7 +70,6 @@
             type = "alejandra";
           };
         };
-        markdown.enable = true;
         typst = {
           enable = true;
           extensions.typst-preview-nvim.enable = true;
@@ -103,10 +109,9 @@
         nvimBufferline.enable = true;
       };
 
-      #annoying debugger
       treesitter = {
-        context.enable = false;
-        indent.enable = false;
+        context.enable = false; #annoying debugger
+        indent.enable = false; #annoying indenter
       };
 
       binds = {
@@ -118,6 +123,10 @@
         enable = true;
         gitsigns.enable = true;
         gitsigns.codeActions.enable = false; # throws an annoying debug message
+      };
+
+      notes.neorg = {
+        enable = true;
       };
 
       dashboard = {
