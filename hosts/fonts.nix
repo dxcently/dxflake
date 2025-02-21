@@ -17,6 +17,7 @@
       nerd-fonts.jetbrains-mono
       nerd-fonts.comic-shanns-mono
       nerd-fonts.shure-tech-mono
+      nerd-fonts.lekton
       (pkgs.callPackage ../packages/azukifontB/azukifontB.nix {})
       (pkgs.callPackage ../packages/azuki_font/azuki_font.nix {})
     ];

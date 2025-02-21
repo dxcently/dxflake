@@ -1,14 +1,15 @@
-{ pkgs, config, ... }:
-
-let
-  palette = config.colorScheme.palette;
-in
 {
+  pkgs,
+  config,
+  ...
+}: let
+  palette = config.colorScheme.palette;
+in {
   # Configure Kitty
   programs.kitty = {
     enable = true;
     package = pkgs.kitty;
-    font.name = "ShureTechMono Nerd Font";
+    font.name = "Lekton Nerd Font Mono";
     font.size = 14;
     settings = {
       scrollback_lines = 2000;
