@@ -21,7 +21,7 @@ in {
     extraConfig = ''
       adjust_column_width -10
         foreground #${palette.base05}
-        background #FFFFFF
+        background #${palette.base00}
         color0  #${palette.base03}
         color1  #${palette.base08}
         color2  #${palette.base0C}

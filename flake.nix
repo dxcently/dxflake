@@ -10,78 +10,79 @@
     nvf.url = "github:notashelf/nvf";
     stylix.url = "github:danth/stylix";
   };
-  outputs =
-    { nixpkgs, home-manager, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      username = "khoa";
-      theme = "sakura";
+  outputs = {
+    nixpkgs,
+    home-manager,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    username = "khoa";
+    theme = "black-metal";
 
-      pkgs = import nixpkgs {
-        inherit system;
-        config = {
-          allowUnfree = true;
-        };
-      };
-    in
-    {
-      nixosConfigurations = {
-        dxpad = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            host = "dxpad";
-            inherit username inputs system;
-          };
-          modules = [
-            ./hosts/dxpad
-            inputs.stylix.nixosModules.stylix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                users.${username} = import ./hosts/dxpad/home.nix;
-                extraSpecialArgs = {
-                  inherit
-                    username
-                    inputs
-                    theme
-                    system
-                    ;
-                  inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
-                };
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "l_backup";
-              };
-            }
-          ];
-        };
-        dxeon = nixpkgs.lib.nixosSystem {
-          specialArgs = {
-            host = "dxeon";
-            inherit username inputs system;
-          };
-          modules = [
-            ./hosts/dxeon
-            inputs.stylix.nixosModules.stylix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                users.${username} = import ./hosts/dxeon/home.nix;
-                extraSpecialArgs = {
-                  inherit
-                    username
-                    inputs
-                    theme
-                    system
-                    ;
-                  inherit (inputs.nix-colors.lib-contrib { inherit pkgs; }) gtkThemeFromScheme;
-                };
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                backupFileExtension = "d_backup";
-              };
-            }
-          ];
-        };
+    pkgs = import nixpkgs {
+      inherit system;
+      config = {
+        allowUnfree = true;
       };
     };
+  in {
+    nixosConfigurations = {
+      dxpad = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          host = "dxpad";
+          inherit username inputs system;
+        };
+        modules = [
+          ./hosts/dxpad
+          inputs.stylix.nixosModules.stylix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              users.${username} = import ./hosts/dxpad/home.nix;
+              extraSpecialArgs = {
+                inherit
+                  username
+                  inputs
+                  theme
+                  system
+                  ;
+                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+              };
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "l_backup";
+            };
+          }
+        ];
+      };
+      dxeon = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          host = "dxeon";
+          inherit username inputs system;
+        };
+        modules = [
+          ./hosts/dxeon
+          inputs.stylix.nixosModules.stylix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              users.${username} = import ./hosts/dxeon/home.nix;
+              extraSpecialArgs = {
+                inherit
+                  username
+                  inputs
+                  theme
+                  system
+                  ;
+                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+              };
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              backupFileExtension = "d_backup";
+            };
+          }
+        ];
+      };
+    };
+  };
 }

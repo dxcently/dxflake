@@ -47,13 +47,12 @@ in {
       exec-once = youtube-music
 
       #opacity window rules
-      windowrule = opacity 1 0.84, vesktop
-      windowrule = opacity 0.8, Spotify
-      windowrule = opacity 0.9, neovide
-      windowrule = opacity 0.8, bottles
+      #windowrule = opacity 1 0.84, vesktop
+      #windowrule = opacity 0.9, neovide
+      #windowrule = opacity 0.8, bottles
       windowrule = opacity 0.8, fl64.exe
-      windowrule = opacity 0.8, strawberry
-      windowrulev2 = opacity 0.8, title:(YouTube Music)
+      #windowrule = opacity 0.8, strawberry
+      #windowrulev2 = opacity 0.8, title:(YouTube Music)
       windowrulev2 = opacity 0.8, title:(FL Studio)
       #workspaces window rules
       windowrule = workspace 10, vesktop
@@ -149,8 +148,8 @@ in {
       general {
         gaps_in = 4
         gaps_out = 6
-        border_size = 0
-        col.active_border = rgba(${theme.base02}ff)
+        border_size = 2
+        col.active_border = rgba(${theme.base05}ff)
         col.inactive_border = rgba(${theme.base00}ff)
         layout = dwindle
         allow_tearing = true
@@ -165,14 +164,6 @@ in {
           xray = true
           new_optimizations = true
         }
-        shadow {
-          enabled = true
-          range = 140
-          render_power = 4
-          offset = 10 15
-          scale = 0.9
-          color = rgba(1a1a1aaf)
-         }
       }
 
       animations {
