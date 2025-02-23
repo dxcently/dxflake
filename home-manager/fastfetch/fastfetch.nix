@@ -19,16 +19,16 @@
       modules = [
         {
           type = "custom";
-          format = "=─=─=─=─=─=─=─=─=─=─=─=─  ୨୧  ─=─=─=─=─=─=─=─=─=─=─=─=";
+          format = "=─=─=─=─=─=─=─=─=─=─=─=─  𓏲𝄢  ─=─=─=─=─=─=─=─=─=─=─=─=";
         }
         {
           type = "title";
-          key = "  ⚘ user: ";
+          key = "  𝅝 user: ";
           format = "{1}@{2}";
         }
         {
           type = "os";
-          key = "  𖹭 os: ";
+          key = "  𝄞 os: ";
         }
         {type = "break";}
         {
@@ -37,19 +37,19 @@
         }
         {
           type = "gpu";
-          key = "  𖤣 gpu: ";
+          key = "  𝅘𝅥𝅯 gpu: ";
         }
         {
           type = "host";
-          key = "  ┰ host: ";
+          key = "  ♬ host: ";
         }
         {
           type = "cpu";
-          key = "  ☘︎ cpu: ";
+          key = "  ♭ cpu: ";
         }
         {
           type = "memory";
-          key = "  𖥧 ram: ";
+          key = "  𝄌 ram: ";
         }
         {type = "break";}
         {
@@ -58,27 +58,27 @@
         }
         {
           type = "wm";
-          key = "  ♱ window manager:  ";
+          key = "  𝄡 window manager:  ";
         }
         {
           type = "terminalfont";
-          key = "  a font: ";
+          key = "  𝆑 font: ";
         }
         {
           type = "editor";
-          key = "  ⭑ editor: ";
+          key = "  ♯ editor: ";
         }
         {
           type = "terminal";
-          key = "  > terminal: ";
+          key = "  𝅘𝅥 terminal: ";
         }
         {
           type = "shell";
-          key = "  ꩜ shell: ";
+          key = "  𝅗𝅥 shell: ";
         }
         {
           type = "theme";
-          key = "  𐙚 color scheme: ";
+          key = "  𝄇 color scheme: ";
         }
         {
           type = "colors";
@@ -87,7 +87,7 @@
         }
         {
           type = "custom";
-          format = "=─=─=─=─=─=─=─=─=─=─=─=─  ୨୧  ─=─=─=─=─=─=─=─=─=─=─=─=";
+          format = "=─=─=─=─=─=─=─=─=─=─=─=─  𓏲𝄢  ─=─=─=─=─=─=─=─=─=─=─=─=";
         }
       ];
     };

@@ -124,7 +124,7 @@ in {
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #${palette.base0A};
+      color: #${palette.base0B};
       }
       #tray {
       padding-right: 5px;
