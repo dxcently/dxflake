@@ -13,7 +13,7 @@
     ./yazi.nix
     ./bash.nix
     ./gtk-qt.nix
-    ./fastfetch.nix
+    ./fastfetch/fastfetch.nix
     ./neovim.nix
     ./floorp.nix
     ./composekey.nix

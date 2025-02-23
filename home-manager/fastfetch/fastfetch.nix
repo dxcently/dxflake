@@ -9,8 +9,8 @@
     settings = {
       logo = {
         type = "auto";
-        source = "/home/khoa/Downloads/80765d18c18a259c47a175f6578fba42.jpg";
-        width = 44;
+        source = ./fastfetch.png;
+        width = 39;
         height = 15;
       };
       display = {
@@ -19,16 +19,16 @@
       modules = [
         {
           type = "custom";
-          format = "╭=─=─=─=─=─=─=─=─=─=─=─=─  ୨୧  ─=─=─=─=─=─=─=─=─=─=─=─=╮";
+          format = "=─=─=─=─=─=─=─=─=─=─=─=─  ୨୧  ─=─=─=─=─=─=─=─=─=─=─=─=";
         }
         {
           type = "title";
-          key = "  ⚘ user..................................";
+          key = "  ⚘ user: ";
           format = "{1}@{2}";
         }
         {
           type = "os";
-          key = "  𖹭 os .. ";
+          key = "  𖹭 os: ";
         }
         {type = "break";}
         {
@@ -37,19 +37,19 @@
         }
         {
           type = "gpu";
-          key = "  𖤣 gpu ";
+          key = "  𖤣 gpu: ";
         }
         {
           type = "host";
-          key = "  ┰ host ..................";
+          key = "  ┰ host: ";
         }
         {
           type = "cpu";
-          key = "  ☘︎ cpu .....";
+          key = "  ☘︎ cpu: ";
         }
         {
           type = "memory";
-          key = "  𖥧 ram ....................";
+          key = "  𖥧 ram: ";
         }
         {type = "break";}
         {
@@ -58,27 +58,27 @@
         }
         {
           type = "wm";
-          key = "  ♱ window manager .................";
+          key = "  ♱ window manager:  ";
         }
         {
           type = "terminalfont";
-          key = "  a font ............................";
+          key = "  a font: ";
         }
         {
           type = "editor";
-          key = "  ⭑ editor .......................................";
+          key = "  ⭑ editor: ";
         }
         {
           type = "terminal";
-          key = "  > terminal .............................";
+          key = "  > terminal: ";
         }
         {
           type = "shell";
-          key = "  ꩜ shell .................................";
+          key = "  ꩜ shell: ";
         }
         {
           type = "theme";
-          key = "  𐙚 color scheme ....................";
+          key = "  𐙚 color scheme: ";
         }
         {
           type = "colors";
@@ -87,7 +87,7 @@
         }
         {
           type = "custom";
-          format = "╰=─=─=─=─=─=─=─=─=─=─=─=─  ୨୧  ─=─=─=─=─=─=─=─=─=─=─=─=╯";
+          format = "=─=─=─=─=─=─=─=─=─=─=─=─  ୨୧  ─=─=─=─=─=─=─=─=─=─=─=─=";
         }
       ];
     };

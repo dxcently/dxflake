@@ -4,10 +4,8 @@
   config,
   pkgs,
   theme,
-  gtkThemeFromScheme,
   ...
-}:
-{
+}: {
   colorScheme = inputs.nix-colors.colorSchemes."${theme}";
 
   imports = [
@@ -35,8 +33,8 @@
 
   dconf.settings = {
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
   };
 

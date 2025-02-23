@@ -14,7 +14,7 @@ in {
     };
     style = ''
       * {
-      font-family: "azuki_font";
+      font-family: "Lekton Nerd Font Mono";
       font-size: 15px;
       font-weight: bold;
       border-radius: 0px;
@@ -38,7 +38,7 @@ in {
       background-color: transparent;
       }
       window > box {
-      background-color: #FFFFFF;
+      background-color: #${palette.base00};
       }
       #workspaces {
       padding-left: 0px;
@@ -49,31 +49,31 @@ in {
       padding-bottom: 5px;
       padding-left: 6px;
       padding-right: 6px;
-      color:#${palette.base02};
+      color:#${palette.base07};
       }
       #workspaces button.active {
-      background-color: #FFFFFF;
-      color: #${palette.base07};
+      background-color: #${palette.base07};
+      color: #${palette.base00};
       }
       #workspaces button.urgent {
       color: rgb(26, 24, 38);
       }
       #workspaces button:hover {
-      background-color:#${palette.base01};
-      color: #${palette.base03};
+      background-color:#${palette.base06};
+      color: #${palette.base01};
       }
       tooltip {
       /* background: rgb(250, 244, 252); */
-      background: #FFFFFF;
+      background: #${palette.base00};
       }
       tooltip label {
-      color: #${palette.base06};
+      color: #${palette.base07};
       }
       #custom-launcher {
       font-size: 20px;
-      padding-left: 2px;
-      padding-right: 0px;
-      color: #${palette.base02};
+      padding-left: 8px;
+      padding-right: 8px;
+      color: #${palette.base07};
       }
       #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight,#wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
       padding-left: 5px;
@@ -93,7 +93,7 @@ in {
       color: #${palette.base07};
       }
       #window{
-        color: #${palette.base02};
+        color: #${palette.base0B};
       }
       #custom-wall {
       color: #B38DAC;
@@ -105,10 +105,10 @@ in {
       color: #A2BD8B;
       }
       #mpris {
-      color: #${palette.base02};
+      color: #${palette.base0B};
       }
       #wireplumber {
-      color: #${palette.base02};
+      color: #${palette.base08};
       }
       #network {
       color: #${palette.base07};
@@ -124,15 +124,15 @@ in {
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #${palette.base0F};
+      color: #${palette.base0A};
       }
       #tray {
       padding-right: 5px;
       padding-left: 10px;
       }
       #tray menu {
-      background: #FFFFFF;
-      color: #${palette.base01};
+      background: #${palette.base00};
+      color: #${palette.base07};
       }
       #custom-cava-internal{
       font-family: "Hack Nerd Font" ;
@@ -164,7 +164,7 @@ in {
           "custom/powermenu"
         ];
         "custom/launcher" = {
-          "format" = "『🍓』";
+          "format" = "𝄞";
           #"on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
           "tooltip" = false;
         };
@@ -189,7 +189,7 @@ in {
           "tooltip" = false;
         };
         "hyprland/workspaces" = {
-          "format" = "𔓘";
+          "format" = "♪";
           "on-click" = "activate";
           "on-scroll-up" = "hyprctl dispatch workspace e+1";
           "on-scroll-down" = "hyprctl dispatch workspace e-1";
@@ -216,9 +216,9 @@ in {
           "format-muted" = "(° × ° )";
           "format-icons" = {
             "default" = [
-              "♪"
+              "♩~"
               "♪~"
-              "┗┯~"
+              "♫~"
             ];
           };
           "on-click" = "pavucontrol";
@@ -232,8 +232,8 @@ in {
           };
           "format" = "{icon} {capacity}%";
           "format-icons" = [
-            "┸"
-            "┸"
+            "󰁺"
+            "󰁻"
             "󰁼"
             "󰁽"
             "󰁾"
@@ -286,7 +286,7 @@ in {
           "format-disconnected" = "Disconnected :c";
           "format-ethernet" = "𖤣.𖥧.𖡼.⚘";
           "format-linked" = "󰖪 (No IP)";
-          "format-wifi" = "┰";
+          "format-wifi" = "♬⋆.˚";
           "interval" = 1;
           "tooltip" = true;
           "tooltip-format" = "{essid} ({ipaddr})";
@@ -300,7 +300,7 @@ in {
         };
         */
         "custom/powermenu" = {
-          "format" = "𖹭";
+          "format" = "𓏲𝄢";
           "on-click" = "wlogout";
           "tooltip" = false;
         };

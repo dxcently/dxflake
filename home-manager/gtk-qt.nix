@@ -13,7 +13,7 @@ in {
   in {
     enable = true;
     font = {
-      name = "ShureTechMono Nerd Font";
+      name = "Lekton Nerd Font Mono";
       size = 12;
     };
     /*
