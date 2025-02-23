@@ -17,7 +17,7 @@
   } @ inputs: let
     system = "x86_64-linux";
     username = "khoa";
-    theme = "black-metal";
+    theme = "black-metal-immortal";
 
     pkgs = import nixpkgs {
       inherit system;
