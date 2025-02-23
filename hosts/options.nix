@@ -14,6 +14,8 @@
     bash.blesh.enable = true;
     nm-applet.enable = true;
     virt-manager.enable = true;
+    file-roller.enable = true;
+    system-config-printer.enable = true;
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [
@@ -22,7 +24,20 @@
         thunar-media-tags-plugin
       ];
     };
-    file-roller.enable = true;
-    system-config-printer.enable = true;
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = false;
+      extraCompatPackages = [pkgs.proton-ge-bin];
+      gamescopeSession.enable = true;
+    };
+    gamescope = {
+      enable = true;
+      capSysNice = true;
+      args = [
+        "--rt"
+        "--expose-wayland"
+      ];
+    };
   };
 }
