@@ -23,9 +23,9 @@
     ];
     fontconfig = {
       defaultFonts = {
-        serif = ["azukifontB"];
-        sansSerif = ["ComicShannsMono Nerd Font"];
-        monospace = ["ComicShannsMono Nerd Font"];
+        serif = ["Lekton Nerd Font"];
+        sansSerif = ["Lekton Nerd Font"];
+        monospace = ["Lekton Nerd Font Mono"];
       };
     };
   };

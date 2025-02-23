@@ -76,8 +76,8 @@ in {
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    name = "Catppuccin-Macchiato-Rosewater-Cursors";
-    package = pkgs.catppuccin-cursors.macchiatoRosewater;
+    name = "openzone";
+    package = pkgs.openzone-cursors;
     size = 28;
   };
 }
