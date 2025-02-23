@@ -68,7 +68,7 @@ in {
       tooltip label {
       color: #${palette.base07};
       }
-      #custom-launcher {
+      #custom-rofi {
       font-size: 20px;
       padding-left: 8px;
       padding-right: 8px;
@@ -143,7 +143,7 @@ in {
         "layer" = "top";
         "position" = "top";
         modules-left = [
-          "custom/launcher"
+          "custom/rofi"
           "hyprland/workspaces"
           "custom/wall"
         ];
@@ -163,9 +163,10 @@ in {
           "tray"
           "custom/powermenu"
         ];
-        "custom/launcher" = {
+        "custom/rofi" = {
           "format" = "𝄞";
-          #"on-click" = "pkill rofi || ~/.config/rofi/launcher.sh";
+          #"on-click" = "pkill rofi || ~/.config/rofi/rofi.sh";
+          "on-click" = "rofi -show window";
           "tooltip" = false;
         };
         "hyprland/window" = {
