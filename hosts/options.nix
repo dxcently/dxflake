@@ -13,7 +13,6 @@
     dconf.enable = true;
     bash.blesh.enable = true;
     nm-applet.enable = true;
-    steam.enable = true;
     virt-manager.enable = true;
     thunar = {
       enable = true;
