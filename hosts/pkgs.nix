@@ -11,7 +11,6 @@
     networkmanagerapplet
     kitty
     dunst
-    rofi-wayland
     slurp
     grim
     swappy
