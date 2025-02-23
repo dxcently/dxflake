@@ -15,8 +15,7 @@ in {
     style = ''
       * {
       font-family: "Lekton Nerd Font Mono";
-      font-size: 15px;
-      font-weight: bold;
+      font-size: 16;
       border-radius: 0px;
       transition-property: background-color;
       transition-duration: 0.5s;
@@ -94,6 +93,7 @@ in {
       }
       #window{
         color: #${palette.base0B};
+        font-style: italic;
       }
       #custom-wall {
       color: #B38DAC;

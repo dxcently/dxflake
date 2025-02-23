@@ -10,7 +10,7 @@ in {
     enable = true;
     package = pkgs.kitty;
     font.name = "Lekton Nerd Font Mono";
-    font.size = 14;
+    font.size = 12;
     settings = {
       scrollback_lines = 2000;
       wheel_scroll_min_lines = 1;
