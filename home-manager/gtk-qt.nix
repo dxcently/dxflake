@@ -76,8 +76,8 @@ in {
   home.pointerCursor = {
     gtk.enable = true;
     x11.enable = true;
-    name = "openzone";
     package = pkgs.openzone-cursors;
+    name = "openzone_white_slim";
     size = 28;
   };
 }
