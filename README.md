@@ -21,7 +21,7 @@
 ![image](https://i.imgur.com/O0lybJG.png)
 ![image](https://i.imgur.com/TOybKU3.png)
 
-**22.02.25 𓏲𝄢**
+**22.02.25 / 𓏲𝄢**
 ![image](https://cdn.discordapp.com/attachments/898896878161252374/1343061582162169897/swappy-20250222-222449.png?ex=67bbe712&is=67ba9592&hm=f9d8c907aed3ea5a5ac9008d804ceb6c415aaf23a9fbf840a7e4242a6850d432&)
 
 ## credit to other flakes/rices i've referenced:
