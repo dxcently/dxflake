@@ -18,5 +18,6 @@
     ./floorp.nix
     ./composekey.nix
     ./nh.nix
+    ./rofi.nix
   ];
 }
