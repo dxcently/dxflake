@@ -164,7 +164,11 @@ in {
           xray = true
           new_optimizations = true
         }
+        shadow {
+          enabled = false;
+        }
       }
+
 
       animations {
         enabled = true
