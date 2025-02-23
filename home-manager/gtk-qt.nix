@@ -77,7 +77,7 @@ in {
     gtk.enable = true;
     x11.enable = true;
     package = pkgs.openzone-cursors;
-    name = "openzone_white_slim";
+    name = "OpenZone_White_Slim";
     size = 28;
   };
 }
