@@ -51,25 +51,12 @@ in {
     enable = true;
     platformTheme = "gtk";
     style = {
-      /*
-      name = "Catppuccin-Macchiato-Compact-Rosewater-Dark";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "rosewater" ];
-        tweaks = [
-          "rimless"
-          "normal"
-        ];
-        variant = "macchiato";
-        size = "compact";
-      };
-      */
-      name = "adwaita-light";
-      package = pkgs.adwaita-qt;
+      name = "kvantum";
     };
   };
   dconf.settings = {
     "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-light";
+      color-scheme = "prefer-dark";
     };
   };
 
