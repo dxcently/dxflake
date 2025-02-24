@@ -60,6 +60,9 @@ in {
       windowrule = workspace special:scratch, steam
       #windowrule = workspace special:magic, strawberry
       windowrulev2 = workspace special:magic, title:(YouTube Music)
+      #for steam overlay
+      windowrulev2 = stayfocused, title:^()$,class:^(steam)$
+      windowrulev2 = minsize 1 1, title:^()$,class:^(steam)$
       #workspace rules
       workspace=10, monitor:HDMI-A-1, default:true
 
