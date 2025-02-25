@@ -54,8 +54,7 @@
     strawberry-qt6
     soundconverter
     guvcview
-    vencord
-    vesktop
+    (vesktop.override {electron = pkgs.electron_32;})
     bottles
     qbittorrent
     obs-studio
