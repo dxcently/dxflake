@@ -22,7 +22,7 @@
 ![image](https://i.imgur.com/TOybKU3.png)
 
 **22.02.25 / 𓏲𝄢**
-![image](https://cdn.discordapp.com/attachments/898896878161252374/1344055078834798632/swappy-20250225-161442.png?ex=67bf8456&is=67be32d6&hm=ff86de3680a0a723371a3891ab969e851ae9f4e38839c46fd04b61e3a5b2f7db&)
+![image](https://cdn.discordapp.com/attachments/898896878161252374/1344067495589318787/swappy-20250225-170356.png?ex=67bf8fe6&is=67be3e66&hm=17dd770818b4c0eb1341153745c5e0387ed74ca1a4246b5a21ca3c746a953367&)
 
 ## credit to other flakes/rices i've referenced:
 
