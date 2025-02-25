@@ -19,6 +19,5 @@
     ./composekey.nix
     ./nh.nix
     ./rofi.nix
-    ./zellij.nix
   ];
 }
