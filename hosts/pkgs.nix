@@ -29,7 +29,7 @@
     brightnessctl
     mpv
     gparted
-    gwenview
+    kdePackages.gwenview
     feh
     # audio
     wireplumber
