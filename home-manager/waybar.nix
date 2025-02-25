@@ -241,7 +241,7 @@ in {
             "󰁹"
           ];
           "format-full" = "{icon} {capacity}%";
-          "format-charging" = "┫ {capacity}%";
+          "format-charging" = "♰ {capacity}%";
           "tooltip" = false;
         };
         "clock" = {
