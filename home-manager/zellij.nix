@@ -5,6 +5,6 @@
 }: {
   programs.zellij = {
     enable = true;
-    enableBashIntegratin = true;
+    enableBashIntegration = false;
   };
 }
