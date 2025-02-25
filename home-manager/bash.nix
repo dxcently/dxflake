@@ -51,7 +51,6 @@ in {
       fetch = "fastfetch";
       nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
       sdl = "spotdl download";
-      zj = "zellij";
     };
   };
 }

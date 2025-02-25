@@ -16,11 +16,17 @@ in {
       wheel_scroll_min_lines = 1;
       confirm_os_window_close = 0;
       window_padding_width = 5;
-      background_opacity = "1";
+      window_border_width = 1.5;
+      background_opacity = 1;
       enable_audio_bell = true;
-      bell_path = ../extras/vine-boom.mp3;
       tab_bar_style = "powerline";
       tab_powerline_style = "slanted";
+    };
+    keybindings = {
+      "alt+j" = "next_window";
+      "alt+k" = "previous_window";
+      "alt+h" = "previous_tab";
+      "alt+l" = "next_tab";
     };
     extraConfig = ''
       enabled_layouts fat:bias=80;full_size=1
@@ -55,17 +61,16 @@ in {
       cursor_text_color #${palette.base00}
       selection_foreground #${palette.base01}
       selection_background #${palette.base0D}
-      url_color #${palette.base0C}
-      active_border_color #${palette.base04}
-      inactive_border_color #${palette.base00}
-      bell_border_color #${palette.base03}
-      active_tab_foreground   #${palette.base04}
-      active_tab_background   #${palette.base00}
+      url_color #${palette.base08}
+      active_border_color #${palette.base0B}
+      inactive_border_color #${palette.base07}
+      bell_border_color #${palette.base0A}
+      active_tab_foreground   #${palette.base07}
+      active_tab_background   #${palette.base0A}
       active_tab_font_style   bold
       inactive_tab_foreground #${palette.base07}
-      inactive_tab_background #${palette.base08}
+      inactive_tab_background #${palette.base0B}
       inactive_tab_font_style bold
-      tab_bar_background #${palette.base00}
     '';
   };
 }
