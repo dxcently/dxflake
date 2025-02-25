@@ -62,7 +62,6 @@ in {
       color: #${palette.base01};
       }
       tooltip {
-      /* background: rgb(250, 244, 252); */
       background: #${palette.base00};
       }
       tooltip label {
@@ -74,7 +73,7 @@ in {
       padding-right: 8px;
       color: #${palette.base07};
       }
-      #mode, #clock, #memory, #temperature,#cpu,#custom-wall, #temperature, #backlight,#wireplumber, #network, #battery, #custom-powermenu, #custom-cava-internal {
+      #mode, #clock, #memory, #temperature,#cpu, #temperature, #backlight,#wireplumber, #network, #battery, #custom-powermenu {
       padding-left: 5px;
       padding-right: 8px;
       }
@@ -134,9 +133,6 @@ in {
       background: #${palette.base00};
       color: #${palette.base07};
       }
-      #custom-cava-internal{
-      font-family: "Hack Nerd Font" ;
-      }
     '';
     settings = [
       {
@@ -176,21 +172,21 @@ in {
             "" = "/ᐠ - ˕ -マ Ⳋ ⋆｡°✩♬ ♪";
           };
         };
-        /*
-        "custom/wall" = {
-          "on-click" = ${sharedScripts.wallpaper_random}/bin/wallpaper_random";
-          "on-click-middle" = "${sharedScripts.default_wall}/bin/default_wall";
-          "on-click-right" = killall dynamic_wallpaper || ${sharedScripts.dynamic_wallpaper}/bin/dynamic_wallpaper &";
-          "format" = " 󰠖 ";
-          "tooltip" = false;
-        };
-        */
-        "custom/cava-internal" = {
-          "exec" = ""; # "sleep 1s && ${sharedScripts.cava-internal}/bin/cava-internal";
-          "tooltip" = false;
-        };
         "hyprland/workspaces" = {
-          "format" = "♪";
+          "format" = "{icon}";
+          "format-icons" = {
+            "1" = "𝅘𝅥 ";
+            "2" = "♫";
+            "3" = "𝅘𝅥𝅯  ";
+            "4" = "♬";
+            "5" = "𝅗𝅥";
+            "6" = "𝅘𝅥𝅱  ";
+            "7" = "♯";
+            "8" = "♮";
+            "9" = "♭";
+            "10" = "𝅝  ";
+            sort-by-number = false;
+          };
           "on-click" = "activate";
           "on-scroll-up" = "hyprctl dispatch workspace e+1";
           "on-scroll-down" = "hyprctl dispatch workspace e-1";
@@ -201,7 +197,6 @@ in {
           "on-scroll-down" = "light -U 5";
           "format" = "{icon} {percent}%";
           "format-icons" = [
-            "☆"
             "○"
             "◎"
             "●"
@@ -267,27 +262,11 @@ in {
           "format" = "❀ {usage}%";
         };
         */
-        /*
-        "mpd" = {
-          "max-length" = 25;
-          "format" = "<span foreground='#bb9af7'></span> {title}";
-          "format-paused" = " {title}";
-          "format-stopped" = "<span foreground='#bb9af7'></span>";
-          "format-disconnected" = "";
-          "on-click" = "mpc --quiet toggle";
-          "on-click-right" = "mpc update; mpc ls | mpc add";
-          "on-click-middle" = "kitty --class='ncmpcpp' ncmpcpp";
-          "on-scroll-up" = "mpc --quiet prev";
-          "on-scroll-down" = "mpc --quiet next";
-          "smooth-scrolling-threshold" = 5;
-          "tooltip-format" = "{title} - {artist} ({elapsedTime:%M:%S}/{totalTime:%H:%M:%S})";
-        };
-        */
         "network" = {
           "format-disconnected" = "Disconnected :c";
-          "format-ethernet" = "𖤣.𖥧.𖡼.⚘";
-          "format-linked" = "󰖪 (No IP)";
-          "format-wifi" = "♬⋆.˚";
+          "format-ethernet" = "𝆺𝅥𝅯";
+          "format-linked" = "𝆹𝅥𝅯 (No IP)";
+          "format-wifi" = "𝆹𝅥𝅮";
           "interval" = 1;
           "tooltip" = true;
           "tooltip-format" = "{essid} ({ipaddr})";
