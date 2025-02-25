@@ -17,7 +17,8 @@ in {
       confirm_os_window_close = 0;
       window_padding_width = 5;
       background_opacity = "1";
-      enable_audio_bell = false;
+      enable_audio_bell = true;
+      bell_path = ../extras/vine-boom.mp3;
       tab_bar_style = "powerline";
       tab_powerline_style = "slanted";
     };
