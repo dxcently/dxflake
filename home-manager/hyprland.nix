@@ -88,10 +88,10 @@ in {
       bind = $mainMod SHIFT, J, movewindow, d
       bind = $mainMod SHIFT, K, movewindow, u
       bind = $mainMod SHIFT, L, movewindow, r
-      bind = $mainMod ALT, H, reizeactive, -10 0
-      bind = $mainMod ALT, J, reizeactive, 0 -10
-      bind = $mainMod ALT, K, reizeactive, 0 -10
-      bind = $mainMod ALT, L, reizeactive, 10 0
+      bind = $mainMod ALT, H, resizeactive, -20 0
+      bind = $mainMod ALT, J, resizeactive, 0 20
+      bind = $mainMod ALT, K, resizeactive, 0 -20
+      bind = $mainMod ALT, L, resizeactive, 20 0
       bind = ALT, Tab, cyclenext
       bind = ALT, Tab, bringactivetotop
 
