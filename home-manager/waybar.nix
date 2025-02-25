@@ -14,7 +14,7 @@ in {
     };
     style = ''
       * {
-      font-family: "Lekton Nerd Font Mono";
+      font-family: "Lekton Nerd Font";
       font-size: 16;
       border-radius: 0px;
       transition-property: background-color;
@@ -90,7 +90,7 @@ in {
       #clock {
       color: #${palette.base07};
       }
-      #window{
+      #window {
         color: #${palette.base0B};
         font-style: italic;
       }
@@ -124,6 +124,7 @@ in {
       }
       #custom-powermenu {
       color: #${palette.base0B};
+      font-weight: 700;
       }
       #tray {
       padding-right: 5px;
