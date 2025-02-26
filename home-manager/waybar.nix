@@ -198,9 +198,12 @@ in {
           "on-scroll-down" = "light -U 5";
           "format" = "{icon} {percent}%";
           "format-icons" = [
-            "○"
-            "◎"
-            "●"
+            "𝄖"
+            "𝄗"
+            "𝄘"
+            "𝄙"
+            "𝄚"
+            "𝄛"
           ];
         };
         "mpris" = {
@@ -213,9 +216,11 @@ in {
           "format-muted" = "(° × ° )";
           "format-icons" = {
             "default" = [
+              "𝅗𝅥 "
               "♩~"
               "♪~"
               "♫~"
+              "♬~"
             ];
           };
           "on-click" = "pavucontrol";
@@ -227,18 +232,18 @@ in {
             "warning" = 20;
             "critical" = 10;
           };
-          "format" = "{icon} {capacity}%";
+          "format" = "{icon}  {capacity}%";
           "format-icons" = [
-            "󰁺"
-            "󰁻"
-            "󰁼"
-            "󰁽"
-            "󰁾"
-            "󰁿"
-            "󰂀"
-            "󰂁"
-            "󰂂"
-            "󰁹"
+            "𝄒"
+            "𝅂"
+            "𝅁"
+            "𝅀"
+            "𝄿"
+            "𝄾"
+            "𝄽"
+            "𝄼"
+            "𝄻"
+            "𝄺"
           ];
           "format-full" = "{icon} {capacity}%";
           "format-charging" = "♰ {capacity}%";
