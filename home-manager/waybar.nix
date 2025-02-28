@@ -234,7 +234,7 @@ in {
           };
           "format" = "{icon}  {capacity}%";
           "format-icons" = [
-            "𝄒"
+            "𝄐"
             "𝅂"
             "𝅁"
             "𝅀"
