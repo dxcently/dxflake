@@ -56,6 +56,7 @@
     kernel.sysctl = {
       "vm.max_map_count" = 2147483642;
     };
+    resumeDevice = "/dev/nvme0n1p3";
   };
 
   #managing users
