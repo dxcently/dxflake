@@ -126,6 +126,13 @@ in {
       bindm = $mainMod, mouse:272, movewindow
       bindm = $mainMod, mouse:273, resizewindow
 
+      bind = ,XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%-
+      bind = ,XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%+
+      bind = ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+      bind = ,XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+      bind = ,XF86MonBrightnessDown, exec,  brightnessctl s 5%-
+      bind = ,XF86MonBrightnessUp, exec, brightnessctl s 5%+
+
       #looksmaxxing
       plugin {
 
