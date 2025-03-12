@@ -115,4 +115,6 @@
     typst
     tinymist
   ];
+
+  nixpkgs.config.permittedInsecurePackages = ["electron-32.3.3"];
 }
