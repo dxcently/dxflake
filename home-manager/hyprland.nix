@@ -137,13 +137,14 @@ in {
       #looksmaxxing
       plugin {
         hyprbars {
-            bar_color = rgb(245DDA)
+            bar_color = rgba(${theme.base07}ff)
+            col.text = rgba(${theme.base00}ff)
             bar_text_align = left
             bar_precedence_over_border = true
             bar_height = 20
             hyprbars-button = rgb(556677), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgb(ff4040), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base07}ff)
-            hyprbars-button = rgb(556677), 12, 🗕, hyprctl dispatch movetoworkspace special:scratch, rgba(${theme.base07}ff)
+            hyprbars-button = rgb(ff4040), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
+            hyprbars-button = rgb(556677), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
         }
       }
 
@@ -172,8 +173,8 @@ in {
         gaps_in = 4
         gaps_out = 6
         border_size = 2
-        col.active_border = rgb(245DDA)
-        col.inactive_border = rgb(245DDA)
+        col.active_border = rgba(${theme.base07}ff)
+        col.inactive_border = rgba(${theme.base07}ff)
         layout = dwindle
         allow_tearing = true
       }
