@@ -13,7 +13,7 @@ in {
     xwayland.enable = true;
     systemd.enable = true;
     plugins = [
-      #shgnjk
+      pkgs.hyprlandPlugins.hyprbars
     ];
     extraConfig = ''
 
@@ -63,6 +63,7 @@ in {
       #for steam overlay
       windowrulev2 = stayfocused, title:^()$,class:^(steam)$
       windowrulev2 = minsize 1 1, title:^()$,class:^(steam)$
+      #windowrulev2 = noborder, focus:0
       #workspace rules
       workspace=10, monitor:HDMI-A-1, default:true
 
@@ -135,7 +136,15 @@ in {
 
       #looksmaxxing
       plugin {
-
+        hyprbars {
+            bar_color = rgb(245DDA)
+            bar_text_align = left
+            bar_precedence_over_border = true
+            bar_height = 20
+            hyprbars-button = rgb(556677), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
+            hyprbars-button = rgb(ff4040), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base07}ff)
+            hyprbars-button = rgb(556677), 12, 🗕, hyprctl dispatch movetoworkspace special:scratch, rgba(${theme.base07}ff)
+        }
       }
 
       input {
@@ -163,8 +172,8 @@ in {
         gaps_in = 4
         gaps_out = 6
         border_size = 2
-        col.active_border = rgba(${theme.base08}ff)
-        col.inactive_border = rgba(${theme.base05}ff)
+        col.active_border = rgb(245DDA)
+        col.inactive_border = rgb(245DDA)
         layout = dwindle
         allow_tearing = true
       }
