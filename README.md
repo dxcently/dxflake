@@ -4,9 +4,14 @@
 ## features:
 
 - hyprland w/ waybar
+- multihost
+- (almost) fully declarative floorp browser
+- yazi + thunar file browser
+- rofi
+- mako notifs daemon
+- bash + kitty
 - looks pretty. i think
 - functional (kind of)
-- multihost
 - _does not come with fl studio_
 
 ## screenshots:
