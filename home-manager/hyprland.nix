@@ -163,8 +163,8 @@ in {
         gaps_in = 4
         gaps_out = 6
         border_size = 2
-        col.active_border = rgba(${theme.base05}ff)
-        col.inactive_border = rgba(${theme.base00}ff)
+        col.active_border = rgba(${theme.base08}ff)
+        col.inactive_border = rgba(${theme.base05}ff)
         layout = dwindle
         allow_tearing = true
       }
