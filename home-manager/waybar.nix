@@ -37,41 +37,41 @@ in {
       background-color: transparent;
       }
       window > box {
-      background-color: #${palette.base00};
+      background-color: #${palette.base07};
       }
       #workspaces {
       padding-left: 0px;
       padding-right: 4px;
       }
       #workspaces button {
-      padding-top: 5px;
-      padding-bottom: 5px;
+      padding-top: 4px;
+      padding-bottom: 3px;
       padding-left: 6px;
       padding-right: 6px;
-      color:#${palette.base07};
+      color:#${palette.base00};
       }
       #workspaces button.active {
-      background-color: #${palette.base07};
-      color: #${palette.base00};
+      background-color: #${palette.base0D};
+      color: #${palette.base07};
       }
       #workspaces button.urgent {
       color: rgb(26, 24, 38);
       }
       #workspaces button:hover {
       background-color:#${palette.base06};
-      color: #${palette.base01};
+      color: #${palette.base08};
       }
       tooltip {
-      background: #${palette.base00};
+      background: #${palette.base07};
       }
       tooltip label {
-      color: #${palette.base07};
+      color: #${palette.base00};
       }
       #custom-rofi {
       font-size: 20px;
       padding-left: 8px;
       padding-right: 8px;
-      color: #${palette.base07};
+      color: #${palette.base00};
       }
       #mode, #clock, #memory, #temperature,#cpu, #temperature, #backlight,#wireplumber, #network, #battery, #custom-powermenu {
       padding-left: 5px;
@@ -88,7 +88,8 @@ in {
       color: #${palette.base0C};
       }
       #clock {
-      color: #${palette.base07};
+      color: #${palette.base00};
+      font-weight: 600;
       }
       #window {
         color: #${palette.base0B};
@@ -101,16 +102,16 @@ in {
       color: #${palette.base09};
       }
       #backlight {
-      color: #A2BD8B;
+      color: #${palette.base08};
       }
       #mpris {
-      color: #${palette.base0B};
+      color: #${palette.base0A};
       }
       #wireplumber {
       color: #${palette.base08};
       }
       #network {
-      color: #${palette.base07};
+      color: #${palette.base0F};
       }
 
       #network.disconnected {
@@ -123,7 +124,7 @@ in {
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #${palette.base0B};
+      color: #${palette.base0A};
       font-weight: 700;
       }
       #tray {
@@ -131,8 +132,8 @@ in {
       padding-left: 10px;
       }
       #tray menu {
-      background: #${palette.base00};
-      color: #${palette.base07};
+      background: #${palette.base07};
+      color: #${palette.base00};
       }
     '';
     settings = [
@@ -196,7 +197,7 @@ in {
           "device" = "intel_backlight";
           "on-scroll-up" = "light -A 5";
           "on-scroll-down" = "light -U 5";
-          "format" = "{icon} {percent}%";
+          "format" = "{icon}  {percent}% /";
           "format-icons" = [
             "𝄖"
             "𝄗"
@@ -207,13 +208,14 @@ in {
           ];
         };
         "mpris" = {
-          "format" = "♪【{artist} - {title}】";
-          "format-paused" = "・【{artist} - {title}】";
+          "format" = "♪ « {artist} - {title} »";
+          "format-paused" = "⏸ [{artist} - {title}]";
+          "max-length" = 40;
         };
         "wireplumber" = {
           "scroll-step" = 2;
-          "format" = "{icon} {volume}%";
-          "format-muted" = "(° × ° )";
+          "format" = " / {icon} {volume}% /";
+          "format-muted" = "/ (° × ° ) /";
           "format-icons" = {
             "default" = [
               "𝅗𝅥 "
@@ -232,7 +234,7 @@ in {
             "warning" = 20;
             "critical" = 10;
           };
-          "format" = "{icon}  {capacity}%";
+          "format" = "{icon}  {capacity}% /";
           "format-icons" = [
             "𝄐"
             "𝅂"
@@ -245,13 +247,13 @@ in {
             "𝄻"
             "𝄺"
           ];
-          "format-full" = "{icon} {capacity}%";
-          "format-charging" = "♰ {capacity}%";
+          "format-full" = "{icon}  {capacity}% /";
+          "format-charging" = "♰ {capacity}% /";
           "tooltip" = false;
         };
         "clock" = {
           "interval" = 1;
-          "format" = "{:%I:%M %p  %A %b %d}";
+          "format" = "{:%I:%M %p  %A %b %d} /";
           "tooltip" = true;
           "tooltip-format" = "<tt>{calendar}</tt>";
         };
@@ -269,10 +271,10 @@ in {
         };
         */
         "network" = {
-          "format-disconnected" = "Disconnected :c";
-          "format-ethernet" = "𝆺𝅥𝅯";
-          "format-linked" = "𝆹𝅥𝅯 (No IP)";
-          "format-wifi" = "𝆹𝅥𝅮";
+          "format-disconnected" = "Disconnected :c /";
+          "format-ethernet" = "𝆺𝅥𝅯 /";
+          "format-linked" = "𝆹𝅥𝅯 (No IP) /";
+          "format-wifi" = "𝆹𝅥𝅮 /";
           "interval" = 1;
           "tooltip" = true;
           "tooltip-format" = "{essid} ({ipaddr})";
@@ -286,7 +288,7 @@ in {
         };
         */
         "custom/powermenu" = {
-          "format" = "𓏲𝄢";
+          "format" = "/ 𓏲𝄢";
           "on-click" = "wlogout";
           "tooltip" = false;
         };
