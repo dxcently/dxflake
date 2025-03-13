@@ -66,6 +66,7 @@
     zoom-us
     youtube-music
     calibre
+    jupyter
     # cli programs
     arduino-cli
     vim
@@ -102,7 +103,7 @@
     spotdl
     playerctl
     distrobox
-    calcure
+    gcalcli
     # libs/frameworks
     qt6.qtwayland
     libsForQt5.qt5.qtwayland
