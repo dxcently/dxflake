@@ -265,6 +265,7 @@ in {
               "today" = "<span color='#${palette.base0D}'><b><u>{}</u></b></span>";
             };
           };
+          "on-click" = "kitty calcure";
         };
         /*
         "memory" = {
