@@ -40,7 +40,7 @@
     floorp
     vscodium
     arduino-ide
-    ungoogled-chromium
+    chromium
     firefox
     anki-bin
     obsidian

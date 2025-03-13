@@ -19,5 +19,6 @@
     ./composekey.nix
     ./nh.nix
     ./rofi.nix
+    ./audacious.nix
   ];
 }
