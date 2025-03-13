@@ -29,7 +29,7 @@
     playlist_headers_bold=TRUE
 
     [skins]
-    skin=/home/khoa/Downloads/Chobits_chii/
+    skin=/home/khoa/dxflake/extras/winamp_skins/chii_winamp_skin
     mainwin_font=Lekton Nerd Font
     playlist_font=Lekton Nerd Font
   '';
