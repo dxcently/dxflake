@@ -4,15 +4,15 @@
 ## features:
 
 - hyprland + waybar
-- multihost
-- (almost) fully declarative floorp browser
 - yazi + thunar file browser
 - rofi
 - mako notifs daemon
 - bash + kitty
-- looks pretty. i think
+- (almost) fully declarative floorp browser
 - audacious w/ chii winamp skin
+- multihost
 - functional (kind of)
+- looks pretty. i think
 - _does not come with fl studio_
 
 ## screenshots:
@@ -28,7 +28,7 @@
 
 **22.02.25 / 𓏲𝄢** ![image](./extras/screenshots/musicsavesmysoul.png)
 
-**22.02.25 / 𓏲𝄢 v2** ![image](./extras/screenshots/musicsavesmysoul1.png)
+**12.03.25 / 𓏲𝄢 v2** ![image](./extras/screenshots/musicsavesmysoul1.png)
 ![image](./extras/screenshots/musicsavesmysoul2.png)
 
 ## credit to other flakes/rices i've referenced:
