@@ -73,7 +73,7 @@ in {
       padding-right: 8px;
       color: #${palette.base00};
       }
-      #mode, #clock, #memory, #temperature,#cpu, #temperature, #backlight,#wireplumber, #network, #battery, #custom-powermenu {
+      #mode, #clock, #backlight, #wireplumber, #network, #battery, #custom-powermenu {
       padding-left: 5px;
       padding-right: 8px;
       }
@@ -152,10 +152,10 @@ in {
         modules-right = [
           "mpris"
           "wireplumber"
-          "backlight"
+          #"backlight"
           #"memory"
           #"cpu"
-          "network"
+          #"network"
           #"temperature"
           "battery"
           "tray"
@@ -210,7 +210,7 @@ in {
         "mpris" = {
           "format" = "♪ « {artist} - {title} »";
           "format-paused" = "⏸ [{artist} - {title}]";
-          "max-length" = 40;
+          "max-length" = 50;
         };
         "wireplumber" = {
           "scroll-step" = 2;
@@ -236,19 +236,15 @@ in {
           };
           "format" = "{icon}  {capacity}% /";
           "format-icons" = [
-            "𝄐"
-            "𝅂"
-            "𝅁"
-            "𝅀"
-            "𝄿"
-            "𝄾"
             "𝄽"
-            "𝄼"
-            "𝄻"
-            "𝄺"
+            "𝄾"
+            "𝄿"
+            "𝅀"
+            "𝅁"
+            "𝅂"
           ];
-          "format-full" = "{icon}  {capacity}% /";
-          "format-charging" = "♰ {capacity}% /";
+          "format-full" = "𝆑 /";
+          "format-charging" = "𝄮 {capacity}% /";
           "tooltip" = false;
         };
         "clock" = {
@@ -256,6 +252,19 @@ in {
           "format" = "{:%I:%M %p  %A %b %d} /";
           "tooltip" = true;
           "tooltip-format" = "<tt>{calendar}</tt>";
+          "calendar" = {
+            "mode" = "year";
+            "mode-mon-col" = 3;
+            "weeks-pos" = "right";
+            "on-scroll" = 1;
+            "format" = {
+              "months" = "<span color='#${palette.base0B}'><b>{}</b></span>";
+              "days" = "<span color='#${palette.base00}'><b>{}</b></span>";
+              "weeks" = "<span color='#${palette.base08}'><b>W{}</b></span>";
+              "weekdays" = "<span color='#${palette.base0A}'><b>{}</b></span>";
+              "today" = "<span color='#${palette.base0D}'><b><u>{}</u></b></span>";
+            };
+          };
         };
         /*
         "memory" = {
