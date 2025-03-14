@@ -37,8 +37,8 @@ in {
     };
 
     iconTheme = {
-      name = "elementary-xfce-icon-theme";
-      package = pkgs.elementary-xfce-icon-theme;
+      name = "faba-icon-theme";
+      package = pkgs.faba-icon-theme;
     };
     gtk3 = {
       inherit extraConfig;
