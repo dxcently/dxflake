@@ -15,10 +15,8 @@
     grim
     swappy
     bash
-    thunderbird
     wpgtk
     wl-clipboard
-    wlogout
     polkit_gnome
     libnotify
     unrar
@@ -36,7 +34,6 @@
     pavucontrol
     # programs
     osu-lazer-bin
-    virtualbox
     floorp
     vscodium
     arduino-ide
@@ -68,7 +65,6 @@
     calibre
     jupyter
     # cli programs
-    arduino-cli
     vim
     socat
     bat
