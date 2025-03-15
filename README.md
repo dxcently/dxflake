@@ -8,7 +8,6 @@
 - rofi
 - mako notifs daemon
 - bash + kitty
-- (almost) fully declarative floorp browser
 - audacious w/ chii winamp skin
 - multihost
 - functional (kind of)

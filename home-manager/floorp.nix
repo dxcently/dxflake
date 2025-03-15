@@ -8,10 +8,13 @@
     profiles.dx = {
       name = "dx";
       isDefault = true;
-      settings = {
+      /*
+        settings = {
         "extensions.autoDisableScopes" = 0;
       };
-      extraConfig = ''
+      */
+      /*
+        extraConfig = ''
         user_pref("accessibility.typeaheadfind.flashBar", 0);
         user_pref("app.normandy.first_run", false);
         user_pref("app.normandy.migrationsApplied", 12);
@@ -114,32 +117,13 @@
         user_pref("extensions.webcompat.enable_shims", true);
         user_pref("extensions.webcompat.perform_injections", true);
         user_pref("extensions.webcompat.perform_ua_overrides", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.addon@darkreader.org", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.dfyoutube@example.com", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.firefox@tampermonkey.net", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.floorp-system@floorp.ablaze.one", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.jid1-BoFifL9Vbdl2zQ@jetpack", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.leechblockng@proginosko.com", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.paxmod@numirias", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.savewebpas@jeffersonscher.com", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.screenshots@mozilla.org", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.sponsorBlocker@ajay.app", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.treestyletab@piro.sakura.ne.jp", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.uBlock0@raymondhill.net", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.{34daeb50-c2d2-4f14-886a-7160b24d66a4}", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.{6AC85730-7D0F-4de0-B3FA-21142DD85326}", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.{762f9885-5a13-4abd-9c77-433dcd38b8fd}", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.{799c0914-748b-41df-a25c-22d008f9e83f}", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.{d7742d87-e61d-4b78-b8a1-b469842139fa}", true);
-        user_pref("extensions.webextensions.ExtensionStorageIDB.migrated.{e1cad622-f77c-4035-8137-33b8296e5c9d}", true);
-        user_pref("extensions.webextensions.uuids", "{\"floorp-actions@floorp.ablaze.one\":\"f7a1d848-2b6a-45e3-8279-b7ae429088e9\",\"floorp-system@floorp.ablaze.one\":\"09cc810b-c7f7-46f3-b858-a377c364e658\",\"formautofill@mozilla.org\":\"cb1ceb7c-8925-4da9-a349-c4f0023763ad\",\"official-site-ua@floorp.ablaze.one\":\"6474b48e-bd8f-4a59-9409-a73603c9dcfa\",\"paxmod@numirias\":\"cba3dbe5-de11-47dc-99b8-15967b8ffa1d\",\"pictureinpicture@mozilla.org\":\"0b88f04d-b1ca-4772-88c1-6c15a2d910ea\",\"screenshots@mozilla.org\":\"235b1612-6675-48a9-8035-c16e2fb9a015\",\"webcompat-reporter@mozilla.org\":\"d03b67f4-6866-4774-a7d3-076e22707e93\",\"webcompat@mozilla.org\":\"091c5320-b9b0-4791-ac36-4f21b6852f04\",\"webpanel-ua@floorp.ablaze.one\":\"e99d801c-1fc1-49ab-a058-d25fdf957a46\",\"default-theme@mozilla.org\":\"68de2832-a51c-4168-bc17-cff662dc1278\",\"addons-search-detection@mozilla.com\":\"708b0230-baeb-4b32-96ef-3a10d17e2b99\",\"dfyoutube@example.com\":\"9374728d-121a-4fc6-9277-178e72e08566\",\"BraveSearchExtension@io.Uvera\":\"3684f64e-60ab-42c1-94a8-6985c16a5643\",\"sponsorBlocker@ajay.app\":\"f3ecbfb5-233f-4917-880b-4893a8c1e917\",\"firefox@tampermonkey.net\":\"0bf365f7-b0d3-4de2-967c-1aed2e77d93a\",\"jid1-BoFifL9Vbdl2zQ@jetpack\":\"b7e4b259-af8c-4751-8da6-d2a692098def\",\"{e1cad622-f77c-4035-8137-33b8296e5c9d}\":\"372608ec-9958-47df-8aef-962f969c9fa7\",\"savewebpas@jeffersonscher.com\":\"c078c086-4f2b-4011-aff6-1a5605c38d2f\",\"{30280527-c46c-4e03-bb16-2e3ed94fa57c}\":\"4936b431-e1ca-4d7a-ac17-5df0a727a8d4\",\"{d7742d87-e61d-4b78-b8a1-b469842139fa}\":\"b114a6b3-b678-42e4-ab2a-d9c44d2f98bb\",\"{799c0914-748b-41df-a25c-22d008f9e83f}\":\"1df48ef6-7dad-4b16-8d40-d421a60e27a0\",\"uBlock0@raymondhill.net\":\"10e7af4e-9b1e-4763-b422-e40f5a959ad6\",\"{6AC85730-7D0F-4de0-B3FA-21142DD85326}\":\"31101017-f9fd-406e-9f78-92748c2dc006\",\"emoji@saveriomorelli.com\":\"94e0ea68-f5cd-47a4-ba54-7a9642c10e5b\",\"{98cc10e6-a1bc-4604-9366-227073d2484c}\":\"6ad26770-5657-4562-844f-ea051e2b312c\",\"leechblockng@proginosko.com\":\"2513abfd-a551-4335-9153-00d309ab4883\",\"{762f9885-5a13-4abd-9c77-433dcd38b8fd}\":\"a5897f97-0015-4bdf-a081-6fa520272008\",\"{4071edd9-4815-443f-bcea-55fa59ce6c2a}\":\"f7f98bda-1eb3-4fa1-99a3-7520c3b4c561\",\"{2670bc9d-253e-44f8-8bb4-cf850d02f005}\":\"26f91cef-10b5-4df0-bdf2-88f35133bffd\",\"{325aba2a-12e1-44c0-820a-a22e2128faab}\":\"014b75c2-dd93-4b7e-9034-c2b7c12341cd\",\"{c3babf04-b119-42fe-aeaf-f7434b0e3540}\":\"d7c873ff-d197-4ab4-9f83-49af2654ae07\",\"treestyletab@piro.sakura.ne.jp\":\"f05c3126-b3a1-4f82-9164-1f26fd581e95\",\"tridactyl.vim@cmcaine.co.uk\":\"84bcbe7b-f532-44cb-96e6-1256e89ef5f3\",\"{34daeb50-c2d2-4f14-886a-7160b24d66a4}\":\"c9c5f2a8-893d-47bc-9ee3-141dcf0c0307\",\"addon@darkreader.org\":\"6fbf6298-eed8-48a8-b18e-78767b1d1872\",\"{9b84b6b4-07c4-4b4b-ba21-394d86f6e9ee}\":\"14e20368-cc2b-4dc7-95af-062586104bef\",\"{4f8988cc-a4f1-4676-89b2-a3f352d004d5}\":\"f27259e1-9ad2-4041-b206-06dc4d7c2376\",\"{574342b3-b069-4381-8b7a-fc4c31c4d08f}\":\"7e7d8868-9d44-4ded-9bda-10dcafb0dd57\",\"{b6e059d0-1561-422c-9815-d10ac5641d19}\":\"21618803-dfc1-4254-87b6-444751a2d605\",\"{50da7b25-393c-4115-b2ee-df67e84c9906}\":\"7fe5ea7d-96fc-4c01-8a57-12fe015a2453\",\"{9a1e3f61-a21d-485a-af2c-4e897ec8a9d7}\":\"f22ac0b0-33ec-44d0-aa1f-b00dee0feda3\",\"{137ef823-2fbc-45db-a67f-56783b33e989}\":\"8114b385-e16e-4627-8195-641607b913d2\",\"{5570282b-5d26-4c71-adef-7ffbc0ab16c5}\":\"ee775b24-c5cf-4c6c-a113-7b806ae52939\"}");
         user_pref("findbar.highlightAll", true);
         user_pref("floorp.browser.nora.csk.data", "{}");
         user_pref("floorp.browser.note.backup.latest.time", "1740507480653");
         user_pref("floorp.browser.note.memos", "{\"titles\":[\"Welcome!\",\"FLOORP SETTINGS SETUP\"],\"contents\":[\"Welcome to Floorp Notes! Here are some instructions on how to use it!\\n\\nFloorp Notes is a notepad that lets you store multiple notes that sync across devices. To enable synchronization, you need to sign in to Floorp with your Firefox account.\\nFloorp Notes will be saved in your Floorp settings and synchronized across devices using Firefox Sync. Firefox Sync encrypts the contents of the sync with your Firefox account password, so no one but you know its contents.\",\"\"]}");
         user_pref("floorp.browser.sidebar.is.displayed", false);
         user_pref("floorp.browser.sidebar.right", false);
-        user_pref("floorp.browser.sidebar2.data", "{\"data\":{\"floorp__bmt\":{\"url\":\"floorp//bmt\",\"width\":600},\"floorp__bookmarks\":{\"url\":\"floorp//bookmarks\",\"width\":415},\"floorp__history\":{\"url\":\"floorp//history\",\"width\":415},\"floorp__downloads\":{\"url\":\"floorp//downloads\",\"width\":415},\"floorp__notes\":{\"url\":\"floorp//notes\",\"width\":550},\"w202502116126\":{\"url\":\"https://calendar.google.com/calendar/u/1/r/tasks?pli=1\",\"usercontext\":-1,\"width\":1000},\"w202502116943\":{\"url\":\"https://canvas.fau.edu/\",\"usercontext\":-1,\"width\":700,\"userAgent\":true},\"w0\":{\"url\":\"https://translate.google.com\"},\"w2\":{\"url\":\"https://docs.floorp.app\"},\"w202502116117\":{\"url\":\"https://chatgpt.com/\",\"usercontext\":-1,\"width\":700}},\"index\":[\"floorp__bmt\",\"floorp__bookmarks\",\"floorp__history\",\"floorp__downloads\",\"floorp__notes\",\"w202502116126\",\"w202502116943\",\"w0\",\"w2\",\"w202502116117\"]}");
+        user_pref("floorp.browser.sidebar2.data", "{\"data\":{\"floorp__bmt\":{\"url\":\"floorp//bmt\",\"width\":600},\"floorp__bookmarks\":{\"url\":\"floorp//bookmarks\",\"width\":415},\"floorp__history\":{\"url\":\"floorp//history\",\"width\":415},\"floorp__downloads\":{\"url\":\"floorp//downloads\",\"width\":415},\"floorp__notes\":{\"url\":\"floorp//notes\",\"width\":550},\"w202502116126\":{\"url\":\"https://calendar.google.com/calendar/u/1/r/tasks?pli=1\",\"usercontext\":-1,\"width\":1000},\"w0\":{\"url\":\"https://translate.google.com\"},\"w202502116117\":{\"url\":\"https://chatgpt.com/\",\"usercontext\":-1,\"width\":700}},\"index\":[\"floorp__bmt\",\"floorp__bookmarks\",\"floorp__history\",\"floorp__downloads\",\"floorp__notes\",\"w202502116126\",\"w0\",\"w202502116117\"]}");
         user_pref("floorp.browser.sidebar2.global.webpanel.width", 444);
         user_pref("floorp.browser.ssb.toolbars.disabled", false);
         user_pref("floorp.browser.tabbar.multirow.max.row", 2);
@@ -332,6 +316,7 @@
         user_pref("userChrome.urlView.go_button_when_typing", false);
         user_pref("userChrome.urlView.move_icon_to_left", false)
       '';
+      */
     };
   };
 }
