@@ -18,7 +18,9 @@
     ./floorp.nix
     ./composekey.nix
     ./nh.nix
-    ./rofi.nix
     ./audacious.nix
+    ./rofi.nix
+    ./hyprlock.nix
+    ./wlogout.nix
   ];
 }

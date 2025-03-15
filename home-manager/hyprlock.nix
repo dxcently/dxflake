@@ -4,8 +4,7 @@
   inputs,
   ...
 }: {
-  programs.rofi = {
+  programs.hyprlock = {
     enable = true;
-    package = pkgs.rofi-wayland;
   };
 }

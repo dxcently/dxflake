@@ -15,10 +15,8 @@
     grim
     swappy
     bash
-    thunderbird
     wpgtk
     wl-clipboard
-    wlogout
     polkit_gnome
     libnotify
     unrar
@@ -36,7 +34,6 @@
     pavucontrol
     # programs
     osu-lazer-bin
-    virtualbox
     floorp
     vscodium
     arduino-ide
@@ -66,8 +63,8 @@
     zoom-us
     youtube-music
     calibre
+    jupyter
     # cli programs
-    arduino-cli
     vim
     socat
     bat
@@ -102,6 +99,7 @@
     spotdl
     playerctl
     distrobox
+    gcalcli
     # libs/frameworks
     qt6.qtwayland
     libsForQt5.qt5.qtwayland

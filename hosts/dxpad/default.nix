@@ -114,11 +114,6 @@
       nssmdns = true;
       openFirewall = true;
     };
-    xserver = {
-      displayManager.lightdm = {
-        enable = true;
-      };
-    };
     jellyfin = {
       enable = true;
       package = pkgs.jellyfin;
