@@ -26,6 +26,7 @@
     winetricks
     udiskie
     nvtop-amd
+    r2modman
   ];
   #programs.k3b.enable = true;
 
