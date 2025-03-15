@@ -76,48 +76,17 @@
 
   #services
   services = {
-    openssh = {
+    #currently does not work
+    /*
+      fprintd = {
       enable = true;
-      settings = {
-        # Forbid root login through SSH.
-        PermitRootLogin = "no";
-        # Use keys only. Remove if you want to SSH using password (not recommended)
-        PasswordAuthentication = true;
-      };
-    };
-    pipewire = {
-      enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
-      pulse.enable = true;
-      jack.enable = true;
-      wireplumber = {
+      package = pkgs.fprintd-tod;
+      tod = {
         enable = true;
-        extraConfig = {
-          "10-disable-camera" = {
-            "wireplumber.profiles" = {
-              main."monitor.libcamera" = "disabled";
-            };
-          };
-        };
+        driver = pkgs.libfprint-2-tod1-elan;
       };
     };
-    blueman.enable = true;
-    devmon.enable = true;
-    gvfs.enable = true;
-    udisks2.enable = true;
-    flatpak.enable = true;
-    tumbler.enable = true;
-    printing.enable = true;
-    avahi = {
-      enable = true;
-      nssmdns = true;
-      openFirewall = true;
-    };
-    jellyfin = {
-      enable = true;
-      package = pkgs.jellyfin;
-    };
+    */
     syncthing = {
       enable = true;
       user = "khoa";
