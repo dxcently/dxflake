@@ -44,5 +44,40 @@
     displayManager.ly = {
       enable = true;
     };
+    openssh = {
+      enable = true;
+      settings = {
+        # Forbid root login through SSH.
+        PermitRootLogin = "no";
+        # Use keys only. Remove if you want to SSH using password (not recommended)
+        PasswordAuthentication = true;
+      };
+    };
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = true;
+      wireplumber = {
+        enable = true;
+      };
+    };
+    avahi = {
+      enable = true;
+      nssmdns = true;
+      openFirewall = true;
+    };
+    jellyfin = {
+      enable = true;
+      package = pkgs.jellyfin;
+    };
+    devmon.enable = true;
+    blueman.enable = true;
+    gvfs.enable = true;
+    udisks2.enable = true;
+    flatpak.enable = true;
+    tumbler.enable = true;
+    printing.enable = true;
   };
 }
