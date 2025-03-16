@@ -35,16 +35,17 @@ in {
       env = WLR_NO_HARDWARE_CURSORS,1
 
       #start programs
+      exec-once = systemd
       exec-once = dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      exec-once = swww-daemon & swww img ../extras/wallpapers/yuki.png
+      exec-once = swww-daemon && swww img ../extras/wallpapers/yuki.png
       exec-once = waybar
       exec-once = nm-applet
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       #exec-once = thunderbird
       exec-once = [workspace 1 silent] floorp
-      exec-once = systemd
       exec-once = youtube-music
+      exec-once = vesktop
 
       #opacity window rules
       #windowrule = opacity 1 0.84, vesktop
