@@ -17,7 +17,7 @@ in {
     enable = true;
 
     settings.vim = {
-      vimAlias = true;
+      vimAlias = false;
       viAlias = true;
 
       theme = {
