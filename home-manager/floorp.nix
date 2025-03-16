@@ -5,15 +5,16 @@
 }: {
   programs.floorp = {
     enable = true;
+    /*
     profiles.dx = {
-      name = "dx";
-      isDefault = true;
-      /*
-        settings = {
-        "extensions.autoDisableScopes" = 0;
-      };
-      */
-      /*
+    name = "dx";
+    isDefault = true;
+    /*
+      settings = {
+      "extensions.autoDisableScopes" = 0;
+    };
+    */
+    /*
         extraConfig = ''
         user_pref("accessibility.typeaheadfind.flashBar", 0);
         user_pref("app.normandy.first_run", false);
@@ -108,7 +109,12 @@
         user_pref("extensions.pictureinpicture.enable_picture_in_picture_overrides", true);
         user_pref("extensions.quarantinedDomains.list", "autoatendimento.bb.com.br,ibpf.sicredi.com.br,ibpj.sicredi.com.br,internetbanking.caixa.gov.br,www.ib12.bradesco.com.br,www2.bancobrasil.com.br");
         user_pref("extensions.systemAddonSet", "{\"schema\":1,\"addons\":{}}");
-        user_pref("extensions.ui.dictionary.hidden", true);
+        user_pref("extensions.ui.dictionary.hidd
+    "application/pdf" = "firefox.desktop";
+    "image/png" = [
+      "sxiv.desktop"
+      "gimp.desktop"
+    ];en", true);
         user_pref("extensions.ui.extension.hidden", false);
         user_pref("extensions.ui.lastCategory", "addons://list/extension");
         user_pref("extensions.ui.locale.hidden", true);
@@ -316,7 +322,7 @@
         user_pref("userChrome.urlView.go_button_when_typing", false);
         user_pref("userChrome.urlView.move_icon_to_left", false)
       '';
-      */
-    };
+    */
+    #};
   };
 }
