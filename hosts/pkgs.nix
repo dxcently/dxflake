@@ -64,6 +64,7 @@
     youtube-music
     calibre
     jupyter
+    gimp
     # cli programs
     vim
     socat
