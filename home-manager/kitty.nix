@@ -27,6 +27,8 @@ in {
       "alt+k" = "previous_window";
       "alt+h" = "previous_tab";
       "alt+l" = "next_tab";
+      "alt+enter" = "new_window_with_cwd";
+      "alt+q" = "close_window";
     };
     extraConfig = ''
       enabled_layouts fat:bias=80;full_size=1
