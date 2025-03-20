@@ -40,7 +40,7 @@ in {
       nano = "nvim";
       flake-rebuild = "nh os switch /home/khoa/dxflake/";
       flake-update = "nh os switch /home/khoa/dxflake/ --update";
-      gcCleanup = "nh clean all";
+      nix-clean = "nh clean all";
       ls = "lsd";
       ll = "lsd -l";
       la = "lsd -a";
@@ -48,9 +48,9 @@ in {
       ".." = "cd ..";
       reboot = "systemctl reboot";
       shutdown = "shutdown -h now";
-      fetch = "fastfetch";
       nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
       sdl = "spotdl download";
+      lg = "lazygit";
     };
   };
 }
