@@ -61,14 +61,30 @@ in {
       };
 
       keymaps = [
-        /*
-          {
+        {
           key = "<leader>y";
           mode = ["v" "n"];
-          action = "+y";
-          desc = "Copy into system clipboard";
+          action = ''"+y'';
+          desc = "Yank into system clipboard";
         }
-        */
+        {
+          key = "<leader>Y";
+          mode = ["v" "n"];
+          action = ''"+yg_'';
+          desc = "Yank to the right of cursor into system clipboard";
+        }
+        {
+          key = "<leader>p";
+          mode = ["v" "n"];
+          action = ''"+p'';
+          desc = "Paste from system clipboard";
+        }
+        {
+          key = "<leader>P";
+          mode = ["v" "n"];
+          action = ''"+P'';
+          desc = "Paste to the left of cursor from system clipboard";
+        }
         {
           key = "<C-h>";
           mode = ["i"];
@@ -94,7 +110,7 @@ in {
           desc = "Move right in insert mode";
         }
         {
-          key = "<leader>fe";
+          key = "<leader>nt";
           mode = ["n"];
           action = "<cmd>Neotree toggle<cr>";
           desc = "File browser toggle";
