@@ -19,7 +19,6 @@ in {
     settings.vim = {
       vimAlias = false;
       viAlias = true;
-
       theme = {
         enable = true;
         name = "base16";
@@ -60,6 +59,59 @@ in {
           */
         };
       };
+
+      keymaps = [
+        /*
+          {
+          key = "<leader>y";
+          mode = ["v" "n"];
+          action = "+y";
+          desc = "Copy into system clipboard";
+        }
+        */
+        {
+          key = "<C-h>";
+          mode = ["i"];
+          action = "<Left>";
+          desc = "Move left in insert mode";
+        }
+        {
+          key = "<C-j>";
+          mode = ["i"];
+          action = "<Down>";
+          desc = "Move down in insert mode";
+        }
+        {
+          key = "<C-k>";
+          mode = ["i"];
+          action = "<Up>";
+          desc = "Move up in insert mode";
+        }
+        {
+          key = "<C-l>";
+          mode = ["i"];
+          action = "<Right>";
+          desc = "Move right in insert mode";
+        }
+        {
+          key = "<leader>fe";
+          mode = ["n"];
+          action = "<cmd>Neotree toggle<cr>";
+          desc = "File browser toggle";
+        }
+        {
+          key = "<leader>nh";
+          mode = ["n"];
+          action = ":nohl<CR>";
+          desc = "Clear search highlights";
+        }
+        {
+          key = "<leader>?";
+          mode = ["n"];
+          action = "<cmd>Cheatsheet<cr>";
+          desc = "Opens cheatsheet.nvim";
+        }
+      ];
 
       options = {
         autoindent = true;
@@ -167,6 +219,10 @@ in {
       };
 
       notes.neorg = {
+        enable = true;
+      };
+
+      filetree.neo-tree = {
         enable = true;
       };
 
