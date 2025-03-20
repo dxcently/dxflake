@@ -48,7 +48,6 @@
               };
               useGlobalPkgs = true;
               useUserPackages = true;
-              backupFileExtension = "l_backup";
             };
           }
         ];
@@ -75,7 +74,6 @@
               };
               useGlobalPkgs = true;
               useUserPackages = true;
-              backupFileExtension = "d_backup";
             };
           }
         ];
