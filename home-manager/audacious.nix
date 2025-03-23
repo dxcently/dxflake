@@ -26,7 +26,7 @@
     playlist_headers_bold=TRUE
 
     [skins]
-    skin=/home/khoa/dxflake/extras/winamp_skins/chii_winamp_skin
+    skin=/home/khoa/dxflake/extras/winamp_skins/chii_pearls
     mainwin_font=Lekton Nerd Font
     playlist_font=Lekton Nerd Font
   '';
