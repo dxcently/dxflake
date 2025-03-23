@@ -1,0 +1,5 @@
+[Text]
+Normal=484848
+SelectedBG=570000
+NormalBG=000000
+Current=a0a0a0

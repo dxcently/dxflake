@@ -1,0 +1,8 @@
+[Text]
+Normal=#999999
+Current=#000000
+NormalBG=#e2FFff
+SelectedBG=#b2d2d3
+Font=MS mincho
+mbFG=#999999
+mbBG=#e2ffff
