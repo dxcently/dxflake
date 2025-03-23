@@ -7,9 +7,7 @@
 }: {
   imports = [
     ./hardware.nix
-    ../pkgs.nix
-    ../fonts.nix
-    ../options.nix
+    ./../../modules/core
   ];
 
   nixpkgs = {
