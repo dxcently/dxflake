@@ -6,21 +6,21 @@
   ...
 }: {
   imports = [
-    ./hyprland.nix
-    ./kitty.nix
-    ./swappy.nix
-    ./waybar.nix
-    ./yazi.nix
-    ./bash.nix
-    ./gtk-qt.nix
-    ./fastfetch/fastfetch.nix
-    ./neovim.nix
-    ./floorp.nix
-    ./composekey.nix
-    ./nh.nix
-    ./audacious.nix
-    ./rofi.nix
-    ./hyprlock.nix
-    ./wlogout.nix
+    ./hyprland.nix #window manager
+    ./waybar.nix #bar
+    ./kitty.nix #terminal
+    ./bash.nix #shell
+    ./neovim.nix #text editor
+    ./rofi.nix #application launcher
+    ./nh.nix #nix helper
+    ./swappy.nix #screenshot
+    ./yazi.nix #tui file manager
+    ./gtk-qt.nix #set themes and colors
+    ./fastfetch/fastfetch.nix #fetch
+    ./floorp.nix #browser
+    ./composekey.nix #special keys
+    ./audacious.nix #music player
+    ./hyprlock.nix #lock
+    ./wlogout.nix #power menu
   ];
 }
