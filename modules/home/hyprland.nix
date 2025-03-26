@@ -38,7 +38,7 @@ in {
       exec-once = systemd
       exec-once = dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      exec-once = swww-daemon && swww img ../extras/wallpapers/yuki.png
+      exec-once = swww-daemon
       exec-once = waybar
       exec-once = nm-applet
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
@@ -165,10 +165,10 @@ in {
         }
       }
 
-      gestures {
-        workspace_swipe = true
-        workspace_swipe_fingers = 3
-      }
+      #gestures {
+      #  workspace_swipe = true
+      #  workspace_swipe_fingers = 3
+      #}
 
       general {
         gaps_in = 4
