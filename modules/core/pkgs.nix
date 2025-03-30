@@ -29,6 +29,7 @@
     gparted
     kdePackages.gwenview
     feh
+    hyprpaper
     # audio
     wireplumber
     pavucontrol

@@ -35,30 +35,24 @@ in {
       env = WLR_NO_HARDWARE_CURSORS,1
 
       #start programs
-      exec-once = systemd
-      exec-once = dbus-update-activation-environment --systemd --all
-      exec-once = nm-applet
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = dbus-update-activation-environment --systemd --all
+      exec-once = systemd
+      exec-once = nm-applet --indicator
       exec-once = hyprpaper
-      exec-once = hyprctl hyprpaper wallpaper ",tile:~/dxflake/extras/wallpapers/ssr_tile.png"
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = [workspace 1 silent] floorp
       exec-once = youtube-music
-      exec-once = vesktop
 
       #opacity window rules
-      #windowrule = opacity 0.8, title:^(YouTube Music)$
       windowrule = opacity 0.8, title:^(FL Studio)$
       #workspaces window rules
-      windowrule = workspace 10, class:^([Vv]esktop), title:^([Vv]esktop)$
+      windowrule = workspace 10, class:^([Vv]esktop)$, title:^([Vv]esktop)$
       windowrule = workspace special:scratch, class:^([Ss]team)$, title:^([Ss]team)$
       windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
       windowrule = workspace special:magic, title:^(YouTube Music)$
       #windowrule = noborder, focus:0
-      #workspace rules
-      workspace=10, monitor:HDMI-A-1, default:true
-
       #keybindings
       bind = $mainMod, RETURN, exec, $terminal
       bind = $mainMod, SPACE, exec, $menu
