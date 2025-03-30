@@ -37,9 +37,10 @@ in {
       #start programs
       exec-once = systemd
       exec-once = dbus-update-activation-environment --systemd --all
-      exec-once = hyprpaper
-      exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec-once = nm-applet
+      exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = hyprpaper
+      exec-once = hyprctl hyprpaper wallpaper ",tile:~/dxflake/extras/wallpapers/ssr_tile.png"
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = [workspace 1 silent] floorp
