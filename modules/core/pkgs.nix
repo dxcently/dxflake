@@ -38,6 +38,7 @@
     vscodium
     arduino-ide
     chromium
+    tor-browser
     firefox
     anki-bin
     obsidian
