@@ -134,15 +134,15 @@ in {
             bar_text_align = left
             bar_precedence_over_border = true
             bar_height = 20
-            hyprbars-button = rgb(556677), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgb(ff4040), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
-            hyprbars-button = rgb(556677), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
+            hyprbars-button = rgba(${theme.base07}ff), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
+            hyprbars-button = rgba(${theme.base07}ff), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
+            hyprbars-button = rgba(${theme.base07}ff), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
         }
       }
 
       input {
         kb_layout = us
-        kb_options = compose:caps
+        kb_options = compose:caps #changes capslock to composekey button
 
         follow_mouse = 1
         sensitivity = 0.8
