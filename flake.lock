@@ -59,11 +59,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742442527,
-        "narHash": "sha256-P3hEYEIryixLQWeKOYjyxv6bIQIDoyNAuvEq+tfJc6k=",
+        "lastModified": 1743097780,
+        "narHash": "sha256-5tUbaMBKYbfTe/4aXACxmiXG22TgwPBNcfZ8Kg3rt+g=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "97a00e0659b2807454507eb3a593bd09b099bd80",
+        "rev": "b14a70c40f4fd0b73d095ab04a7c6e31fbc18e52",
         "type": "github"
       },
       "original": {
@@ -135,11 +135,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1742288794,
-        "narHash": "sha256-Txwa5uO+qpQXrNG4eumPSD+hHzzYi/CdaM80M9XRLCo=",
+        "lastModified": 1742889210,
+        "narHash": "sha256-hw63HnwnqU3ZQfsMclLhMvOezpM7RSB0dMAtD5/sOiw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b6eaf97c6960d97350c584de1b6dcff03c9daf42",
+        "rev": "698214a32beb4f4c8e3942372c694f40848b360d",
         "type": "github"
       },
       "original": {
@@ -181,11 +181,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1741865919,
-        "narHash": "sha256-4thdbnP6dlbdq+qZWTsm4ffAwoS8Tiq1YResB+RP6WE=",
+        "lastModified": 1742923925,
+        "narHash": "sha256-biPjLws6FiBVUUDHEMFq5pUQL84Wf7PntPYdo3oKkFw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "573c650e8a14b2faa0041645ab18aed7e60f0c9a",
+        "rev": "25d1b84f5c90632a623c48d83a2faf156451e6b1",
         "type": "github"
       },
       "original": {
@@ -211,22 +211,6 @@
         "type": "github"
       }
     },
-    "nmd": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1705050560,
-        "narHash": "sha256-x3zzcdvhJpodsmdjqB4t5mkVW22V3wqHLOun0KRBzUI=",
-        "owner": "~rycee",
-        "repo": "nmd",
-        "rev": "66d9334933119c36f91a78d565c152a4fdc8d3d3",
-        "type": "sourcehut"
-      },
-      "original": {
-        "owner": "~rycee",
-        "repo": "nmd",
-        "type": "sourcehut"
-      }
-    },
     "nvf": {
       "inputs": {
         "flake-parts": "flake-parts",
@@ -234,15 +218,14 @@
         "mnw": "mnw",
         "nil": "nil",
         "nixpkgs": "nixpkgs_2",
-        "nmd": "nmd",
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1742330074,
-        "narHash": "sha256-wZFnf72PZACOgH4pXbB2noAWoU51o+/8P6IY2tr6e7k=",
+        "lastModified": 1743075992,
+        "narHash": "sha256-cFr6HFG3wiVu1EzuDtwWUOjoVWrYAc5IC4FFrhk0uJI=",
         "owner": "notashelf",
         "repo": "nvf",
-        "rev": "a5dee946a9eb749649d17a9d4cd78271600247d0",
+        "rev": "aed996eb33bf37d5cf19bc224e56612321c0eaac",
         "type": "github"
       },
       "original": {
