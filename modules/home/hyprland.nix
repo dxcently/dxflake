@@ -38,32 +38,22 @@ in {
       exec-once = systemd
       exec-once = dbus-update-activation-environment --systemd --all
       exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      exec-once = waybar
       exec-once = nm-applet
+      exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
-      #exec-once = thunderbird
       exec-once = [workspace 1 silent] floorp
       exec-once = youtube-music
       exec-once = vesktop
 
       #opacity window rules
-      #windowrule = opacity 1 0.84, vesktop
-      #windowrule = opacity 0.9, neovide
-      #windowrule = opacity 0.8, bottles
-      windowrule = opacity 0.8, fl64.exe
-      #windowrule = opacity 0.8, strawberry
-      #windowrulev2 = opacity 0.8, title:(YouTube Music)
-      windowrulev2 = opacity 0.8, title:(FL Studio)
+      #windowrule = opacity 0.8, title:^(YouTube Music)$
+      windowrule = opacity 0.8, title:^(FL Studio)$
       #workspaces window rules
-      windowrule = workspace 10, vesktop
-      #windowrule = workspace 1, firefox
-      windowrule = workspace special:scratch, steam
-      #windowrule = workspace special:magic, strawberry
-      windowrulev2 = workspace special:magic, title:(YouTube Music)
-      #for steam overlay
-      windowrulev2 = stayfocused, title:^()$,class:^(steam)$
-      windowrulev2 = minsize 1 1, title:^()$,class:^(steam)$
-      #windowrulev2 = noborder, focus:0
+      windowrule = workspace 10, class:^([Vv]esktop), title:^([Vv]esktop)$
+      windowrule = workspace special:scratch, class:^([Ss]team)$, title:^([Ss]team)$
+      windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
+      windowrule = workspace special:magic, title:^(YouTube Music)$
+      #windowrule = noborder, focus:0
       #workspace rules
       workspace=10, monitor:HDMI-A-1, default:true
 
@@ -172,7 +162,7 @@ in {
       general {
         gaps_in = 4
         gaps_out = 6
-        border_size = 2
+        border_size = 1
         col.active_border = rgba(${theme.base07}ff)
         col.inactive_border = rgba(${theme.base07}ff)
         layout = dwindle
