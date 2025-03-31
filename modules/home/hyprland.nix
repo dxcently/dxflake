@@ -63,14 +63,13 @@ in {
       bind = $mainMod, SPACE, exec, $menu
       bind = $mainMod, T, exec, $fileManager
       bind = $mainMod, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
-      bind = $mainMod, Tab, exec, $windowswitcher
       bind = $mainMod, S, exec, grim -g "$(slurp -d)" - |swappy -f -
+      bind = $mainMod, Tab, exec, $windowswitcher
 
       bind = $mainMod, Q, killactive
-      bind = $mainMod, ESC, exit
       bind = $mainMod, V, togglefloating
       bind = $mainMod, F, fullscreen
-      bind = $mainMod, P, pseudo, dwindle
+      bind = $mainMod, P, pseudo
 
       bind = $mainMod, H, movefocus, l
       bind = $mainMod, J, movefocus, d
@@ -113,8 +112,6 @@ in {
       bind = $mainMod SHIFT, X, movetoworkspace, special:magic
       bind = $mainMod SHIFT, Z, movetoworkspace, special:scratch
 
-      bind = $mainMod, mouse_down, workspace, e+1
-      bind = $mainMod, mouse_up, workspace, e-1
       bindm = $mainMod, mouse:272, movewindow
       bindm = $mainMod, mouse:273, resizewindow
 
