@@ -25,9 +25,12 @@ in {
       $windowswitcher = rofi -show
 
       #monitors
-      #monitor=, preferred, auto, 1.5
-      monitor=eDP-1, 1920x1080@60, auto, 1
-      #monitor=HDMI-A-1, 1920x1080@60, 1920x0, 1
+      monitor=, preferred, auto, 1.5
+      monitor= eDP-1, 1920x1080@60, auto, 1.2
+      monitor= DP-1, 1920x1080@144, 0x0, 1
+      monitor= HDMI-A-1, 1920x1080@60, 1920x0, 1
+
+      workspace = 10, monitor:HDMI-A-1
 
       #env variables
       env = XCURSOR_SIZE,24
@@ -53,6 +56,8 @@ in {
       windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
       windowrule = workspace special:magic, title:^(YouTube Music)$
       #windowrule = noborder, focus:0
+
+
       #keybindings
       bind = $mainMod, RETURN, exec, $terminal
       bind = $mainMod, SPACE, exec, $menu
