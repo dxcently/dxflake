@@ -149,7 +149,7 @@ in {
         lightbulb.enable = true;
         lspsaga.enable = false;
         trouble.enable = true;
-        lspSignature.enable = false;
+        lspSignature.enable = true;
         otter-nvim.enable = false;
         lsplines.enable = false;
         nvim-docs-view.enable = false;
@@ -167,6 +167,8 @@ in {
         rust.enable = true;
         clang.enable = true;
         bash.enable = true;
+        tailwind.enable = true;
+        html.enable = true;
         lua.enable = true;
         nix = {
           enable = true;
@@ -219,7 +221,7 @@ in {
       };
 
       treesitter = {
-        context.enable = false; #annoying debugger
+        context.enable = false; #annoying
         indent.enable = false; #annoying indenter
       };
 
