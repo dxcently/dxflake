@@ -62,9 +62,11 @@ in {
 
   home.pointerCursor = {
     gtk.enable = true;
-    x11.enable = true;
+    hyprcursor = {
+      enable = true;
+      size = 28;
+    };
     package = pkgs.openzone-cursors;
     name = "OpenZone_White_Slim";
-    size = 28;
   };
 }
