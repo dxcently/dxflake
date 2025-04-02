@@ -115,6 +115,7 @@
     nixfmt-rfc-style
     typst
     tinymist
+    gcc
   ];
 
   nixpkgs.config.permittedInsecurePackages = ["electron-32.3.3"];
