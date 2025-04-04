@@ -92,12 +92,17 @@ in {
       color: #${palette.base0C};
       }
       #clock {
-      color: #${palette.base00};
+      color: black;
       font-weight: 600;
       }
       #window {
-        color: #${palette.base08};
-        font-style: italic;
+        color: white;
+        font-weight: 600;
+        text-shadow:
+         -1px -1px 0 black,
+          1px -1px 0 black,
+         -1px  1px 0 black,
+          1px  1px 0 black;
       }
       #custom-wall {
       color: #B38DAC;
@@ -109,20 +114,20 @@ in {
       color: #${palette.base08};
       }
       #mpris {
-      color: #${palette.base08};
+      color: black;
       }
       #wireplumber {
-      color: #${palette.base08};
+      color: black;
       }
       #network {
-      color: #${palette.base0F};
+      color: black;
       }
 
       #network.disconnected {
       color: #CCCCCC;
       }
       #battery.charging, #battery.full, #battery.discharging {
-      color: #${palette.base08};
+      color: black;
       }
       #battery.critical:not(.charging) {
       color: #D6DCE7;
@@ -132,7 +137,11 @@ in {
       font-size: 20px;
       padding-left: 8px;
       padding-right: 8px;
-      text-shadow: 0px 0px 2px black;
+      text-shadow:
+       -1px -1px 0 black,
+        1px -1px 0 black,
+       -1px  1px 0 black,
+        1px  1px 0 black;
       }
       #tray {
       padding-right: 5px;
