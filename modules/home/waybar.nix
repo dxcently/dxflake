@@ -128,6 +128,9 @@ in {
       }
       #custom-powermenu {
       color: #${palette.base00};
+      font-size: 20px;
+      padding-left: 8px;
+      padding-right: 8px;
       }
       #tray {
       padding-right: 5px;
