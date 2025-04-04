@@ -52,7 +52,8 @@ in {
       color:#${palette.base00};
       }
       #workspaces button.active {
-      background: radial-gradient( 36px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
+      background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
+      border: 1px solid black;
       color: #${palette.base00};
       }
       #workspaces button.urgent {
@@ -65,7 +66,7 @@ in {
       tooltip {
       background: white;
       border: 1px solid black;
-      border-radius: 8px;
+      border-radius: 0px;
       }
       tooltip label {
       color: #${palette.base00};
@@ -127,10 +128,11 @@ in {
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #${palette.base00};
+      color: white;
       font-size: 20px;
       padding-left: 8px;
       padding-right: 8px;
+      text-shadow: 0px 0px 2px black;
       }
       #tray {
       padding-right: 5px;
@@ -139,7 +141,7 @@ in {
       #tray menu {
       background: white;
       border: 1px solid black;
-      border-radius: 8px;
+      border-radius: 0px;
       color: black;
       }
     '';
