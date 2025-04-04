@@ -67,12 +67,10 @@ in {
       active_border_color #${palette.base0B}
       inactive_border_color #${palette.base07}
       bell_border_color #${palette.base0A}
-      active_tab_foreground   #${palette.base07}
+      active_tab_foreground   #${palette.base00}
       active_tab_background   #${palette.base0A}
-      active_tab_font_style   bold
-      inactive_tab_foreground #${palette.base07}
+      inactive_tab_foreground #${palette.base0F}
       inactive_tab_background #${palette.base0B}
-      inactive_tab_font_style bold
     '';
   };
 }

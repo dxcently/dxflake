@@ -14,6 +14,7 @@ in {
     systemd.enable = true;
     plugins = [
       pkgs.hyprlandPlugins.hyprbars
+      pkgs.hyprlandPlugins.borders-plus-plus
     ];
     extraConfig = ''
 
@@ -55,8 +56,10 @@ in {
       windowrule = workspace special:scratch, class:^([Ss]team)$, title:^([Ss]team)$
       windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
       windowrule = workspace special:magic, title:^(YouTube Music)$
-      #windowrule = noborder, focus:0
+      windowrule = noborder, class:^(Audacious)$
+      windowrule = plugin:hyprbars:nobar, class:^(Audacious)$
 
+      layerrule = blur, waybar
 
       #keybindings
       bind = $mainMod, RETURN, exec, $terminal
@@ -125,14 +128,23 @@ in {
       #looksmaxxing
       plugin {
         hyprbars {
-            bar_color = rgba(${theme.base07}ff)
+            bar_color = rgba(00000000)
             col.text = rgba(${theme.base00}ff)
             bar_text_align = left
+            bar_text_size = 10
             bar_precedence_over_border = true
+            bar_part_of_window = false
             bar_height = 20
-            hyprbars-button = rgba(${theme.base07}ff), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgba(${theme.base07}ff), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
-            hyprbars-button = rgba(${theme.base07}ff), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
+            bar_blur = true
+            hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
+            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
+            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
+        }
+        borders-plus-plus {
+            add_borders = 1
+            natural_rounding = false
+            col.border_1 = rgb(000000)
+            border_size_1 = 1
         }
       }
 
@@ -160,24 +172,30 @@ in {
       general {
         gaps_in = 4
         gaps_out = 6
-        border_size = 1
-        col.active_border = rgba(${theme.base07}ff)
-        col.inactive_border = rgba(${theme.base07}ff)
+        border_size = 4
+        col.active_border = rgba(ffffff00)
+        col.inactive_border = rgba(ffffff00)
         layout = dwindle
         allow_tearing = true
       }
 
       decoration {
-        rounding = 0
+        rounding = 2
         blur {
           enabled = true
           size = 2
-          passes = 3
-          xray = true
+          passes = 2
+          xray = false
+          vibrancy_darkness = 1.0
+          ignore_opacity = true
           new_optimizations = true
         }
+        blurls = waybar
         shadow {
           enabled = false;
+          range = 4
+          render_power = 3
+          scale = 1.0
         }
       }
 

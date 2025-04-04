@@ -22,7 +22,7 @@ in {
       }
       @keyframes blink_red {
       to {
-      background-color: rgb(242, 143, 173);
+      background-color: #CDB3C1;
       color: rgb(26, 24, 38);
       }
       }
@@ -37,7 +37,8 @@ in {
       background-color: transparent;
       }
       window > box {
-      background-color: #${palette.base07};
+      background-color: transparent;
+      border-bottom: 1px solid black;
       }
       #workspaces {
       padding-left: 0px;
@@ -51,18 +52,20 @@ in {
       color:#${palette.base00};
       }
       #workspaces button.active {
-      background-color: #${palette.base0D};
-      color: #${palette.base07};
+      background: radial-gradient( 36px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
+      color: #${palette.base00};
       }
       #workspaces button.urgent {
       color: rgb(26, 24, 38);
       }
       #workspaces button:hover {
-      background-color:#${palette.base06};
-      color: #${palette.base08};
+      background-color:#${palette.base0B};
+      color: #${palette.base0A};
       }
       tooltip {
-      background: #${palette.base07};
+      background: white;
+      border: 1px solid black;
+      border-radius: 8px;
       }
       tooltip label {
       color: #${palette.base00};
@@ -92,7 +95,7 @@ in {
       font-weight: 600;
       }
       #window {
-        color: #${palette.base0B};
+        color: #${palette.base08};
         font-style: italic;
       }
       #custom-wall {
@@ -105,7 +108,7 @@ in {
       color: #${palette.base08};
       }
       #mpris {
-      color: #${palette.base0A};
+      color: #${palette.base08};
       }
       #wireplumber {
       color: #${palette.base08};
@@ -118,22 +121,23 @@ in {
       color: #CCCCCC;
       }
       #battery.charging, #battery.full, #battery.discharging {
-      color: #CF876F;
+      color: #${palette.base08};
       }
       #battery.critical:not(.charging) {
       color: #D6DCE7;
       }
       #custom-powermenu {
-      color: #${palette.base0A};
-      font-weight: 700;
+      color: #${palette.base00};
       }
       #tray {
       padding-right: 5px;
       padding-left: 10px;
       }
       #tray menu {
-      background: #${palette.base07};
-      color: #${palette.base00};
+      background: white;
+      border: 1px solid black;
+      border-radius: 8px;
+      color: black;
       }
     '';
     settings = [
@@ -141,7 +145,7 @@ in {
         "layer" = "top";
         "position" = "top";
         modules-left = [
-          "custom/rofi"
+          "custom/powermenu"
           "hyprland/workspaces"
           "custom/wall"
         ];
@@ -159,12 +163,11 @@ in {
           #"temperature"
           "battery"
           "tray"
-          "custom/powermenu"
+          #"custom/powermenu"
         ];
-        "custom/rofi" = {
+        "custom/powermenu" = {
           "format" = "𝄞";
-          #"on-click" = "pkill rofi || ~/.config/rofi/rofi.sh";
-          "on-click" = "rofi -show window";
+          "on-click" = "wlogout";
           "tooltip" = false;
         };
         "hyprland/window" = {
@@ -258,11 +261,11 @@ in {
             "weeks-pos" = "right";
             "on-scroll" = 1;
             "format" = {
-              "months" = "<span color='#${palette.base0B}'><b>{}</b></span>";
+              "months" = "<span color='#${palette.base08}'><b>{}</b></span>";
               "days" = "<span color='#${palette.base00}'><b>{}</b></span>";
               "weeks" = "<span color='#${palette.base08}'><b>W{}</b></span>";
               "weekdays" = "<span color='#${palette.base0A}'><b>{}</b></span>";
-              "today" = "<span color='#${palette.base0D}'><b><u>{}</u></b></span>";
+              "today" = "<span color='#${palette.base0B}'><b><u>{}</u></b></span>";
             };
           };
           "on-click" = "kitty calcure";
@@ -297,7 +300,8 @@ in {
           "format" = "⋆.˚ {temperatureC}°C";
         };
         */
-        "custom/powermenu" = {
+        /*
+          "custom/powermenu" = {
           "format" = "/ 𓏲𝄢";
           "on-click" = "wlogout";
           "tooltip" = false;
@@ -306,6 +310,7 @@ in {
           "icon-size" = 15;
           "spacing" = 5;
         };
+        */
       }
     ];
   };
