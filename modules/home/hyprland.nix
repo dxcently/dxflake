@@ -47,7 +47,6 @@ in {
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = [workspace 1 silent] floorp
-      exec-once = youtube-music
 
       #opacity window rules
       windowrule = opacity 0.8, title:^(FL Studio)$
