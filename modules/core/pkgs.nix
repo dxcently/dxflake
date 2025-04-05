@@ -34,15 +34,15 @@
     wireplumber
     pavucontrol
     # programs
+    starship
     osu-lazer-bin
     floorp
-    vscodium
     arduino-ide
     chromium
     tor-browser
     firefox
     anki-bin
-    obsidian
+    vscodium
     neovide
     nicotine-plus
     webcamoid
@@ -52,7 +52,6 @@
     vlc
     strawberry-qt6
     soundconverter
-    guvcview
     (vesktop.override {electron = pkgs.electron_32;})
     bottles
     qbittorrent
@@ -71,7 +70,7 @@
     vim
     socat
     bat
-    gh # github cli
+    gh # github gui
     git
     lazygit
     xdg-utils
@@ -89,8 +88,6 @@
     clinfo
     ydotool
     curl
-    starship
-    qmk
     ffmpegthumbnailer
     ffmpeg
     unar
@@ -100,8 +97,8 @@
     file
     ripgrep
     spotdl
+    yt-dlp
     playerctl
-    distrobox
     gcalcli
     # libs/frameworks
     qt6.qtwayland
