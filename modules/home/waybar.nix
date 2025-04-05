@@ -55,6 +55,10 @@ in {
       background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
       border: 1px solid black;
       color: #${palette.base00};
+      padding-top: 3px;
+      padding-bottom: 2px;
+      padding-left: 5px;
+      padding-right: 5px;
       }
       #workspaces button.urgent {
       color: rgb(26, 24, 38);
@@ -138,10 +142,10 @@ in {
       padding-left: 8px;
       padding-right: 8px;
       text-shadow:
-       -1px -1px 0 black,
-        1px -1px 0 black,
-       -1px  1px 0 black,
-        1px  1px 0 black;
+        1px 1px 0 black,
+        -1px -1px 0 black,
+        -1px  1px 0 black,
+        1px  -1px 0 black;
       }
       #tray {
       padding-right: 5px;
@@ -198,17 +202,18 @@ in {
             "2" = "♫";
             "3" = "𝅘𝅥𝅯  ";
             "4" = "♬";
-            "5" = "𝅗𝅥 ";
-            "6" = "𝅘𝅥𝅱  ";
-            "7" = "♯";
-            "8" = "♮";
-            "9" = "♭";
-            "10" = "𝅝  ";
+            "5" = "𝅘𝅥𝅱  ";
+            "6" = "𝅗𝅥 ";
+            "7" = "𝅝  ";
+            "8" = "♯";
+            "9" = "♮";
+            "10" = "♭";
             sort-by-number = false;
           };
           "on-click" = "activate";
           "on-scroll-up" = "hyprctl dispatch workspace e+1";
           "on-scroll-down" = "hyprctl dispatch workspace e-1";
+          "window-rewrite-default" = "🖿";
         };
         "backlight" = {
           "device" = "intel_backlight";
