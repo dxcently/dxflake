@@ -18,13 +18,6 @@ in {
     ];
     extraConfig = ''
 
-      #variables
-      $mainMod = SUPER
-      $terminal = kitty
-      $fileManager = thunar
-      $menu = rofi -show drun
-      $windowswitcher = rofi -show
-
       #monitors
       monitor=, preferred, auto, 1.5
       monitor= eDP-1, 1920x1080@60, auto, 1
@@ -61,61 +54,61 @@ in {
       layerrule = blur, waybar
 
       #keybindings
-      bind = $mainMod, RETURN, exec, $terminal
-      bind = $mainMod, SPACE, exec, $menu
-      bind = $mainMod, T, exec, $fileManager
-      bind = $mainMod, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy
-      bind = $mainMod, S, exec, grim -g "$(slurp -d)" - |swappy -f -
-      bind = $mainMod, Tab, exec, $windowswitcher
+      bind = SUPER, RETURN, exec, kitty #terminal
+      bind = SUPER, SPACE, exec, rofi -show drun #launcher
+      bind = SUPER, T, exec, [float] thunar #file manager
+      bind = SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy #clipboard
+      bind = SUPER, S, exec, grim -g "$(slurp -d)" - |swappy -f - #screenshot
+      bind = SUPER, Tab, exec, rofi -show #show windows
 
-      bind = $mainMod, Q, killactive
-      bind = $mainMod, V, togglefloating
-      bind = $mainMod, F, fullscreen
-      bind = $mainMod, P, pseudo
+      bind = SUPER, Q, killactive
+      bind = SUPER, V, togglefloating
+      bind = SUPER, F, fullscreen
+      bind = SUPER, P, pseudo
 
-      bind = $mainMod, H, movefocus, l
-      bind = $mainMod, J, movefocus, d
-      bind = $mainMod, K, movefocus, u
-      bind = $mainMod, L, movefocus, r
-      bind = $mainMod SHIFT, H, movewindow, l
-      bind = $mainMod SHIFT, J, movewindow, d
-      bind = $mainMod SHIFT, K, movewindow, u
-      bind = $mainMod SHIFT, L, movewindow, r
-      bind = $mainMod ALT, H, resizeactive, -20 0
-      bind = $mainMod ALT, J, resizeactive, 0 20
-      bind = $mainMod ALT, K, resizeactive, 0 -20
-      bind = $mainMod ALT, L, resizeactive, 20 0
+      bind = SUPER, H, movefocus, l
+      bind = SUPER, J, movefocus, d
+      bind = SUPER, K, movefocus, u
+      bind = SUPER, L, movefocus, r
+      bind = SUPER SHIFT, H, movewindow, l
+      bind = SUPER SHIFT, J, movewindow, d
+      bind = SUPER SHIFT, K, movewindow, u
+      bind = SUPER SHIFT, L, movewindow, r
+      bind = SUPER ALT, H, resizeactive, -20 0
+      bind = SUPER ALT, J, resizeactive, 0 20
+      bind = SUPER ALT, K, resizeactive, 0 -20
+      bind = SUPER ALT, L, resizeactive, 20 0
       bind = ALT, Tab, cyclenext
       bind = ALT, Tab, bringactivetotop
 
-      bind = $mainMod, 1, workspace, 1
-      bind = $mainMod, 2, workspace, 2
-      bind = $mainMod, 3, workspace, 3
-      bind = $mainMod, 4, workspace, 4
-      bind = $mainMod, 5, workspace, 5
-      bind = $mainMod, 6, workspace, 6
-      bind = $mainMod, 7, workspace, 7
-      bind = $mainMod, 8, workspace, 8
-      bind = $mainMod, 9, workspace, 9
-      bind = $mainMod, 0, workspace, 10
-      bind = $mainMod SHIFT, 1, movetoworkspace, 1
-      bind = $mainMod SHIFT, 2, movetoworkspace, 2
-      bind = $mainMod SHIFT, 3, movetoworkspace, 3
-      bind = $mainMod SHIFT, 4, movetoworkspace, 4
-      bind = $mainMod SHIFT, 5, movetoworkspace, 5
-      bind = $mainMod SHIFT, 6, movetoworkspace, 6
-      bind = $mainMod SHIFT, 7, movetoworkspace, 7
-      bind = $mainMod SHIFT, 8, movetoworkspace, 8
-      bind = $mainMod SHIFT, 9, movetoworkspace, 9
-      bind = $mainMod SHIFT, 0, movetoworkspace, 10
+      bind = SUPER, 1, workspace, 1
+      bind = SUPER, 2, workspace, 2
+      bind = SUPER, 3, workspace, 3
+      bind = SUPER, 4, workspace, 4
+      bind = SUPER, 5, workspace, 5
+      bind = SUPER, 6, workspace, 6
+      bind = SUPER, 7, workspace, 7
+      bind = SUPER, 8, workspace, 8
+      bind = SUPER, 9, workspace, 9
+      bind = SUPER, 0, workspace, 10
+      bind = SUPER SHIFT, 1, movetoworkspace, 1
+      bind = SUPER SHIFT, 2, movetoworkspace, 2
+      bind = SUPER SHIFT, 3, movetoworkspace, 3
+      bind = SUPER SHIFT, 4, movetoworkspace, 4
+      bind = SUPER SHIFT, 5, movetoworkspace, 5
+      bind = SUPER SHIFT, 6, movetoworkspace, 6
+      bind = SUPER SHIFT, 7, movetoworkspace, 7
+      bind = SUPER SHIFT, 8, movetoworkspace, 8
+      bind = SUPER SHIFT, 9, movetoworkspace, 9
+      bind = SUPER SHIFT, 0, movetoworkspace, 10
 
-      bind = $mainMod, X, togglespecialworkspace, magic
-      bind = $mainMod, Z, togglespecialworkspace, scratch
-      bind = $mainMod SHIFT, X, movetoworkspace, special:magic
-      bind = $mainMod SHIFT, Z, movetoworkspace, special:scratch
+      bind = SUPER, X, togglespecialworkspace, magic
+      bind = SUPER, Z, togglespecialworkspace, scratch
+      bind = SUPER SHIFT, X, movetoworkspace, special:magic
+      bind = SUPER SHIFT, Z, movetoworkspace, special:scratch
 
-      bindm = $mainMod, mouse:272, movewindow
-      bindm = $mainMod, mouse:273, resizewindow
+      bindm = SUPER, mouse:272, movewindow
+      bindm = SUPER, mouse:273, resizewindow
 
       bind = ,XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%-
       bind = ,XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%+
@@ -135,6 +128,7 @@ in {
             bar_part_of_window = false
             bar_height = 20
             bar_blur = true
+            xray = true
             hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
             hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
             hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
@@ -184,7 +178,7 @@ in {
           enabled = true
           size = 2
           passes = 2
-          xray = false
+          xray = true
           vibrancy_darkness = 1.0
           ignore_opacity = true
           new_optimizations = true
