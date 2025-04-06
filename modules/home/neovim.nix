@@ -146,11 +146,9 @@ in {
       lsp = {
         formatOnSave = true;
         lspkind.enable = false;
-        lightbulb.enable = true;
-        lspsaga.enable = false;
+        lightbulb.enable = false;
         trouble.enable = true;
         lspSignature.enable = true;
-        otter-nvim.enable = false;
         nvim-docs-view.enable = false;
       };
 
@@ -191,16 +189,15 @@ in {
       };
 
       visuals = {
-        # nvim-web-devicons.enable = true;
         nvim-cursorline.enable = true;
-        cinnamon-nvim.enable = true;
+        cinnamon-nvim = {
+          enable = true;
+          setupOpts.keymaps.basic = true;
+        };
         fidget-nvim.enable = true;
 
         highlight-undo.enable = true;
         indent-blankline.enable = true;
-
-        # Fun
-        # cellular-automaton.enable = false;
       };
 
       statusline = {
@@ -213,7 +210,7 @@ in {
       autopairs.nvim-autopairs.enable = true;
 
       autocomplete.nvim-cmp.enable = true;
-      snippets.luasnip.enable = false;
+      snippets.luasnip.enable = true;
 
       tabline = {
         nvimBufferline.enable = true;
@@ -258,9 +255,8 @@ in {
         icon-picker.enable = false;
         surround.enable = true;
         diffview-nvim.enable = true;
+        nix-develop.enable = true;
         motion = {
-          hop.enable = true;
-          leap.enable = true;
           precognition.enable = true;
         };
 
