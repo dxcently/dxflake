@@ -44,7 +44,7 @@ in {
       #opacity window rules
       windowrule = opacity 0.8, title:^(FL Studio)$
       #workspaces window rules
-      windowrule = workspace 10, class:^([Vv]esktop)$, title:^([Vv]esktop)$
+      windowrule = workspace special:discord, class:^([Vv]esktop)$, title:^([Vv]esktop)$
       windowrule = workspace special:scratch, class:^([Ss]team)$, title:^([Ss]team)$
       windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
       windowrule = workspace special:magic, title:^(YouTube Music)$
@@ -104,8 +104,10 @@ in {
 
       bind = SUPER, X, togglespecialworkspace, magic
       bind = SUPER, Z, togglespecialworkspace, scratch
+      bind = SUPER, D, togglespecialworkspace, discord
       bind = SUPER SHIFT, X, movetoworkspace, special:magic
       bind = SUPER SHIFT, Z, movetoworkspace, special:scratch
+      bind = SUPER SHIFT, D, movetoworkspace, special:discord
 
       bindm = SUPER, mouse:272, movewindow
       bindm = SUPER, mouse:273, resizewindow
