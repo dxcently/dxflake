@@ -66,6 +66,7 @@
     calibre
     jupyter
     gimp
+    inkscape
     # cli programs
     vim
     socat
