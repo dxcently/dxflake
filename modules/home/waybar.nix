@@ -148,8 +148,8 @@ in {
         1px  -1px 0 black;
       }
       #tray {
-      padding-right: 5px;
-      padding-left: 10px;
+      padding-right: 8;
+      padding-left: 2;
       }
       #tray menu {
       background: white;
@@ -208,12 +208,21 @@ in {
             "8" = "♯";
             "9" = "♮";
             "10" = "♭";
+            "discord" = " ";
+            "magic" = "♬⋆.˚";
+            "scratch" = "ᝰ.ᐟ";
             sort-by-number = false;
           };
           "on-click" = "activate";
           "on-scroll-up" = "hyprctl dispatch workspace e+1";
           "on-scroll-down" = "hyprctl dispatch workspace e-1";
           "window-rewrite-default" = "🖿";
+          "show-special" = true;
+          "special-visible-only" = true;
+          "persistent-workspaces" = {
+            "*" = 4;
+            "HDMI-A-1" = [5 6 7 8];
+          };
         };
         "backlight" = {
           "device" = "intel_backlight";
