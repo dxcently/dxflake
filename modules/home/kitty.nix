@@ -29,6 +29,7 @@ in {
       "alt+l" = "next_tab";
       "alt+enter" = "new_window_with_cwd";
       "alt+q" = "close_window";
+      "ctrl+shift+U" = "none"; #for vim's page up
     };
     extraConfig = ''
       enabled_layouts fat:bias=80;full_size=1
