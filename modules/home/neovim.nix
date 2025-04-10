@@ -150,6 +150,7 @@ in {
         trouble.enable = true;
         lspSignature.enable = true;
         nvim-docs-view.enable = false;
+        inlayHints.enable = true;
       };
 
       languages = {
