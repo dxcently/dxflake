@@ -25,8 +25,8 @@
     udiskie
     nvtop-amd
     r2modman
+    kdePackages.k3b
   ];
-  #programs.k3b.enable = true;
 
   nix = {
     nixPath = ["/etc/nix/path"];
@@ -93,6 +93,7 @@
       dataDir = "/home/khoa/Documents/school/s2025/refile";
       configDir = "/home/khoa/.config/syncthing";
     };
+    udisks2.enable = true;
   };
   #hardware
   hardware = {
