@@ -53,6 +53,8 @@ in {
 
       layerrule = blur, waybar
 
+      workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
+
       #keybindings
       bind = SUPER, RETURN, exec, kitty #terminal
       bind = SUPER, SPACE, exec, rofi -show drun #launcher

@@ -149,7 +149,7 @@ in {
       }
       #tray {
       padding-right: 8;
-      padding-left: 2;
+      padding-left: 0;
       }
       #tray menu {
       background: white;
@@ -219,10 +219,6 @@ in {
           "window-rewrite-default" = "🖿";
           "show-special" = true;
           "special-visible-only" = true;
-          "persistent-workspaces" = {
-            "*" = 4;
-            "HDMI-A-1" = [5 6 7 8];
-          };
         };
         "backlight" = {
           "device" = "intel_backlight";
@@ -334,11 +330,11 @@ in {
           "on-click" = "wlogout";
           "tooltip" = false;
         };
-        "tray" = {
-          "icon-size" = 15;
-          "spacing" = 5;
-        };
         */
+        "tray" = {
+          "icon-size" = 12;
+          "spacing" = 6;
+        };
       }
     ];
   };
