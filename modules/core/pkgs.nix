@@ -34,6 +34,7 @@
     wireplumber
     pavucontrol
     # programs
+    scrcpy
     starship
     osu-lazer-bin
     floorp
