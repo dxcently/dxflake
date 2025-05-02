@@ -3,6 +3,8 @@
   config,
   inputs,
   home-manager,
+  theme,
+  gtkThemeFromScheme,
   ...
 }: {
   imports = [
@@ -23,5 +25,11 @@
     ./hyprlock.nix #lock
     ./hyprpaper.nix #wallpaper setter
     ./wlogout.nix #power menu
+    ./git.nix #git
+    ./vm.nix #vm
+    inputs.nix-colors.homeManagerModules.default #too lazy to separate this
   ];
+
+  colorScheme = inputs.nix-colors.colorSchemes."${theme}"; #too lazy to separate this
+  programs.home-manager.enable = true; #too lazy to separate this
 }
