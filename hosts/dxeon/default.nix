@@ -23,7 +23,6 @@
     soundconverter
     winetricks
     udiskie
-    nvtop-amd
     r2modman
     kdePackages.k3b
   ];

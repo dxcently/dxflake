@@ -54,6 +54,7 @@ in {
       layerrule = blur, waybar
 
       workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
+      workspace = special:magic, on-created-empty:youtube-music
 
       #keybindings
       bind = SUPER, RETURN, exec, kitty #terminal

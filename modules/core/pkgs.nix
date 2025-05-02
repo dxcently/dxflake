@@ -66,7 +66,7 @@
     youtube-music
     calibre
     jupyter
-    gimp
+    gimp3-with-plugins
     inkscape
     # cli programs
     vim
