@@ -34,6 +34,7 @@
     wireplumber
     pavucontrol
     # programs
+    rpcs3
     scrcpy
     starship
     osu-lazer-bin
