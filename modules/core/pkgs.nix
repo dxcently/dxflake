@@ -34,6 +34,7 @@
     wireplumber
     pavucontrol
     # programs
+    rpcs3
     scrcpy
     starship
     osu-lazer-bin
@@ -53,7 +54,7 @@
     vlc
     strawberry-qt6
     soundconverter
-    (vesktop.override {electron = pkgs.electron_32;})
+    (vesktop.override {electron = pkgs.electron_35;})
     bottles
     qbittorrent
     obs-studio

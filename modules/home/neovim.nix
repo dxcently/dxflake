@@ -192,7 +192,7 @@ in {
       visuals = {
         nvim-cursorline.enable = true;
         cinnamon-nvim = {
-          enable = true;
+          enable = false;
           setupOpts.keymaps.basic = true;
         };
         fidget-nvim.enable = true;
@@ -231,10 +231,6 @@ in {
         enable = true;
         gitsigns.enable = true;
         gitsigns.codeActions.enable = false; # throws an annoying debug message
-      };
-
-      notes.neorg = {
-        enable = true;
       };
 
       filetree.neo-tree = {

@@ -25,6 +25,7 @@
     udiskie
     r2modman
     kdePackages.k3b
+    filezilla
   ];
 
   nix = {
