@@ -140,17 +140,16 @@ in {
 
       telescope.enable = true;
       spellcheck = {
-        enable = true;
+        enable = false;
       };
 
       lsp = {
         formatOnSave = true;
-        lspkind.enable = false;
-        lightbulb.enable = false;
+        lspkind.enable = true;
         trouble.enable = true;
         lspSignature.enable = true;
         nvim-docs-view.enable = false;
-        inlayHints.enable = true;
+        inlayHints.enable = false;
       };
 
       languages = {
@@ -191,10 +190,6 @@ in {
 
       visuals = {
         nvim-cursorline.enable = true;
-        cinnamon-nvim = {
-          enable = false;
-          setupOpts.keymaps.basic = true;
-        };
         fidget-nvim.enable = true;
 
         highlight-undo.enable = true;
@@ -247,8 +242,7 @@ in {
       };
 
       utility = {
-        ccc.enable = false;
-        vim-wakatime.enable = false;
+        ccc.enable = true;
         icon-picker.enable = false;
         surround.enable = true;
         diffview-nvim.enable = true;
@@ -267,10 +261,6 @@ in {
         noice.enable = true;
         colorizer.enable = true;
         illuminate.enable = true;
-        breadcrumbs = {
-          enable = false;
-          navbuddy.enable = false;
-        };
         smartcolumn = {
           enable = true;
         };
