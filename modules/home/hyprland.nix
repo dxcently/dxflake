@@ -24,8 +24,6 @@ in {
       monitor= DP-1, 1920x1080@144, 0x0, 1
       monitor= HDMI-A-1, 1920x1080@60, 1920x0, 1
 
-      workspace = 10, monitor:HDMI-A-1
-
       #env variables
       env = XCURSOR_SIZE,24
       env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
@@ -55,6 +53,7 @@ in {
 
       workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
       workspace = special:magic, on-created-empty:youtube-music
+      workspace = 5, monitor:HDMI-A-1, persistent:true
 
       #keybindings
       bind = SUPER, RETURN, exec, kitty #terminal
