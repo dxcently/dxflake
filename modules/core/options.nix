@@ -3,7 +3,6 @@
   pkgs,
   ...
 }: {
-  #nix options
   programs = {
     hyprland = {
       enable = true;
