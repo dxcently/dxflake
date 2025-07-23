@@ -4,7 +4,7 @@
   ...
 }: {
   programs.floorp = {
-    enable = true;
+    enable = false;
     /*
     profiles.dx = {
     name = "dx";
