@@ -32,7 +32,7 @@ in {
          }
     '';
     sessionVariables = {
-      khoa = true;
+      khoa = "true";
     };
     shellAliases = {
       sv = "sudo nvim";
