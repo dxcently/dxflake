@@ -219,6 +219,10 @@ in {
           "window-rewrite-default" = "🖿";
           "show-special" = true;
           "special-visible-only" = true;
+          "persistent-workspaces" = {
+            "DP-1" = [1 2 3 4];
+            "eDP-1" = [1 2 3 4];
+          };
         };
         "backlight" = {
           "device" = "intel_backlight";
