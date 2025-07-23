@@ -34,11 +34,12 @@
     wireplumber
     pavucontrol
     # programs
+    ngrok
     rpcs3
     scrcpy
     starship
     osu-lazer-bin
-    floorp
+    librewolf
     arduino-ide
     chromium
     tor-browser
