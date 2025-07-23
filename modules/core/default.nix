@@ -10,5 +10,6 @@
     ./pkgs.nix
     ./options.nix
     ./fonts.nix
+    ./gaming.nix
   ];
 }
