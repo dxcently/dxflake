@@ -70,6 +70,8 @@
     jellyfin = {
       enable = true;
       package = pkgs.jellyfin;
+      openFirewall = true;
+      user = "khoa";
     };
     devmon.enable = true;
     blueman.enable = true;
@@ -79,4 +81,9 @@
     tumbler.enable = true;
     printing.enable = true;
   };
+  environment.systemPackages = [
+    pkgs.jellyfin
+    pkgs.jellyfin-web
+    pkgs.jellyfin-ffmpeg
+  ];
 }

@@ -34,6 +34,7 @@
     wireplumber
     pavucontrol
     # programs
+    jellyfin-media-player
     ngrok
     rpcs3
     scrcpy
@@ -53,7 +54,7 @@
     wine
     protonup-qt
     vlc
-    strawberry-qt6
+    strawberry
     soundconverter
     (vesktop.override {electron = pkgs.electron_35;})
     bottles
