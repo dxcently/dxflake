@@ -22,11 +22,6 @@
 
   programs = {
     home-manager.enable = true;
-    git = {
-      enable = true;
-      userName = "dxcently";
-      userEmail = "dxcently@gmail.com";
-    };
   };
 
   # Nicely reload system units when changing configs
