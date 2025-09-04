@@ -6,12 +6,14 @@
   ...
 }: {
   imports = [
+    ./git.nix
     ./hyprland.nix #window manager
     ./waybar.nix #bar
     ./kitty.nix #terminal
     ./bash.nix #shell
     ./neovim.nix #text editor
     ./rofi.nix #application launcher
+    ./virtmanager.nix
     ./nh.nix #nix helper
     ./swappy.nix #screenshot
     ./yazi.nix #tui file manager
