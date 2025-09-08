@@ -13,7 +13,6 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      #permittedInsecurePackages = [ "electron-25.9.0" ];
     };
   };
 
@@ -95,10 +94,10 @@
   #hardware
   hardware = {
     #tablet
-    opentabletdriver = {
-      enable = true;
-      daemon.enable = true;
-    };
+    #opentabletdriver = {
+    #  enable = true;
+    #  daemon.enable = true;
+    #};
     keyboard.qmk.enable = true;
     bluetooth.enable = true;
   };
