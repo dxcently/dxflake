@@ -6,6 +6,7 @@
   ...
 }: {
   imports = [
+    ./packages
     ./git.nix
     ./hyprland.nix #window manager
     ./waybar.nix #bar
