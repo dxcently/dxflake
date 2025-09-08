@@ -33,30 +33,11 @@
   in {
     nixosConfigurations = {
       dxpad = nixpkgs.lib.nixosSystem {
+        modules = [./hosts/dxpad];
         specialArgs = {
           host = "dxpad";
           inherit username inputs system;
         };
-        modules = [
-          ./hosts/dxpad
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              users.${username} = import ./hosts/dxpad/home.nix;
-              extraSpecialArgs = {
-                inherit
-                  username
-                  inputs
-                  theme
-                  system
-                  ;
-                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
-              };
-              useGlobalPkgs = true;
-              useUserPackages = true;
-            };
-          }
-        ];
       };
       dxeon = nixpkgs.lib.nixosSystem {
         specialArgs = {
