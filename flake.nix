@@ -33,10 +33,10 @@
   in {
     nixosConfigurations = {
       dxpad = nixpkgs.lib.nixosSystem {
-        modules = [./hosts/dxpad];
+        modules = [./hosts/dxpad inputs.stylix.nixosModules.stylix];
         specialArgs = {
           host = "dxpad";
-          inherit username inputs system;
+          inherit username inputs theme system;
         };
       };
       dxeon = nixpkgs.lib.nixosSystem {
