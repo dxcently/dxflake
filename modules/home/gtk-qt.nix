@@ -1,11 +1,8 @@
 {
   pkgs,
   config,
-  gtkThemeFromScheme,
   ...
-}: let
-  palette = config.colorScheme.palette;
-in {
+}: {
   gtk = let
     extraConfig = {
       #gtk-application-prefer-light = 0;
@@ -31,10 +28,12 @@ in {
     };
     */
 
-    theme = {
+    /*
+      theme = {
       name = "${config.colorScheme.slug}";
       package = gtkThemeFromScheme {scheme = config.colorScheme;};
     };
+    */
 
     iconTheme = {
       name = "faba-icon-theme";

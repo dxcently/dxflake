@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   stylix.base16Scheme = {
     base00 = "000000";
     base01 = "121212";

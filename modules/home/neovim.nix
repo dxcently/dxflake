@@ -3,9 +3,7 @@
   config,
   inputs,
   ...
-}: let
-  palette = config.colorScheme.palette;
-in {
+}: {
   imports = [inputs.nvf.homeManagerModules.default];
 
   programs.neovim = {

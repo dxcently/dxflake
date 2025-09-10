@@ -10,6 +10,7 @@
     nixpkgs_patched.url = "github:nixos/nixpkgs/468a37e6ba01c45c91460580f345d48ecdb5a4db";
     nix-colors.url = "github:misterio77/nix-colors";
     nvf.url = "github:notashelf/nvf";
+    stylix.url = "github:danth/stylix";
     aagl = {
       url = "github:ezKEa/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -33,7 +34,10 @@
   in {
     nixosConfigurations = {
       dxpad = nixpkgs.lib.nixosSystem {
-        modules = [./hosts/dxpad inputs.stylix.nixosModules.stylix];
+        modules = [
+          ./hosts/dxpad
+          inputs.stylix.nixosModules.stylix
+        ];
         specialArgs = {
           host = "dxpad";
           inherit username inputs theme system;

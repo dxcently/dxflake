@@ -1,18 +1,16 @@
 {
+  pkgs,
   config,
   lib,
-  pkgs,
   ...
-}: let
-  palette = config.colorScheme.palette;
-in {
+}: {
   programs.waybar = {
     enable = true;
     systemd = {
       enable = false; # disable it,autostart it in hyprland conf
       target = "graphical-session.target";
     };
-    style = ''
+    style = lib.mkAfter ''
       * {
       font-family: "Lekton Nerd Font";
       font-size: 16;
@@ -49,12 +47,12 @@ in {
       padding-bottom: 3px;
       padding-left: 6px;
       padding-right: 6px;
-      color:#${palette.base00};
+      color:@base00;
       }
       #workspaces button.active {
       background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
       border: 1px solid black;
-      color: #${palette.base00};
+      color: @base00;
       padding-top: 3px;
       padding-bottom: 2px;
       padding-left: 5px;
@@ -64,8 +62,8 @@ in {
       color: rgb(26, 24, 38);
       }
       #workspaces button:hover {
-      background-color:#${palette.base0B};
-      color: #${palette.base0A};
+      background-color:@base0B;
+      color: @base0A;
       }
       tooltip {
       background: white;
@@ -73,13 +71,13 @@ in {
       border-radius: 0px;
       }
       tooltip label {
-      color: #${palette.base00};
+      color: @base00;
       }
       #custom-rofi {
       font-size: 20px;
       padding-left: 8px;
       padding-right: 8px;
-      color: #${palette.base00};
+      color: @base00;
       }
       #mode, #clock, #backlight, #wireplumber, #network, #battery, #custom-powermenu {
       padding-left: 5px;
@@ -90,10 +88,10 @@ in {
       padding-right: 0px;
       }
       #memory {
-      color: #${palette.base0B};
+      color: @base0B;
       }
       #cpu {
-      color: #${palette.base0C};
+      color: @base0C;
       }
       #clock {
       color: black;
@@ -112,10 +110,10 @@ in {
       color: #B38DAC;
       }
       #temperature {
-      color: #${palette.base09};
+      color: @base09;
       }
       #backlight {
-      color: #${palette.base08};
+      color: @base08;
       }
       #mpris {
       color: black;
@@ -289,11 +287,11 @@ in {
             "weeks-pos" = "right";
             "on-scroll" = 1;
             "format" = {
-              "months" = "<span color='#${palette.base08}'><b>{}</b></span>";
-              "days" = "<span color='#${palette.base00}'><b>{}</b></span>";
-              "weeks" = "<span color='#${palette.base08}'><b>W{}</b></span>";
-              "weekdays" = "<span color='#${palette.base0A}'><b>{}</b></span>";
-              "today" = "<span color='#${palette.base0B}'><b><u>{}</u></b></span>";
+              "months" = "<span color='@base08'><b>{}</b></span>";
+              "days" = "<span color='@base00'><b>{}</b></span>";
+              "weeks" = "<span color='@base08'><b>W{}</b></span>";
+              "weekdays" = "<span color='@base0A'><b>{}</b></span>";
+              "today" = "<span color='@base0B'><b><u>{}</u></b></span>";
             };
           };
           "on-click" = "kitty calcure";

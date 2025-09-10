@@ -1,13 +1,9 @@
 {
   pkgs,
   config,
-  inputs,
   lib,
-  host,
   ...
-}: let
-  theme = config.colorScheme.palette;
-in {
+}: {
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
@@ -16,7 +12,7 @@ in {
       pkgs.hyprlandPlugins.hyprbars
       pkgs.hyprlandPlugins.borders-plus-plus
     ];
-    extraConfig = ''
+    extraConfig = lib.mkAfter ''
 
       #monitors
       monitor=, preferred, auto, 1.5
@@ -125,7 +121,7 @@ in {
       plugin {
         hyprbars {
             bar_color = rgba(00000000)
-            col.text = rgba(${theme.base00}ff)
+            col.text = rgba(@base00ff)
             bar_text_align = left
             bar_text_size = 10
             bar_precedence_over_border = true
@@ -134,8 +130,8 @@ in {
             bar_blur = true
             xray = true
             hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(${theme.base00}ff)
-            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(${theme.base00}ff)
+            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(@base00ff)
+            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(@base00ff)
         }
         borders-plus-plus {
             add_borders = 1
