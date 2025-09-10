@@ -40,7 +40,6 @@
     hostName = "dxpad";
     networkmanager.enable = true;
   };
-
   #boot
   boot = {
     #change if nvidia
@@ -54,21 +53,6 @@
       "vm.max_map_count" = 2147483642;
     };
     resumeDevice = "/dev/nvme0n1p3";
-  };
-
-  #managing users
-  users.users = {
-    khoa = {
-      isNormalUser = true;
-      extraGroups = [
-        "wheel"
-        "networkmanager"
-        "libvirtd"
-        "audio"
-        "video"
-        "dialout"
-      ];
-    };
   };
 
   #services
