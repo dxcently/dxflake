@@ -36,7 +36,7 @@
       "video"
       "dialout"
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.bash;
   };
   nix.settings.allowed-users = ["${username}"];
 }
