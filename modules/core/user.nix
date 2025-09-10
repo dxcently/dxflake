@@ -3,16 +3,14 @@
   inputs,
   username,
   host,
-  theme,
   ...
 }: {
-  imports = [inputs.home-manager.nixosModules.home-manager inputs.nix-colors.homeManagerModules.default];
+  imports = [inputs.home-manager.nixosModules.home-manager];
   home-manager = {
     useUserPackages = true;
     useGlobalPkgs = true;
     extraSpecialArgs = {
-      inherit inputs username host theme;
-      inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
+      inherit inputs username host;
     };
     users.${username} = {
       imports =
@@ -26,8 +24,6 @@
     };
     backupFileExtension = "backup";
   };
-
-  colorScheme = inputs.nix-colors.colorSchemes."${theme}";
 
   users.users.${username} = {
     isNormalUser = true;
