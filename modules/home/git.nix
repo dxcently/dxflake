@@ -1,6 +1,6 @@
 {
   pkgs,
-  configs,
+  config,
   ...
 }: {
   programs.git = {
