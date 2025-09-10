@@ -109,7 +109,6 @@
     qt6.qtwayland
     libsForQt5.qt5.qtwayland
     ninja
-    python3
     meson
     nodejs
     pkg-config
