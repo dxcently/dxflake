@@ -4,7 +4,7 @@
   ...
 }: {
   #universal packages
-  environment.systemPackages = with pkgs; [
+  home.packages = with pkgs; [
     # de stuff
     swww
     waybar
