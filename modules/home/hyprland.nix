@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  lib,
   ...
 }: {
   wayland.windowManager.hyprland = {
@@ -12,7 +11,7 @@
       pkgs.hyprlandPlugins.hyprbars
       pkgs.hyprlandPlugins.borders-plus-plus
     ];
-    extraConfig = lib.mkAfter ''
+    extraConfig = ''
 
       #monitors
       monitor=, preferred, auto, 1.5
@@ -121,7 +120,7 @@
       plugin {
         hyprbars {
             bar_color = rgba(00000000)
-            col.text = rgba(@base00ff)
+            col.text = rgba(${config.lib.stylix.colors.base00}ff)
             bar_text_align = left
             bar_text_size = 10
             bar_precedence_over_border = true
@@ -130,8 +129,8 @@
             bar_blur = true
             xray = true
             hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(@base00ff)
-            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(@base00ff)
+            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(${config.lib.stylix.colors.base00})
+            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(${config.lib.stylix.colors.base00})
         }
         borders-plus-plus {
             add_borders = 1
