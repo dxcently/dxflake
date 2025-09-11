@@ -9,7 +9,7 @@
     settings = {
       logo = {
         type = "auto";
-        source = ./fastfetch.png;
+        source = ./ascii-fetch;
         width = 39;
         height = 15;
       };
