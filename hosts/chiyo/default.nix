@@ -37,7 +37,7 @@
   #enable networking
   networking = {
     #change if changing hostname
-    hostName = "dxpad";
+    hostName = "chiyo";
     networkmanager.enable = true;
   };
   #boot

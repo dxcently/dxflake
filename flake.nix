@@ -33,13 +33,13 @@
     };
   in {
     nixosConfigurations = {
-      dxpad = nixpkgs.lib.nixosSystem {
+      chiyo = nixpkgs.lib.nixosSystem {
         modules = [
-          ./hosts/dxpad
+          ./hosts/chiyo
           inputs.stylix.nixosModules.stylix
         ];
         specialArgs = {
-          host = "dxpad";
+          host = "chiyo";
           inherit username inputs theme system;
         };
       };
