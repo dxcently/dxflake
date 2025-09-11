@@ -120,7 +120,7 @@
       plugin {
         hyprbars {
             bar_color = rgba(00000000)
-            col.text = rgba(${config.lib.stylix.colors.base00}ff)
+            col.text = rgb(${config.lib.stylix.colors.base00})
             bar_text_align = left
             bar_text_size = 10
             bar_precedence_over_border = true
@@ -129,8 +129,8 @@
             bar_blur = true
             xray = true
             hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(${config.lib.stylix.colors.base00})
-            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(${config.lib.stylix.colors.base00})
+            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgb(${config.lib.stylix.colors.base00})
+            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgb(${config.lib.stylix.colors.base00})
         }
         borders-plus-plus {
             add_borders = 1
