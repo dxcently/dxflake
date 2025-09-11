@@ -9,6 +9,7 @@
       kitty.enable = false;
       neovim.enable = false;
       nvf.enable = false;
+      waybar.enable = false;
       qt = {
         enable = true;
         platform = "qtct";
