@@ -6,8 +6,8 @@
   ...
 }: {
   imports = [
-    ./packages
-    ./git.nix
+    ./packages #system packages
+    ./git.nix #git
     ./hyprland.nix #window manager
     ./waybar.nix #bar
     ./kitty.nix #terminal
@@ -18,7 +18,9 @@
     ./nh.nix #nix helper
     ./swappy.nix #screenshot
     ./yazi.nix #tui file manager
-    ./gtk-qt.nix #set themes and colors
+    ./stylix.nix #theming handler
+    ./gtk.nix #set gtk theme
+    ./qt.nix #set qt theme
     ./fastfetch/fastfetch.nix #fetch
     ./floorp.nix #browser
     ./composekey.nix #special keys
