@@ -23,7 +23,6 @@
   } @ inputs: let
     system = "x86_64-linux";
     username = "khoa";
-    theme = "black-metal-burzum";
 
     pkgs = import nixpkgs {
       inherit system;
@@ -40,33 +39,17 @@
         ];
         specialArgs = {
           host = "chiyo";
-          inherit username inputs theme system;
+          inherit username inputs system;
         };
       };
-      dxeon = nixpkgs.lib.nixosSystem {
+      osaka = nixpkgs.lib.nixosSystem {
         specialArgs = {
-          host = "dxeon";
+          host = "osaka";
           inherit username inputs system;
         };
         modules = [
-          ./hosts/dxeon
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              users.${username} = import ./hosts/dxeon/home.nix;
-              extraSpecialArgs = {
-                inherit
-                  username
-                  inputs
-                  theme
-                  system
-                  ;
-                inherit (inputs.nix-colors.lib-contrib {inherit pkgs;}) gtkThemeFromScheme;
-              };
-              useGlobalPkgs = true;
-              useUserPackages = true;
-            };
-          }
+          ./hosts/osaka
+          inputs.stylix.nixosModules.stylix
         ];
       };
     };
