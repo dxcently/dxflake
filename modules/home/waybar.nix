@@ -293,7 +293,7 @@
               "today" = "<span color='#${config.lib.stylix.colors.base0B}'><b><u>{}</u></b></span>";
             };
           };
-          "on-click" = "kitty calcure";
+          "on-click" = "hyprctl dispatch exec '[float] kitty --hold gcalcli agenda'";
         };
         /*
         "memory" = {
