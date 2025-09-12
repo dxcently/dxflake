@@ -35,6 +35,8 @@
       "audio"
       "video"
       "dialout"
+      "docker"
+      "cdrom"
     ];
   };
   nix.settings.allowed-users = ["${username}"];
