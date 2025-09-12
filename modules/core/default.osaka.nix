@@ -7,6 +7,7 @@
   ...
 }: {
   imports = [
-    ./gaming.nix
+    ./aagl.nix
+    ./jellyfin.nix
   ];
 }
