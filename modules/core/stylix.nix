@@ -8,6 +8,8 @@
     polarity = "light";
     opacity.terminal = 1.0;
     base16Scheme = {
+      #name: Atelier Seaside Light
+      #author: Bram de Haan (http://atelierbramdehaan.nl)
       base00 = "f4fbf4";
       base01 = "cfe8cf";
       base02 = "8ca68c";
