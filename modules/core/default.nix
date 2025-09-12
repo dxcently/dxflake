@@ -11,6 +11,5 @@
     ./fonts.nix
     ./user.nix
     ./stylix.nix
-    #./gaming.nix
   ];
 }
