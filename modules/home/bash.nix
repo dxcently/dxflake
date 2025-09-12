@@ -41,10 +41,6 @@ in {
       flake-rebuild = "nh os switch /home/khoa/dxflake/";
       flake-update = "nh os switch /home/khoa/dxflake/ --update";
       nix-clean = "nh clean all";
-      ls = "lsd";
-      ll = "lsd -l";
-      la = "lsd -a";
-      lal = "lsd -al";
       ".." = "cd ..";
       reboot = "systemctl reboot";
       shutdown = "shutdown -h now";
