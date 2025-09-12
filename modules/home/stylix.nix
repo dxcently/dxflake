@@ -6,8 +6,8 @@
   stylix = {
     targets = {
       gtk.enable = false;
-      kitty.enable = false;
-      neovim.enable = false;
+      kitty.enable = true;
+      neovim.enable = true;
       nvf.enable = false;
       waybar.enable = false;
       qt = {

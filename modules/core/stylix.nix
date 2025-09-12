@@ -5,25 +5,25 @@
 }: {
   stylix = {
     enable = true;
-    polarity = "dark";
+    polarity = "light";
     opacity.terminal = 1.0;
     base16Scheme = {
-      base00 = "000000";
-      base01 = "121212";
-      base02 = "222222";
-      base03 = "333333";
-      base04 = "999999";
-      base05 = "c1c1c1";
-      base06 = "999999";
-      base07 = "c1c1c1";
-      base08 = "5f8787";
-      base09 = "aaaaaa";
-      base0A = "99bbaa";
-      base0B = "ddeecc";
-      base0C = "aaaaaa";
-      base0D = "888888";
-      base0E = "999999";
-      base0F = "444444";
+      base00 = "f4fbf4";
+      base01 = "cfe8cf";
+      base02 = "8ca68c";
+      base03 = "809980";
+      base04 = "687d68";
+      base05 = "5e6e5e";
+      base06 = "242924";
+      base07 = "131513";
+      base08 = "e6193c";
+      base09 = "87711d";
+      base0A = "98981b";
+      base0B = "29a329";
+      base0C = "1999b3";
+      base0D = "3d62f5";
+      base0E = "ad2bee";
+      base0F = "e619c3";
     };
     cursor = {
       size = 28;
@@ -45,8 +45,8 @@
       };
       sizes = {
         applications = 12;
-        terminal = 16;
-        desktop = 16;
+        terminal = 14;
+        desktop = 12;
         popups = 12;
       };
     };

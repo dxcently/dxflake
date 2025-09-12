@@ -46,12 +46,12 @@
       padding-bottom: 3px;
       padding-left: 6px;
       padding-right: 6px;
-      color:#${config.lib.stylix.colors.base00};
+      color:#000000;
       }
       #workspaces button.active {
       background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
       border: 1px solid black;
-      color: #${config.lib.stylix.colors.base00};
+      color: #000000;
       padding-top: 3px;
       padding-bottom: 2px;
       padding-left: 5px;
@@ -70,13 +70,13 @@
       border-radius: 0px;
       }
       tooltip label {
-      color: #${config.lib.stylix.colors.base00};
+      color: #000000;
       }
       #custom-rofi {
       font-size: 20px;
       padding-left: 8px;
       padding-right: 8px;
-      color: #${config.lib.stylix.colors.base00};
+      color: #000000;
       }
       #mode, #clock, #backlight, #wireplumber, #network, #battery, #custom-powermenu {
       padding-left: 5px;
@@ -287,7 +287,7 @@
             "on-scroll" = 1;
             "format" = {
               "months" = "<span color='#${config.lib.stylix.colors.base08}'><b>{}</b></span>";
-              "days" = "<span color='#${config.lib.stylix.colors.base00}'><b>{}</b></span>";
+              "days" = "<span color='#000000'><b>{}</b></span>";
               "weeks" = "<span color='#${config.lib.stylix.colors.base08}'><b>W{}</b></span>";
               "weekdays" = "<span color='#${config.lib.stylix.colors.base0A}'><b>{}</b></span>";
               "today" = "<span color='#${config.lib.stylix.colors.base0B}'><b><u>{}</u></b></span>";

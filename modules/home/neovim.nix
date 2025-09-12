@@ -2,11 +2,12 @@
   pkgs,
   config,
   inputs,
+  lib,
   ...
 }: {
   imports = [inputs.nvf.homeManagerModules.default];
 
-  programs.neovim = {
+  programs.neovim = lib.mkForce {
     enable = true;
     vimAlias = true;
   };
@@ -18,43 +19,25 @@
       vimAlias = false;
       viAlias = true;
       theme = {
-        enable = true;
+        enable = false;
         name = "base16";
         base16-colors = {
-          base00 = "000000";
-          base01 = "2a2a2a";
-          base02 = "555555";
-          base03 = "808080";
-          base04 = "a1a1a1";
-          base05 = "c0c0c0";
-          base06 = "e0e0e0";
-          base07 = "ffffff";
-          base08 = "ff0000";
-          base09 = "808000";
-          base0A = "ffff00";
-          base0B = "00ff00";
-          base0C = "00ffff";
-          base0D = "0000ff";
-          base0E = "ff00ff";
-          base0F = "008000";
-          /*
-           base00 = "${palette.base00}";
-          base01 = "${palette.base01}";
-          base02 = "${palette.base02}";
-          base03 = "${palette.base03}";
-          base04 = "${palette.base04}";
-          base05 = "${palette.base05}";
-          base06 = "${palette.base06}";
-          base07 = "${palette.base07}";
-          base08 = "${palette.base08}";
-          base09 = "${palette.base09}";
-          base0A = "${palette.base0A}";
-          base0B = "${palette.base0B}";
-          base0C = "${palette.base0C}";
-          base0D = "${palette.base0D}";
-          base0E = "${palette.base0E}";
-          base0F = "4D4D4D"; #0F too dark
-          */
+          base00 = "f4fbf4";
+          base01 = "cfe8cf";
+          base02 = "8ca68c";
+          base03 = "809980";
+          base04 = "687d68";
+          base05 = "5e6e5e";
+          base06 = "242924";
+          base07 = "131513";
+          base08 = "e6193c";
+          base09 = "87711d";
+          base0A = "98981b";
+          base0B = "29a329";
+          base0C = "1999b3";
+          base0D = "3d62f5";
+          base0E = "ad2bee";
+          base0F = "e619c3";
         };
       };
 
@@ -132,6 +115,7 @@
         wrap = false;
         tabstop = 4;
         shiftwidth = 4;
+        termguicolors = false;
       };
 
       syntaxHighlighting = true;
