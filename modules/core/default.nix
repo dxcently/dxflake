@@ -11,5 +11,6 @@
     ./fonts.nix
     ./user.nix
     ./stylix.nix
+    ./otd.nix
   ];
 }
