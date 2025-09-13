@@ -71,4 +71,9 @@
     tumbler.enable = true;
     printing.enable = true;
   };
+  nixpkgs = {
+    config = {
+      #permittedInsecurePackages = ["qtwebengine-5.15.19"];
+    };
+  };
 }
