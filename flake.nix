@@ -33,10 +33,7 @@
   in {
     nixosConfigurations = {
       chiyo = nixpkgs.lib.nixosSystem {
-        modules = [
-          ./hosts/chiyo
-          inputs.stylix.nixosModules.stylix
-        ];
+        modules = [./hosts/chiyo];
         specialArgs = {
           host = "chiyo";
           inherit username inputs system;
@@ -47,10 +44,7 @@
           host = "osaka";
           inherit username inputs system;
         };
-        modules = [
-          ./hosts/osaka
-          inputs.stylix.nixosModules.stylix
-        ];
+        modules = [./hosts/osaka];
       };
     };
   };

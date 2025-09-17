@@ -10,7 +10,8 @@
     ./options.nix
     ./fonts.nix
     ./user.nix
-    ./stylix.nix
     ./otd.nix
+    ./stylix.nix
+    inputs.stylix.nixosModules.stylix
   ];
 }
