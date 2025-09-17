@@ -32,12 +32,13 @@
       exec-once = hyprpaper
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
-      exec-once = [workspace 1 silent] floorp
+      exec-once = [workspace 1 silent] librewolf
+      exec-once = [workspace 5 silent] vesktop
 
-      #opacity window rules
       windowrule = opacity 0.8, title:^(FL Studio)$
       #workspaces window rules
-      windowrule = workspace special:discord, class:^([Vv]esktop)$, title:^([Vv]esktop)$
+      #windowrule = workspace special:discord, class:^([Vv]esktop)$, title:^([Vv]esktop)$
+      windowrule = workspace 5, class:^([Vv]esktop)$, title:^([Vv]esktop)$
       windowrule = workspace special:scratch, class:^([Ss]team)$, title:^([Ss]team)$
       windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
       windowrule = workspace special:magic, title:^(YouTube Music)$
@@ -46,7 +47,7 @@
 
       layerrule = blur, waybar
 
-      workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
+      #workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
       workspace = special:magic, on-created-empty:youtube-music
       workspace = 5, monitor:HDMI-A-1, persistent:true
 
@@ -57,6 +58,7 @@
       bind = SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy #clipboard
       bind = SUPER, S, exec, grim -g "$(slurp -d)" - |swappy -f - #screenshot
       bind = SUPER, Tab, exec, rofi -show #show windows
+      bind = SUPER, D, exec, [workspace 5; monitor hdmi-a-1] vesktop
 
       bind = SUPER, Q, killactive
       bind = SUPER, V, togglefloating
@@ -101,10 +103,11 @@
 
       bind = SUPER, X, togglespecialworkspace, magic
       bind = SUPER, Z, togglespecialworkspace, scratch
-      bind = SUPER, D, togglespecialworkspace, discord
+      #bind = SUPER, D, togglespecialworkspace, discord
       bind = SUPER SHIFT, X, movetoworkspace, special:magic
       bind = SUPER SHIFT, Z, movetoworkspace, special:scratch
-      bind = SUPER SHIFT, D, movetoworkspace, special:discord
+      #bind = SUPER SHIFT, D, movetoworkspace, special:discord
+      bind = SUPER SHIFT, D, movetoworkspace, 5
 
       bindm = SUPER, mouse:272, movewindow
       bindm = SUPER, mouse:273, resizewindow
