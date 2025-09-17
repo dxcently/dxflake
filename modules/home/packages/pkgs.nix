@@ -105,18 +105,10 @@
     yt-dlp
     playerctl
     gcalcli
-    # libs/frameworks
-    qt6.qtwayland
-    libsForQt5.qt5.qtwayland
-    ninja
-    meson
-    nodejs
-    pkg-config
     v4l-utils
     nixfmt-rfc-style
     typst
     tinymist
-    gcc
   ];
 
   nixpkgs.config.permittedInsecurePackages = ["electron-32.3.3"];
