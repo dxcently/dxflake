@@ -8,7 +8,6 @@
     # de stuff
     swww
     waybar
-    networkmanagerapplet
     kitty
     dunst
     slurp
