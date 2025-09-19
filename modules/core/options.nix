@@ -36,6 +36,7 @@
     };
   };
   services = {
+    xserver.enable = true;
     displayManager.ly = {
       enable = true;
     };
