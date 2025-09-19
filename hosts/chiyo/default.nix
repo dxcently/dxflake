@@ -56,7 +56,6 @@
   };
   #hardware
   hardware = {
-    keyboard.qmk.enable = true; #im not making a whole module for this lol
     bluetooth.enable = true;
   };
   #gpu

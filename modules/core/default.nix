@@ -10,7 +10,7 @@
     ./options.nix
     ./fonts.nix
     ./user.nix
-    ./otd.nix
+    ./hardware.nix
     ./stylix.nix
     ./networking.nix
     ./system.nix
