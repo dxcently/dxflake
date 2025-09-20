@@ -8,8 +8,8 @@
     settings = {
       ipc = "on";
       splash = false;
-      preload = [" ~/dxflake/extras/wallpapers/azumanga_tile.png"];
-      wallpaper = [",tile:~/dxflake/extras/wallpapers/azumanga_tile.png"];
+      preload = ["~/dxflake/extras/wallpapers/hero.webp"];
+      wallpaper = ["~/dxflake/extras/wallpapers/hero.webp"];
     };
   };
 }
