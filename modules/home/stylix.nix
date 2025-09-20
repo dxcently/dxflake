@@ -7,7 +7,7 @@
     targets = {
       gtk.enable = false;
       kitty.enable = true;
-      neovim.enable = true;
+      neovim.enable = false;
       nvf.enable = false;
       waybar.enable = false;
       qt = {

@@ -19,26 +19,29 @@
       vimAlias = false;
       viAlias = true;
       theme = {
-        enable = false;
-        name = "base16";
+        enable = true;
+        name = "rose-pine";
+        style = "main";
+        /*
         base16-colors = {
-          base00 = "f5f0e7";
-          base01 = "e7e2d9";
-          base02 = "d8d4cb";
-          base03 = "73777f";
-          base04 = "5a5f66";
-          base05 = "43474e";
-          base06 = "2c3138";
-          base07 = "181c22";
-          base08 = "d02023";
-          base09 = "bf3e05";
-          base0A = "9d6f00";
-          base0B = "637200";
-          base0C = "007a72";
-          base0D = "0073b5";
-          base0E = "4e66b6";
-          base0F = "c42775";
+          base00 = "eeeeee"; # Default Background
+              base01 = "af0000"; # Lighter Background (Used for status bars, line number and folding marks)
+          base02 = "008700"; # Selection Background
+          base03 = "5f8700"; # Comments, Invisibles, Line Highlighting
+          base04 = "0087af"; # Dark Foreground (Used for status bars)
+          base05 = "444444"; # Default Foreground, Caret, Delimiters, Operators
+          base06 = "005f87"; # Light Foreground (Not often used)
+          base07 = "878787"; # Light Background (Not often used)
+          base08 = "bcbcbc"; # Variables, XML Tags, Markup Link Text, Markup Lists, Diff Deleted
+          base09 = "d70000"; # Integers, Boolean, Constants, XML Attributes, Markup Link Url
+          base0A = "d70087"; # Classes, Markup Bold, Search Text Background
+          base0B = "8700af"; # Strings, Inherited Class, Markup Code, Diff Inserted
+          base0C = "d75f00"; # Support, Regular Expressions, Escape Characters, Markup Quotes
+          base0D = "d75f00"; # Functions, Methods, Attribute IDs, Headings
+          base0E = "005faf"; # Keywords, Storage, Selector, Markup Italic, Diff Changed
+          base0F = "005f87"; # Deprecated, Opening/Closing Embedded Language Tags, e.g. <?php ?>
         };
+        */
       };
 
       keymaps = [
@@ -115,7 +118,7 @@
         wrap = false;
         tabstop = 4;
         shiftwidth = 4;
-        termguicolors = false;
+        termguicolors = true;
       };
 
       syntaxHighlighting = true;
