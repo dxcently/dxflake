@@ -5,6 +5,7 @@
   inputs,
   ...
 }: {
+  environment.variables.EDITOR = "nvim";
   nixpkgs = {
     config = {
       allowUnfree = true;
