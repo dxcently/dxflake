@@ -174,7 +174,7 @@
         gaps_in = 2
         gaps_out = 5
         border_size = 2
-        col.active_border = rgba(ffffff80)
+        col.active_border = rgba(ffffff66)
         col.inactive_border = rgba(ffffff1a)
         layout = dwindle
         allow_tearing = true
