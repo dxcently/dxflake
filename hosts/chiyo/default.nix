@@ -12,6 +12,7 @@
 
   #host specific packages
   environment.systemPackages = with pkgs; [
+    arduino-ide
   ];
 
   #boot
