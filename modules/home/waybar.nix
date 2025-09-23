@@ -19,8 +19,7 @@
       }
       @keyframes blink_red {
       to {
-      background-color: #CDB3C1;
-      color: rgb(26, 24, 38);
+      color: #${config.lib.stylix.colors.base08};
       }
       }
       .warning, .critical, .urgent {
@@ -31,7 +30,7 @@
       animation-direction: alternate;
       }
       window#waybar {
-      background-color: transparent;
+      background-color: rgba(0,0,0,0.1);
       }
       window > box {
       background-color: transparent;
@@ -43,26 +42,27 @@
       }
       #workspaces button {
       padding-top: 4px;
+      padding-bottom: 4px;
+      padding-left: 6px;
+      padding-right: 6px;
+      color: black;
+      }
+      #workspaces button.active {
+      background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.75), rgba(255,255,255, 0) ), transparent;
+      border: 1px solid black;
+      padding-top: 4px;
       padding-bottom: 3px;
       padding-left: 6px;
       padding-right: 6px;
-      color:#000000;
-      }
-      #workspaces button.active {
-      background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.7), rgba(255,255,255, 0) ), transparent;
-      border: 1px solid black;
-      color: #000000;
-      padding-top: 3px;
-      padding-bottom: 2px;
-      padding-left: 5px;
-      padding-right: 5px;
+      color: black;
       }
       #workspaces button.urgent {
-      color: rgb(26, 24, 38);
+      color: #${config.lib.stylix.colors.base08};
       }
       #workspaces button:hover {
-      background-color:#${config.lib.stylix.colors.base0B};
+      background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.75), rgba(255,255,255, 0) ), transparent;
       color: #${config.lib.stylix.colors.base0A};
+      border: 0px;
       }
       tooltip {
       background: white;
@@ -93,8 +93,13 @@
       color: #${config.lib.stylix.colors.base0C};
       }
       #clock {
-      color: black;
-      font-weight: 600;
+        color: white;
+        font-weight: 600;
+        text-shadow:
+         -1px -1px 0 black,
+          1px -1px 0 black,
+         -1px  1px 0 black,
+          1px  1px 0 black;
       }
       #window {
         color: white;
@@ -115,10 +120,22 @@
       color: #${config.lib.stylix.colors.base08};
       }
       #mpris {
-      color: black;
+        color: white;
+        font-weight: 600;
+        text-shadow:
+         -1px -1px 0 black,
+          1px -1px 0 black,
+         -1px  1px 0 black,
+          1px  1px 0 black;
       }
       #wireplumber {
-      color: black;
+        color: white;
+        font-weight: 600;
+        text-shadow:
+         -1px -1px 0 black,
+          1px -1px 0 black,
+         -1px  1px 0 black,
+          1px  1px 0 black;
       }
       #network {
       color: black;
@@ -128,7 +145,13 @@
       color: #CCCCCC;
       }
       #battery.charging, #battery.full, #battery.discharging {
-      color: black;
+        color: white;
+        font-weight: 600;
+        text-shadow:
+         -1px -1px 0 black,
+          1px -1px 0 black,
+         -1px  1px 0 black,
+          1px  1px 0 black;
       }
       #battery.critical:not(.charging) {
       color: #D6DCE7;

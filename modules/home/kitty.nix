@@ -17,6 +17,7 @@
       window_padding_width = 5;
       window_border_width = 1.5;
       background_opacity = 1;
+      background_blur = 1;
       enable_audio_bell = false;
       tab_bar_style = "powerline";
       tab_powerline_style = "slanted";

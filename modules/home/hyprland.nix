@@ -172,10 +172,10 @@
 
       general {
         gaps_in = 2
-        gaps_out = 5
+        gaps_out = 4
         border_size = 2
-        col.active_border = rgba(ffffff66)
-        col.inactive_border = rgba(ffffff1a)
+        col.active_border = rgba(ffffff4d)
+        col.inactive_border = rgba(0000000a)
         layout = dwindle
         allow_tearing = true
       }
