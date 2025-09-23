@@ -7,7 +7,7 @@
   ...
 }: {
   imports = [
-    ./options.nix
+    ./programs.nix
     ./fonts.nix
     ./user.nix
     ./hardware.nix
@@ -18,6 +18,12 @@
     ./portals.nix
     ./virtualisation.nix
     ./syncthing.nix
+    ./displaymanager.nix
+    ./pipewire.nix
+    ./services.nix
+    ./xserver.nix
+    ./steam.nix
+    ./thunar.nix
     inputs.stylix.nixosModules.stylix
   ];
 }
