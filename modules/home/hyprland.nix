@@ -37,7 +37,7 @@
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = [workspace 1 silent] librewolf
-      exec-once = [workspace 5 silent] vesktop
+      #exec-once = [workspace 5 silent] vesktop
 
       windowrule = opacity 0.8, title:^(FL Studio)$
       #workspaces window rules
@@ -174,7 +174,7 @@
         gaps_in = 2
         gaps_out = 4
         border_size = 2
-        col.active_border = rgba(ffffff4d)
+        col.active_border = rgba(ffffff33)
         col.inactive_border = rgba(0000000a)
         layout = dwindle
         allow_tearing = true
