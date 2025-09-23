@@ -11,7 +11,7 @@
     xwayland.enable = true;
     systemd.enable = true;
     plugins = [
-      pkgs.hyprlandPlugins.hyprbars
+      #pkgs.hyprlandPlugins.hyprbars
       pkgs.hyprlandPlugins.borders-plus-plus
     ];
     extraConfig = ''
@@ -127,20 +127,20 @@
 
       #looksmaxxing
       plugin {
-        hyprbars {
-            bar_color = rgba(00000000)
-            col.text = rgba(0, 0, 0, 1)
-            bar_text_align = left
-            bar_text_size = 10
-            bar_precedence_over_border = true
-            bar_part_of_window = false
-            bar_height = 20
-            bar_blur = true
-            xray = true
-            hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-            hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(0, 0, 0, 1)
-            hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(0, 0, 0, 1)
-        }
+        #hyprbars {
+        #    bar_color = rgba(00000000)
+        #    col.text = rgba(0, 0, 0, 1)
+        #    bar_text_align = left
+        #    bar_text_size = 10
+        #    bar_precedence_over_border = true
+        #    bar_part_of_window = false
+        #    bar_height = 20
+        #    bar_blur = true
+        #    xray = true
+        #    hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
+        #    hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(0, 0, 0, 1)
+        #    hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(0, 0, 0, 1)
+        #}
         borders-plus-plus {
             add_borders = 1
             natural_rounding = false
@@ -171,17 +171,17 @@
       #}
 
       general {
-        gaps_in = 4
-        gaps_out = 6
-        border_size = 4
-        col.active_border = rgba(ffffff00)
-        col.inactive_border = rgba(ffffff00)
+        gaps_in = 2
+        gaps_out = 5
+        border_size = 2
+        col.active_border = rgba(ffffff80)
+        col.inactive_border = rgba(ffffff1a)
         layout = dwindle
         allow_tearing = true
       }
 
       decoration {
-        rounding = 2
+        rounding = 0
         blur {
           enabled = true
           size = 2
