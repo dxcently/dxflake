@@ -4,8 +4,9 @@
   ...
 }: {
   stylix = {
+    autoEnable = true;
     targets = {
-      gtk.enable = false;
+      gtk.enable = true;
       kitty.enable = true;
       neovim.enable = false;
       nvf.enable = false;
