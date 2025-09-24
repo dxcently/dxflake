@@ -260,7 +260,7 @@
         };
         "mpris" = {
           "format" = "♪ « {artist} - {title} »";
-          "format-paused" = "⏸ [{artist} - {title}]";
+          "format-paused" = "𝄩 [{artist} - {title}]";
           "max-length" = 50;
         };
         "wireplumber" = {
@@ -309,11 +309,11 @@
             "weeks-pos" = "right";
             "on-scroll" = 1;
             "format" = {
-              "months" = "<span color='#${config.lib.stylix.colors.base08}'><b>{}</b></span>";
+              "months" = "<span color='#${config.lib.stylix.colors.base0A}'><b>{}</b></span>";
               "days" = "<span color='#000000'><b>{}</b></span>";
-              "weeks" = "<span color='#${config.lib.stylix.colors.base08}'><b>W{}</b></span>";
-              "weekdays" = "<span color='#${config.lib.stylix.colors.base0A}'><b>{}</b></span>";
-              "today" = "<span color='#${config.lib.stylix.colors.base0B}'><b><u>{}</u></b></span>";
+              "weeks" = "<span color='#${config.lib.stylix.colors.base0D}'><b>W{}</b></span>";
+              "weekdays" = "<span color='#${config.lib.stylix.colors.base0C}'><b>{}</b></span>";
+              "today" = "<span color='#${config.lib.stylix.colors.base08}'><b><u>{}</u></b></span>";
             };
           };
           "on-click" = "hyprctl dispatch exec '[float] kitty --hold gcalcli agenda'";
