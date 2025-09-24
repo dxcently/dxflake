@@ -27,6 +27,10 @@
       base0E = "f6c177";
       base0F = "524f67";
     };
+    icons = {
+      enable = true;
+      package = pkgs.windows10-icons;
+    };
     cursor = {
       size = 28;
       package = pkgs.openzone-cursors;
@@ -46,9 +50,9 @@
         name = "Lekton Nerd Font Mono";
       };
       sizes = {
-        applications = 12;
+        applications = 14;
         terminal = 14;
-        desktop = 12;
+        desktop = 14;
         popups = 12;
       };
     };
