@@ -6,8 +6,8 @@
   gtk = {
     enable = true;
     iconTheme = {
-      name = "faba-icon-theme";
-      package = pkgs.faba-icon-theme;
+      name = "windows10";
+      package = pkgs.windows10-icons;
     };
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
