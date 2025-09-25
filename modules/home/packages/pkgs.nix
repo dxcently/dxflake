@@ -53,7 +53,6 @@
     vlc
     strawberry
     soundconverter
-    (vesktop.override {electron = pkgs.electron_35;})
     bottles
     qbittorrent
     obs-studio
