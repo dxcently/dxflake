@@ -43,7 +43,6 @@
     arduino-ide
     chromium
     tor-browser
-    firefox
     anki-bin
     vscodium
     neovide

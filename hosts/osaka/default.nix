@@ -20,6 +20,7 @@
     r2modman
     kdePackages.k3b
     filezilla
+    firefox
   ];
 
   boot = {
