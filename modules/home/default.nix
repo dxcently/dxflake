@@ -24,7 +24,7 @@
     ./fastfetch/fastfetch.nix #fetch
     ./floorp.nix #browser
     ./composekey.nix #special keys
-    ./audacious.nix #music player
+    #./audacious.nix #music player
     ./hyprlock.nix #lock
     ./hyprpaper.nix #wallpaper setter
     ./wlogout.nix #power menu
