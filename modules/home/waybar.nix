@@ -46,6 +46,8 @@
       padding-left: 6px;
       padding-right: 6px;
       color: black;
+      font-weight: 400;
+      font-size: 20;
       }
       #workspaces button.active {
       background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.75), rgba(255,255,255, 0) ), transparent;
@@ -240,7 +242,8 @@
           "show-special" = true;
           "special-visible-only" = true;
           "persistent-workspaces" = {
-            "DP-1" = [1 2 3 4];
+            "DP-1" = [1 3 4 5];
+            "HDMI-A-1" = [2];
             "eDP-1" = [1 2 3 4];
           };
         };
