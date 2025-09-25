@@ -9,7 +9,6 @@
 - mako
 - bash + kitty
 - hyprpaper
-- audacious w/ winamp skin
 - multihost
 - functional (kind of)
 - looks pretty. i think
@@ -33,6 +32,8 @@
 ![image](./extras/screenshots/musicsavesmysoul2.png)
 
 **04.04.25 / 𝄞 v3** ![image](./extras/screenshots/ohmahgah.png)
+
+**09.25.25 / 𝄞 v4** ![image](./extras/screenshots/notev4.png)
 
 ## credit to other flakes/rices i've referenced:
 
