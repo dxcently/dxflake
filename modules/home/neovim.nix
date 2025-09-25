@@ -52,6 +52,12 @@
           desc = "Yank into system clipboard";
         }
         {
+          key = "<leader>d";
+          mode = ["v" "n"];
+          action = ''"+d'';
+          desc = "Cut into system clipboard";
+        }
+        {
           key = "<leader>Y";
           mode = ["v" "n"];
           action = ''"+yg_'';
