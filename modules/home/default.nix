@@ -28,5 +28,6 @@
     ./hyprlock.nix #lock
     ./hyprpaper.nix #wallpaper setter
     ./wlogout.nix #power menu
+    ./librewolf.nix #main browser
   ];
 }

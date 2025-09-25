@@ -6,6 +6,7 @@
   stylix = {
     autoEnable = true;
     targets = {
+      librewolf.enable = false;
       gtk.enable = true;
       kitty.enable = true;
       neovim.enable = false;
