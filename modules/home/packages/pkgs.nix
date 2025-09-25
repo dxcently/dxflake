@@ -42,7 +42,6 @@
     librewolf
     arduino-ide
     chromium
-    tor-browser
     anki-bin
     vscodium
     neovide
