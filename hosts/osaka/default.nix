@@ -18,15 +18,17 @@
     winetricks
     udiskie
     r2modman
-    kdePackages.k3b
+    #kdePackages.k3b
     filezilla
     firefox
+    #cdrtools
   ];
+
+  programs.k3b.enable = true;
 
   boot = {
     initrd.kernelModules = [
       "nvme"
-      "amdgpu"
       "amdgpu"
     ];
     kernelPackages = pkgs.linuxPackages;
@@ -51,4 +53,24 @@
     extraPackages = with pkgs; [amdvlk];
     extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
   };
+
+  #for k3b to work
+  /*
+  security.wrappers = {
+    cdrdao = {
+      setuid = true;
+      owner = "root";
+      group = "cdrom";
+      permissions = "u+wrx,g+x";
+      source = "${pkgs.cdrdao}/bin/cdrdao";
+    };
+    cdrecord = {
+      setuid = true;
+      owner = "root";
+      group = "cdrom";
+      permissions = "u+wrx,g+x";
+      source = "${pkgs.cdrtools}/bin/cdrecord";
+    };
+  };
+  */
 }
