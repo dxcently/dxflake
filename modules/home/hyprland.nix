@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }: {
   home.packages = with pkgs; [
@@ -28,7 +29,8 @@
       env = WLR_NO_HARDWARE_CURSORS,1
 
       #start programs
-      exec-once = systemctl --user import-environment QT_QPA_PLATFORMTHEME WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec-once = systemctl --user start hyprpolkitagent
       exec-once = dbus-update-activation-environment --systemd --all
       exec-once = systemd

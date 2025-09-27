@@ -7,8 +7,9 @@
 }: {
   imports = [
     ./packages #system packages
-    ./git.nix #git
     ./hyprland.nix #window manager
+    ./git.nix #git
+    #./xdg.nix
     ./waybar.nix #bar
     ./kitty.nix #terminal
     ./bash.nix #shell
