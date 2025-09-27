@@ -15,4 +15,5 @@
       };
     };
   };
+  environment.systemPackages = with pkgs; [pulseaudio];
 }
