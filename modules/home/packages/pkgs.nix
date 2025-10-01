@@ -71,7 +71,6 @@
     vim
     socat
     bat
-    gh # github gui
     git
     lazygit
     xdg-utils

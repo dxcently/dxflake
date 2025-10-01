@@ -3,9 +3,12 @@
   config,
   ...
 }: {
-  programs.git = {
-    enable = true;
-    userName = "dxcently";
-    userEmail = "dxcently@gmail.com";
+  programs = {
+    git = {
+      enable = true;
+      userName = "dxcently";
+      userEmail = "dxcently@gmail.com";
+    };
+    gh.enable = true;
   };
 }
