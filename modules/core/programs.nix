@@ -11,9 +11,4 @@
     virt-manager.enable = true;
     system-config-printer.enable = true;
   };
-  nixpkgs = {
-    config = {
-      permittedInsecurePackages = ["qtwebengine-5.15.19"];
-    };
-  };
 }

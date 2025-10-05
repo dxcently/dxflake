@@ -3,10 +3,18 @@
   pkgs,
   ...
 }: {
-  #universal packages
-  home.packages = with pkgs; [
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [
+        "qtwebengine-5.15.19"
+        #"electron-32.3.3"
+      ];
+    };
+  };
+
+  environment.systemPackages = with pkgs; [
     # de stuff
-    swww
     waybar
     kitty
     dunst
@@ -56,9 +64,6 @@
     bottles
     qbittorrent
     obs-studio
-    #jellyfin
-    #jellyfin-web
-    #jellyfin-ffmpeg
     #jellyfin-media-player
     #parsec-bin
     zoom-us
@@ -67,8 +72,6 @@
     jupyter
     gimp3-with-plugins
     inkscape
-    # cli programs
-    vim
     socat
     bat
     git
@@ -106,6 +109,4 @@
     tinymist
     nix-tree
   ];
-
-  nixpkgs.config.permittedInsecurePackages = ["electron-32.3.3"];
 }

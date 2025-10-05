@@ -6,11 +6,6 @@
   ...
 }: {
   environment.variables.EDITOR = "nvim";
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-    };
-  };
   nix = {
     /*
         nixPath = ["etc/nix/path"];

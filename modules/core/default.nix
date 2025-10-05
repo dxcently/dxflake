@@ -7,6 +7,7 @@
   ...
 }: {
   imports = [
+    ./pkgs.nix
     ./programs.nix
     ./fonts.nix
     ./user.nix
