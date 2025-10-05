@@ -18,10 +18,8 @@
     winetricks
     udiskie
     r2modman
-    #kdePackages.k3b
     filezilla
     firefox
-    #cdrtools
   ];
 
   programs.k3b.enable = true;
@@ -55,24 +53,4 @@
   systemd.tmpfiles.rules = [
     "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
   ];
-
-  #for k3b to work
-  /*
-  security.wrappers = {
-    cdrdao = {
-      setuid = true;
-      owner = "root";
-      group = "cdrom";
-      permissions = "u+wrx,g+x";
-      source = "${pkgs.cdrdao}/bin/cdrdao";
-    };
-    cdrecord = {
-      setuid = true;
-      owner = "root";
-      group = "cdrom";
-      permissions = "u+wrx,g+x";
-      source = "${pkgs.cdrtools}/bin/cdrecord";
-    };
-  };
-  */
 }
