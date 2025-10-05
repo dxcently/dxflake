@@ -34,6 +34,7 @@
     pavucontrol
     # programs
     jellyfin-media-player
+    stremio
     ngrok
     rpcs3
     scrcpy
