@@ -42,17 +42,19 @@
   };
 
   services.xserver = {
+    enable = true;
     videoDrivers = ["amdgpu"];
   };
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
+  hardware = {
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+    };
   };
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [amdvlk];
-    extraPackages32 = with pkgs; [driversi686Linux.amdvlk];
-  };
+  #HIP
+  systemd.tmpfiles.rules = [
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
+  ];
 
   #for k3b to work
   /*
