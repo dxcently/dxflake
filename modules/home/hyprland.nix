@@ -30,11 +30,12 @@
       #start programs
       exec-once = dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
       exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+      exec-once = systemctl --user start xdg-desktop-portal-gtk.service
       exec-once = systemctl --user start hyprpolkitagent
-      exec-once = dbus-update-activation-environment --systemd --all
-      exec-once = systemd
       exec-once = nm-applet --indicator
+      exec-once = systemd
       exec-once = hyprpaper
+      exec-once = hypridle
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = [workspace 1 silent] librewolf
