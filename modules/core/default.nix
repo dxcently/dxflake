@@ -7,8 +7,7 @@
   ...
 }: {
   imports = [
-    ./pkgs.nix
-    ./programs.nix
+    ./packages.nix
     ./fonts.nix
     ./user.nix
     ./hardware.nix

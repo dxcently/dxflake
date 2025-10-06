@@ -3,6 +3,21 @@
   pkgs,
   ...
 }: {
+  programs = {
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
+    hyprland.enable = true;
+    hyprlock.enable = true;
+    starship.enable = true;
+    dconf.enable = true;
+    bash.blesh.enable = true;
+    nm-applet.enable = true;
+    virt-manager.enable = true;
+    system-config-printer.enable = true;
+  };
+
   nixpkgs = {
     config = {
       allowUnfree = true;
@@ -51,6 +66,7 @@
     arduino-ide
     chromium
     anki-bin
+    vim
     vscodium
     neovide
     nicotine-plus
