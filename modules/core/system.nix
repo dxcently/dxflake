@@ -7,20 +7,6 @@
 }: {
   environment.variables.EDITOR = "nvim";
   nix = {
-    /*
-        nixPath = ["etc/nix/path"];
-      registry = (lib.mapAttrs (_: flake: {inherit flake;})) (
-        (lib.filterAttrs (_: lib.isType "flake")) inputs
-      );
-      environment = {
-      etc =
-        lib.mapAttrs' (name: value: {
-          name = "nix/path/${name}";
-          value.source = value.flake;
-        })
-        config.nix.registry;
-    };
-    */
     settings = {
       experimental-features = [
         "nix-command"

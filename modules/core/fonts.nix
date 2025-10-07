@@ -21,14 +21,5 @@
       (pkgs.callPackage ./../../packages/azukifontB/azukifontB.nix {})
       (pkgs.callPackage ./../../packages/azuki_font/azuki_font.nix {})
     ];
-    /*
-    fontconfig = {
-      defaultFonts = {
-        serif = ["Lekton Nerd Font"];
-        sansSerif = ["Lekton Nerd Font"];
-        monospace = ["Lekton Nerd Font Mono"];
-      };
-    };
-    */
   };
 }
