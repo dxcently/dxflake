@@ -15,7 +15,6 @@
     ./networking.nix
     ./system.nix
     ./security.nix
-    ./portals.nix
     ./virtualisation.nix
     ./syncthing.nix
     ./displaymanager.nix

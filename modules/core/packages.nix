@@ -8,7 +8,10 @@
       enable = true;
       defaultEditor = true;
     };
-    hyprland.enable = true;
+    hyprland = {
+      enable = true;
+      withUWSM = true;
+    };
     hyprlock.enable = true;
     starship.enable = true;
     dconf.enable = true;
@@ -23,7 +26,6 @@
       allowUnfree = true;
       permittedInsecurePackages = [
         "qtwebengine-5.15.19"
-        #"electron-32.3.3"
       ];
     };
   };
