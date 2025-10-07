@@ -7,7 +7,7 @@
     syncthing = {
       enable = false;
       user = "khoa";
-      dataDir = "/home/khoa/Documents/school/s2025/refile";
+      dataDir = "/home/khoa/school/refile";
       configDir = "/home/khoa/.config/syncthing";
     };
   };
