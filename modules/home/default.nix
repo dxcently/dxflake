@@ -6,7 +6,6 @@
   ...
 }: {
   imports = [
-    #./packages #system packages
     ./hyprland.nix #window manager
     ./git.nix #git
     #./xdg.nix
