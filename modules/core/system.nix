@@ -5,6 +5,7 @@
   inputs,
   ...
 }: {
+  xdg.portal.enable = true;
   environment.variables.EDITOR = "nvim";
   nix = {
     settings = {
