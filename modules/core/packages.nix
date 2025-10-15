@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: {
   programs = {
@@ -24,9 +25,10 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      permittedInsecurePackages = [
-        "qtwebengine-5.15.19"
-      ];
+      permittedInsecurePackages = pkg:
+        builtins.elem (lib.getName pkg) [
+          "qtwebengine"
+        ];
     };
   };
 
