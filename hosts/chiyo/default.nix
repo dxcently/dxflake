@@ -55,6 +55,7 @@
       turbo = "auto";
     };
   };
+  networking.networkmanager.wifi.powersave = false;
   #hardware
   hardware = {
     bluetooth.enable = true;
