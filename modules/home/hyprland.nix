@@ -28,9 +28,6 @@
       env = WLR_NO_HARDWARE_CURSORS,1
 
       #start programs
-      #exec-once = dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      #exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-      #exec-once = systemctl --user start xdg-desktop-portal-gtk.service
       exec-once = systemctl --user start hyprpolkitagent
       exec-once = nm-applet --indicator
       exec-once = systemd
