@@ -8,6 +8,7 @@
   programs.kitty = lib.mkForce {
     enable = true;
     package = pkgs.kitty;
+    #set by stylix
     #font.name = "Lekton Nerd Font Mono";
     #font.size = 12;
     settings = {
@@ -28,6 +29,7 @@
       "alt+h" = "previous_tab";
       "alt+l" = "next_tab";
       "alt+enter" = "new_window_with_cwd";
+      "alt+shift+t" = "new_tab_with_cwd";
       "alt+q" = "close_window";
       "ctrl+shift+U" = "none"; #for vim's page up
     };
