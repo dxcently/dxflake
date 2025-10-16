@@ -6,7 +6,10 @@
   ...
 }: {
   xdg.portal.enable = true;
-  environment.variables.EDITOR = "nvim";
+  environment.variables = {
+    EDITOR = "nvim";
+    GLFW_IM_MODULE = "ibus";
+  };
   nix = {
     settings = {
       experimental-features = [
@@ -39,6 +42,14 @@
       LC_PAPER = "en_US.UTF-8";
       LC_TELEPHONE = "en_US.UTF-8";
       LC_TIME = "en_US.UTF-8";
+    };
+    inputMethod = {
+      enabled = "fcitx5";
+      fcitx5.addons = with pkgs; [
+        fcitx5-mozc
+        fcitx5-gtk
+        fcitx5-configtool
+      ];
     };
   };
   #Don't ever change this lol
