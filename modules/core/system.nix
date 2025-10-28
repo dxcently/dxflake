@@ -44,14 +44,17 @@
       LC_TIME = "en_US.UTF-8";
     };
     inputMethod = {
-      enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [
-        fcitx5-mozc
-        fcitx5-gtk
-        fcitx5-configtool
-      ];
+      enable = true;
+      type = "fcitx5";
+      fcitx5 = {
+        waylandFrontend = true;
+        addons = with pkgs; [
+          fcitx5-mozc-ut
+        ];
+      };
     };
   };
+
   #Don't ever change this lol
   system.stateVersion = "23.11";
 }
