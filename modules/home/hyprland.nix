@@ -35,6 +35,7 @@
       exec-once = hypridle
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
+      exec-once = fcitx5
       exec-once = [workspace 1 silent] librewolf
       #exec-once = [workspace 2 silent] vesktop
 
