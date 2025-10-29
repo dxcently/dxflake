@@ -62,7 +62,6 @@
     # programs
     #stremio
     ngrok
-    rpcs3
     scrcpy
     starship
     osu-lazer-bin
@@ -80,7 +79,6 @@
     protonup-qt
     vlc
     strawberry
-    soundconverter
     bottles
     qbittorrent
     obs-studio
@@ -88,10 +86,8 @@
     #parsec-bin
     zoom-us
     youtube-music
-    calibre
     jupyter
     gimp3-with-plugins
-    inkscape
     socat
     bat
     git
