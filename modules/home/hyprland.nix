@@ -62,7 +62,7 @@
       bind = SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy #clipboard
       bind = SUPER, S, exec, grim -g "$(slurp -d)" - |swappy -f - #screenshot
       bind = SUPER, Tab, exec, rofi -show #show windows
-      bind = SUPER, D, exec, [workspace 2; monitor hdmi-a-1] vesktop
+      #bind = SUPER, D, exec, [workspace 2; monitor hdmi-a-1] vesktop
 
       bind = SUPER, Q, killactive
       bind = SUPER, V, togglefloating
