@@ -23,6 +23,7 @@
     ./xserver.nix
     ./steam.nix
     ./thunar.nix
+    ./fcitx5.nix
     inputs.stylix.nixosModules.stylix
   ];
 }
