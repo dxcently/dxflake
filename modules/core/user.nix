@@ -37,6 +37,7 @@
       "dialout"
       "docker"
       "cdrom"
+      "openrazer"
     ];
   };
   nix.settings.allowed-users = ["${username}"];

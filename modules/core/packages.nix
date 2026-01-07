@@ -20,6 +20,7 @@
     nm-applet.enable = true;
     virt-manager.enable = true;
     system-config-printer.enable = true;
+    adb.enable = true;
   };
 
   nixpkgs = {
@@ -56,6 +57,7 @@
     kdePackages.gwenview
     feh
     hyprpaper
+    losslesscut-bin
     # audio
     wireplumber
     pavucontrol
