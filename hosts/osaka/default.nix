@@ -20,9 +20,15 @@
     r2modman
     filezilla
     firefox
+    openrazer-daemon
+    polychromatic
+    gpu-screen-recorder-gtk
   ];
 
-  programs.k3b.enable = true;
+  programs = {
+    k3b.enable = true;
+    gpu-screen-recorder.enable = true;
+  };
 
   boot = {
     initrd.kernelModules = [
@@ -49,6 +55,7 @@
       enable = true;
       enable32Bit = true;
     };
+    openrazer.enable = true;
   };
   #HIP
   systemd.tmpfiles.rules = [
