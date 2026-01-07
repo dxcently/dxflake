@@ -54,6 +54,7 @@
       #workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
       workspace = special:magic, on-created-empty:youtube-music
       workspace = 2, monitor:HDMI-A-1, persistent:true
+      workspace = special:replay, on-created-empty:gpu-screen-recorder-gtk
 
       #keybindings
       bind = SUPER, RETURN, exec, kitty #terminal
@@ -113,6 +114,7 @@
       bind = SUPER SHIFT, X, movetoworkspace, special:magic
       bind = SUPER SHIFT, Z, movetoworkspace, special:scratch
       #bind = SUPER SHIFT, D, movetoworkspace, special:discord
+      bind = SUPER, R, togglespecialworkspace, replay
 
       bindm = SUPER, mouse:272, movewindow
       bindm = SUPER, mouse:273, resizewindow
