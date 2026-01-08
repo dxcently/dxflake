@@ -63,6 +63,7 @@
     pavucontrol
     # programs
     #stremio
+    obsidian
     ngrok
     scrcpy
     starship

@@ -5,9 +5,9 @@
 }: {
   services = {
     syncthing = {
-      enable = false;
+      enable = true;
       user = "khoa";
-      dataDir = "/home/khoa/school/refile";
+      dataDir = "/home/khoa/Documents";
       configDir = "/home/khoa/.config/syncthing";
     };
   };
