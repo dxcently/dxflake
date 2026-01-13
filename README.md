@@ -44,4 +44,5 @@
 - https://github.com/Frost-Phoenix/nixos-config
 - and many more i can't list here, thank you all <3
 
+what you do maybe won't ever be the most impressive or the best or maybe not even mediocre. but if you've put effort into it, worked hard on it, put your soul and heart in it, be proud of it. it's yours.
 /ᐠ - ˕ -マ Ⳋ ⋆˚✿˖°
