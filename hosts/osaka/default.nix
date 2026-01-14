@@ -23,6 +23,7 @@
     openrazer-daemon
     polychromatic
     gpu-screen-recorder-gtk
+    kdePackages.filelight
   ];
 
   programs = {
