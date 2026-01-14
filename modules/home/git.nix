@@ -9,6 +9,9 @@
       userName = "dxcently";
       userEmail = "dxcently@gmail.com";
     };
-    gh.enable = true;
+    gh = {
+      enable = true;
+      gitCredentialHelper.enable = true;
+    };
   };
 }
