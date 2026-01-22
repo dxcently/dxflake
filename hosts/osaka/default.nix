@@ -19,11 +19,11 @@
     udiskie
     r2modman
     filezilla
-    firefox
     openrazer-daemon
     polychromatic
     gpu-screen-recorder-gtk
     kdePackages.filelight
+    tor-browser
   ];
 
   programs = {
