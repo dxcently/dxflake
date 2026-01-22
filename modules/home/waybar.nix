@@ -280,7 +280,7 @@
             ];
           };
           "on-click" = "pavucontrol";
-          "on-click-middle" = "bash ~/dxflake/extras/sink_changer.sh";
+          "on-click-right" = "bash ~/dxflake/extras/sink_changer.sh";
           "tooltip" = true;
         };
         "battery" = {
