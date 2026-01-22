@@ -127,5 +127,6 @@
     typst
     tinymist
     nix-tree
+    gptfdisk
   ];
 }

@@ -1,21 +1,16 @@
 #!/bin/bash
 
-#this prints out a string because of a "."
-check_sinks() {
-    wpctl status | rg -e '66|68' | rg '\*' | awk '/(66|68)/ {print $3}'
-}
+SINK1="SteelSeries Arctis 7 Game"
+SINK2="Built-in Audio Analog Stereo"
 
-toggle_sink() {
-    current_sink=$(check_sinks)
-    if [ "$current_sink" == "68." ]; then
-        wpctl set-default 66
-        current_sink="66."
-        dunstify -a "Audio Sink" "Headphones 󰋋" "Switched to sink 66"
-    else
-        wpctl set-default 68
-        current_sink="68."
-        dunstify -a "Audio Sink" "Speakers 󰓃" "Switched to sink 68"
-    fi
-}
+CURRENT_ID=$(wpctl status | grep -A 15 "Sinks:" | grep '*' | grep -oP '\d+' | head -n 1)
+ID1=$(wpctl status | grep -A 15 "Sinks:" | grep "$SINK1" | grep -oP '\d+' | head -n 1)
+ID2=$(wpctl status | grep -A 15 "Sinks:" | grep "$SINK2" | grep -oP '\d+' | head -n 1)
 
-toggle_sink
+if [ "$CURRENT_ID" == "$ID1" ]; then
+    wpctl set-default "$ID2"
+    dunstify -a "Audio Sink" "Speakers 󰓃" "Switched to Speakers"
+else
+    wpctl set-default "$ID1"
+    dunstify -a "Audio Sink" "Headphones 󰋋" "Switched to Arctis 7"
+fi

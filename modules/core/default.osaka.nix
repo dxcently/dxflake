@@ -9,5 +9,6 @@
   imports = [
     ./aagl.nix
     ./jellyfin.nix
+    ./solaar.nix
   ];
 }
