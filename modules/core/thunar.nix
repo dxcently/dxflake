@@ -12,7 +12,6 @@
         thunar-media-tags-plugin
       ];
     };
-    file-roller.enable = true;
   };
 
   services = {
