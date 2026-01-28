@@ -30,6 +30,8 @@
     icons = {
       enable = true;
       package = pkgs.windows10-icons;
+      dark = "windows10";
+      light = "windows10";
     };
     cursor = {
       size = 28;
