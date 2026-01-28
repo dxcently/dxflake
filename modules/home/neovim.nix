@@ -170,7 +170,7 @@
           extensions.typst-preview-nvim.enable = true;
           format = {
             enable = true;
-            type = "typstfmt";
+            type = "typstyle";
           };
         };
         css = {
