@@ -20,7 +20,6 @@
     nm-applet.enable = true;
     virt-manager.enable = true;
     system-config-printer.enable = true;
-    adb.enable = true;
   };
 
   nixpkgs = {
@@ -58,11 +57,13 @@
     feh
     hyprpaper
     losslesscut-bin
+    file-roller #thunar
     # audio
     wireplumber
     pavucontrol
     # programs
     #stremio
+    android-tools
     obsidian
     ngrok
     scrcpy
