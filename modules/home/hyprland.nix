@@ -39,17 +39,21 @@
       exec-once = [workspace 1 silent] librewolf
       #exec-once = [workspace 2 silent] vesktop
 
-      windowrule = opacity 0.8, title:^(FL Studio)$
-      #workspaces window rules
-      #windowrule = workspace special:discord, class:^([Vv]esktop)$, title:^([Vv]esktop)$
-      windowrule = workspace 2, class:^([Vv]esktop)$, title:^([Vv]esktop)$
-      windowrule = workspace special:scratch, class:^([Ss]team)$, title:^([Ss]team)$
-      windowrule = workspace special:magic, class:^([Ss]trawberry)$,title:^([Ss]trawberry)$
-      windowrule = workspace special:magic, title:^(YouTube Music)$
-      windowrule = noborder, class:^(Audacious)$
-      windowrule = plugin:hyprbars:nobar, class:^(Audacious)$
+      # General Window Rules (v2)
+      windowrulev2 = opacity 0.8, title:^(FL Studio)$
+      windowrulev2 = noborder, class:^(Audacious)$
+      windowrulev2 = plugin:hyprbars:nobar, class:^(Audacious)$
 
-      layerrule = blur, waybar
+      # Workspace Assignments
+      # Vesktop / Discord
+      windowrulev2 = workspace 2, class:^([Vv]esktop)$
+
+      # Steam (Moved to scratchpad)
+      windowrulev2 = workspace special:scratch, class:^([Ss]team)$
+
+      # Music & Magic (Strawberry & YouTube Music)
+      windowrulev2 = workspace special:magic, class:^([Ss]trawberry)$
+      windowrulev2 = workspace special:magic, title:^(YouTube Music)$
 
       #workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
       workspace = special:magic, on-created-empty:youtube-music
@@ -192,7 +196,6 @@
           ignore_opacity = true
           new_optimizations = true
         }
-        blurls = waybar
         shadow {
           enabled = false;
           range = 4
@@ -201,6 +204,11 @@
         }
       }
 
+      # Layer Rules
+      layerrule {
+      blur = on
+      match:namespace = waybar
+      }
 
       animations {
         enabled = true
