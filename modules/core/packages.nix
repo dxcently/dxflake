@@ -1,7 +1,6 @@
 {
-  config,
   pkgs,
-  lib,
+  inputs,
   ...
 }: {
   programs = {
@@ -25,10 +24,9 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      permittedInsecurePackages = pkg:
-        builtins.elem (lib.getName pkg) [
-          "qtwebengine"
-        ];
+      permittedInsecurePackages = [
+        # declare insecure packages here
+      ];
     };
   };
 
@@ -129,5 +127,11 @@
     tinymist
     nix-tree
     gptfdisk
+    #import from stable branch
+    (import inputs.nixpkgs-stable {
+      inherit (pkgs) system;
+
+      config.allowUnfree = true;
+    }).youtube-music
   ];
 }
