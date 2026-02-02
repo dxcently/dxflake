@@ -38,6 +38,7 @@
       exec-once = fcitx5
       exec-once = [workspace 1 silent] librewolf
       #exec-once = [workspace 2 silent] vesktop
+      exec-once = systemctl --user enable --now hyprpaper.service
 
       # General Window Rules (v2)
       windowrulev2 = opacity 0.8, title:^(FL Studio)$
@@ -204,10 +205,11 @@
         }
       }
 
-      # Layer Rules
       layerrule {
-      blur = on
-      match:namespace = waybar
+        name = waybar
+        blur = on
+        ignore_alpha = 0.5
+        match:namespace = waybar
       }
 
       animations {
