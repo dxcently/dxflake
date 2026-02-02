@@ -11,13 +11,13 @@
       "locked": {
         "lastModified": 1767520119,
         "narHash": "sha256-+OmNQLA9Fv5WBaxYHlPghS9XmnYWDaLt+AatCGhG+hc=",
-        "owner": "ezKEa",
+        "owner": "ezkea",
         "repo": "aagl-gtk-on-nix",
         "rev": "5720d3282844b6b23b26dfac075a5f1f58ea8844",
         "type": "github"
       },
       "original": {
-        "owner": "ezKEa",
+        "owner": "ezkea",
         "repo": "aagl-gtk-on-nix",
         "type": "github"
       }
@@ -357,6 +357,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-stable": {
+      "locked": {
+        "lastModified": 1769598131,
+        "narHash": "sha256-e7VO/kGLgRMbWtpBqdWl0uFg8Y2XWFMdz0uUJvlML8o=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "fa83fd837f3098e3e678e6cf017b2b36102c7211",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-25.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1769170682,
@@ -475,6 +491,7 @@
         "home-manager": "home-manager",
         "nix-colors": "nix-colors",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs_patched": "nixpkgs_patched",
         "nvf": "nvf",
         "solaar": "solaar",
@@ -512,11 +529,11 @@
         "rev": "f5cac914bdeeecac7fca07e99c8fee18336f5bd5",
         "revCount": 82,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/Svenum/Solaar-Flake/0.1.7/019b9ec0-91a0-71bb-a11f-fd6fd16eb839/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/svenum/solaar-flake/0.1.7/019b9ec0-91a0-71bb-a11f-fd6fd16eb839/source.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://flakehub.com/f/Svenum/Solaar-Flake/%2A.tar.gz"
+        "url": "https://flakehub.com/f/svenum/solaar-flake/%2A.tar.gz"
       }
     },
     "stylix": {

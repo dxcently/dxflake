@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
       inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/home-manager/master";
@@ -12,41 +13,35 @@
     nvf.url = "github:notashelf/nvf";
     stylix.url = "github:danth/stylix";
     aagl = {
-      url = "github:ezKEa/aagl-gtk-on-nix";
+      url = "github:ezkea/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     solaar = {
-      url = "https://flakehub.com/f/Svenum/Solaar-Flake/*.tar.gz";
+      url = "https://flakehub.com/f/svenum/solaar-flake/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs = {
     nixpkgs,
+    nixpkgs-stable,
     home-manager,
     ...
   } @ inputs: let
     system = "x86_64-linux";
     username = "khoa";
-
-    pkgs = import nixpkgs {
-      inherit system;
-      config = {
-        allowUnfree = true;
-      };
-    };
   in {
     nixosConfigurations = {
       chiyo = nixpkgs.lib.nixosSystem {
         modules = [./hosts/chiyo];
         specialArgs = {
           host = "chiyo";
-          inherit username inputs system;
+          inherit username inputs system nixpkgs-stable;
         };
       };
       osaka = nixpkgs.lib.nixosSystem {
         specialArgs = {
           host = "osaka";
-          inherit username inputs system;
+          inherit username inputs system nixpkgs-stable;
         };
         modules = [./hosts/osaka];
       };
