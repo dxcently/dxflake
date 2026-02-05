@@ -39,6 +39,7 @@
       exec-once = [workspace 1 silent] librewolf
       #exec-once = [workspace 2 silent] vesktop
       exec-once = systemctl --user enable --now hyprpaper.service
+      exec-once = hyprctl hyprpaper wallpaper , ~/dxflake/extras/wallpapers/hero.webp
 
       # General Window Rules (v2)
       windowrulev2 = opacity 0.8, title:^(FL Studio)$
