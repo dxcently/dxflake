@@ -4,21 +4,23 @@
   inputs,
   ...
 }: {
-  home.packages = with pkgs; [
-    hyprpolkitagent
-  ];
+  home = {
+    packages = with pkgs; [
+      hyprpolkitagent
+    ];
+    sessionVariables.NIXOS_OZONE_WL = "1";
+  };
   wayland.windowManager.hyprland = {
     enable = true;
-    xwayland.enable = true;
-    systemd.enable = true;
+    systemd.enable = false;
     plugins = [
       #pkgs.hyprlandPlugins.hyprbars
       pkgs.hyprlandPlugins.borders-plus-plus
     ];
     extraConfig = ''
       #monitors
-      monitor =, preferred, auto, 1.5
-      monitor = eDP-1, 1920x1080@60, auto, 1
+      monitor =, preferred, auto, 1.25
+      monitor = eDP-1, 1920x1080@60, auto, 1.25
       monitor = DP-1, 1920x1080@144, 0x0, 1
       monitor = HDMI-A-1, 1920x1080@60, 1920x0, 1
 
@@ -38,8 +40,8 @@
       exec-once = fcitx5
       exec-once = [workspace 1 silent] librewolf
       #exec-once = [workspace 2 silent] vesktop
+      exec-once = hyprpaper
       exec-once = systemctl --user enable --now hyprpaper.service
-      exec-once = hyprctl hyprpaper wallpaper , ~/dxflake/extras/wallpapers/hero.webp
 
       # General Window Rules (v2)
       windowrulev2 = opacity 0.8, title:^(FL Studio)$
