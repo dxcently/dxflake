@@ -35,8 +35,8 @@
     };
     cursor = {
       size = 28;
-      package = pkgs.openzone-cursors;
-      name = "OpenZone_White_Slim";
+      package = pkgs.maplestory-cursor;
+      name = "Maple";
     };
     fonts = {
       monospace = {
