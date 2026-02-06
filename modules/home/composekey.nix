@@ -20,6 +20,9 @@
         <Multi_key> <d> <v> : "∂"
         <Multi_key> <period> <backslash> : "λ"
         <Multi_key> <i> <n> <f> : "∞"
+        <Multi_key> <E> <M> : "∑"
+        <Multi_key> <E> <(> : "∈"
+        <Multi_key> <E> </> : "∉"
 
         # Logic
         <Multi_key> <T> <T> : "⊤"
