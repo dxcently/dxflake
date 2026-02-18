@@ -10,7 +10,7 @@
     };
     hyprland = {
       enable = true;
-      withUWSM = true;
+      withUWSM = false;
     };
     hyprlock.enable = true;
     starship.enable = true;
@@ -35,14 +35,8 @@
     waybar
     kitty
     dunst
-    slurp
-    grim
-    swappy
     bash
     wpgtk
-    wl-clipboard
-    polkit_gnome
-    libnotify
     unrar
     unzip
     yad
@@ -52,10 +46,13 @@
     mpv
     gparted
     kdePackages.gwenview
-    feh
-    hyprpaper
     losslesscut-bin
     file-roller #thunar
+    swww
+    grim
+    slurp
+    wl-clipboard
+    swappy
     # audio
     wireplumber
     pavucontrol
@@ -87,7 +84,7 @@
     #jellyfin-media-player
     #parsec-bin
     zoom-us
-    youtube-music
+    pear-desktop
     jupyter
     gimp3-with-plugins
     socat
@@ -122,16 +119,10 @@
     playerctl
     gcalcli
     v4l-utils
-    nixfmt-rfc-style
+    nixfmt
     typst
     tinymist
     nix-tree
     gptfdisk
-    #import from stable branch
-    (import inputs.nixpkgs-stable {
-      inherit (pkgs) system;
-
-      config.allowUnfree = true;
-    }).youtube-music
   ];
 }

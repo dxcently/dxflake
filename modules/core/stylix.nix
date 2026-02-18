@@ -34,7 +34,7 @@
       light = "windows10";
     };
     cursor = {
-      size = 28;
+      size = 40;
       package = pkgs.maplestory-cursor;
       name = "Maple";
     };
