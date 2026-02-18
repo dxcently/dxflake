@@ -67,6 +67,7 @@
     librewolf
     arduino-ide
     chromium
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     anki-bin
     vim
     vscodium
