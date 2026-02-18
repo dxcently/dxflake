@@ -6,9 +6,9 @@
   programs = {
     git = {
       enable = true;
-      userName = "dxcently";
-      userEmail = "dxcently@gmail.com";
-      extraConfig = {
+      settings = {
+        user.name = "dxcently";
+        user.email = "dxcently@gmail.com";
         init.defaultBranch = "main";
         safe.directory = [
           "/etc/nixos"
