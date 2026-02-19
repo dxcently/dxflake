@@ -47,13 +47,13 @@
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = fcitx5
-      exec-once = [workspace 1 silent] librewolf
+      exec-once = [workspace 1 silent] zen
       #exec-once = [workspace 2 silent] vesktop
 
       # General Window Rules (v2)
       windowrulev2 = opacity 0.8, title:^(FL Studio)$
-      windowrulev2 = noborder, class:^(Audacious)$
-      windowrulev2 = plugin:hyprbars:nobar, class:^(Audacious)$
+      #windowrulev2 = noborder, class:^(Audacious)$
+      #windowrulev2 = plugin:hyprbars:nobar, class:^(Audacious)$
 
       # Workspace Assignments
       # Vesktop / Discord
