@@ -7,12 +7,20 @@
   home = {
     packages = with pkgs; [
       hyprpolkitagent
+      hyprpicker
+      hyprshot
+      hyprpaper
     ];
     sessionVariables.NIXOS_OZONE_WL = "1";
   };
   wayland.windowManager.hyprland = {
     enable = true;
-    systemd.enable = false;
+    systemd = {
+      enable = true;
+      enableXdgAutostart = true;
+      variables = ["--all"];
+    };
+    xwayland.enable = true;
     plugins = [
       #pkgs.hyprlandPlugins.hyprbars
       pkgs.hyprlandPlugins.borders-plus-plus
@@ -25,7 +33,7 @@
       monitor = HDMI-A-1, 1920x1080@60, 1920x0, 1
 
       #env variables
-      env = XCURSOR_SIZE,24
+      env = XCURSOR_SIZE, 40
       env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
       env = WLR_NO_HARDWARE_CURSORS,1
 
@@ -33,20 +41,19 @@
       exec-once = systemctl --user start hyprpolkitagent
       exec-once = nm-applet --indicator
       exec-once = systemd
-      exec-once = hyprpaper
       exec-once = hypridle
+      exec-once = swww-daemon
+      exec-once = swww img ~/dxflake/extras/wallpaper/hero.webp
       exec-once = waybar
       exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
       exec-once = fcitx5
-      exec-once = [workspace 1 silent] librewolf
+      exec-once = [workspace 1 silent] zen
       #exec-once = [workspace 2 silent] vesktop
-      exec-once = hyprpaper
-      exec-once = systemctl --user enable --now hyprpaper.service
 
       # General Window Rules (v2)
       windowrulev2 = opacity 0.8, title:^(FL Studio)$
-      windowrulev2 = noborder, class:^(Audacious)$
-      windowrulev2 = plugin:hyprbars:nobar, class:^(Audacious)$
+      #windowrulev2 = noborder, class:^(Audacious)$
+      #windowrulev2 = plugin:hyprbars:nobar, class:^(Audacious)$
 
       # Workspace Assignments
       # Vesktop / Discord
@@ -57,10 +64,10 @@
 
       # Music & Magic (Strawberry & YouTube Music)
       windowrulev2 = workspace special:magic, class:^([Ss]trawberry)$
-      windowrulev2 = workspace special:magic, title:^(YouTube Music)$
+      windowrulev2 = workspace special:magic, title:^(YT Music)$
 
       #workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
-      workspace = special:magic, on-created-empty:youtube-music
+      workspace = special:magic, on-created-empty:pear-desktop
       workspace = 2, monitor:HDMI-A-1, persistent:true
       workspace = special:replay, on-created-empty:gpu-screen-recorder-gtk
 

@@ -162,7 +162,7 @@
           enable = true;
           format = {
             enable = true;
-            type = "alejandra";
+            type = ["alejandra"];
           };
         };
         typst = {
@@ -170,7 +170,7 @@
           extensions.typst-preview-nvim.enable = true;
           format = {
             enable = true;
-            type = "typstyle";
+            type = ["typstyle"];
           };
         };
         css = {

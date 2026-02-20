@@ -5,19 +5,23 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     home-manager = {
-      inputs.nixpkgs.follows = "nixpkgs";
       url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs_patched.url = "github:nixos/nixpkgs/468a37e6ba01c45c91460580f345d48ecdb5a4db";
-    nix-colors.url = "github:misterio77/nix-colors";
-    nvf.url = "github:notashelf/nvf";
-    stylix.url = "github:danth/stylix";
+    nvf = {
+      url = "github:notashelf/nvf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     aagl = {
       url = "github:ezkea/aagl-gtk-on-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    solaar = {
-      url = "https://flakehub.com/f/svenum/solaar-flake/*.tar.gz";
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

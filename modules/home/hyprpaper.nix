@@ -4,7 +4,7 @@
   ...
 }: {
   services.hyprpaper = {
-    enable = true;
+    enable = false;
     settings = {
       ipc = "true";
       splash = false;
