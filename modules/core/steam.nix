@@ -10,6 +10,7 @@
       dedicatedServer.openFirewall = false;
       extraCompatPackages = [pkgs.proton-ge-bin];
       gamescopeSession.enable = true;
+      protontricks.enable = true;
     };
     gamescope = {
       enable = true;

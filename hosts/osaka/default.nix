@@ -24,6 +24,7 @@
     gpu-screen-recorder-gtk
     kdePackages.filelight
     tor-browser
+    protontricks
   ];
 
   programs = {
