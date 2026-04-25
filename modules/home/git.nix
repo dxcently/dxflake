@@ -6,6 +6,7 @@
   programs = {
     git = {
       enable = true;
+      lfs.enable = true;
       settings = {
         user.name = "dxcently";
         user.email = "dxcently@gmail.com";

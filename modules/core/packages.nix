@@ -125,5 +125,9 @@
     tinymist
     nix-tree
     gptfdisk
+    zenity
+    usbutils
+    godot
+    aseprite
   ];
 }

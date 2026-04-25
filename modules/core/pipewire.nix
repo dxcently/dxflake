@@ -15,4 +15,7 @@
       };
     };
   };
+  environment.systemPackages = with pkgs; [
+    alsa-ucm-conf
+  ];
 }
