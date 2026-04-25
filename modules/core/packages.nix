@@ -129,5 +129,6 @@
     usbutils
     godot
     aseprite
+    claude-code
   ];
 }
