@@ -10,7 +10,7 @@
     };
     hyprland = {
       enable = true;
-      withUWSM = false;
+      withUWSM = true;
     };
     hyprlock.enable = true;
     starship.enable = true;
@@ -28,6 +28,13 @@
         # declare insecure packages here
       ];
     };
+    overlays = [
+      (final: prev: {
+        openldap = prev.openldap.overrideAttrs (_: {
+          doCheck = false;
+        });
+      })
+    ];
   };
 
   environment.systemPackages = with pkgs; [
@@ -130,5 +137,7 @@
     godot
     aseprite
     claude-code
+    sops
+    age
   ];
 }

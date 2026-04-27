@@ -2,6 +2,7 @@
   pkgs,
   config,
   inputs,
+  lib,
   ...
 }: {
   home = {
@@ -13,6 +14,7 @@
     ];
     sessionVariables.NIXOS_OZONE_WL = "1";
   };
+
   wayland.windowManager.hyprland = {
     enable = true;
     systemd = {
@@ -21,238 +23,243 @@
       variables = ["--all"];
     };
     xwayland.enable = true;
-    plugins = [
-      #pkgs.hyprlandPlugins.hyprbars
-      pkgs.hyprlandPlugins.borders-plus-plus
-    ];
-    extraConfig = ''
-      #monitors
-      monitor =, preferred, auto, 1.25
-      monitor = eDP-1, 1920x1080@60, auto, 1.25
-      monitor = DP-1, 1920x1080@144, 0x0, 1
-      monitor = HDMI-A-1, 1920x1080@60, 1920x0, 1
 
-      #env variables
-      env = XCURSOR_SIZE, 40
-      env = QT_QPA_PLATFORMTHEME,qt5ct # change to qt6ct if you have that
-      env = WLR_NO_HARDWARE_CURSORS,1
+    # Using 'settings' allows you to write Hyprland config as a Nix attribute set
+    settings = {
+      # Monitors
+      monitor = [
+        ", preferred, auto, 1.25"
+        "eDP-1, 1920x1080@60, auto, 1.25"
+        "DP-1, 1920x1080@144, 0x0, 1"
+        "HDMI-A-1, 1920x1080@60, 1920x0, 1"
+      ];
 
-      #start programs
-      exec-once = systemctl --user start hyprpolkitagent
-      exec-once = nm-applet --indicator
-      exec-once = systemd
-      exec-once = hypridle
-      exec-once = swww-daemon
-      exec-once = swww img ~/dxflake/extras/wallpaper/hero.webp
-      exec-once = waybar
-      exec-once = wl-paste --type text --watch cliphist store & wl-paste --type image --watch cliphist store & wl-paste --watch cliphist store
-      exec-once = fcitx5
-      exec-once = [workspace 1 silent] zen
-      #exec-once = [workspace 2 silent] vesktop
+      # Environment Variables
+      env = [
+        "XCURSOR_SIZE, 40"
+        "QT_QPA_PLATFORMTHEME, qt5ct"
+        "WLR_NO_HARDWARE_CURSORS, 1"
+        "HYPRLAND_NO_START_WRAPPERS, 1"
+      ];
 
-      # General Window Rules (v2)
-      windowrulev2 = opacity 0.8, title:^(FL Studio)$
-      #windowrulev2 = noborder, class:^(Audacious)$
-      #windowrulev2 = plugin:hyprbars:nobar, class:^(Audacious)$
+      # Startup Programs
+      "exec-once" = [
+        "systemctl --user start hyprpolkitagent"
+        "nm-applet --indicator"
+        "systemd"
+        "hypridle"
+        "awww-daemon"
+        "awww img ~/dxflake/extras/wallpaper/hero.webp"
+        "waybar"
+        "wl-paste --type text --watch cliphist store"
+        "wl-paste --type image --watch cliphist store"
+        "fcitx5"
+        "[workspace 1 silent] zen"
+      ];
 
+      extraConfig = "
+        windowrule {
+          name = windowrule-1
+          opacity = 0.8 override 0.8 override
+          match:title = ^(FL Studio)$
+        }
+
+
+
+              # Workspace Assignments
+
+              # Using the preferred 'class' and 'title' matching
+
+        windowrule {
+          name = windowrule-2
+          workspace = 2
+          match:class = ^([Vv]esktop)$
+        }
+
+
+        windowrule {
+          name = windowrule-3
+          workspace = special:scratch
+          match:class = ^([Ss]team)$
+        }
+
+
+        windowrule {
+          name = windowrule-4
+          workspace = special:magic
+          match:class = ^([Ss]trawberry)$
+        }
+
+
+        windowrule {
+          name = windowrule-5
+          workspace = special:magic
+          match:title = ^(YT Music)$
+        }
+
+        ";
       # Workspace Assignments
-      # Vesktop / Discord
-      windowrulev2 = workspace 2, class:^([Vv]esktop)$
+      workspace = [
+        "n, monitor:HDMI-A-1, default:true"
+        "special:discord, monitor:HDMI-A-1, on-created-empty:vesktop"
+        "special:magic, on-created-empty:pear-desktop"
+        "2, monitor:HDMI-A-1, persistent:true"
+        "special:replay, on-created-empty:gpu-screen-recorder-gtk"
+      ];
 
-      # Steam (Moved to scratchpad)
-      windowrulev2 = workspace special:scratch, class:^([Ss]team)$
+      # Keybindings
+      bind = [
+        "SUPER, RETURN, exec, kitty"
+        "SUPER, SPACE, exec, rofi -show drun"
+        "SUPER, T, exec, [float] thunar"
+        "SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+        "SUPER, S, exec, grim -g \"$(slurp -d)\" - | swappy -f -"
+        "SUPER, Tab, exec, rofi -show"
+        "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
+        "SUPER, Q, killactive"
+        "SUPER, V, togglefloating"
+        "SUPER, F, fullscreen"
+        "SUPER, P, pseudo"
+        "SUPER, H, movefocus, l"
+        "SUPER, J, movefocus, d"
+        "SUPER, K, movefocus, u"
+        "SUPER, L, movefocus, r"
+        "SUPER SHIFT, H, movewindow, l"
+        "SUPER SHIFT, J, movewindow, d"
+        "SUPER SHIFT, K, movewindow, u"
+        "SUPER SHIFT, L, movewindow, r"
+        "SUPER ALT, H, resizeactive, -20 0"
+        "SUPER ALT, J, resizeactive, 0 20"
+        "SUPER ALT, K, resizeactive, 0 -20"
+        "SUPER ALT, L, resizeactive, 20 0"
+        "ALT, Tab, workspace, previous"
+        "SUPER, 1, workspace, 1"
+        "SUPER, 2, workspace, 2"
+        "SUPER, 3, workspace, 3"
+        "SUPER, 4, workspace, 4"
+        "SUPER, 5, workspace, 5"
+        "SUPER, 6, workspace, 6"
+        "SUPER, 7, workspace, 7"
+        "SUPER, 8, workspace, 8"
+        "SUPER, 9, workspace, 9"
+        "SUPER, 0, workspace, 10"
+        "SUPER SHIFT, 1, movetoworkspace, 1"
+        "SUPER SHIFT, 2, movetoworkspace, 2"
+        "SUPER SHIFT, 3, movetoworkspace, 3"
+        "SUPER SHIFT, 4, movetoworkspace, 4"
+        "SUPER SHIFT, 5, movetoworkspace, 5"
+        "SUPER SHIFT, 6, movetoworkspace, 6"
+        "SUPER SHIFT, 7, movetoworkspace, 7"
+        "SUPER SHIFT, 8, movetoworkspace, 8"
+        "SUPER SHIFT, 9, movetoworkspace, 9"
+        "SUPER SHIFT, 0, movetoworkspace, 10"
+        "SUPER, X, togglespecialworkspace, magic"
+        "SUPER, Z, togglespecialworkspace, scratch"
+        "SUPER, D, togglespecialworkspace, discord"
+        "SUPER SHIFT, X, movetoworkspace, special:magic"
+        "SUPER SHIFT, Z, movetoworkspace, special:scratch"
+        "SUPER SHIFT, D, movetoworkspace, special:discord"
+        "SUPER, R, togglespecialworkspace, replay"
+        ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%-"
+        ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%+"
+        ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        ", XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+        ", XF86MonBrightnessUp, exec, brightnessctl s 5%+"
+      ];
 
-      # Music & Magic (Strawberry & YouTube Music)
-      windowrulev2 = workspace special:magic, class:^([Ss]trawberry)$
-      windowrulev2 = workspace special:magic, title:^(YT Music)$
+      bindm = [
+        "SUPER, mouse:272, movewindow"
+        "SUPER, mouse:273, resizewindow"
+      ];
 
-      #workspace = special:discord, monitor:HDMI-A-1, on-created-empty:vesktop
-      workspace = special:magic, on-created-empty:pear-desktop
-      workspace = 2, monitor:HDMI-A-1, persistent:true
-      workspace = special:replay, on-created-empty:gpu-screen-recorder-gtk
+      input = {
+        kb_layout = "us";
+        kb_options = "compose:caps";
+        follow_mouse = 1;
+        sensitivity = 0.8;
+        accel_profile = "flat";
+        force_no_accel = true;
+        touchpad = {
+          natural_scroll = true;
+          middle_button_emulation = true;
+          clickfinger_behavior = true;
+        };
+      };
 
-      #keybindings
-      bind = SUPER, RETURN, exec, kitty #terminal
-      bind = SUPER, SPACE, exec, rofi -show drun #launcher
-      bind = SUPER, T, exec, [float] thunar #file manager
-      bind = SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy #clipboard
-      bind = SUPER, S, exec, grim -g "$(slurp -d)" - |swappy -f - #screenshot
-      bind = SUPER, Tab, exec, rofi -show #show windows
-      #bind = SUPER, D, exec, [workspace 2; monitor hdmi-a-1] vesktop
+      general = {
+        gaps_in = 2;
+        gaps_out = 4;
+        border_size = 1;
+        "col.active_border" = lib.mkForce "rgba(ffffff99)";
+        "col.inactive_border" = lib.mkForce "rgba(000000cc)";
+        layout = "dwindle";
+        allow_tearing = true;
+      };
 
-      bind = SUPER, Q, killactive
-      bind = SUPER, V, togglefloating
-      bind = SUPER, F, fullscreen
-      bind = SUPER, P, pseudo
-
-      bind = SUPER, H, movefocus, l
-      bind = SUPER, J, movefocus, d
-      bind = SUPER, K, movefocus, u
-      bind = SUPER, L, movefocus, r
-      bind = SUPER SHIFT, H, movewindow, l
-      bind = SUPER SHIFT, J, movewindow, d
-      bind = SUPER SHIFT, K, movewindow, u
-      bind = SUPER SHIFT, L, movewindow, r
-      bind = SUPER ALT, H, resizeactive, -20 0
-      bind = SUPER ALT, J, resizeactive, 0 20
-      bind = SUPER ALT, K, resizeactive, 0 -20
-      bind = SUPER ALT, L, resizeactive, 20 0
-      #bind = SUPER SHIFT, bringactivetotop
-      #bind = ALT, Tab, cyclenext
-      bind = ALT, Tab, workspace, previous
-
-      bind = SUPER, 1, workspace, 1
-      bind = SUPER, 2, workspace, 2
-      #bind = SUPER, D, workspace, 2
-      bind = SUPER, 3, workspace, 3
-      bind = SUPER, 4, workspace, 4
-      bind = SUPER, 5, workspace, 5
-      bind = SUPER, 6, workspace, 6
-      bind = SUPER, 7, workspace, 7
-      bind = SUPER, 8, workspace, 8
-      bind = SUPER, 9, workspace, 9
-      bind = SUPER, 0, workspace, 10
-      bind = SUPER SHIFT, 1, movetoworkspace, 1
-      bind = SUPER SHIFT, 2, movetoworkspace, 2
-      bind = SUPER SHIFT, 3, movetoworkspace, 3
-      bind = SUPER SHIFT, 4, movetoworkspace, 4
-      bind = SUPER SHIFT, 5, movetoworkspace, 5
-      bind = SUPER SHIFT, 6, movetoworkspace, 6
-      bind = SUPER SHIFT, 7, movetoworkspace, 7
-      bind = SUPER SHIFT, 8, movetoworkspace, 8
-      bind = SUPER SHIFT, 9, movetoworkspace, 9
-      bind = SUPER SHIFT, 0, movetoworkspace, 10
-
-      bind = SUPER, X, togglespecialworkspace, magic
-      bind = SUPER, Z, togglespecialworkspace, scratch
-      #bind = SUPER, D, togglespecialworkspace, discord
-      bind = SUPER SHIFT, X, movetoworkspace, special:magic
-      bind = SUPER SHIFT, Z, movetoworkspace, special:scratch
-      #bind = SUPER SHIFT, D, movetoworkspace, special:discord
-      bind = SUPER, R, togglespecialworkspace, replay
-
-      bindm = SUPER, mouse:272, movewindow
-      bindm = SUPER, mouse:273, resizewindow
-
-      bind = ,XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%-
-      bind = ,XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 4%+
-      bind = ,XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-      bind = ,XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
-      bind = ,XF86MonBrightnessDown, exec,  brightnessctl s 5%-
-      bind = ,XF86MonBrightnessUp, exec, brightnessctl s 5%+
-
-      #looksmaxxing
-      plugin {
-        #hyprbars {
-        #    bar_color = rgba(00000000)
-        #    col.text = rgba(0, 0, 0, 1)
-        #    bar_text_align = left
-        #    bar_text_size = 10
-        #    bar_precedence_over_border = true
-        #    bar_part_of_window = false
-        #    bar_height = 20
-        #    bar_blur = true
-        #    xray = true
-        #    hyprbars-button = rgba(ffffff00), 16, 󰖭, hyprctl dispatch killactive, rgb(A66B7B)
-        #    hyprbars-button = rgba(ffffff00), 12, 🗖,hyprctl dispatch fullscreen, rgba(0, 0, 0, 1)
-        #    hyprbars-button = rgba(ffffff00), 12, 🗕, hyprctl dispatch togglefloating, rgba(0, 0, 0, 1)
-        #}
-        borders-plus-plus {
-            add_borders = 1
-            natural_rounding = false
-            col.border_1 = rgb(000000)
-            border_size_1 = 1
-        }
-      }
-
-      input {
-        kb_layout = us
-        kb_options = compose:caps #changes capslock to composekey button
-
-        follow_mouse = 1
-        sensitivity = 0.8
-        accel_profile = flat
-        force_no_accel = true
-
-        touchpad {
-          natural_scroll = true
-          middle_button_emulation = true
-          clickfinger_behavior = true
-        }
-      }
-
-      #gestures {
-      #  workspace_swipe = true
-      #  workspace_swipe_fingers = 3
-      #}
-
-      general {
-        gaps_in = 2
-        gaps_out = 4
-        border_size = 2
-        col.active_border = rgba(ffffff33)
-        col.inactive_border = rgba(0000000a)
-        layout = dwindle
-        allow_tearing = true
-      }
-
-      decoration {
-        rounding = 0
-        blur {
-          enabled = true
-          size = 2
-          passes = 2
-          xray = true
-          vibrancy_darkness = 1.0
-          ignore_opacity = true
-          new_optimizations = true
-        }
-        shadow {
+      decoration = {
+        rounding = 0;
+        blur = {
+          enabled = true;
+          size = 2;
+          passes = 2;
+          xray = true;
+          vibrancy_darkness = 1.0;
+          ignore_opacity = true;
+          new_optimizations = true;
+        };
+        shadow = {
           enabled = false;
-          range = 4
-          render_power = 3
-          scale = 1.0
-        }
-      }
+          range = 4;
+          render_power = 3;
+          scale = 1.0;
+        };
+      };
 
-      layerrule {
-        name = waybar
-        blur = on
-        ignore_alpha = 0.5
-        match:namespace = waybar
-      }
+      layerrule = [
+        "blur on, match:namespace waybar"
+        "ignore_alpha 0.5, match:namespace waybar"
+      ];
 
-      animations {
-        enabled = true
-        bezier = myBezier, 0.05, 0.9, 0.1, 1.05
-        animation = windows, 1, 7, myBezier
-        animation = windowsOut, 1, 7, default, popin 80%
-        animation = border, 1, 10, default
-        animation = borderangle, 1, 8, default
-        animation = fade, 1, 7, default
-        animation = workspaces, 1, 6, default
-      }
+      animations = {
+        enabled = true;
+        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+        animation = [
+          "windows, 1, 7, myBezier"
+          "windowsOut, 1, 7, default, popin 80%"
+          "border, 1, 10, default"
+          "borderangle, 1, 8, default"
+          "fade, 1, 7, default"
+          "workspaces, 1, 6, default"
+        ];
+      };
 
-      dwindle {
-        pseudotile = true
-        preserve_split = true
-      }
+      dwindle = {
+        pseudotile = true;
+        preserve_split = true;
+      };
 
-      master {
-        new_status = master
-      }
+      master = {
+        new_status = "master";
+      };
 
-      misc {
-        force_default_wallpaper = -1
-      }
+      misc = {
+        force_default_wallpaper = -1;
+      };
 
-      ecosystem {
-        no_update_news = true
-        no_donation_nag = true
-      }
+      ecosystem = {
+        no_update_news = true;
+        no_donation_nag = true;
+      };
 
-    '';
+      plugin = {
+        borders-plus-plus = {
+          add_borders = 1;
+          natural_rounding = false;
+          "col.border_1" = "rgba(000000)";
+          border_size_1 = 1;
+        };
+      };
+    };
   };
-  #command to remove symlink to edit
-  #cp --remove-destination `readlink hyprland.conf` hyprland.conf
 }
