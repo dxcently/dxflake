@@ -4,6 +4,13 @@
   ...
 }: {
   services = {
+    hydra = {
+      enable = true;
+      hydraURL = "http://localhost:3333";
+      notificationSender = "hydra@localhost";
+      buildMachinesFiles = [];
+      useSubstitutes = true;
+    };
     openssh = {
       enable = true;
       settings = {
@@ -18,6 +25,13 @@
       nssmdns4 = true;
       openFirewall = true;
     };
+    postgresql = {
+      enable = true;
+      authentication = pkgs.lib.mkOverride 10 ''
+        #type database  DBuser  auth-method
+        local all       all     trust
+      '';
+    };
     tailscale.enable = true;
     devmon.enable = true;
     blueman.enable = true;
@@ -25,6 +39,5 @@
     udisks2.enable = true;
     flatpak.enable = true;
     printing.enable = true;
-    postgresql.enable = true;
   };
 }

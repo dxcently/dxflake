@@ -55,7 +55,7 @@
     kdePackages.gwenview
     losslesscut-bin
     file-roller #thunar
-    swww
+    awww
     grim
     slurp
     wl-clipboard
