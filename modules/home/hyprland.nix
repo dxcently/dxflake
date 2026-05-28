@@ -24,7 +24,6 @@
     };
     xwayland.enable = true;
 
-    # Using 'settings' allows you to write Hyprland config as a Nix attribute set
     settings = {
       # Monitors
       monitor = [

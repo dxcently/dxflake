@@ -64,8 +64,6 @@
     wireplumber
     pavucontrol
     # programs
-    #stremio
-    android-tools
     obsidian
     ngrok
     scrcpy
@@ -73,11 +71,9 @@
     osu-lazer-bin
     librewolf
     arduino-ide
-    chromium
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     anki-bin
     vim
-    vscodium
     neovide
     nicotine-plus
     webcamoid
@@ -105,7 +101,6 @@
     fastfetch
     cowsay
     fzf
-    ripgrep
     atuin
     zoxide
     btop

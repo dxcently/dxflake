@@ -56,9 +56,5 @@
         modules = [./hosts/osaka];
       };
     };
-    hydraJobs = {
-      chiyo = self.nixosConfigurations.chiyo.config.system.build.toplevel;
-      osaka = self.nixosConfigurations.osaka.config.system.build.toplevel;
-    };
   };
 }

@@ -5,7 +5,7 @@
 }: {
   services = {
     hydra = {
-      enable = true;
+      enable = false;
       hydraURL = "http://localhost:3333";
       notificationSender = "hydra@localhost";
       buildMachinesFiles = [];

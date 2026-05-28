@@ -25,6 +25,7 @@
     kdePackages.filelight
     tor-browser
     protontricks
+    orca-slicer
   ];
 
   programs = {
