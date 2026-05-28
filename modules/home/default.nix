@@ -29,5 +29,6 @@
     ./wlogout.nix #power menu
     ./librewolf.nix #main browser
     ./vesktop.nix #discord client
+    ./btop.nix #resource monitor
   ];
 }
