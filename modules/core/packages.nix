@@ -43,14 +43,12 @@
     dunst # lightweight scriptable notification daemon
     awww # animated wallpaper daemon for Wayland (wlr-layer-shell)
     #wpgtk # colorscheme, wallpaper, and template manager via pywal
-    grim # screenshot tool for Wayland compositors
-    slurp # interactive region selector for Wayland screenshots
     wl-clipboard # copy/paste CLI tools for Wayland
     swappy # Wayland snapshot annotation and editing tool
     cliphist # clipboard history manager for Wayland
     brightnessctl # read and control device brightness via sysfs
     ydotool # generic Linux input automation (keyboard, mouse, touch)
-    #yad # display GTK dialogs from shell scripts
+    yad # display GTK dialogs from shell scripts
     zenity # display GTK dialogs from shell scripts (GNOME-style)
 
     # ── Shell & Terminal ────────────────────────────────────────────────────────
