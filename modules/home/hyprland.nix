@@ -10,7 +10,6 @@
       hyprpolkitagent
       hyprpicker
       hyprshot
-      hyprpaper
     ];
     sessionVariables.NIXOS_OZONE_WL = "1";
   };
@@ -112,8 +111,10 @@
         "SUPER, SPACE, exec, rofi -show drun"
         "SUPER, T, exec, [float] thunar"
         "SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-        "SUPER, S, exec, grim -g \"$(slurp -d)\" - | swappy -f -"
+        "SUPER, S, exec, hyprshot -z --raw -m region | swappy -f -"
+        "SUPER SHIFT, S, exec, hyprshot -z --raw -m output | swappy -f -"
         "SUPER, Tab, exec, rofi -show"
+        "SUPER, B, exec, bash /home/khoa/dxflake/extras/keybinds.bash"
         "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
         "SUPER, Q, killactive"
         "SUPER, V, togglefloating"
