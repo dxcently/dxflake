@@ -131,8 +131,8 @@
     nodejs #cross-platform JavaScript runtime environment
 
     # ── Networking & Web ────────────────────────────────────────────────────────
-    librewolf # privacy-hardened Firefox fork with no telemetry
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default # fast, customizable browser built on Firefox
+    chromium # Chromium is an open source web browser from Google
     qbittorrent # feature-rich open-source BitTorrent client
     nicotine-plus # Soulseek peer-to-peer file sharing client
     zoom-us # video conferencing, webinars, and team meetings
