@@ -128,6 +128,7 @@
     nix-tree # interactively browse and visualize Nix derivation closures
     nh # Nix helper: cleaner nixos-rebuild, home-manager, and cache
     ngrok # expose local servers to the internet via secure tunnels
+    nodejs #cross-platform JavaScript runtime environment
 
     # ── Networking & Web ────────────────────────────────────────────────────────
     librewolf # privacy-hardened Firefox fork with no telemetry
