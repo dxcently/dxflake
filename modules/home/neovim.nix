@@ -10,6 +10,8 @@
   programs.neovim = lib.mkForce {
     enable = true;
     vimAlias = true;
+    withRuby = false;
+    withPython3 = false;
   };
 
   programs.nvf = {
@@ -142,6 +144,7 @@
         lspSignature.enable = true;
         nvim-docs-view.enable = false;
         inlayHints.enable = false;
+        presets.tailwindcss-language-server.enable = true;
       };
 
       languages = {
@@ -150,11 +153,10 @@
         enableExtraDiagnostics = true;
 
         python.enable = true;
-        ts.enable = true;
+        typescript.enable = true;
         rust.enable = true;
         clang.enable = true;
         bash.enable = true;
-        tailwind.enable = true;
         html.enable = true;
         lua.enable = true;
         nix = {
