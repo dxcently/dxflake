@@ -151,7 +151,6 @@
 
         python.enable = true;
         ts.enable = true;
-        markdown.enable = true;
         rust.enable = true;
         clang.enable = true;
         bash.enable = true;
@@ -177,6 +176,13 @@
           enable = true;
           format.enable = true;
           lsp.enable = true;
+        };
+        markdown = {
+          enable = true;
+          extensions = {
+            #markview-nvim.enable = true;
+            render-markdown-nvim.enable = true;
+          };
         };
       };
 
