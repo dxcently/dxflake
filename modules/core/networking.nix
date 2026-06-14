@@ -10,6 +10,12 @@
     firewall = {
       enable = true;
     };
+    wg-quick.interfaces = {
+      wg0 = {
+        configFile = "/etc/wireguard/wg0.conf"; # fix leading slash
+        autostart = false;
+      };
+    };
   };
 
   users.users.${username} = {
@@ -19,5 +25,5 @@
     ];
   };
 
-  environment.systemPackages = with pkgs; [networkmanagerapplet];
+  environment.systemPackages = with pkgs; [networkmanagerapplet wireguard-tools];
 }
