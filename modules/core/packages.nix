@@ -32,6 +32,13 @@
       (final: prev: {
         openldap = prev.openldap.overrideAttrs (_: {
           doCheck = false;
+          python3 = prev.python3.override {
+            packageOverrides = pyFinal: pyPrev: {
+              python-gnupg = pyPrev.python-gnupg.overrideAttrs (oldAttrs: {
+                doCheck = false;
+              });
+            };
+          };
         });
       })
     ];
@@ -136,6 +143,8 @@
     qbittorrent # feature-rich open-source BitTorrent client
     nicotine-plus # Soulseek peer-to-peer file sharing client
     zoom-us # video conferencing, webinars, and team meetings
+    protonvpn-gui # Official Proton VPN CLient
+    proton-vpn-cli # Proton VPN Cli
 
     # ── Productivity & Knowledge ────────────────────────────────────────────────
     obsidian # markdown-based personal knowledge base and note-taking app
