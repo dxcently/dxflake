@@ -25,6 +25,7 @@
     ./thunar.nix
     ./fcitx5.nix
     inputs.stylix.nixosModules.stylix
+    inputs.sops-nix.nixosModules.sops
     ./hermes.nix
   ];
 }
