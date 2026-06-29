@@ -47,22 +47,19 @@
   } @ inputs: let
     system = "x86_64-linux";
     username = "khoa";
+    mkHost = name:
+      nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          host = name;
+          inherit username inputs system nixpkgs-stable;
+        };
+        modules = [./hosts/${name}];
+      };
   in {
     nixosConfigurations = {
-      chiyo = nixpkgs.lib.nixosSystem {
-        modules = [./hosts/chiyo];
-        specialArgs = {
-          host = "chiyo";
-          inherit username inputs system nixpkgs-stable;
-        };
-      };
-      osaka = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          host = "osaka";
-          inherit username inputs system nixpkgs-stable;
-        };
-        modules = [./hosts/osaka];
-      };
+      chiyo = mkHost "chiyo";
+      osaka = mkHost "osaka";
+      sakaki = mkHost "sakaki";
     };
   };
 }

@@ -13,10 +13,6 @@
       inherit inputs username host;
     };
     users.${username} = {
-      imports =
-        if (host == "osaka")
-        then [./../home/default.osaka.nix]
-        else [./../home];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
       home.stateVersion = "23.11";
