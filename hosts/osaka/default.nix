@@ -1,67 +1,32 @@
 {
-  inputs,
-  lib,
-  config,
   pkgs,
   ...
 }: {
   imports = [
     ./hardware.nix
-    ./../../modules/core
-    ./../../modules/core/default.osaka.nix
+    ../../modules/nucleus
+    ../../modules/dendrites/desktop
+    ../../modules/dendrites/hyprland
+    ../../modules/dendrites/gaming
+    ../../modules/dendrites/server
+    ../../modules/dendrites/virtualisation.nix
+    ../../modules/dendrites/openrazer.nix
+    ../../modules/dendrites/gpu-amd.nix
+    ../../modules/dendrites/gpu-screen-recorder.nix
+    ../../modules/dendrites/k3b.nix
   ];
 
-  #host specific packages
+  # host-specific packages
   environment.systemPackages = with pkgs; [
-    prismlauncher
     soundconverter
-    winetricks
     udiskie
-    r2modman
     filezilla
-    openrazer-daemon
-    polychromatic
-    gpu-screen-recorder-gtk
     kdePackages.filelight
     tor-browser
-    protontricks
-    orca-slicer
   ];
-
-  programs = {
-    k3b.enable = true;
-    gpu-screen-recorder.enable = true;
-  };
 
   boot = {
-    initrd.kernelModules = [
-      "nvme"
-      "amdgpu"
-    ];
-    kernelPackages = pkgs.linuxPackages;
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-    kernel.sysctl = {
-      "vm.max_map_count" = 2147483642;
-    };
+    initrd.kernelModules = ["nvme"];
     kernelParams = ["mitigations=off"];
   };
-
-  services.xserver = {
-    enable = true;
-    videoDrivers = ["amdgpu"];
-  };
-  hardware = {
-    graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
-    openrazer.enable = true;
-  };
-  #HIP
-  systemd.tmpfiles.rules = [
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages.clr}"
-  ];
 }

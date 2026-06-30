@@ -10,7 +10,6 @@ in {
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    #blesh.enable = true;
     profileExtra = ''
       if [ "$(tty)" = "/dev/tty1" ]; then
         exec Hyprland &> /dev/null
@@ -20,8 +19,8 @@ in {
       fastfetch
     '';
     bashrcExtra = ''
-      eval "$(zoxide init bash)"
-      eval "$(atuin init bash)"
+      command -v mcfly >/dev/null && eval "$(mcfly init bash)"
+
       function y() {
       local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
       yazi "$@" --cwd-file="$tmp"

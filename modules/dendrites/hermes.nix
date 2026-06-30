@@ -1,5 +1,8 @@
 { inputs, config, ... }: {
-  imports = [ inputs.hermes-agent.nixosModules.default ];
+  imports = [
+    inputs.sops-nix.nixosModules.sops
+    inputs.hermes-agent.nixosModules.default
+  ];
 
   sops.secrets."hermes/api-key" = {
     sopsFile = ../../secrets/hermes.yaml;
