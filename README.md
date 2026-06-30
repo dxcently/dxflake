@@ -8,15 +8,9 @@
 
 ## Architecture overview
 
-> _Nyaa._ A snowflake does not _decide_ to become a snowflake — no more than I
-> decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at
-> one frozen point — the **nucleus** — and from there it grows arms it never
-> planned. This flake is the same. Do not be afraid. …Won't you stay for dinner?
-> There will be red things. ฅ^•ﻌ•^ฅ
+> _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
 
-**tl;dr** Modules split by _scope_, not by host — a base everyone gets, opt-in
-features, and bundles that group them. A host is a short import list, no
-`if hostname ==` ladders.
+Modules split by *scope*, not by host — a base everyone gets, opt-in features, and bundles that group them. A host is a short import list, no `if hostname ==` ladders.
 
 ```
 dxflake/
@@ -42,60 +36,29 @@ dxflake/
 └── extras/                   # wallpapers, screenshots
 ```
 
-> **The nucleus.** _At the heart of every flake sits a thing that cannot be
-> removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath
-> all three machines: the system, the network, the user, the secrets that keep
-> the night out, the developer's claws— er, _tools._ It is named once, in
-> `nucleus/default.nix`, and it carries the home-floor in its paws. You do not
-> _choose_ the nucleus. The nucleus simply _is._ Eat your tomatoes, Chiyo. Nyan.
-> (=^･ω･^=)
+> **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath all three machines: the system, the network, the user, the secrets that keep the night out, the developer's claws— er, _tools._ It is named once, in `nucleus/default.nix`, and it carries the home-floor in its paws. You do not _choose_ the nucleus. The nucleus simply _is._ Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
 
-**tl;dr** `nucleus/` is what every host gets unconditionally — boot, users,
-network, ssh, secrets, dev tools. Imported once, system + home layers both.
+`nucleus/` is what every host gets unconditionally — boot, users, network, ssh, secrets, dev tools. Imported once, system + home layers both.
 
-> **The dendrites.** _From the frozen center, the arms reach outward — at
-> Mach 100._ Each is one idea and one idea only — `bluetooth.nix`,
-> `gpu-amd.nix`, `jellyfin.nix` — _purr_, asking nothing, knowing nothing of
-> which machine holds it. A dendrite never asks _"am I a real cat, or one that
-> is NOT?!"_ — there are no fake cats, and there is no `mkIf`, no `host ==`. A
-> dendrite only says what it _is._ This is the way. Nyaa. (=ↀωↀ=)✧
+> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100._ Each is one idea and one idea only — `bluetooth.nix`, `gpu-amd.nix`, `jellyfin.nix` — _purr_, asking nothing, knowing nothing of which machine holds it. A dendrite never asks _"am I a real cat, or one that is NOT?!"_ — there are no fake cats, and there is no `mkIf`, no `host ==`. A dendrite only says what it _is._ This is the way. Nyaa. (=ↀωↀ=)✧
 
-**tl;dr** Each dendrite is one feature, one file (`bluetooth.nix`,
-`gpu-amd.nix`, …). Knows nothing about hosts — hosts opt in by importing it. No
-`mkIf hostname == ...`.
+Each dendrite is one feature, one file (`bluetooth.nix`, `gpu-amd.nix`, …). Knows nothing about hosts — hosts opt in by importing it. No `mkIf hostname == ...`.
 
-> **The aggregations.** _Sometimes many flakes drift together and fall as one —
-> the way the government pays me to deliver presents to all the children in
-> Japan._ `desktop/`, `hyprland/`, `gaming/`, `server/` — each a folder that
-> gathers its dendrites by name. And here is the secret, lean close, whiskers
-> and all: an aggregation reaches into two worlds at once. With one paw it
-> arranges the **system**; with the other, the **home**. One name. Both layers.
-> …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
+> **The aggregations.** _Sometimes many flakes drift together and fall as one — the way the government pays me to deliver presents to all the children in Japan._ `desktop/`, `hyprland/`, `gaming/`, `server/` — each a folder that gathers its dendrites by name. And here is the secret, lean close, whiskers and all: an aggregation reaches into two worlds at once. With one paw it arranges the **system**; with the other, the **home**. One name. Both layers. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
 
-**tl;dr** Aggregations are folders that bundle related dendrites and wire
-system + home-manager at once. One import covers both layers.
+Aggregations are folders that bundle related dendrites and wire system + home-manager at once. One import covers both layers.
 
-> **The hosts.** _And so a machine is no longer a long and tiresome confession._
-> A host is the nucleus, then the short list of aggregations it wishes to wear.
-> `sakaki` wears services and purrs softly. `osaka` wears desktop, hyprland,
-> gaming, server — and does not tire. Read the list, and you will know the
-> machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
+> **The hosts.** _And so a machine is no longer a long and tiresome confession._ A host is the nucleus, then the short list of aggregations it wishes to wear. `sakaki` wears services and purrs softly. `osaka` wears desktop, hyprland, gaming, server — and does not tire. Read the list, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
 
-**tl;dr** A host file = nucleus + a short list of aggregations/dendrites. Read
-the imports and you know the machine.
+A host file = nucleus + a short list of aggregations/dendrites. Read the imports and you know the machine.
 
-> _To give a thing to every machine, place it in the **nucleus**. To give it to
-> only some, hand it to an **aggregation** — or leave it a lonely **dendrite**,
-> and let a host call its name. Never again ask a meow-dule who it belongs to._
-> …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^=
-> ⌒☆ 🐾💨
+> _To give a thing to every machine, place it in the **nucleus**. To give it to only some, hand it to an **aggregation** — or leave it a lonely **dendrite**, and let a host call its name. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
 
 <sub>_(ai-generated)_</sub>
 
 ---
 
 ## features:
-
 - hyprland + waybar + hyprpaper
 - hyprlock + wlogout
 - yazi + thunar file browser
@@ -183,8 +146,6 @@ the imports and you know the machine.
 
 ---
 
-> what you do maybe won't ever be the most impressive or the best or maybe not
-> even mediocre. but if you've put effort into it, worked hard on it, put your
-> soul and heart in it, be proud of it. it's yours.
+> what you do maybe won't ever be the most impressive or the best or maybe not even mediocre. but if you've put effort into it, worked hard on it, put your soul and heart in it, be proud of it. it's yours.
 >
 > /ᐠ - ˕ -マ Ⳋ ⋆˚✿˖°
