@@ -16,5 +16,9 @@
 
   services = {
     tumbler.enable = true;
+    # file-manager substrate — automount, mount-without-root, trash/mtp/network
+    gvfs.enable = true;
+    udisks2.enable = true;
+    devmon.enable = true;
   };
 }

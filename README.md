@@ -6,6 +6,48 @@
 
 ---
 
+## Architecture overview
+
+> _Nyaa._ A snowflake does not _decide_ to become a snowflake — no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
+
+```
+dxflake/
+├── flake.nix                 # the registry. one line summons a machine.
+├── hosts/
+│   ├── chiyo/                # laptop · Intel iGPU
+│   ├── osaka/                # workstation · AMD GPU
+│   └── sakaki/               # headless server
+│       └── default.nix       #   nucleus + a short list of aggregations. nothing more.
+├── modules/
+│   ├── nucleus/              # the floor. every host, always. system AND home.
+│   │   ├── system.nix · networking.nix · user.nix · security.nix · boot.nix
+│   │   └── packages.nix · openssh.nix · tailscale.nix · postgresql.nix · avahi.nix
+│   ├── dendrites/            # the optional limbs
+│   │   ├── <atom>.nix        #   one feature, pure — bluetooth, gpu-amd, jellyfin, k3b …
+│   │   ├── desktop/          #   aggregation — clusters atoms, wires system + home
+│   │   ├── hyprland/         #   aggregation — the compositor and its kin
+│   │   ├── gaming/           #   aggregation — steam, aagl, the launchers
+│   │   └── server/           #   aggregation — jellyfin, and what will follow
+│   └── home/                 # home-manager atoms, summoned by nucleus + aggregations
+├── packages/                 # custom derivations
+├── secrets/                  # sops-encrypted
+└── extras/                   # wallpapers, screenshots
+```
+
+> **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath all three machines: the system, the network, the user, the secrets that keep the night out, the developer's claws— er, _tools._ It is named once, in `nucleus/default.nix`, and it carries the home-floor in its paws. You do not _choose_ the nucleus. The nucleus simply _is._ Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
+
+> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100._ Each is one idea and one idea only — `bluetooth.nix`, `gpu-amd.nix`, `jellyfin.nix` — _purr_, asking nothing, knowing nothing of which machine holds it. A dendrite never asks _"am I a real cat, or one that is NOT?!"_ — there are no fake cats, and there is no `mkIf`, no `host ==`. A dendrite only says what it _is._ This is the way. Nyaa. (=ↀωↀ=)✧
+
+> **The aggregations.** _Sometimes many flakes drift together and fall as one — the way the government pays me to deliver presents to all the children in Japan._ `desktop/`, `hyprland/`, `gaming/`, `server/` — each a folder that gathers its dendrites by name. And here is the secret, lean close, whiskers and all: an aggregation reaches into two worlds at once. With one paw it arranges the **system**; with the other, the **home**. One name. Both layers. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
+
+> **The hosts.** _And so a machine is no longer a long and tiresome confession._ A host is the nucleus, then the short list of aggregations it wishes to wear. `sakaki` wears services and purrs softly. `osaka` wears desktop, hyprland, gaming, server — and does not tire. Read the list, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
+
+> _To give a thing to every machine, place it in the **nucleus**. To give it to only some, hand it to an **aggregation** — or leave it a lonely **dendrite**, and let a host call its name. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
+
+<sub>_(ai-generated)_</sub>
+
+---
+
 ## features:
 - hyprland + waybar + hyprpaper
 - hyprlock + wlogout
@@ -16,7 +58,10 @@
 - neovim (nvf)
 - stylix theming
 - fcitx5 input method
-- multihost (chiyo + osaka)
+- multihost (chiyo + osaka + sakaki)
+- sops-nix secrets
+- jellyfin + steam + aagl on osaka
+- one-line new-host via `mkHost`
 - functional (kind of)
 - looks pretty. i think
 - _does not come with fl studio_

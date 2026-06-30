@@ -1,6 +1,5 @@
 {
-  pkgs,
-  config,
+  username,
   ...
 }: {
   security = {
@@ -8,8 +7,7 @@
     rtkit.enable = true;
     #remove sudo requirement for yazi
     sudo.extraConfig = ''
-      khoa ALL=(ALL) NOPASSWD: /bin/bash -c 'yy'
+      ${username} ALL=(ALL) NOPASSWD: /bin/bash -c 'yy'
     '';
-    pam.services.hyprlock = {};
   };
 }

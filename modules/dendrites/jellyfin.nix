@@ -1,6 +1,6 @@
 {
   pkgs,
-  config,
+  username,
   ...
 }: {
   environment.systemPackages = [pkgs.jellyfin pkgs.jellyfin-web pkgs.jellyfin-ffmpeg];
@@ -8,6 +8,6 @@
     enable = true;
     package = pkgs.jellyfin;
     openFirewall = true;
-    user = "khoa";
+    user = username;
   };
 }
