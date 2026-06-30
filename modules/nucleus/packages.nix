@@ -7,9 +7,7 @@
       enable = true;
       defaultEditor = true;
     };
-    starship.enable = true;
     dconf.enable = true;
-    bash.blesh.enable = true;
   };
 
   nixpkgs = {
@@ -43,8 +41,6 @@
     fastfetch # fast system information fetcher
     cowsay # configurable speaking ASCII cow
     fzf # command-line fuzzy finder
-    atuin # shell history in SQLite with search and sync
-    zoxide # smarter cd using frecency
     htop # interactive process viewer
 
     # ── File System & Archives ──

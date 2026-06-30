@@ -17,6 +17,8 @@
 
   home-manager.users.${username}.imports = [
     ../home/bash.nix
+    ../home/mcfly.nix
+    ../home/starship.nix
     ../home/git.nix
     ../home/neovim.nix
     ../home/yazi.nix
