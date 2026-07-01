@@ -11,7 +11,7 @@ in {
     enable = true;
     enableCompletion = true;
     profileExtra = ''
-      if [ "$(tty)" = "/dev/tty1" ]; then
+      if [ "$(tty)" = "/dev/tty1" ] && command -v Hyprland >/dev/null; then
         exec Hyprland &> /dev/null
       fi
     '';
