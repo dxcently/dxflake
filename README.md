@@ -111,7 +111,7 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ---
 
-## features:
+## What's in here:
 - hyprland + waybar + awww
 - hyprlock + wlogout
 - yazi + thunar file browser
