@@ -21,7 +21,6 @@ dxflake/
 │   ├── chiyo/                # laptop · Intel iGPU
 │   ├── osaka/                # workstation · AMD GPU
 │   └── sakaki/               # headless server
-│       └── default.nix       #   nucleus + a short list of aggregations. nothing more.
 ├── modules/
 │   ├── nucleus/              # the floor. every host, always. system AND home.
 │   │   ├── system.nix · networking.nix · user.nix · security.nix · boot.nix
