@@ -59,7 +59,7 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 
 ---
 
-## install:
+## Install:
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
@@ -132,7 +132,7 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ---
 
-## screenshots:
+## Screenshots:
 
 <details>
 <summary><b>04.04.24 / yuyo v1</b></summary>
@@ -188,7 +188,7 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ---
 
-## credit to other flakes/rices i've referenced:
+## Credit to other flakes/rices I've referenced:
 
 - [Ruixi-rebirth/flakes](https://github.com/Ruixi-rebirth/flakes)
 - [Zaney/zaneyos](https://gitlab.com/Zaney/zaneyos/-/tree/main?ref_type=heads)
@@ -199,6 +199,6 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ---
 
-> What you do maybe won't ever be the most impressive or the best or maybe not even mediocre. but if you've put effort into it, worked hard on it, put your soul and heart in it, be proud of it. It's yours.
->
+> When you create something, *you* created it.
+> 
 > /ᐠ - ˕ -マ Ⳋ ⋆˚✿˖°
