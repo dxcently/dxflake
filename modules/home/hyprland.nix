@@ -29,7 +29,7 @@
         ", preferred, auto, 1.25"
         "eDP-1, 1920x1080@60, auto, 1.25"
         "DP-1, 1920x1080@144, 0x0, 1"
-        "HDMI-A-1, 1920x1080@60, 1920x0, 1"
+        "HDMI-A-1, 1920x1080@60, 1920x0, 1, transform, 3"
       ];
 
       # Environment Variables
