@@ -63,6 +63,9 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
+A host is a folder under `hosts/<name>/` with two files: a generated `hardware.nix` and a `default.nix` listing its nucleus, aggregations, and dendrites.
+Swap `<name>` for your host — it becomes the flake target.
+
 1. Clone the repo:
 
    ```sh
@@ -70,15 +73,41 @@ Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix
    cd ~/dxflake
    ```
 
-2. Rebuild for your host — `chiyo` (laptop), `osaka` (workstation), or `sakaki` (server):
+2. Generate `hardware.nix` (run on the target machine; pipes to stdout, so nothing else is touched):
 
    ```sh
-   sudo nixos-rebuild switch --flake .#chiyo
+   mkdir -p hosts/<name>
+   sudo nixos-generate-config --show-hardware-config > hosts/<name>/hardware.nix
    ```
 
-3. Reboot.
+3. Write `hosts/<name>/default.nix` — import the nucleus, then the aggregations and dendrites this host wears:
 
-To add a new host: create a folder under `hosts/`, register it in the `mkHost` list in `flake.nix`, then rebuild against it.
+   ```nix
+   {...}: {
+     imports = [
+       ./hardware.nix
+       ../../modules/nucleus
+       # ../../modules/dendrites/desktop        # an aggregation
+       # ../../modules/dendrites/bluetooth.nix   # a dendrite
+     ];
+   }
+   ```
+
+4. Register it in `flake.nix` under `nixosConfigurations`, and set `username` to yours:
+
+   ```nix
+   username = "<user>"; 
+
+   nixosConfigurations = {
+     <name> = mkHost "<name>";
+   };
+   ```
+
+5. Rebuild, then reboot:
+
+   ```sh
+   sudo nixos-rebuild switch --flake .#<name>
+   ```
 
 ---
 
