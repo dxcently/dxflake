@@ -8,6 +8,8 @@
 
 ## Architecture overview
 
+A composable, scalable, and natural architecture
+
 > _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
 
 Modules split by *scope*, not by host — a base everyone gets, opt-in features, and bundles that group them. A host is a short import list, no `if hostname ==` ladders.
@@ -58,8 +60,31 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 
 ---
 
+## install:
+
+Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
+
+1. Clone the repo:
+
+   ```sh
+   git clone https://github.com/dxcently/dxflake ~/dxflake
+   cd ~/dxflake
+   ```
+
+2. Rebuild for your host — `chiyo` (laptop), `osaka` (workstation), or `sakaki` (server):
+
+   ```sh
+   sudo nixos-rebuild switch --flake .#chiyo
+   ```
+
+3. Reboot.
+
+To add a new host: create a folder under `hosts/`, register it in the `mkHost` list in `flake.nix`, then rebuild against it.
+
+---
+
 ## features:
-- hyprland + waybar + hyprpaper
+- hyprland + waybar + awww
 - hyprlock + wlogout
 - yazi + thunar file browser
 - rofi launcher
@@ -73,7 +98,7 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 - jellyfin + steam + aagl on osaka
 - one-line new-host via `mkHost`
 - functional (kind of)
-- looks pretty. i think
+- looks pretty. I think
 - _does not come with fl studio_
 - OH MAH GAH!
 
@@ -146,6 +171,6 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 
 ---
 
-> what you do maybe won't ever be the most impressive or the best or maybe not even mediocre. but if you've put effort into it, worked hard on it, put your soul and heart in it, be proud of it. it's yours.
+> What you do maybe won't ever be the most impressive or the best or maybe not even mediocre. but if you've put effort into it, worked hard on it, put your soul and heart in it, be proud of it. It's yours.
 >
 > /ᐠ - ˕ -マ Ⳋ ⋆˚✿˖°
