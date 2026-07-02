@@ -22,16 +22,15 @@ dxflake/
 │   ├── osaka/                # workstation · AMD GPU
 │   └── sakaki/               # headless server
 ├── modules/
-│   ├── nucleus/              # the floor. every host, always. system AND home.
+│   ├── nucleus/              # the floor. every host, always. system + base home dendrites.
 │   │   ├── system.nix · networking.nix · user.nix · security.nix · boot.nix
 │   │   └── packages.nix · openssh.nix · tailscale.nix · postgresql.nix · avahi.nix
-│   ├── dendrites/            # the optional limbs
-│   │   ├── <atom>.nix        #   one feature, pure — bluetooth, gpu-amd, jellyfin, k3b …
-│   │   ├── desktop/          #   aggregation — clusters atoms, wires system + home
-│   │   ├── hyprland/         #   aggregation — the compositor and its kin
-│   │   ├── gaming/           #   aggregation — steam, aagl, the launchers
-│   │   └── server/           #   aggregation — jellyfin, and what will follow
-│   └── home/                 # home-manager atoms, summoned by nucleus + aggregations
+│   └── dendrites/            # the optional limbs — each carries system, home, or both
+│       ├── <atom>.nix        #   one feature, one file — bluetooth, git, kitty, stylix …
+│       ├── desktop/          #   aggregation — clusters atoms into a role
+│       ├── hyprland/         #   aggregation — the compositor and its kin
+│       ├── gaming/           #   aggregation — steam, aagl, the launchers
+│       └── server/           #   aggregation — jellyfin, and what will follow
 ├── packages/                 # custom derivations
 ├── secrets/                  # sops-encrypted
 └── extras/                   # wallpapers, screenshots
@@ -41,13 +40,13 @@ dxflake/
 
 `nucleus/` is what every host gets unconditionally — boot, users, network, ssh, secrets, dev tools. Imported once, system + home layers both.
 
-> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100._ Each is one idea and one idea only — `bluetooth.nix`, `gpu-amd.nix`, `jellyfin.nix` — _purr_, asking nothing, knowing nothing of which machine holds it. A dendrite never asks _"am I a real cat, or one that is NOT?!"_ — there are no fake cats, and there is no `mkIf`, no `host ==`. A dendrite only says what it _is._ This is the way. Nyaa. (=ↀωↀ=)✧
+> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100._ Each is one idea and one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr_, asking nothing, knowing nothing of which machine holds it. And here is the secret, lean close, whiskers and all: a single arm reaches into two worlds at once — with one paw the **system**, with the other the **home**. One file, both layers. A dendrite never asks _"am I a real cat, or one that is NOT?!"_ — there are no fake cats, and there is no `mkIf`, no `host ==`. A dendrite only says what it _is._ This is the way. Nyaa. (=ↀωↀ=)✧
 
-Each dendrite is one feature, one file (`bluetooth.nix`, `gpu-amd.nix`, …). Knows nothing about hosts — hosts opt in by importing it. No `mkIf hostname == ...`.
+Each dendrite is one feature, one file (`bluetooth.nix`, `git.nix`, `waybar.nix`, …) — carrying its system config, its home-manager config, or both. Knows nothing about hosts — hosts opt in by importing it. No `mkIf hostname == ...`.
 
-> **The aggregations.** _Sometimes many flakes drift together and fall as one — the way the government pays me to deliver presents to all the children in Japan._ `desktop/`, `hyprland/`, `gaming/`, `server/` — each a folder that gathers its dendrites by name. And here is the secret, lean close, whiskers and all: an aggregation reaches into two worlds at once. With one paw it arranges the **system**; with the other, the **home**. One name. Both layers. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
+> **The aggregations.** _Sometimes many flakes drift together and fall as one — the way the government pays me to deliver presents to all the children in Japan._ `desktop/`, `hyprland/`, `gaming/`, `server/` — each a folder that gathers its dendrites by name, so a host may wear a whole role with a single word. One name, many arms — and every arm already carries its own two worlds. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
 
-Aggregations are folders that bundle related dendrites and wire system + home-manager at once. One import covers both layers.
+Aggregations are folders that bundle related dendrites. One import pulls the whole cluster; each dendrite brings its own system + home layers.
 
 > **The hosts.** _And so a machine is no longer a long and tiresome confession._ A host is the nucleus, then the short list of aggregations it wishes to wear. `sakaki` wears services and purrs softly. `osaka` wears desktop, hyprland, gaming, server — and does not tire. Read the list, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
 
@@ -56,6 +55,25 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 > _To give a thing to every machine, place it in the **nucleus**. To give it to only some, hand it to an **aggregation** — or leave it a lonely **dendrite**, and let a host call its name. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
 
 <sub>_(ai-generated)_</sub>
+
+---
+
+## Not the "dendritic pattern"
+
+This flake borrows the word **dendrites** for flavor — it is *not* the [dendritic pattern](https://github.com/mightyiam/dendritic) ([FAQ](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki/FAQ#dendritic-pattern-seems-just-like-a-buzzword-why-is-this-different-from-what-im-already-doing-for-the-configuration-of-my-hosts)). They're mostly only similar in naming. Under the hood this is the conventional **tree-of-imports** modular flake.
+
+| | this flake (tree-of-imports) | dendritic pattern |
+|---|---|---|
+| Foundation | `nixpkgs.lib.nixosSystem` | `flake-parts` |
+| Wiring | hand-written `imports = [ … ]` | `import-tree` — the filesystem is the import list |
+| Adding a module | write file, add an import line | write file (auto-discovered) |
+| Unused file | not evaluated | evaluated and registered, not applied |
+| Scoping to a host | by which files it imports | by options / selection |
+| System + home | one dendrite carries both, via `home-manager.users.${username}` | one file registers into both `nixos` + `homeManager` |
+
+The core split: dendritic auto-loads every file in the tree, then relies on options to decide what each host actually gets. Here a file does nothing until something imports it.
+
+Both can scope modules per host and build aggregations; the difference is mechanics, not capability. This keeps things simple — no `flake-parts` or `import-tree` dependency, just the standard module system and a plain import list.
 
 ---
 

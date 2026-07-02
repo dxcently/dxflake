@@ -2,9 +2,10 @@
   pkgs,
   config,
   inputs,
+  username,
   ...
 }: {
-  imports = [ inputs.stylix.nixosModules.stylix ];
+  imports = [inputs.stylix.nixosModules.stylix];
   stylix = {
     enable = true;
     polarity = "dark";
@@ -63,4 +64,23 @@
   };
 
   #stylix.image = ./
+
+  home-manager.users.${username} = {
+    stylix = {
+      autoEnable = true;
+      targets = {
+        librewolf.enable = false;
+        gtk.enable = true;
+        kitty.enable = true;
+        neovim.enable = false;
+        nvf.enable = false;
+        waybar.enable = false;
+        vesktop.enable = false;
+        qt = {
+          enable = true;
+          platform = "qtct";
+        };
+      };
+    };
+  };
 }

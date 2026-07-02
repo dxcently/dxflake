@@ -1,7 +1,4 @@
-{
-  username,
-  ...
-}: {
+{...}: {
   imports = [
     ./system.nix
     ./networking.nix
@@ -13,16 +10,14 @@
     ./tailscale.nix
     ./postgresql.nix
     ./avahi.nix
-  ];
 
-  home-manager.users.${username}.imports = [
-    ../home/bash.nix
-    ../home/mcfly.nix
-    ../home/starship.nix
-    ../home/git.nix
-    ../home/neovim.nix
-    ../home/yazi.nix
-    ../home/btop.nix
-    ../home/nh.nix
+    ../dendrites/bash.nix
+    ../dendrites/mcfly.nix
+    ../dendrites/starship.nix
+    ../dendrites/git.nix
+    ../dendrites/neovim.nix
+    ../dendrites/yazi.nix
+    ../dendrites/btop.nix
+    ../dendrites/nh.nix
   ];
 }
