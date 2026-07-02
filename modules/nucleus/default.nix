@@ -7,6 +7,7 @@
     ./boot.nix
     ./packages.nix
     ./openssh.nix
+    ./sops.nix
     ./tailscale.nix
     ./postgresql.nix
     ./avahi.nix
