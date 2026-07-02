@@ -66,12 +66,15 @@ This flake borrows the word **dendrites** for flavor — it is *not* the [dendri
 |---|---|---|
 | Foundation | `nixpkgs.lib.nixosSystem` | `flake-parts` |
 | Wiring | hand-written `imports = [ … ]` | `import-tree` — the filesystem is the import list |
-| Adding a module | write file, add an import line | write file (auto-discovered) |
+| Adding a module | write file, add **one** import line to the aggregation that owns it | write file (auto-discovered) |
+| Reaching many hosts | that one aggregation line fans out to every host wearing it | the file registers; option toggles decide |
 | Unused file | not evaluated | evaluated and registered, not applied |
 | Scoping to a host | by which files it imports | by options / selection |
 | System + home | one dendrite carries both, via `home-manager.users.${username}` | one file registers into both `nixos` + `homeManager` |
 
-The core split: dendritic auto-loads every file in the tree, then relies on options to decide what each host actually gets. Here a file does nothing until something imports it.
+The core split is **discovery vs reference.** Dendritic enumerates the tree — a file's mere existence wires it, and options decide what each host applies. Here, a file does nothing until an `imports` line names it.
+
+But don't mistake that for per-host toil: the one line buys **propagation, not discovery.** Add a dendrite to an aggregation's `default.nix` and *every* host wearing that aggregation picks it up on the next rebuild — you never touch the hosts. So composition here is _semi_-automatic — propagation is automatic, discovery is manual — and the manual line is load-bearing on purpose. *Which* list you add it to is the scoping decision: `nucleus/default.nix` → every host, an aggregation → that role, a host's own `default.nix` → that host alone. Dendritic deletes the line and moves the same decision into option toggles. Folder location alone wires nothing; the import line does the work.
 
 Both can scope modules per host and build aggregations; the difference is mechanics, not capability. This keeps things simple — no `flake-parts` or `import-tree` dependency, just the standard module system and a plain import list.
 
