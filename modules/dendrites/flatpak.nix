@@ -1,3 +1,5 @@
-{...}: {
-  services.flatpak.enable = true;
+{config, lib, ...}: {
+  config = lib.mkIf config.dx.aggregations.desktop {
+    services.flatpak.enable = true;
+  };
 }

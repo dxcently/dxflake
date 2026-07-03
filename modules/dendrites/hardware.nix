@@ -2,13 +2,16 @@
   pkgs,
   config,
   inputs,
+  lib,
   ...
 }: {
-  hardware = {
-    opentabletdriver = {
-      enable = true;
-      daemon.enable = true;
+  config = lib.mkIf config.dx.aggregations.desktop {
+    hardware = {
+      opentabletdriver = {
+        enable = true;
+        daemon.enable = true;
+      };
+      keyboard.qmk.enable = true;
     };
-    keyboard.qmk.enable = true;
   };
 }

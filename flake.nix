@@ -53,7 +53,12 @@
           host = name;
           inherit username inputs system nixpkgs-stable;
         };
-        modules = [./hosts/${name}];
+        modules =
+          let
+            discovered = builtins.filter
+              (p: let s = toString p; in nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s))
+              (nixpkgs.lib.filesystem.listFilesRecursive ./modules);
+          in discovered ++ [./hosts/${name}];
       };
   in {
     nixosConfigurations = {

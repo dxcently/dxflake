@@ -1,9 +1,5 @@
 {...}: {
-  imports = [
-    ./hardware.nix
-    ../../modules/nucleus
-    ../../modules/dendrites/server
-    ../../modules/dendrites/syncthing.nix
-    ./syncthing.nix
-  ];
+  imports = [./hardware.nix ./syncthing.nix];
+  dx.aggregations.server = true;
+  dx.syncthing.enable = true;
 }

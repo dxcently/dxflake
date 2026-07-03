@@ -3,82 +3,86 @@
   config,
   inputs,
   username,
+  lib,
   ...
 }: {
   imports = [inputs.stylix.nixosModules.stylix];
-  stylix = {
-    enable = true;
-    polarity = "dark";
-    opacity.terminal = 1.0;
-    base16Scheme = {
-      #scheme: "Rosé Pine"
-      #author: "Emilia Dunfelt <edun@dunfelt.se>"
-      base00 = "191724";
-      base01 = "1f1d2e";
-      base02 = "26233a";
-      base03 = "6e6a86";
-      base04 = "908caa";
-      base05 = "e0def4";
-      base06 = "e0def4";
-      base07 = "524f67";
-      base08 = "eb6f92";
-      base09 = "f6c177";
-      base0A = "ebbcba";
-      base0B = "31748f";
-      base0C = "9ccfd8";
-      base0D = "c4a7e7";
-      base0E = "f6c177";
-      base0F = "524f67";
-    };
-    icons = {
-      enable = true;
-      package = pkgs.windows10-icons;
-      dark = "windows10";
-      light = "windows10";
-    };
-    cursor = {
-      size = 40;
-      package = pkgs.maplestory-cursor;
-      name = "Maple";
-    };
-    fonts = {
-      monospace = {
-        package = pkgs.nerd-fonts.lekton;
-        name = "Lekton Nerd Font Mono";
-      };
-      sansSerif = {
-        package = pkgs.nerd-fonts.lekton;
-        name = "Lekton Nerd Font Mono";
-      };
-      serif = {
-        package = pkgs.nerd-fonts.lekton;
-        name = "Lekton Nerd Font Mono";
-      };
-      sizes = {
-        applications = 14;
-        terminal = 14;
-        desktop = 14;
-        popups = 12;
-      };
-    };
-  };
 
-  #stylix.image = ./
-
-  home-manager.users.${username} = {
+  config = lib.mkIf config.dx.aggregations.desktop {
     stylix = {
-      autoEnable = true;
-      targets = {
-        librewolf.enable = false;
-        gtk.enable = true;
-        kitty.enable = true;
-        neovim.enable = false;
-        nvf.enable = false;
-        waybar.enable = false;
-        vesktop.enable = false;
-        qt = {
-          enable = true;
-          platform = "qtct";
+      enable = true;
+      polarity = "dark";
+      opacity.terminal = 1.0;
+      base16Scheme = {
+        #scheme: "Rosé Pine"
+        #author: "Emilia Dunfelt <edun@dunfelt.se>"
+        base00 = "191724";
+        base01 = "1f1d2e";
+        base02 = "26233a";
+        base03 = "6e6a86";
+        base04 = "908caa";
+        base05 = "e0def4";
+        base06 = "e0def4";
+        base07 = "524f67";
+        base08 = "eb6f92";
+        base09 = "f6c177";
+        base0A = "ebbcba";
+        base0B = "31748f";
+        base0C = "9ccfd8";
+        base0D = "c4a7e7";
+        base0E = "f6c177";
+        base0F = "524f67";
+      };
+      icons = {
+        enable = true;
+        package = pkgs.windows10-icons;
+        dark = "windows10";
+        light = "windows10";
+      };
+      cursor = {
+        size = 40;
+        package = pkgs.maplestory-cursor;
+        name = "Maple";
+      };
+      fonts = {
+        monospace = {
+          package = pkgs.nerd-fonts.lekton;
+          name = "Lekton Nerd Font Mono";
+        };
+        sansSerif = {
+          package = pkgs.nerd-fonts.lekton;
+          name = "Lekton Nerd Font Mono";
+        };
+        serif = {
+          package = pkgs.nerd-fonts.lekton;
+          name = "Lekton Nerd Font Mono";
+        };
+        sizes = {
+          applications = 14;
+          terminal = 14;
+          desktop = 14;
+          popups = 12;
+        };
+      };
+    };
+
+    #stylix.image = ./
+
+    home-manager.users.${username} = {
+      stylix = {
+        autoEnable = true;
+        targets = {
+          librewolf.enable = false;
+          gtk.enable = true;
+          kitty.enable = true;
+          neovim.enable = false;
+          nvf.enable = false;
+          waybar.enable = false;
+          vesktop.enable = false;
+          qt = {
+            enable = true;
+            platform = "qtct";
+          };
         };
       };
     };

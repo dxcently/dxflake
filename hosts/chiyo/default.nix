@@ -1,16 +1,8 @@
 {...}: {
-  imports = [
-    ./hardware.nix
-    ../../modules/nucleus
-    ../../modules/dendrites/desktop
-    ../../modules/dendrites/hyprland
-    ../../modules/dendrites/bluetooth.nix
-    ../../modules/dendrites/laptop.nix
-    ../../modules/dendrites/gpu-intel.nix
-  ];
-
-  boot = {
-    initrd.kernelModules = ["nvme"];
-    resumeDevice = "/dev/nvme0n1p3"; # hibernate
-  };
+  imports = [./hardware.nix];
+  dx.aggregations = { desktop = true; hyprland = true; };
+  dx.bluetooth.enable = true;
+  dx.laptop.enable = true;
+  dx.gpu-intel.enable = true;
+  boot = { initrd.kernelModules = ["nvme"]; resumeDevice = "/dev/nvme0n1p3"; };
 }
