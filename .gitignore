@@ -1,0 +1,16 @@
+# Claude Code
+.claude/
+CLAUDE.local.md
+tasks/
+
+# Obsidian
+.obsidian/
+.trash/
+*.base
+
+# Editor / OS cruft
+.direnv/
+result
+result-*
+*.swp
+.DS_Store
