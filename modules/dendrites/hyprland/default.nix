@@ -160,8 +160,10 @@
           "SUPER ALT, K, resizeactive, 0 -40"
           "SUPER ALT, L, resizeactive, 20 0"
           # Scrolling layout (HDMI-A-1). No-ops on dwindle workspaces.
-          "SUPER, period, layoutmsg, promote"
-          "SUPER, comma, layoutmsg, fit active"
+          "SUPER, p, layoutmsg, promote"
+          "SUPER, comma, layoutmsg, fit visible"
+          "SUPER, period, layoutmsg, fit active"
+
           "ALT, Tab, workspace, previous"
           "SUPER, 1, workspace, 1"
           "SUPER, 2, workspace, 2"

@@ -30,10 +30,9 @@ yad --plug=$KEY --tabnum=1 \
   "SUPER + H / J / K / L" "Move focus L / D / U / R"         "movefocus" \
   "SUPER + SHIFT + HJKL"  "Move window L / D / U / R"        "movewindow" \
   "SUPER + ALT + HJKL"    "Resize active window (±40px)"     "resizeactive" \
-  "SUPER + ,"             "Scroll: previous column"          "layoutmsg move -col" \
-  "SUPER + ."             "Scroll: next column"              "layoutmsg move +col" \
-  "SUPER + ."            "Scroll: pop window to own column" "layoutmsg promote" \
-  "SUPER + ,"             "Scroll: fit/center active column" "layoutmsg fit active" \
+  "SUPER + ,"             "Scroll: resize to visible space"  "layoutmsg fit visible" \
+  "SUPER + ."             "Scroll: resize to fit window"     "layoutmsg fit active" \
+  "SUPER + p"             "Scroll: pop window to own column" "layoutmsg promote" \
   "SUPER + 1..0"          "Go to workspace 1..10"            "workspace, N" \
   "SUPER + SHIFT + 1..0"  "Move window to workspace 1..10"   "movetoworkspace, N" \
   "SUPER + X"             "Toggle special:magic"             "togglespecialworkspace" \
