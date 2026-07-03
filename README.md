@@ -53,8 +53,6 @@ A host file = `imports = [ ./hardware.nix ]`, then a short set of `dx.*` flags (
 
 > _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, gate it behind a **flag** — a role, or its own `enable` — and let a host speak the word. To take a thing away entirely, hush its name with a `_`. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
 
-<sub>_(flavor blocks ai-generated)_</sub>
-
 **The two moving parts, plainly:**
 
 - **Discovery** — `flake.nix` hands every `.nix` under `modules/` to every host (`lib.filesystem.listFilesRecursive`, minus any `/_` path). No import lists to maintain.
@@ -64,9 +62,9 @@ To hide a module from discovery without deleting it, rename it with a leading un
 
 ---
 
-## Not the "dendritic pattern"
+## Not the *pure* dendritic pattern
 
-This flake borrows the word **dendrites** for flavor — it is *not* the [dendritic pattern](https://github.com/mightyiam/dendritic) ([FAQ](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki/FAQ#dendritic-pattern-seems-just-like-a-buzzword-why-is-this-different-from-what-im-already-doing-for-the-configuration-of-my-hosts)). With auto-discovery it now *rhymes* with dendritic — the filesystem is the import list on both sides, both auto-discover, both gate by option. Where they still part is the foundation:
+This flake *is* dendritic — with auto-discovery the filesystem **is** the import list, every module is enumerated automatically, and each gates itself by option. That is the dendritic essence, and this flake has it. What it is **not** is the [*pure* dendritic pattern](https://github.com/mightyiam/dendritic) ([FAQ](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki/FAQ#dendritic-pattern-seems-just-like-a-buzzword-why-is-this-different-from-what-im-already-doing-for-the-configuration-of-my-hosts)): it stops one pillar short. Where they part is the foundation:
 
 | | this flake (auto-discovery) | dendritic pattern |
 |---|---|---|
@@ -76,9 +74,9 @@ This flake borrows the word **dendrites** for flavor — it is *not* the [dendri
 | Scoping to a host | option flags (`dx.*`) | options / selection |
 | System + home | one dendrite carries both, via `home-manager.users.${username}` | one file registers into both module classes |
 
-The remaining split is **pillar 2.** This flake replicated pillar 1 — auto-enumerate the tree — with no new dependency (`listFilesRecursive` is already in nixpkgs). It has *not* taken pillar 2: `flake-parts`, where a single file registers into *many* flake outputs at once (packages, devShells, multi-arch `perSystem`, whole configs). That unified cross-output fixpoint is what the "dendrite" metaphor actually names, and it is a paradigm change (`nixosSystem → flake-parts`), not a helper import. This flake's "one dendrite reaches system + home" works only because `home-manager.users.${username}` is a NixOS option — not because a multi-output module system sits underneath.
+The difference is **pillar 2.** This flake takes pillar 1 — auto-enumerate the tree — with no new dependency (`listFilesRecursive` ships in nixpkgs). Pillar 2 is `flake-parts`: a single file registering into *many* flake outputs at once (packages, devShells, multi-arch `perSystem`, whole configs). Taking it means a paradigm change (`nixosSystem → flake-parts`) plus `import-tree`, and it only pays off across outputs a single-target NixOS config doesn't ship. The "one dendrite reaches system + home" here works because `home-manager.users.${username}` is a NixOS option, not because a multi-output module system sits underneath.
 
-So: adopt the real pattern for what pillar 2 buys — a flake spanning packages, devShells, deploy, CI, multi-arch. For a single-output NixOS config like this one, `listFilesRecursive` + `mkIf` gets you the discovery half with just the standard module system, no `flake-parts` or `import-tree` dependency.
+So the pure pattern is the fit when one flake spans packages, devShells, deploy, CI, and multi-arch. For a personal NixOS config, `listFilesRecursive` + `mkIf` on the plain module system covers the parts that matter — filesystem-as-import-list and option-gating — with zero extra dependencies.
 
 ---
 
@@ -136,6 +134,45 @@ Swap `<name>` for your host — it becomes the flake target.
    ```sh
    sudo nixos-rebuild switch --flake .#<name>
    ```
+
+---
+
+## Adding a module
+
+Drop a `.nix` anywhere under `modules/` and it is already imported into every host — you never edit `flake.nix` or an imports list. The whole job is three steps: **write the file → gate it → flip the flag on a host.**
+
+A **system (NixOS)** module — its own switch, config at the system level:
+
+```nix
+{config, lib, ...}: {
+  options.dx.foo.enable = lib.mkEnableOption "foo";
+  config = lib.mkIf config.dx.foo.enable {
+    services.foo.enable = true;
+  };
+}
+```
+
+A **home-manager** module — same gate, config nested under the user:
+
+```nix
+{username, config, lib, ...}: {
+  options.dx.foo.enable = lib.mkEnableOption "foo";
+  config = lib.mkIf config.dx.foo.enable {
+    home-manager.users.${username} = {pkgs, ...}: {
+      programs.foo.enable = true;
+    };
+  };
+}
+```
+
+Either way the host just speaks the word — `dx.foo.enable = true;`. One dendrite can carry **both** layers: put the system options *and* the `home-manager.users.${username}` block inside the same `mkIf` — one file, one switch, both worlds.
+
+**Three ways to gate**, pick per module:
+- **Own flag** — declare `options.dx.<name>.enable`, gate on it. Flip it per host. (`bluetooth.nix`)
+- **Ride a role** — no own option; gate on an existing aggregation, `config = lib.mkIf config.dx.aggregations.desktop {…}`. Wakes with the role. (`kitty.nix`)
+- **Always-on** — no `mkIf` at all; it applies everywhere like the nucleus. (`git.nix`)
+
+**What you never touch:** `flake.nix`, any import list — discovery handles it. Need a brand-new role? Add it to `modules/aggregations.nix`. Want to park a file without deleting it? Prefix its name with `_`.
 
 ---
 
