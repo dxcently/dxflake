@@ -7,7 +7,7 @@
     dunst # lightweight notification daemon
     awww # animated wallpaper daemon for Wayland
     wl-clipboard # copy/paste CLI for Wayland
-    swappy # Wayland snapshot annotation tool
+    satty # Wayland screenshot annotation tool (swappy successor)
     cliphist # clipboard history manager for Wayland
     brightnessctl # control device brightness via sysfs
     ydotool # generic input automation

@@ -20,8 +20,8 @@ yad --plug=$KEY --tabnum=1 \
   "ALT + Tab"             "Previous workspace"               "workspace, previous" \
   "SUPER + T"             "File manager (floating)"          "thunar" \
   "SUPER + C"             "Clipboard history"                "cliphist | rofi | wl-copy" \
-  "SUPER + S"             "Region screenshot to swappy"      "hyprshot -z --raw -m region | swappy -f -" \
-  "SUPER + SHIFT + S"     "Region screenshot to swappy"      "hyprshot -z --raw -m region | swappy -f -" \
+  "SUPER + S"             "Region screenshot to satty"       "pkill hyprpicker; hyprshot -z --raw -m region | satty --filename -" \
+  "SUPER + SHIFT + S"     "Output screenshot to satty"       "pkill hyprpicker; hyprshot -z --raw -m output | satty --filename -" \
   "SUPER + D"             "Vesktop on ws3 / toggle discord"  "vesktop + special:discord" \
   "SUPER + Q"             "Kill focused window"              "killactive" \
   "SUPER + V"             "Toggle floating"                  "togglefloating" \
@@ -29,7 +29,11 @@ yad --plug=$KEY --tabnum=1 \
   "SUPER + P"             "Pseudo-tile"                      "pseudo" \
   "SUPER + H / J / K / L" "Move focus L / D / U / R"         "movefocus" \
   "SUPER + SHIFT + HJKL"  "Move window L / D / U / R"        "movewindow" \
-  "SUPER + ALT + HJKL"    "Resize active window (±20px)"     "resizeactive" \
+  "SUPER + ALT + HJKL"    "Resize active window (±40px)"     "resizeactive" \
+  "SUPER + ,"             "Scroll: previous column"          "layoutmsg move -col" \
+  "SUPER + ."             "Scroll: next column"              "layoutmsg move +col" \
+  "SUPER + ."            "Scroll: pop window to own column" "layoutmsg promote" \
+  "SUPER + ,"             "Scroll: fit/center active column" "layoutmsg fit active" \
   "SUPER + 1..0"          "Go to workspace 1..10"            "workspace, N" \
   "SUPER + SHIFT + 1..0"  "Move window to workspace 1..10"   "movetoworkspace, N" \
   "SUPER + X"             "Toggle special:magic"             "togglespecialworkspace" \

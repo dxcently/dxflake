@@ -5,7 +5,7 @@
     ../hyprpaper.nix
     ../wlogout.nix
     ../rofi.nix
-    ../swappy.nix
+    ../satty.nix
     ../hyprlock.nix
   ];
 
@@ -41,11 +41,20 @@
 
       settings = {
         # Monitors
+        #
+        # osaka runs a sideways-T: the horizontal AOC meets the middle of the
+        # rotated Samsung. The Samsung is 1080x1920 after transform 3 and stays
+        # anchored at 1920x0, so the AOC (1080 tall) is dropped by
+        # (1920-1080)/2 = 420 to center its full right edge inside the tall
+        # panel — otherwise only the top ~half of the shared edge is crossable.
+        # Panels are pinned by description so geometry survives a DP/HDMI port
+        # swap. The scrolling rule below still keys off the HDMI-A-1 connector
+        # (m[] selectors can't hold a spaced description).
         monitor = [
-          ", preferred, auto, 1.25"
+          ", preferred, auto, 1"
           "eDP-1, 1920x1080@60, auto, 1.25"
-          "DP-1, 1920x1080@144, 0x0, 1"
-          "HDMI-A-1, 1920x1080@60, 1920x0, 1, transform, 3"
+          "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1"
+          "desc:Samsung Electric Company C24F390 HCNN907588, 1920x1080@60, 1920x0, 1, transform, 3"
         ];
 
         # Environment Variables
@@ -63,7 +72,7 @@
           "systemd"
           "hypridle"
           "awww-daemon"
-          "awww img ~/dxflake/extras/wallpapers/hero.webp"
+          "awww img -o DP-1 ~/dxflake/extras/wallpapers/hero.webp"
           "awww img -o HDMI-A-1 ~/dxflake/extras/wallpapers/yuki-standing.png"
           "waybar"
           "wl-paste --type text --watch cliphist store"
@@ -120,6 +129,8 @@
           "special:magic, on-created-empty:pear-desktop"
           "2, monitor:HDMI-A-1, persistent:true"
           "special:replay, on-created-empty:gpu-screen-recorder-gtk"
+          # Every workspace on the vertical monitor uses the scrolling layout.
+          "m[HDMI-A-1], layout:scrolling"
         ];
 
         # Keybindings
@@ -128,15 +139,14 @@
           "SUPER, SPACE, exec, rofi -show drun"
           "SUPER, T, exec, [float] thunar"
           "SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-          "SUPER, S, exec, hyprshot -z --raw -m region | swappy -f -"
-          "SUPER SHIFT, S, exec, hyprshot -z --raw -m output | swappy -f -"
+          "SUPER, S, exec, pkill hyprpicker; hyprshot -z --raw -m region | satty --filename -"
+          "SUPER SHIFT, S, exec, pkill hyprpicker; hyprshot -z --raw -m output | satty --filename -"
           "SUPER, Tab, exec, rofi -show"
           "SUPER, B, exec, bash /home/khoa/dxflake/extras/keybinds.bash"
           "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
           "SUPER, Q, killactive"
           "SUPER, V, togglefloating"
           "SUPER, F, fullscreen"
-          "SUPER, P, pseudo"
           "SUPER, H, movefocus, l"
           "SUPER, J, movefocus, d"
           "SUPER, K, movefocus, u"
@@ -146,9 +156,12 @@
           "SUPER SHIFT, K, movewindow, u"
           "SUPER SHIFT, L, movewindow, r"
           "SUPER ALT, H, resizeactive, -20 0"
-          "SUPER ALT, J, resizeactive, 0 20"
-          "SUPER ALT, K, resizeactive, 0 -20"
+          "SUPER ALT, J, resizeactive, 0 40"
+          "SUPER ALT, K, resizeactive, 0 -40"
           "SUPER ALT, L, resizeactive, 20 0"
+          # Scrolling layout (HDMI-A-1). No-ops on dwindle workspaces.
+          "SUPER, period, layoutmsg, promote"
+          "SUPER, comma, layoutmsg, fit active"
           "ALT, Tab, workspace, previous"
           "SUPER, 1, workspace, 1"
           "SUPER, 2, workspace, 2"
@@ -235,7 +248,6 @@
 
         layerrule = [
           "blur on, match:namespace waybar"
-          "ignore_alpha 0.5, match:namespace waybar"
         ];
 
         animations = {
@@ -252,12 +264,18 @@
         };
 
         dwindle = {
-          pseudotile = true;
           preserve_split = true;
         };
 
         master = {
           new_status = "master";
+        };
+
+        # HDMI-A-1 is a vertical monitor (transform 3). Its workspaces use the
+        # scrolling layout below; the tape grows downward so windows stack
+        # top-to-bottom and you scroll through them instead of shrink-to-fit.
+        scrolling = {
+          direction = "down";
         };
 
         misc = {
@@ -267,15 +285,6 @@
         ecosystem = {
           no_update_news = true;
           no_donation_nag = true;
-        };
-
-        plugin = {
-          borders-plus-plus = {
-            add_borders = 1;
-            natural_rounding = false;
-            "col.border_1" = "rgba(000000)";
-            border_size_1 = 1;
-          };
         };
       };
     };

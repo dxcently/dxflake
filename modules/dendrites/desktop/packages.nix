@@ -34,9 +34,7 @@
     ffmpegthumbnailer # video thumbnails via libffmpeg
     obs-studio # screen recording and live streaming
     losslesscut-bin # lossless video/audio trimmer
-    kdePackages.gwenview # fast image viewer from KDE
     scrcpy # display and control Android devices
-    spotdl # download Spotify playlists via YouTube
 
     # ── Networking & Web ──
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
@@ -44,13 +42,10 @@
     qbittorrent # open-source BitTorrent client
     nicotine-plus # Soulseek peer-to-peer client
     zoom-us # video conferencing
-    proton-vpn # official Proton VPN client (GUI)
-    proton-vpn-cli # Proton VPN CLI
 
     # ── Productivity & Knowledge ──
     obsidian # markdown personal knowledge base
     anki-bin # spaced repetition flashcards
-    gcalcli # CLI to Google Calendar
     pear-desktop # unofficial YouTube Music client
 
     # ── Creative ──
