@@ -54,8 +54,6 @@ A host file = nucleus + a short list of aggregations/dendrites. Read the imports
 
 > _To give a thing to every machine, place it in the **nucleus**. To give it to only some, hand it to an **aggregation** — or leave it a lonely **dendrite**, and let a host call its name. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
 
-<sub>_(ai-generated)_</sub>
-
 ---
 
 ## Not the "dendritic pattern"
@@ -138,6 +136,7 @@ Swap `<name>` for your host — it becomes the flake target.
 - yazi + thunar file browser
 - rofi launcher
 - dunst notifications
+- hyprshot + satty screenshots
 - bash + kitty
 - neovim (nvf)
 - stylix theming
