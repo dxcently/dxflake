@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/khoa/documents/**)",
+      "Read(//home/khoa/Documents/**)",
+      "WebFetch(domain:wiki.hyprland.org)",
+      "WebSearch",
+      "WebFetch(domain:wiki.hypr.land)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/hyprwm/hyprland-wiki/main/content/0.54.0/Configuring/Layouts/Scrolling-Layout.md\")",
+      "Bash(echo \"=== EXIT $? ===\")",
+      "Bash(hyprctl version *)",
+      "Bash(git branch *)"
+    ]
+  },
+  "worktree": {
+    "bgIsolation": "none"
+  }
+}
