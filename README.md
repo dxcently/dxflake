@@ -76,8 +76,6 @@ This flake *is* dendritic — with auto-discovery the filesystem **is** the impo
 
 The difference is **pillar 2.** This flake takes pillar 1 — auto-enumerate the tree — with no new dependency (`listFilesRecursive` ships in nixpkgs). Pillar 2 is `flake-parts`: a single file registering into *many* flake outputs at once (packages, devShells, multi-arch `perSystem`, whole configs). Taking it means a paradigm change (`nixosSystem → flake-parts`) plus `import-tree`, and it only pays off across outputs a single-target NixOS config doesn't ship. The "one dendrite reaches system + home" here works because `home-manager.users.${username}` is a NixOS option, not because a multi-output module system sits underneath.
 
-So the pure pattern is the fit when one flake spans packages, devShells, deploy, CI, and multi-arch. For a personal NixOS config, `listFilesRecursive` + `mkIf` on the plain module system covers the parts that matter — filesystem-as-import-list and option-gating — with zero extra dependencies.
-
 ---
 
 ## Install:
