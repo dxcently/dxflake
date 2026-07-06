@@ -1,8 +1,12 @@
 keys:
-  - &khoa age1REPLACEME  # replace with output of: age-keygen -y ~/.config/sops/age/keys.txt
+  - &khoa age1g2frg3jxdgv5xlrfca7qg7mmyzsw2vw90ygck8taya4cqk69wggqkyapgp
+  - &sakaki age1weelnn60djp6fvqm6xn3y02r4prkwz2e94rpjc653hy74fq5tv7sg9lrk5
+  - &chiyo age1epjexgpxcrp7nspsg45v76nkn54trmmzgzu6zc9md37mv007nfyqas87yt
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
     key_groups:
       - age:
         - *khoa
+        - *sakaki
+        - *chiyo

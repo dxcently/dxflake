@@ -7,17 +7,17 @@
     settings = {
       gui.insecureSkipHostcheck = true; # reach the GUI via tailnet IP/MagicDNS name
 
-      # Device IDs are generated on first launch — collect them from each device's
-      # GUI (Actions -> Show ID) after the first rebuild, then replace the placeholders.
+      # Step 2: After the first rebuild, visit the GUI on each device
+      # (Actions -> Show ID) and paste real device IDs here, then rebuild again.
       devices = {
-        osaka.id = "PASTE-OSAKA-DEVICE-ID";
-        chiyo.id = "PASTE-CHIYO-DEVICE-ID";
-        phone.id = "PASTE-PHONE-DEVICE-ID";
+        # osaka.id = "AAAAAAA-BBBBBBB-...";
+        # chiyo.id = "AAAAAAA-BBBBBBB-...";
+        # phone.id = "AAAAAAA-BBBBBBB-...";
       };
 
       folders."Documents" = {
         path = "/home/${username}/Documents";
-        devices = [ "osaka" "chiyo" "phone" ];
+        devices = [ ]; # add "osaka" "chiyo" "phone" once IDs are filled in above
       };
     };
   };
