@@ -40,13 +40,14 @@
         nano = "nvim";
         flake-rebuild = "nh os switch /home/khoa/dxflake/";
         flake-update = "nh os switch /home/khoa/dxflake/ --update";
-        nix-clean = "nh clean all";
+        flake-clean = "nh clean all";
         ".." = "cd ..";
         reboot = "systemctl reboot";
         shutdown = "shutdown -h now";
         nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
         sdl = "spotdl download";
         lg = "lazygit";
+        claudy = "claude --rc";
       };
     };
   };
