@@ -2,6 +2,7 @@ keys:
   - &khoa age1g2frg3jxdgv5xlrfca7qg7mmyzsw2vw90ygck8taya4cqk69wggqkyapgp
   - &sakaki age1weelnn60djp6fvqm6xn3y02r4prkwz2e94rpjc653hy74fq5tv7sg9lrk5
   - &chiyo age1epjexgpxcrp7nspsg45v76nkn54trmmzgzu6zc9md37mv007nfyqas87yt
+  - &osaka age1hqw5zp8eg0h9fus9524pun6mfe39p987uewk5yr4yxs2peezuqfqc6qrmg
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -10,3 +11,4 @@ creation_rules:
         - *khoa
         - *sakaki
         - *chiyo
+        - *osaka
