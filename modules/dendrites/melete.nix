@@ -2,15 +2,20 @@
   options.dx.melete.enable = lib.mkEnableOption "Melete AI harness service";
 
   config = lib.mkIf config.dx.melete.enable {
-    # Shared Mneme operator passphrase — one sops value, readable by the
-    # melete service user so mcp_password_file can point straight at it.
-    sops.secrets."mneme/auth-password" = {
-      sopsFile = ../../secrets/mneme-password.yaml;
-      key = "mneme-auth-password";
-      owner = username;
-      mode = "0400";
-      path = "/run/secrets/mneme/auth-password";
-    };
+    # Put ~/.local/bin on the interactive PATH so melete/mneme are callable.
+    home-manager.users.${username}.home.sessionPath = [ "/home/${username}/.local/bin" ];
+
+    # Allow khoa to restart melete.service without auth — needed for the
+    # self-update swap (renames new binary into place, then restarts itself).
+    security.polkit.extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if (action.id === "org.freedesktop.systemd1.manage-units" &&
+            action.lookup("unit") === "melete.service" &&
+            subject.user === "${username}") {
+          return polkit.Result.YES;
+        }
+      });
+    '';
 
     # Binary and config are deployed out-of-band. The Condition guards against
     # crash-looping on a host where deployment hasn't happened yet.
