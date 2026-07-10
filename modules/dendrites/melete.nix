@@ -20,28 +20,9 @@
       });
     '';
 
-    # MCP server env — only rendered on osaka (URL is host-specific).
-    # On other hosts the EnvironmentFile is absent; melete starts without MCP.
-    sops.secrets."melete/auth-password" = lib.mkIf (config.networking.hostName == "osaka") {
-      sopsFile = ../../secrets/melete-password.yaml;
-      key = "melete-auth-password";
-      owner = username;
-      mode = "0400";
-    };
-
-    sops.templates."melete-env" = lib.mkIf (config.networking.hostName == "osaka") {
-      content = ''
-        MELETE_PUBLIC_URL=https://osaka.tailc27b51.ts.net
-        MELETE_AUTH_PASSWORD=${config.sops.placeholder."melete/auth-password"}
-        MELETE_AUTH_STATE_FILE=/home/${username}/.local/state/melete/auth-state.json
-      '';
-      path = "/run/secrets/melete-env";
-      owner = username;
-      mode = "0400";
-    };
-
-    # Binary and config are deployed out-of-band. The Condition guards against
-    # crash-looping on a host where deployment hasn't happened yet.
+    # Binary and config are deployed out-of-band to ~/.config/melete/.
+    # The Condition guards against crash-looping on a host where deployment
+    # hasn't happened yet.
     systemd.services.melete = {
       description = "Melete — Mneme's companion AI harness";
       after = [ "network-online.target" ];
@@ -49,7 +30,7 @@
       wantedBy = [ "multi-user.target" ];
       unitConfig.ConditionPathExists = [
         "/home/${username}/.local/bin/melete"
-        "/etc/melete/config.toml"
+        "/home/${username}/.config/melete/config.toml"
       ];
       serviceConfig = {
         Type = "simple";
@@ -58,9 +39,9 @@
           "HOME=/home/${username}"
           "PATH=/home/${username}/.local/bin:/home/${username}/.cargo/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin"
         ];
-        EnvironmentFile = "-/run/secrets/melete-env";
-        WorkingDirectory = "/home/${username}/melete";
-        ExecStart = "/home/${username}/.local/bin/melete --config /etc/melete/config.toml serve";
+        EnvironmentFile = "-/home/${username}/.config/melete/melete.env";
+        WorkingDirectory = "/home/${username}/Melete";
+        ExecStart = "/home/${username}/.local/bin/melete --config /home/${username}/.config/melete/config.toml serve";
         Restart = "on-failure";
         RestartSec = 10;
         CPUWeight = 200;
