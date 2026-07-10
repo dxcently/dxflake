@@ -12,6 +12,7 @@
   dx.gpu-screen-recorder.enable = true;
   dx.k3b.enable = true;
   dx.askSudo.enable = true;
+  dx.melete.enable = true;
   environment.systemPackages = with pkgs; [
     soundconverter
     udiskie
