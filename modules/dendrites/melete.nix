@@ -2,8 +2,11 @@
   options.dx.melete.enable = lib.mkEnableOption "Melete AI harness service";
 
   config = lib.mkIf config.dx.melete.enable {
-    # Put ~/.local/bin on the interactive PATH so melete/mneme are callable.
-    home-manager.users.${username}.home.sessionPath = [ "/home/${username}/.local/bin" ];
+    # ~/.local/bin is only in ~/.profile (login shells); add it to bashrc so
+    # Hyprland terminal emulators (non-login) pick it up too.
+    home-manager.users.${username}.programs.bash.bashrcExtra = ''
+      export PATH="$HOME/.local/bin:$PATH"
+    '';
 
     # Allow khoa to restart melete.service without auth — needed for the
     # self-update swap (renames new binary into place, then restarts itself).
@@ -16,6 +19,26 @@
         }
       });
     '';
+
+    # MCP server env — only rendered on osaka (URL is host-specific).
+    # On other hosts the EnvironmentFile is absent; melete starts without MCP.
+    sops.secrets."melete/auth-password" = lib.mkIf (config.networking.hostName == "osaka") {
+      sopsFile = ../../secrets/melete-password.yaml;
+      key = "melete-auth-password";
+      owner = username;
+      mode = "0400";
+    };
+
+    sops.templates."melete-env" = lib.mkIf (config.networking.hostName == "osaka") {
+      content = ''
+        MELETE_PUBLIC_URL=https://osaka.tailc27b51.ts.net
+        MELETE_AUTH_PASSWORD=${config.sops.placeholder."melete/auth-password"}
+        MELETE_AUTH_STATE_FILE=/home/${username}/.local/state/melete/auth-state.json
+      '';
+      path = "/run/secrets/melete-env";
+      owner = username;
+      mode = "0400";
+    };
 
     # Binary and config are deployed out-of-band. The Condition guards against
     # crash-looping on a host where deployment hasn't happened yet.
@@ -35,7 +58,7 @@
           "HOME=/home/${username}"
           "PATH=/home/${username}/.local/bin:/home/${username}/.cargo/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin"
         ];
-        EnvironmentFile = "-/etc/melete/melete.env";
+        EnvironmentFile = "-/run/secrets/melete-env";
         WorkingDirectory = "/home/${username}/melete";
         ExecStart = "/home/${username}/.local/bin/melete --config /etc/melete/config.toml serve";
         Restart = "on-failure";
