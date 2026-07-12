@@ -137,51 +137,20 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ## Common commands
 
+Shell aliases from `modules/dendrites/bash.nix` (behind `dx.bash.enable`):
+
 ```sh
-# rebuild + activate now
-sudo nixos-rebuild switch --flake .#<name>
+# rebuild + switch this host, via nh (nicer diff/output than nixos-rebuild)
+flake-rebuild
 
-# build + activate on next boot, don't switch now
-sudo nixos-rebuild boot --flake .#<name>
+# same, but bump flake.lock first
+flake-update
 
-# build only, no activation — check it compiles
-sudo nixos-rebuild build --flake .#<name>
+# nh's generation cleanup (wraps nix-collect-garbage)
+flake-clean
 
-# rebuild against a host other than the one you're on
-sudo nixos-rebuild switch --flake .#<name> --target-host <user>@<host>
-
-# bump flake.lock to latest inputs
-nix flake update
-
-# bump a single input
-nix flake lock --update-input <input>
-
-# static check: evaluates every nixosConfiguration
-nix flake check
-
-# list outputs (nixosConfigurations, etc.)
-nix flake show
-
-# build a host's toplevel without switching
-nix build .#nixosConfigurations.<name>.config.system.build.toplevel
-
-# regenerate hardware.nix for the machine you're on
-sudo nixos-generate-config --show-hardware-config > hosts/<name>/hardware.nix
-
-# edit a sops secret (uses .sops.yaml keys)
-sops secrets/<file>.yaml
-
-# roll back to the previous generation
-sudo nixos-rebuild switch --rollback
-
-# list system generations
-sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
-
-# garbage collect old generations + store paths
-sudo nix-collect-garbage -d
-
-# GC only paths older than N days
-sudo nix-collect-garbage --delete-older-than 14d
+# print the current system generation number
+nix-list-generation
 ```
 
 ---
