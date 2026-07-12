@@ -135,6 +135,57 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ---
 
+## Common commands
+
+```sh
+# rebuild + activate now
+sudo nixos-rebuild switch --flake .#<name>
+
+# build + activate on next boot, don't switch now
+sudo nixos-rebuild boot --flake .#<name>
+
+# build only, no activation — check it compiles
+sudo nixos-rebuild build --flake .#<name>
+
+# rebuild against a host other than the one you're on
+sudo nixos-rebuild switch --flake .#<name> --target-host <user>@<host>
+
+# bump flake.lock to latest inputs
+nix flake update
+
+# bump a single input
+nix flake lock --update-input <input>
+
+# static check: evaluates every nixosConfiguration
+nix flake check
+
+# list outputs (nixosConfigurations, etc.)
+nix flake show
+
+# build a host's toplevel without switching
+nix build .#nixosConfigurations.<name>.config.system.build.toplevel
+
+# regenerate hardware.nix for the machine you're on
+sudo nixos-generate-config --show-hardware-config > hosts/<name>/hardware.nix
+
+# edit a sops secret (uses .sops.yaml keys)
+sops secrets/<file>.yaml
+
+# roll back to the previous generation
+sudo nixos-rebuild switch --rollback
+
+# list system generations
+sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
+
+# garbage collect old generations + store paths
+sudo nix-collect-garbage -d
+
+# GC only paths older than N days
+sudo nix-collect-garbage --delete-older-than 14d
+```
+
+---
+
 ## Adding a module
 
 Drop a `.nix` anywhere under `modules/` and it is already imported into every host — you never edit `flake.nix` or an imports list. The whole job is three steps: **write the file → gate it → flip the flag on a host.**
