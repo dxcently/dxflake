@@ -165,9 +165,6 @@ dxgens           # nh os info
 # generation cleanup (wraps nix-collect-garbage)
 dxclean          # nh clean all
 
-# search nixpkgs
-nix-search       # nh search
-
 # cd straight into the flake repo
 dx               # cd /home/khoa/dxflake
 

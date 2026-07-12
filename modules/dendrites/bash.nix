@@ -48,7 +48,6 @@
         dxcheck = "nix flake check /home/khoa/dxflake/";
         dxgens = "nh os info";
         dxclean = "nh clean all";
-        nix-search = "nh search";
         ".." = "cd ..";
         reboot = "systemctl reboot";
         shutdown = "systemctl poweroff";
