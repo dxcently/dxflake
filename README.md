@@ -135,55 +135,55 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ---
 
-## Common commands
+## Commands
 
 ```sh
 # rebuild + activate + set as boot default
-dxrebuild
+dxrebuild        # nh os switch /home/khoa/dxflake/
 
 # same, but bump flake.lock first
-dxupdate
+dxupdate         # nh os switch /home/khoa/dxflake/ --update
 
 # build + set as boot default, don't activate now
-dxboot
+dxboot           # nh os boot /home/khoa/dxflake/
 
 # build + activate, don't persist as boot default
-dxtest
+dxtest           # nh os test /home/khoa/dxflake/
 
 # build only, no activation — compile check
-dxbuild
+dxbuild          # nh os build /home/khoa/dxflake/
 
 # revert to the previous generation
-dxrollback
+dxrollback       # nh os rollback
 
 # evaluate every nixosConfiguration, catch errors before building
-dxcheck
+dxcheck          # nix flake check /home/khoa/dxflake/
 
 # list generations
-dxgens
+dxgens           # nh os info
 
 # generation cleanup (wraps nix-collect-garbage)
-dxclean
+dxclean          # nh clean all
 
 # search nixpkgs
-nix-search <query>
+nix-search       # nh search
 
 # cd straight into the flake repo
-dx
+dx               # cd /home/khoa/dxflake
 
 # power
-reboot
-shutdown       # systemctl poweroff
-poweroff
-sleep          # systemctl suspend
-hibernate
-lock           # hyprlock
+reboot           # systemctl reboot
+shutdown         # systemctl poweroff
+poweroff         # systemctl poweroff
+sleep            # systemctl suspend
+hibernate        # systemctl hibernate
+lock             # hyprlock
 
 # ls, via lsd
-ls
-ll             # lsd -l
-la             # lsd -la
-lt             # lsd --tree
+ls               # lsd
+ll               # lsd -l
+la               # lsd -la
+lt               # lsd --tree
 ```
 
 ---
