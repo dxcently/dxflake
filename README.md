@@ -137,20 +137,36 @@ Swap `<name>` for your host — it becomes the flake target.
 
 ## Common commands
 
-Shell aliases from `modules/dendrites/bash.nix` (behind `dx.bash.enable`):
-
 ```sh
-# rebuild + switch this host, via nh (nicer diff/output than nixos-rebuild)
-flake-rebuild
+# rebuild + activate + set as boot default
+dxrebuild
 
 # same, but bump flake.lock first
-flake-update
+dxupdate
 
-# nh's generation cleanup (wraps nix-collect-garbage)
-flake-clean
+# build + set as boot default, don't activate now
+dxboot
 
-# print the current system generation number
-nix-list-generation
+# build + activate, don't persist as boot default
+dxtest
+
+# build only, no activation — compile check
+dxbuild
+
+# revert to the previous generation
+dxrollback
+
+# evaluate every nixosConfiguration, catch errors before building
+dxcheck
+
+# list generations
+dxgens
+
+# generation cleanup (wraps nix-collect-garbage)
+dxclean
+
+# search nixpkgs
+nix-search <query>
 ```
 
 ---

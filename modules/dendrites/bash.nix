@@ -8,6 +8,7 @@
     cfg = config.programs.bash;
     cfge = config.environment;
   in {
+    home.packages = with pkgs; [lsd];
     programs.bash = {
       enable = true;
       enableCompletion = true;
@@ -35,19 +36,32 @@
         khoa = "true";
       };
       shellAliases = {
-        sv = "sudo nvim";
         v = "nvim";
-        nano = "nvim";
-        flake-rebuild = "nh os switch /home/khoa/dxflake/";
-        flake-update = "nh os switch /home/khoa/dxflake/ --update";
-        flake-clean = "nh clean all";
+        nv = "nvim";
+        dx = "cd /home/khoa/dxflake";
+        dxrebuild = "nh os switch /home/khoa/dxflake/";
+        dxupdate = "nh os switch /home/khoa/dxflake/ --update";
+        dxboot = "nh os boot /home/khoa/dxflake/";
+        dxtest = "nh os test /home/khoa/dxflake/";
+        dxbuild = "nh os build /home/khoa/dxflake/";
+        dxrollback = "nh os rollback";
+        dxcheck = "nix flake check /home/khoa/dxflake/";
+        dxgens = "nh os info";
+        dxclean = "nh clean all";
+        nix-search = "nh search";
         ".." = "cd ..";
         reboot = "systemctl reboot";
-        shutdown = "shutdown -h now";
-        nix-list-generation = "sudo nix-env --list-generations --profile /nix/var/nix/profiles/system | grep current | awk '{print $1}'"; # thank you iynaix :>
-        sdl = "spotdl download";
+        shutdown = "systemctl poweroff";
+        poweroff = "systemctl poweroff";
+        sleep = "systemctl suspend";
+        hibernate = "systemctl hibernate";
+        lock = "hyprlock";
+        ls = "lsd";
+        ll = "lsd -l";
+        la = "lsd -la";
+        lt = "lsd --tree";
         lg = "lazygit";
-        claudy = "claude --rc";
+        crc = "claude --rc";
       };
     };
   };
