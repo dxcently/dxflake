@@ -8,7 +8,7 @@
       enable = true;
       clean = {
         enable = true;
-        extraArgs = "--keep-since 1w --keep 4";
+        extraArgs = "--keep-since 1w --keep 10";
       };
       flake = "/home/khoa/dxflake/";
     };
