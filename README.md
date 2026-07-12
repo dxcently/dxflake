@@ -167,6 +167,23 @@ dxclean
 
 # search nixpkgs
 nix-search <query>
+
+# cd straight into the flake repo
+dx
+
+# power
+reboot
+shutdown       # systemctl poweroff
+poweroff
+sleep          # systemctl suspend
+hibernate
+lock           # hyprlock
+
+# ls, via lsd
+ls
+ll             # lsd -l
+la             # lsd -la
+lt             # lsd --tree
 ```
 
 ---
