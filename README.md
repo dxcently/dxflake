@@ -178,12 +178,6 @@ poweroff         # systemctl poweroff
 sleep            # systemctl suspend
 hibernate        # systemctl hibernate
 lock             # hyprlock
-
-# ls, via lsd
-ls               # lsd
-ll               # lsd -l
-la               # lsd -la
-lt               # lsd --tree
 ```
 
 ---
