@@ -1,7 +1,49 @@
-{ lib, config, username, ... }: {
+{
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}:
+let
+  meletePkg = pkgs.callPackage ../../pkgs/melete { };
+in
+{
   options.dx.melete.enable = lib.mkEnableOption "Melete AI harness service";
 
   config = lib.mkIf config.dx.melete.enable {
+    # --- Reproducible baseline, self-update floats above it ------------------
+    # Nix pins a specific canary (pkgs/melete). We seed ~/.local/bin/melete
+    # from that store binary ONLY when the pinned version changes (tracked by a
+    # stamp file). Between bumps the running binary is left untouched, so
+    # melete's self-update owns it and survives reboots. Bump version+sha256 in
+    # pkgs/melete to deterministically reset every host to a known binary.
+    system.activationScripts.meleteSeed = {
+      deps = [ "users" ];
+      text = ''
+        bindir="/home/${username}/.local/bin"
+        bin="$bindir/melete"
+        stamp="$bindir/.melete-pinned"
+        want="${meletePkg.version}"
+        if [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || [ ! -e "$bin" ]; then
+          install -Dm755 ${meletePkg}/bin/melete "$bin"
+          printf '%s' "$want" > "$stamp"
+          chown -R ${username}:users "$bindir"
+        fi
+      '';
+    };
+
+    # The authenticated fixed-output fetch runs under nix-daemon, so the token
+    # must live in the daemon's environment (not the invoking shell). sops
+    # decrypts it into an EnvironmentFile line; restart nix-daemon after the
+    # first deploy so it picks the token up before building meletePkg.
+    sops.secrets."melete/read-token".sopsFile = ../../secrets/melete-token.yaml;
+    sops.templates."melete-read-token.env".content = "NIX_MELETE_READ_TOKEN=${
+      config.sops.placeholder."melete/read-token"
+    }";
+    systemd.services.nix-daemon.serviceConfig.EnvironmentFile =
+      config.sops.templates."melete-read-token.env".path;
+
     # ~/.local/bin is only in ~/.profile (login shells); add it to bashrc so
     # Hyprland terminal emulators (non-login) pick it up too.
     home-manager.users.${username}.programs.bash.bashrcExtra = ''
