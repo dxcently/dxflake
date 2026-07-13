@@ -1,5 +1,5 @@
-# Claude Code
-!.claude/settings.local.json
+# Claude Code — ignore all artifacts, keep CLAUDE.md (repo root, not under .claude/)
+.claude/
 CLAUDE.local.md
 tasks/
 
