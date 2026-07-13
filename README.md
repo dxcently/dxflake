@@ -30,9 +30,10 @@ dxflake/
 │       ├── <feature>.nix     #   one feature, one file — bluetooth, git, kitty, stylix …
 │       ├── desktop/ hyprland/ gaming/  #   role-shared bits (packages + the odd shared knob)
 │       └── _shelved.nix      #   a leading _ hides a file from discovery — parked, not deleted
-├── packages/                 # custom derivations
+├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
-└── extras/                   # wallpapers, screenshots
+├── assets/                   # wallpapers, screenshots
+└── scripts/                  # runtime shell scripts (keybinds, sink switcher)
 ```
 
 > **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath all three machines: the system, the network, the user, the secrets that keep the night out, the developer's claws— er, _tools._ You do not _choose_ the nucleus. It wears no flag, and so it simply _is_ — on every machine, always. Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
@@ -245,52 +246,52 @@ Either way the host just speaks the word — `dx.foo.enable = true;`. One dendri
 <details>
 <summary><b>04.04.24 / yuyo v1</b></summary>
 
-![image](./extras/screenshots/yuyo.png)
+![image](./assets/screenshots/yuyo.png)
 
 </details>
 
 <details>
 <summary><b>21.04.24 / yuyo v2</b></summary>
 
-![image](./extras/screenshots/yuyo2.png)
+![image](./assets/screenshots/yuyo2.png)
 
 </details>
 
 <details>
 <summary><b>03.06.24 /『🍓』strawberry flavored</b></summary>
 
-![image](./extras/screenshots/strawbf.png)
-![image](./extras/screenshots/strawbf1.png)
-![image](./extras/screenshots/strawbf2.png)
+![image](./assets/screenshots/strawbf.png)
+![image](./assets/screenshots/strawbf1.png)
+![image](./assets/screenshots/strawbf2.png)
 
 </details>
 
 <details>
 <summary><b>22.02.25 / 𝄞 v1</b></summary>
 
-![image](./extras/screenshots/musicsavesmysoul.png)
+![image](./assets/screenshots/musicsavesmysoul.png)
 
 </details>
 
 <details>
 <summary><b>12.03.25 / 𝄞 v2</b></summary>
 
-![image](./extras/screenshots/musicsavesmysoul1.png)
-![image](./extras/screenshots/musicsavesmysoul2.png)
+![image](./assets/screenshots/musicsavesmysoul1.png)
+![image](./assets/screenshots/musicsavesmysoul2.png)
 
 </details>
 
 <details>
 <summary><b>04.04.25 / 𝄞 v3</b></summary>
 
-![image](./extras/screenshots/ohmahgah.png)
+![image](./assets/screenshots/ohmahgah.png)
 
 </details>
 
 <details open>
 <summary><b>09.25.25 / 𝄞 v4</b></summary>
 
-![image](./extras/screenshots/notev4.png)
+![image](./assets/screenshots/notev4.png)
 
 </details>
 
