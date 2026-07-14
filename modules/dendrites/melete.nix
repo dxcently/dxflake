@@ -33,16 +33,33 @@ in
       '';
     };
 
-    # The authenticated fixed-output fetch runs under nix-daemon, so the token
-    # must live in the daemon's environment (not the invoking shell). sops
-    # decrypts it into an EnvironmentFile line; restart nix-daemon after the
-    # first deploy so it picks the token up before building meletePkg.
+    # The authenticated fixed-output fetch runs under nix-daemon. On Nix 2.34+,
+    # __impureEnvVars no longer reads ANY process environment — not the invoking
+    # shell, not the daemon's own env, not an EnvironmentFile / set-environment
+    # (verified empirically: a FOD listing TZDIR in __impureEnvVars sees it empty
+    # even though nix-daemon has TZDIR in its Environment=). The only channel
+    # that reaches a FOD builder now is the trusted `impure-env` setting, gated
+    # behind the `configurable-impure-env` experimental feature and honored only
+    # from trusted config (nix.conf), never from an untrusted client.
+    #
+    # sops renders `impure-env = NIX_MELETE_READ_TOKEN=<token>` into a root-only
+    # (0400) file that nix.conf `!include`s, so the token never lands in
+    # world-readable /etc/nix/nix.conf. COLD-HOST NOTE: this config only exists
+    # after a successful activation, but building meletePkg needs the token
+    # first — so a host that has never activated melete must break the catch-22
+    # once by hand (see project_melete_token_bootstrap memory):
+    #   sudo nixos-rebuild switch --flake .#<host> \
+    #     --option extra-experimental-features configurable-impure-env \
+    #     --option impure-env "NIX_MELETE_READ_TOKEN=<token>"
+    # After that first activation, canary bumps build automatically.
     sops.secrets."melete/read-token".sopsFile = ../../secrets/melete-token.yaml;
-    sops.templates."melete-read-token.env".content = "NIX_MELETE_READ_TOKEN=${
+    sops.templates."melete-impure-env.conf".content = "impure-env = NIX_MELETE_READ_TOKEN=${
       config.sops.placeholder."melete/read-token"
     }";
-    systemd.services.nix-daemon.serviceConfig.EnvironmentFile =
-      config.sops.templates."melete-read-token.env".path;
+    nix.settings.experimental-features = [ "configurable-impure-env" ];
+    nix.extraOptions = ''
+      !include ${config.sops.templates."melete-impure-env.conf".path}
+    '';
 
     # ~/.local/bin is only in ~/.profile (login shells); add it to bashrc so
     # Hyprland terminal emulators (non-login) pick it up too.
