@@ -38,33 +38,48 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-stable,
-    home-manager,
-    ...
-  } @ inputs: let
-    system = "x86_64-linux";
-    username = "khoa";
-    mkHost = name:
-      nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          host = name;
-          inherit username inputs system nixpkgs-stable;
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-stable,
+      home-manager,
+      ...
+    }@inputs:
+    let
+      system = "x86_64-linux";
+      username = "khoa";
+      mkHost =
+        name:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            host = name;
+            inherit
+              username
+              inputs
+              system
+              nixpkgs-stable
+              ;
+          };
+          modules =
+            let
+              discovered = builtins.filter (
+                p:
+                let
+                  s = toString p;
+                in
+                nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
+              ) (nixpkgs.lib.filesystem.listFilesRecursive ./modules);
+            in
+            discovered ++ [ ./hosts/${name} ];
         };
-        modules =
-          let
-            discovered = builtins.filter
-              (p: let s = toString p; in nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s))
-              (nixpkgs.lib.filesystem.listFilesRecursive ./modules);
-          in discovered ++ [./hosts/${name}];
+    in
+    {
+      nixosConfigurations = {
+        chiyo = mkHost "chiyo";
+        osaka = mkHost "osaka";
+        sakaki = mkHost "sakaki";
+        yomi-strix = mkHost "yomi-strix";
       };
-  in {
-    nixosConfigurations = {
-      chiyo = mkHost "chiyo";
-      osaka = mkHost "osaka";
-      sakaki = mkHost "sakaki";
     };
-  };
 }
