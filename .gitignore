@@ -14,3 +14,12 @@ result
 result-*
 *.swp
 .DS_Store
+
+# sops — decrypted plaintext must NEVER be committed.
+# The encrypted secrets/*.yaml stay tracked; these are the `sops -d` outputs.
+*.dec
+*.dec.yaml
+*.dec.json
+*.decrypted
+*.plain.yaml
+secrets/*.dec.*
