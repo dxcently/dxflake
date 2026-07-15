@@ -6,6 +6,7 @@
   };
   dx.bluetooth.enable = true;
   dx.laptop.enable = true;
+  dx.melete.enable = true;
   dx.gpu-intel.enable = true;
   boot = {
     initrd.kernelModules = [ "nvme" ];
