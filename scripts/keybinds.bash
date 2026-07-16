@@ -1,6 +1,6 @@
 #!/bin/sh
 # Keybindings cheatsheet for Hyprland, Neovim (nvf) and Yazi.
-# Pulls from modules/home/{hyprland,neovim,yazi}.nix.
+# Pulls from modules/dendrites/{hyprland,neovim,yazi}.nix.
 
 # yad's --plug/--notebook uses X11 XEMBED, force XWayland under Hyprland.
 export GDK_BACKEND=x11
