@@ -37,6 +37,10 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     {
@@ -71,7 +75,11 @@
                 nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
               ) (nixpkgs.lib.filesystem.listFilesRecursive ./modules);
             in
-            discovered ++ [ ./hosts/${name} ];
+            discovered
+            ++ [
+              inputs.disko.nixosModules.disko
+              ./hosts/${name}
+            ];
         };
     in
     {

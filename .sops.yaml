@@ -3,6 +3,7 @@ keys:
   - &sakaki age1weelnn60djp6fvqm6xn3y02r4prkwz2e94rpjc653hy74fq5tv7sg9lrk5
   - &chiyo age1epjexgpxcrp7nspsg45v76nkn54trmmzgzu6zc9md37mv007nfyqas87yt
   - &osaka age1hqw5zp8eg0h9fus9524pun6mfe39p987uewk5yr4yxs2peezuqfqc6qrmg
+  - &yomi-strix age15tg98m0jy7tfj30ultxe4tg6uprgtcqa0mvv6pmme4jclwh0rptsvahqmn
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
@@ -12,3 +13,4 @@ creation_rules:
         - *sakaki
         - *chiyo
         - *osaka
+        - *yomi-strix

@@ -1,8 +1,9 @@
-# ⚠️  PLACEHOLDER — REGENERATE ON THE REAL MACHINE.
-# This stub only exists so the flake evaluates before yomi-strix is installed.
-# On the actual box run:
-#     sudo nixos-generate-config --show-hardware-config > hosts/yomi-strix/hardware.nix
-# and replace this file wholesale (correct UUIDs, real kernel modules, etc.).
+# Kernel/firmware baseline for yomi-strix. disko.nix owns the disk layout and
+# generates all fileSystems.* entries, so none live here.
+# This generic module set boots a Strix Halo fine via nixos-anywhere; after
+# install you can refine it with the real scan:
+#     nixos-generate-config --show-hardware-config
+# (or let nixos-anywhere's --generate-hardware-config write it back).
 {
   config,
   lib,
@@ -24,23 +25,6 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
-
-  # Placeholder mounts — overwritten by nixos-generate-config on install.
-  fileSystems."/" = {
-    device = "/dev/disk/by-label/nixos";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-label/boot";
-    fsType = "vfat";
-    options = [
-      "fmask=0022"
-      "dmask=0022"
-    ];
-  };
-
-  swapDevices = [ ];
 
   networking.useDHCP = lib.mkDefault true;
 
