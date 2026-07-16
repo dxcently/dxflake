@@ -11,10 +11,12 @@ let
   # the override. This is the single knob most likely to need tuning on new silicon.
   gfxOverride = "11.0.0";
 
-  # torch-rocm + client tooling for tinkering. Heavy (multi-GB) but eval-safe.
+  # Client-side AI tooling. torch-rocm is intentionally OMITTED: it isn't in the
+  # binary cache for the ROCm 7.x stack and needs a multi-hour from-source build
+  # (drags in rccl/rocprofiler/torch). If you want torch on this box, add it out
+  # of band via uv/venv (a pip rocm wheel), not this system env. Rest is light + cached.
   aiPython = pkgs.python3.withPackages (
     ps: with ps; [
-      torchWithRocm
       numpy
       requests
       openai
@@ -65,7 +67,7 @@ in
       };
     };
 
-    # ── Extras: llama.cpp (ROCm) + a torch-rocm Python env for tinkering ────
+    # ── Extras: llama.cpp (ROCm) + a light Python AI-client env ─────────────
     environment.systemPackages = [
       (pkgs.llama-cpp.override { rocmSupport = true; })
       aiPython
