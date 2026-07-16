@@ -6,6 +6,7 @@
     gaming = true;
     server = true;
   };
+  dx.syncthing.enable = true;
   dx.virtualisation.enable = true;
   dx.openrazer.enable = true;
   dx.gpu-amd.enable = true;
