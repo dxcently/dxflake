@@ -48,6 +48,9 @@ in
       # Strix Halo has a huge unified-memory pool; let Ollama keep models warm.
       environmentVariables = {
         HSA_OVERRIDE_GFX_VERSION = gfxOverride;
+        # Strix Halo's GPU is an iGPU; ollama drops integrated GPUs unless told
+        # otherwise. Without this it silently runs CPU-only (verified in logs).
+        OLLAMA_IGPU_ENABLE = "1";
         OLLAMA_KEEP_ALIVE = "30m";
         OLLAMA_FLASH_ATTENTION = "1";
       };
