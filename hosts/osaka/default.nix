@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  imports = [ ./hardware.nix ];
+{pkgs, ...}: {
+  imports = [./hardware.nix];
   dx.aggregations = {
     desktop = true;
     hyprland = true;
@@ -19,9 +19,10 @@
     filezilla
     kdePackages.filelight
     tor-browser
+    stremio-linux-shell
   ];
   boot = {
-    initrd.kernelModules = [ "nvme" ];
-    kernelParams = [ "mitigations=off" ];
+    initrd.kernelModules = ["nvme"];
+    kernelParams = ["mitigations=off"];
   };
 }
