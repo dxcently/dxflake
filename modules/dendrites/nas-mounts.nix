@@ -58,8 +58,14 @@ in
         "hard" # never silently fail a write mid-upload
         "noatime"
         "x-systemd.automount" # don't block boot on the NAS being up
-        "x-systemd.idle-timeout=600"
-      ];
+      ]
+      # An idle unmount and RequiresMountsFor contradict each other: the
+      # timeout tears the mount down after 600s of no I/O, and systemd then
+      # stops every unit that requires it. A long-lived consumer like
+      # immich-server looks like it "dies on rebuild" when really it is
+      # killed ten minutes after each start. Only expire mounts that no
+      # service depends on.
+      ++ lib.optional (m.requiredBy == [ ]) "x-systemd.idle-timeout=600";
     }) cfg.mounts;
 
     systemd.services = lib.mkMerge (
