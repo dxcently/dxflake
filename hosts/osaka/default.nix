@@ -12,7 +12,10 @@
   dx.gpu-screen-recorder.enable = true;
   dx.k3b.enable = true;
   dx.melete.enable = true;
-  dx.nfs-media.enable = true;
+  dx.nas-mounts = {
+    enable = true;
+    mounts."/mnt/kaori-jellyfin".export = "/volume1/jellyfin";
+  };
   environment.systemPackages = with pkgs; [
     soundconverter
     udiskie
