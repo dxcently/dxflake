@@ -9,4 +9,5 @@
   dx.melete.enable = true;
   dx.nfs-media.enable = true;
   dx.mneme.enable = true;
+  dx.immich.enable = true;
 }
