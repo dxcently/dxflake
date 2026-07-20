@@ -14,7 +14,7 @@
   dx.melete.enable = true;
   dx.nas-mounts = {
     enable = true;
-    mounts."/mnt/kaori-jellyfin".export = "/volume1/jellyfin";
+    mounts."/mnt/kaori-media".export = "/volume1/media";
   };
   environment.systemPackages = with pkgs; [
     soundconverter
