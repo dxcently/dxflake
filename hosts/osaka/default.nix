@@ -4,7 +4,6 @@
     desktop = true;
     hyprland = true;
     gaming = true;
-    server = true;
   };
   dx.syncthing.enable = true;
   dx.virtualisation.enable = true;
@@ -13,6 +12,7 @@
   dx.gpu-screen-recorder.enable = true;
   dx.k3b.enable = true;
   dx.melete.enable = true;
+  dx.nfs-media.enable = true;
   environment.systemPackages = with pkgs; [
     soundconverter
     udiskie
