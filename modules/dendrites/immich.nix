@@ -27,6 +27,27 @@ in {
       mediaLocation = cfg.mediaLocation;
     };
 
+    # Melete's shell has no TTY, so an interactive sudo password prompt makes
+    # immich unmanageable from the agent surface. Scoped to start/stop/restart
+    # of the immich units only -- not a general systemctl grant.
+    security.sudo.extraRules = [
+      {
+        users = ["khoa"];
+        commands = let
+          systemctl = "/run/current-system/sw/bin/systemctl";
+          units = ["immich-server" "immich-machine-learning" "redis-immich"];
+          verbs = ["start" "stop" "restart" "reload"];
+        in
+          lib.flatten (map (verb:
+            map (unit: {
+              command = "${systemctl} ${verb} ${unit}.service";
+              options = ["NOPASSWD"];
+            })
+            units)
+          verbs);
+      }
+    ];
+
     dx.nas-mounts = {
       enable = true;
       mounts.${cfg.mediaLocation} = {
