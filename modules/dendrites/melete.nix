@@ -44,14 +44,38 @@ in
     #
     # sops renders `impure-env = NIX_MELETE_READ_TOKEN=<token>` into a root-only
     # (0400) file that nix.conf `!include`s, so the token never lands in
-    # world-readable /etc/nix/nix.conf. COLD-HOST NOTE: this config only exists
-    # after a successful activation, but building meletePkg needs the token
-    # first — so a host that has never activated melete must break the catch-22
-    # once by hand (see project_melete_token_bootstrap memory):
-    #   sudo nixos-rebuild switch --flake .#<host> \
-    #     --option extra-experimental-features configurable-impure-env \
-    #     --option impure-env "NIX_MELETE_READ_TOKEN=<token>"
-    # After that first activation, canary bumps build automatically.
+    # world-readable /etc/nix/nix.conf.
+    #
+    # COLD-HOST CATCH-22: the wiring above (experimental-features + !include)
+    # only exists in a host's nix.conf AFTER a successful activation — but
+    # activation has to build meletePkg, whose FOD needs the token that the
+    # wiring delivers. A host whose RUNNING generation predates this block
+    # therefore 401s forever: build fails -> rebuild aborts -> nix.conf never
+    # updated -> next attempt fails identically. Note the flake source being
+    # correct is not enough; what matters is the live /etc/nix/nix.conf of the
+    # generation currently booted.
+    #
+    # DO NOT try to break it with --option impure-env. On Nix >= 2.34 that is a
+    # no-op: `--option extra-experimental-features configurable-impure-env`
+    # enables the feature for the CLIENT only, while impure-env is honored just
+    # when the feature is set in the DAEMON's own nix.conf. The setting is
+    # silently dropped ("Ignoring setting 'impure-env' because experimental
+    # feature 'configurable-impure-env' is not enabled") and root does not help.
+    #
+    # Break it by PRE-SEEDING the store instead. A fixed-output derivation is
+    # keyed by its output hash, so if that output already exists Nix never runs
+    # the fetch:
+    #   TOK=<token>
+    #   curl -fL -H "Authorization: Bearer $TOK" -o /tmp/melete-bin \
+    #     https://melete-distributor.rdct.dev/artifacts/<version>/melete-x86_64-unknown-linux-musl
+    #   sha256sum /tmp/melete-bin   # must match pkgs/melete/default.nix
+    #   nix-store --add-fixed sha256 /tmp/melete-bin
+    # Then a plain `nixos-rebuild switch` needs no token, and THAT activation
+    # finally writes the wiring into the daemon's nix.conf — after which
+    # impure-env works and later canary bumps build automatically.
+    #
+    # For an already-wired host, copy the seeded path instead of re-fetching:
+    #   nix copy --to ssh://<host> /nix/store/<hash>-melete-bin-<version>
     sops.secrets."melete/read-token".sopsFile = ../../secrets/melete-token.yaml;
     sops.templates."melete-impure-env.conf".content = "impure-env = NIX_MELETE_READ_TOKEN=${
       config.sops.placeholder."melete/read-token"

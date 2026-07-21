@@ -5,10 +5,23 @@
 }:
 
 # Pinned to this release's SHA256SUMS
-# (github.com/noah427/melete releases/tag/canary-9d8de3c):
-#   33c012ef9997ffe05ebaf7bd51b00e5d4b9e363afd35eb4dd8aa3c2aaf7d6cd0  melete-x86_64-unknown-linux-musl
+# (github.com/noah427/melete releases/tag/canary-efc05e7):
+#   08dbed6f32a1e28ab8dba2c0d7120ae4f76148bb548f913d4a1031e3e8df8183  melete-x86_64-unknown-linux-musl
+# BUMPING THIS: if the rebuild fails with `curl: (22) ... error: 401`, do NOT
+# assume the token is dead or the release is unpublished. The likely cause is
+# that this host's RUNNING generation predates the impure-env wiring in
+# modules/dendrites/melete.nix, so the daemon never had the token to give.
+# Test the token directly before touching sops or asking the dev:
+#   TOK=$(sudo sed -E 's/.*NIX_MELETE_READ_TOKEN=//' \
+#     /run/secrets/rendered/melete-impure-env.conf)
+#   curl -sI -H "Authorization: Bearer $TOK" \
+#     https://melete-distributor.rdct.dev/artifacts/<version>/melete-x86_64-unknown-linux-musl
+# 200 => token is fine, the host is unwired; pre-seed the store (see the
+# COLD-HOST CATCH-22 comment in modules/dendrites/melete.nix). Note --add-fixed
+# names the store path after the FILE, so the temp file must be named exactly
+# melete-bin-<version> or the FOD will not match it and the fetch runs anyway.
 let
-  version = "canary-9d8de3c";
+  version = "canary-efc05e7";
 
   # Fixed-output fetch via our OWN curl call, not fetchurl. fetchurl passes
   # curlOptsList as a quoted bash array ("${curlOptsList[@]}"), so a literal
@@ -24,7 +37,7 @@ let
 
     outputHashMode = "flat";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-M8AS75mX/+Beuve9UbAOXUueNjr9NetN2Ko8Kq99bNA=";
+    outputHash = "sha256-CNvtbzKh4oq426LA1xIK5PdhSLtUj5E9ShAx4+jfgYM=";
 
     __impureEnvVars = [ "NIX_MELETE_READ_TOKEN" ];
     SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";

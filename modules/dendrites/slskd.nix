@@ -1,22 +1,22 @@
-{ config, lib, ... }: {
+{ config, lib, username, ... }: {
   options.dx.slskd.enable = lib.mkEnableOption "slskd (headless Soulseek daemon)";
 
   config = lib.mkIf config.dx.slskd.enable {
     sops.secrets."slskd/username" = {
       sopsFile = ../../secrets/slskd.yaml;
-      owner = "slskd";
+      owner = username;
     };
     sops.secrets."slskd/password" = {
       sopsFile = ../../secrets/slskd.yaml;
-      owner = "slskd";
+      owner = username;
     };
     sops.secrets."slskd/web-username" = {
       sopsFile = ../../secrets/slskd.yaml;
-      owner = "slskd";
+      owner = username;
     };
     sops.secrets."slskd/web-password" = {
       sopsFile = ../../secrets/slskd.yaml;
-      owner = "slskd";
+      owner = username;
     };
 
     # Renders /run/secrets/slskd-env at activation; never hits the Nix store.
@@ -28,17 +28,22 @@
         SLSKD_PASSWORD=${config.sops.placeholder."slskd/web-password"}
       '';
       path = "/run/secrets/slskd-env";
-      owner = "slskd";
+      owner = username;
       mode = "0400";
     };
 
     systemd.tmpfiles.rules = [
-      "d /var/lib/slskd/downloads 0750 slskd slskd -"
-      "d /var/lib/slskd/incomplete 0750 slskd slskd -"
+      "d /var/lib/slskd/downloads 0750 ${username} users -"
+      "d /var/lib/slskd/incomplete 0750 ${username} users -"
     ];
 
     services.slskd = {
       enable = true;
+      # Run as the human user, not the module's default `slskd` system user.
+      # kaori's NFS export is sec=sys and Music/ is owned by uid 1024, so a
+      # 990 system uid simply cannot write there. Same reason jellyfin does it.
+      user = username;
+      group = "users";
       environmentFile = "/run/secrets/slskd-env";
       settings = {
         shares = {
@@ -73,7 +78,7 @@
     # Scoped to lifecycle verbs on the slskd unit only -- not a systemctl grant.
     security.sudo.extraRules = [
       {
-        users = [ "khoa" ];
+        users = [ username ];
         commands =
           let
             systemctl = "/run/current-system/sw/bin/systemctl";
