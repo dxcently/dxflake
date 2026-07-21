@@ -11,9 +11,10 @@
     enable = true;
     mounts."/mnt/kaori-media" = {
       export = "/volume1/media";
-      requiredBy = ["jellyfin"];
+      requiredBy = ["jellyfin" "slskd"];
     };
   };
   dx.mneme.enable = true;
   dx.immich.enable = true;
+  dx.slskd.enable = true;
 }
