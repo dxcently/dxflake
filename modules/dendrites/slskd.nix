@@ -32,11 +32,6 @@
       mode = "0400";
     };
 
-    systemd.tmpfiles.rules = [
-      "d /var/lib/slskd/downloads 0750 ${username} users -"
-      "d /var/lib/slskd/incomplete 0750 ${username} users -"
-    ];
-
     services.slskd = {
       enable = true;
       # Run as the human user, not the module's default `slskd` system user.
@@ -59,8 +54,16 @@
           ];
         };
         directories = {
-          downloads = "/var/lib/slskd/downloads";
-          incomplete = "/var/lib/slskd/incomplete";
+          # Completed downloads land inside the shared tree, so they're
+          # re-shared on the next scan with no move step. Loose files here are
+          # downloads by default; curated material gets sorted out into
+          # _self-curated by hand.
+          downloads = "/mnt/kaori-media/Music";
+          # incomplete deliberately left unset -> slskd's own default under
+          # --app-dir (/var/lib/slskd/incomplete), i.e. local NVMe. Chunk
+          # writes during a transfer are latency-sensitive and NFS round-trips
+          # each one; leaving it unset also keeps it out of ReadWritePaths, so
+          # slskd creates it itself rather than needing tmpfiles to pre-make it.
         };
         web.port = 5030;
         # Reachable over tailnet only — no domain/nginx vhost, no public firewall hole.
@@ -72,6 +75,20 @@
       # Soulseek p2p listen port stays closed; tailnet already gates access.
       openFirewall = false;
     };
+
+    # openFirewall above only covers the p2p listen port (50300), and the LAN
+    # has no business reaching the admin UI — so open 5030 on the tailnet
+    # interface alone. Loopback works regardless, which is why it appears
+    # reachable from sakaki itself even with the port closed.
+    networking.firewall.interfaces."tailscale0".allowedTCPPorts = [ 5030 ];
+
+    # The upstream module derives ReadOnlyPaths from shares.directories, but
+    # downloads land INSIDE the share (that's the point — no move step). The
+    # same path listed both read-only and read-write resolves to read-only, and
+    # slskd's own preflight then refuses to start ("exists, but is not
+    # writeable"). Drop the redundant read-only bind; ReadWritePaths still
+    # confines the unit to just this tree.
+    systemd.services.slskd.serviceConfig.ReadOnlyPaths = lib.mkForce [ ];
 
     # Same rationale as immich/jellyfin: Melete's shell has no TTY, so an
     # interactive sudo prompt makes slskd unmanageable from the agent surface.
