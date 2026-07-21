@@ -123,7 +123,7 @@
 
           windowrule {
             name = windowrule-6
-            workspace = special:magic
+            workspace = special:scratch
             match:class = ^([Oo]bsidian)$
           }
 
@@ -132,7 +132,8 @@
             workspace = [
               "n, monitor:HDMI-A-1, default:true"
               "special:discord, monitor:HDMI-A-1, on-created-empty:vesktop"
-              "special:magic, on-created-empty:pear-desktop, layout:scrolling"
+              "special:magic, on-created-empty:pear-desktop"
+              "special:scratch, layout:scrolling"
               "2, monitor:HDMI-A-1, persistent:true"
               "special:replay, on-created-empty:gpu-screen-recorder-gtk"
               # Every workspace on the vertical monitor uses the scrolling layout.
