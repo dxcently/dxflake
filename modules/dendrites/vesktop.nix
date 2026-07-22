@@ -1,5 +1,7 @@
 {username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  # SLATED 2026-07-22 - vesktop/discord disabled fleet-wide.
+  # Restore by reverting this guard to `config.dx.aggregations.desktop`.
+  config = lib.mkIf false {
     home-manager.users.${username} = {
       pkgs,
       config,
