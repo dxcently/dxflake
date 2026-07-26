@@ -16,6 +16,28 @@
       });
     '';
 
+    # Polkit only covers D-Bus-mediated calls; a `sudo systemctl ...` from
+    # Melete's TTY-less shell still prompts for a password. Same rationale as
+    # immich/jellyfin: scoped to lifecycle verbs on the two mneme units only,
+    # not a general systemctl grant.
+    security.sudo.extraRules = [
+      {
+        users = [ username ];
+        commands = let
+          systemctl = "/run/current-system/sw/bin/systemctl";
+          units = [ "mneme" "tailscaled-mneme" ];
+          verbs = [ "start" "stop" "restart" "reload" ];
+        in
+          lib.flatten (map (verb:
+            map (unit: {
+              command = "${systemctl} ${verb} ${unit}.service";
+              options = [ "NOPASSWD" ];
+            })
+            units)
+          verbs);
+      }
+    ];
+
     # Second, userspace Tailscale node dedicated to Mneme. Claude.ai connectors
     # only reach standard :443, and the host node (sakaki) already spends its
     # :443 funnel on Melete — so Mneme gets its OWN node/hostname
