@@ -5,8 +5,8 @@
 }:
 
 # Pinned to this release's SHA256SUMS
-# (github.com/noah427/melete releases/tag/canary-efc05e7):
-#   08dbed6f32a1e28ab8dba2c0d7120ae4f76148bb548f913d4a1031e3e8df8183  melete-x86_64-unknown-linux-musl
+# (github.com/noah427/melete releases/tag/0.2.0):
+#   dfee72235c50b5ae5defe880e666c3ad5fd6835e15413db51a1daa03ded4ca25  melete-x86_64-unknown-linux-musl
 # BUMPING THIS: if the rebuild fails with `curl: (22) ... error: 401`, do NOT
 # assume the token is dead or the release is unpublished. The likely cause is
 # that this host's RUNNING generation predates the impure-env wiring in
@@ -21,7 +21,7 @@
 # names the store path after the FILE, so the temp file must be named exactly
 # melete-bin-<version> or the FOD will not match it and the fetch runs anyway.
 let
-  version = "canary-efc05e7";
+  version = "0.2.0";
 
   # Fixed-output fetch via our OWN curl call, not fetchurl. fetchurl passes
   # curlOptsList as a quoted bash array ("${curlOptsList[@]}"), so a literal
@@ -37,7 +37,7 @@ let
 
     outputHashMode = "flat";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-CNvtbzKh4oq426LA1xIK5PdhSLtUj5E9ShAx4+jfgYM=";
+    outputHash = "sha256-3+5yI1xQta5d7+iA5mbDrV/Wg14VQT21Gh2qA97UyiU=";
 
     __impureEnvVars = [ "NIX_MELETE_READ_TOKEN" ];
     SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";

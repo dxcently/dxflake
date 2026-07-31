@@ -11,7 +11,8 @@
   dx.gpu-amd.enable = true;
   dx.gpu-screen-recorder.enable = true;
   dx.k3b.enable = true;
-  dx.melete.enable = true;
+  # consolidated to sakaki-only, 2026-07-31
+  dx.melete.enable = false;
   dx.nas-mounts = {
     enable = true;
     mounts."/mnt/kaori-media".export = "/volume1/media";
