@@ -1,6 +1,7 @@
 # CLAUDE.md — dxflake
 
 A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server).
+Melete (the AI agent harness, `dx.melete.enable`) runs sakaki-only — pinned client v0.2.0 in `pkgs/melete/default.nix`.
 This file is a **registry**: where things live and how to add them. For the *why*,
 read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki (below).
 
