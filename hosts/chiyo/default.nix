@@ -7,7 +7,8 @@
   dx.bluetooth.enable = true;
   dx.syncthing.enable = true;
   dx.laptop.enable = true;
-  dx.melete.enable = true;
+  # consolidated to sakaki-only, 2026-07-31
+  dx.melete.enable = false;
   dx.gpu-intel.enable = true;
   boot = {
     initrd.kernelModules = [ "nvme" ];
