@@ -1,7 +1,8 @@
 # CLAUDE.md — dxflake
 
 A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server).
-Melete (the AI agent harness, `dx.melete.enable`) runs sakaki-only — pinned client v0.2.0 in `pkgs/melete/default.nix`.
+Melete (the AI agent harness, `dx.melete.enable`) runs sakaki-only — pinned client v0.2.0 via `pkgs/melete-client-package.nix` (call site in `modules/dendrites/melete.nix`).
+Melete's spawned agent turns route through `~/.config/melete/bin/melete-agent` (set as `[claude] binary` in the out-of-band `config.toml`): Melete orchestrates only, the pi agent executes — `deepseek/deepseek-v4-pro` for coding/execution with thinking scaled by complexity (default `high`; `melete code --model xhigh|max` escalates, `--model flash` drops to deepseek-v4-flash), `kimi-coding/k3-256k` (thinking `high`) for planning/escalation. The real `claude` CLI is the automatic fallback and the explicit escape hatch (`--model claude...`).
 This file is a **registry**: where things live and how to add them. For the *why*,
 read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki (below).
 
