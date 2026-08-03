@@ -1,0 +1,9 @@
+[project]
+name = "kimi-cli-env"
+version = "0"
+description = "Nix wrapper workspace pinning the kimi-cli agent"
+requires-python = ">=3.12"
+dependencies = ["kimi-cli==1.49.0"]
+
+[tool.uv]
+package = false

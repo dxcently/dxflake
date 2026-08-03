@@ -1,7 +1,8 @@
 {
   pkgs,
   ...
-}: {
+}:
+{
   programs = {
     neovim = {
       enable = true;
@@ -76,7 +77,6 @@
     jq # command-line JSON processor
     curl # transfer data with URLs
     wget # non-interactive network downloader
-    claude-code # agentic AI coding assistant
     godot # 2D/3D cross-platform game engine
     arduino-ide # IDE for Arduino microcontrollers
     jupyter # interactive computational notebooks

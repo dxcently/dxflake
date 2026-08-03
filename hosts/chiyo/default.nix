@@ -5,6 +5,9 @@
     hyprland = true;
   };
   dx.bluetooth.enable = true;
+  dx.claude-code.enable = true;
+  dx.pi-coding-agent.enable = true;
+  dx.kimi-cli.enable = true;
   dx.syncthing.enable = true;
   dx.laptop.enable = true;
   # consolidated to sakaki-only, 2026-07-31

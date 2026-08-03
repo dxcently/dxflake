@@ -1,10 +1,13 @@
-{pkgs, ...}: {
-  imports = [./hardware.nix];
+{ pkgs, ... }: {
+  imports = [ ./hardware.nix ];
   dx.aggregations = {
     desktop = true;
     hyprland = true;
     gaming = true;
   };
+  dx.claude-code.enable = true;
+  dx.pi-coding-agent.enable = true;
+  dx.kimi-cli.enable = true;
   dx.syncthing.enable = true;
   dx.virtualisation.enable = true;
   dx.openrazer.enable = true;
@@ -26,7 +29,7 @@
     stremio-linux-shell
   ];
   boot = {
-    initrd.kernelModules = ["nvme"];
-    kernelParams = ["mitigations=off"];
+    initrd.kernelModules = [ "nvme" ];
+    kernelParams = [ "mitigations=off" ];
   };
 }

@@ -5,13 +5,14 @@
   ];
 
   # Desktop workstation. Dev tooling comes free from the nucleus (git, neovim,
-  # lazygit, claude-code, jupyter, …); the desktop/hyprland roles bring the GUI.
+  # lazygit, jupyter, …); the desktop/hyprland roles bring the GUI.
   dx.aggregations = {
     desktop = true;
     hyprland = true;
   };
 
   dx.bluetooth.enable = true;
+  dx.claude-code.enable = true;
   dx.gpu-amd.enable = true; # Strix Halo RDNA 3.5 iGPU
   dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm)
 

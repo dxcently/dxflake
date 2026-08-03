@@ -4,6 +4,9 @@
     ./syncthing.nix
   ];
   dx.aggregations.server = true;
+  dx.claude-code.enable = true;
+  dx.pi-coding-agent.enable = true;
+  dx.kimi-cli.enable = true;
   dx.syncthing.enable = true;
   dx.autologin.enable = true;
   dx.melete.enable = true;
@@ -11,7 +14,10 @@
     enable = true;
     mounts."/mnt/kaori-media" = {
       export = "/volume1/media";
-      requiredBy = ["jellyfin" "slskd"];
+      requiredBy = [
+        "jellyfin"
+        "slskd"
+      ];
     };
   };
   dx.mneme.enable = true;
