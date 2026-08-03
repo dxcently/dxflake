@@ -6,18 +6,23 @@
   ...
 }:
 let
-  meletePkg = pkgs.callPackage ../../pkgs/melete { };
+  meletePkg = pkgs.callPackage ../../pkgs/melete-client-package.nix {
+    version = "0.2.0";
+    target = "melete-x86_64-unknown-linux-musl";
+    sha256 = "sha256-3+5yI1xQta5d7+iA5mbDrV/Wg14VQT21Gh2qA97UyiU=";
+  };
 in
 {
   options.dx.melete.enable = lib.mkEnableOption "Melete AI harness service";
 
   config = lib.mkIf config.dx.melete.enable {
     # --- Reproducible baseline, self-update floats above it ------------------
-    # Nix pins a specific canary (pkgs/melete). We seed ~/.local/bin/melete
-    # from that store binary ONLY when the pinned version changes (tracked by a
-    # stamp file). Between bumps the running binary is left untouched, so
-    # melete's self-update owns it and survives reboots. Bump version+sha256 in
-    # pkgs/melete to deterministically reset every host to a known binary.
+    # Nix pins a specific release (pkgs/melete-client-package.nix). We seed
+    # ~/.local/bin/melete from that store binary ONLY when the pinned version
+    # changes (tracked by a stamp file). Between bumps the running binary is
+    # left untouched, so melete's self-update owns it and survives reboots.
+    # Bump version+sha256 at the call site above to deterministically reset
+    # every host to a known binary.
     system.activationScripts.meleteSeed = {
       deps = [ "users" ];
       text = ''
@@ -67,8 +72,8 @@ in
     # the fetch:
     #   TOK=<token>
     #   curl -fL -H "Authorization: Bearer $TOK" -o /tmp/melete-bin \
-    #     https://melete-distributor.rdct.dev/artifacts/<version>/melete-x86_64-unknown-linux-musl
-    #   sha256sum /tmp/melete-bin   # must match pkgs/melete/default.nix
+    #     https://melete-distributor.rdct.dev/artifacts/v<version>/melete-x86_64-unknown-linux-musl
+    #   sha256sum /tmp/melete-bin   # must match the sha256 at the call site above
     #   nix-store --add-fixed sha256 /tmp/melete-bin
     # Then a plain `nixos-rebuild switch` needs no token, and THAT activation
     # finally writes the wiring into the daemon's nix.conf — after which
