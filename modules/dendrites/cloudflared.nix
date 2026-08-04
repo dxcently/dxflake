@@ -65,16 +65,22 @@ in
   config = lib.mkIf cfg.enable {
     sops.secrets."cloudflared/credentials" = {
       sopsFile = ../../secrets/cloudflared.yaml;
-      # No owner/mode override: the upstream unit delivers the file to
-      # cloudflared via systemd LoadCredential, which PID 1 reads at unit
-      # start — so the default root:0400 secret works even though
-      # cloudflared-tunnel-*.service runs as a DynamicUser.
+    };
+
+    # The upstream unit LoadCredentials the file into credentials.json and
+    # cloudflared parses it as raw JSON. A sops YAML secret would decrypt to
+    # YAML (unquoted keys) and break that parser, so render the decrypted
+    # value through a template — the repo's documented pattern for exact
+    # string output (AGENTS.md "Secrets"). Default root:0400 template is fine:
+    # systemd reads the file at unit start, before the DynamicUser drop.
+    sops.templates."cloudflared-credentials.json" = {
+      content = config.sops.placeholder."cloudflared/credentials";
     };
 
     services.cloudflared = {
       enable = true;
       tunnels.${cfg.tunnelId} = {
-        credentialsFile = config.sops.secrets."cloudflared/credentials".path;
+        credentialsFile = config.sops.templates."cloudflared-credentials.json".path;
         # Mandatory catch-all (rendered last by the module); unknown hostnames
         # 404 instead of leaking to some other service.
         default = "http_status:404";
