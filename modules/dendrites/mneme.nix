@@ -50,6 +50,8 @@
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
+      # Same start-limit fix as melete.nix.
+      unitConfig.StartLimitIntervalSec = 0;
       serviceConfig = {
         Type = "simple";
         User = username;
@@ -74,6 +76,9 @@
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
+      # Same start-limit fix as melete.nix -- don't let repeated early
+      # failures permanently latch this unit into "failed".
+      unitConfig.StartLimitIntervalSec = 0;
       unitConfig.ConditionPathExists = [
         "/home/${username}/.local/bin/mneme"
         "/home/${username}/Magi"

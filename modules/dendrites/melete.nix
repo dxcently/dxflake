@@ -116,6 +116,11 @@ in
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
+      # Default StartLimitBurst=5/IntervalSec=10s means 5 early crashes (a
+      # rough post-outage boot, self-update mid-swap, etc.) permanently fail
+      # the unit -- Restart=on-failure then stops retrying until someone runs
+      # `systemctl reset-failed`. Disable the limit so it always keeps trying.
+      unitConfig.StartLimitIntervalSec = 0;
       unitConfig.ConditionPathExists = [
         "/home/${username}/.local/bin/melete"
         "/home/${username}/.config/melete/config.toml"
