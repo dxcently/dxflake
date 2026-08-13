@@ -33,7 +33,6 @@
       "jellyfin.necoconeco.net"
       "syncthing.necoconeco.net"
       "status.necoconeco.net"
-      "auth.necoconeco.net"
       "melete.necoconeco.net"
     ];
   };
@@ -53,55 +52,16 @@
       # which also front their own auth).
       "melete.necoconeco.net".proxy = "http://127.0.0.1:8090";
 
-      # Central login for every necoconeco.net site that doesn't already
-      # have its own auth -- Jellyfin and Syncthing keep theirs, untouched.
-      # Serves auth-login.html at / and /login, proxies /verify to a live
-      # Melete app (any of them works: they all share the one
-      # apps.auth_token_file secret), and clears the shared cookie on
-      # /logout. See auth-login.html and apps/sakaki-panel/README.md.
-      "auth.necoconeco.net".extraConfig = ''
-        @verify path /verify
-        reverse_proxy @verify http://127.0.0.1:8100
-
-        @logout path /logout
-        header @logout Set-Cookie "sp_session=; Domain=.necoconeco.net; Path=/; Max-Age=0; Secure; SameSite=Lax"
-        redir @logout /login 302
-
-        @page {
-        	not path /verify /logout
-        }
-        root @page /etc/necoconeco-auth
-        rewrite @page /login.html
-        file_server @page
-      '';
-
-      # sakaki-panel behind the central login above (auth.necoconeco.net).
-      # Melete's app gate only accepts the secret as ?__melete_token= or an
-      # Authorization: Bearer header -- never a cookie -- so Caddy does the
-      # translation: guests get bounced to auth.necoconeco.net/login, whose
-      # JS probes the password against /verify and stores it in the
-      # sp_session cookie (Domain=.necoconeco.net, so it's already present
-      # here too once set). Matchers below are mutually exclusive so
-      # exactly one route handles each request.
+      # sakaki-panel now lives behind the melete gateway (folded at
+      # /sakaki-panel/, same apps.gateway_apps as scheduler-graph) -- one
+      # shared login for both instead of this hostname's own cookie/Bearer
+      # translation. Plain path-preserving redirect keeps old bookmarks and
+      # API calls working ({uri} carries /, /api/pins, etc. straight
+      # through to the folded equivalent).
       "status.necoconeco.net".extraConfig = ''
-        @logout path /logout
-        redir @logout https://auth.necoconeco.net/logout 302
-
-        @authed header Cookie *sp_session=*
-        reverse_proxy @authed http://127.0.0.1:8100 {
-        	header_up Authorization "Bearer {http.request.cookie.sp_session}"
-        }
-
-        @guest {
-        	not path /logout
-        	not header Cookie *sp_session=*
-        }
-        redir @guest https://auth.necoconeco.net/login?return=https://status.necoconeco.net/ 302
+        redir https://melete.necoconeco.net/sakaki-panel{uri} 302
       '';
     };
   };
 
-  # The central necoconeco.net login page Caddy serves at auth.necoconeco.net
-  # (see dx.caddy.sites above). 0644 root is readable by the caddy unit.
-  environment.etc."necoconeco-auth/login.html".source = ./auth-login.html;
 }
