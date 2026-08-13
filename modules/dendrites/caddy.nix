@@ -90,10 +90,14 @@ in
     # is a deliberate future decision.
     assertions = [
       {
-        assertion = lib.all (site: (site.proxy == null) != (site.webRoot == null)) (
-          lib.attrValues cfg.sites
-        );
-        message = "dx.caddy.sites: each site must set exactly one of `proxy` or `webRoot`.";
+        # Either kind of site (proxy, webRoot), or neither when the site's
+        # routing is written entirely in extraConfig (e.g. sakaki-panel's
+        # cookie->Bearer auth gate, where a bare `reverse_proxy` shortcut
+        # would chain a second proxy onto matcher-qualified routes).
+        assertion = lib.all (
+          site: ((site.proxy == null) != (site.webRoot == null)) || site.extraConfig != ""
+        ) (lib.attrValues cfg.sites);
+        message = "dx.caddy.sites: each site must set exactly one of `proxy` or `webRoot`, or route entirely via `extraConfig`.";
       }
     ];
   };
