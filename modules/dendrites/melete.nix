@@ -7,9 +7,9 @@
 }:
 let
   meletePkg = pkgs.callPackage ../../pkgs/melete-client-package.nix {
-    version = "0.2.0";
+    version = "0.3.3";
     target = "melete-x86_64-unknown-linux-musl";
-    sha256 = "sha256-3+5yI1xQta5d7+iA5mbDrV/Wg14VQT21Gh2qA97UyiU=";
+    sha256 = "sha256-oO7l8e1DhwLzKmaC0I4FdI/8TYCRIkzgrZuCrqBm5lw=";
   };
 in
 {
