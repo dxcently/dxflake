@@ -34,7 +34,7 @@
       "syncthing.necoconeco.net"
       "status.necoconeco.net"
       "auth.necoconeco.net"
-      "graph.necoconeco.net"
+      "agora.necoconeco.net"
     ];
   };
   dx.caddy = {
@@ -43,13 +43,15 @@
       "jellyfin.necoconeco.net".proxy = "http://127.0.0.1:8096";
       "syncthing.necoconeco.net".proxy = "http://127.0.0.1:8384";
 
-      # scheduler-graph (the Melete run/scheduler dashboard) behind Melete's
-      # own app gateway -- native /login + session cookie, Melete's default
-      # auth implementation. No cookie<->Bearer translation needed here:
-      # unlike sakaki-panel, the gateway is Rust-side and handles cookies
-      # itself, so a bare proxy is enough (same shape as jellyfin/syncthing
-      # above, which also front their own auth).
-      "graph.necoconeco.net".proxy = "http://127.0.0.1:8090";
+      # Melete's own app gateway -- native /login + session cookie, one
+      # login for every app it fronts (scheduler-graph today; more of
+      # Melete's built-in apps can join apps.gateway_apps later, folded
+      # under /<app>/). "agora" names the gateway's own launcher, not any
+      # one app behind it. No cookie<->Bearer translation needed: unlike
+      # sakaki-panel, the gateway is Rust-side and handles cookies itself,
+      # so a bare proxy is enough (same shape as jellyfin/syncthing above,
+      # which also front their own auth).
+      "agora.necoconeco.net".proxy = "http://127.0.0.1:8090";
 
       # Central login for every necoconeco.net site that doesn't already
       # have its own auth -- Jellyfin and Syncthing keep theirs, untouched.
