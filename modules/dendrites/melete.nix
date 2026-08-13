@@ -60,6 +60,18 @@ in
     # correct is not enough; what matters is the live /etc/nix/nix.conf of the
     # generation currently booted.
     #
+    # A WARM nix.conf ON DISK IS STILL NOT ENOUGH (found 2026-08-13): nix-daemon
+    # reads nix.conf once at its OWN process startup and does not hot-reload.
+    # A long-lived daemon predating the wiring will keep 401ing forever even
+    # though the file on disk is already correct -- this looks identical to a
+    # dead token from the curl error alone. Before concluding the token is
+    # dead, compare:
+    #   systemctl show nix-daemon --property=ActiveEnterTimestamp
+    #   stat -c %y /etc/nix/nix.conf /run/secrets/rendered/melete-impure-env.conf
+    # If the daemon is older than the config, that's the whole bug:
+    #   sudo systemctl restart nix-daemon
+    # then retry the build before touching anything else.
+    #
     # DO NOT try to break it with --option impure-env. On Nix >= 2.34 that is a
     # no-op: `--option extra-experimental-features configurable-impure-env`
     # enables the feature for the CLIENT only, while impure-env is honored just
