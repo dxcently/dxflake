@@ -1,7 +1,34 @@
-{ lib, config, pkgs, username, ... }: {
+{ lib, config, pkgs, username, ... }:
+let
+  mnemePkg = pkgs.callPackage ../../pkgs/mneme-client-package.nix {
+    version = "0.4.2";
+    target = "mneme-x86_64-unknown-linux-musl";
+    sha256 = "sha256-M6TuPhryiN739Bl/167J+ct6Yz7neJ4tYrF+musQVSU=";
+  };
+in
+{
   options.dx.mneme.enable = lib.mkEnableOption "Mneme vault MCP server";
 
   config = lib.mkIf config.dx.mneme.enable {
+    # Reproducible baseline, mirrors melete.nix's meleteSeed. Nix pins a
+    # specific release (pkgs/mneme-client-package.nix). Unlike melete, mneme
+    # has no self-update of its own, so this is the ONLY thing that ever
+    # moves the binary -- between bumps it's just whatever was last seeded.
+    system.activationScripts.mnemeSeed = {
+      deps = [ "users" ];
+      text = ''
+        bindir="/home/${username}/.local/bin"
+        bin="$bindir/mneme"
+        stamp="$bindir/.mneme-pinned"
+        want="${mnemePkg.version}"
+        if [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || [ ! -e "$bin" ]; then
+          install -Dm755 ${mnemePkg}/bin/mneme "$bin"
+          printf '%s' "$want" > "$stamp"
+          chown -R ${username}:users "$bindir"
+        fi
+      '';
+    };
+
     # Allow khoa to restart mneme.service / tailscaled-mneme.service without
     # auth — so config/env changes (e.g. MNEME_PUBLIC_URL) can be applied
     # without root. Mirrors melete.
@@ -68,9 +95,10 @@
       };
     };
 
-    # Binary deployed out-of-band; env file at ~/.config/melete/mneme.env
-    # (user-managed, not in the Nix store). ConditionPathExists guards
-    # against crash-looping until all three prerequisites exist.
+    # Binary is now Nix-seeded (mnemeSeed above), not hand-placed -- but
+    # ConditionPathExists is kept as a defensive guard regardless. Env file
+    # at ~/.config/melete/mneme.env (user-managed, not in the Nix store,
+    # unaffected by the seed).
     systemd.services.mneme = {
       description = "Mneme — Obsidian vault MCP server";
       after = [ "network-online.target" ];
