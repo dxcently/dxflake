@@ -1,9 +1,16 @@
-{ lib, config, pkgs, username, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  username,
+  ...
+}:
 let
   mnemePkg = pkgs.callPackage ../../pkgs/mneme-client-package.nix {
-    version = "0.4.2";
+    version = "0.4.3";
+    repo = "noah427/mneme";
     target = "mneme-x86_64-unknown-linux-musl";
-    sha256 = "sha256-M6TuPhryiN739Bl/167J+ct6Yz7neJ4tYrF+musQVSU=";
+    sha256 = "sha256-3V0NA5qZPelw/Nax3XjtlCX9edh7a4OAERaW+B3AOZY=";
   };
 in
 {
@@ -50,18 +57,29 @@ in
     security.sudo.extraRules = [
       {
         users = [ username ];
-        commands = let
-          systemctl = "/run/current-system/sw/bin/systemctl";
-          units = [ "mneme" "tailscaled-mneme" ];
-          verbs = [ "start" "stop" "restart" "reload" ];
-        in
-          lib.flatten (map (verb:
-            map (unit: {
-              command = "${systemctl} ${verb} ${unit}.service";
-              options = [ "NOPASSWD" ];
-            })
-            units)
-          verbs);
+        commands =
+          let
+            systemctl = "/run/current-system/sw/bin/systemctl";
+            units = [
+              "mneme"
+              "tailscaled-mneme"
+            ];
+            verbs = [
+              "start"
+              "stop"
+              "restart"
+              "reload"
+            ];
+          in
+          lib.flatten (
+            map (
+              verb:
+              map (unit: {
+                command = "${systemctl} ${verb} ${unit}.service";
+                options = [ "NOPASSWD" ];
+              }) units
+            ) verbs
+          );
       }
     ];
 

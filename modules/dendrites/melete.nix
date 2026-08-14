@@ -7,9 +7,10 @@
 }:
 let
   meletePkg = pkgs.callPackage ../../pkgs/melete-client-package.nix {
-    version = "0.3.3";
+    version = "0.3.4";
+    repo = "noah427/melete";
     target = "melete-x86_64-unknown-linux-musl";
-    sha256 = "sha256-oO7l8e1DhwLzKmaC0I4FdI/8TYCRIkzgrZuCrqBm5lw=";
+    sha256 = "sha256-8R4MMMzHgnqvNLAzLuk6Mk6Jt89DrcXFCCVFyqIihPU=";
   };
 in
 {
@@ -47,9 +48,12 @@ in
     # behind the `configurable-impure-env` experimental feature and honored only
     # from trusted config (nix.conf), never from an untrusted client.
     #
-    # sops renders `impure-env = NIX_MELETE_READ_TOKEN=<token>` into a root-only
-    # (0400) file that nix.conf `!include`s, so the token never lands in
-    # world-readable /etc/nix/nix.conf.
+    # sops renders `impure-env = NIX_GITHUB_RELEASE_TOKEN=<token>` into a
+    # root-only (0400) file that nix.conf `!include`s, so the token never lands
+    # in world-readable /etc/nix/nix.conf. The token is a GitHub credential
+    # (contributor account) with read access to the private noah427/melete and
+    # noah427/mneme release assets — the fetch path is the API assets endpoint,
+    # see pkgs/melete-client-package.nix.
     #
     # COLD-HOST CATCH-22: the wiring above (experimental-features + !include)
     # only exists in a host's nix.conf AFTER a successful activation — but
@@ -67,7 +71,7 @@ in
     # dead token from the curl error alone. Before concluding the token is
     # dead, compare:
     #   systemctl show nix-daemon --property=ActiveEnterTimestamp
-    #   stat -c %y /etc/nix/nix.conf /run/secrets/rendered/melete-impure-env.conf
+    #   stat -c %y /etc/nix/nix.conf /run/secrets/rendered/github-release-impure-env.conf
     # If the daemon is older than the config, that's the whole bug:
     #   sudo systemctl restart nix-daemon
     # then retry the build before touching anything else.
@@ -82,24 +86,24 @@ in
     # Break it by PRE-SEEDING the store instead. A fixed-output derivation is
     # keyed by its output hash, so if that output already exists Nix never runs
     # the fetch:
-    #   TOK=<token>
-    #   curl -fL -H "Authorization: Bearer $TOK" -o /tmp/melete-bin \
-    #     https://melete-distributor.rdct.dev/artifacts/v<version>/melete-x86_64-unknown-linux-musl
-    #   sha256sum /tmp/melete-bin   # must match the sha256 at the call site above
-    #   nix-store --add-fixed sha256 /tmp/melete-bin
+    #   gh release download v<version> --repo noah427/melete \
+    #     -p melete-x86_64-unknown-linux-musl -D /tmp --clobber
+    #   mv /tmp/melete-x86_64-unknown-linux-musl /tmp/melete-bin-v<version>
+    #   sha256sum /tmp/melete-bin-v<version>   # must match the call site above
+    #   nix-store --add-fixed sha256 /tmp/melete-bin-v<version>
     # Then a plain `nixos-rebuild switch` needs no token, and THAT activation
     # finally writes the wiring into the daemon's nix.conf — after which
     # impure-env works and later canary bumps build automatically.
     #
     # For an already-wired host, copy the seeded path instead of re-fetching:
     #   nix copy --to ssh://<host> /nix/store/<hash>-melete-bin-<version>
-    sops.secrets."melete/read-token".sopsFile = ../../secrets/melete-token.yaml;
-    sops.templates."melete-impure-env.conf".content = "impure-env = NIX_MELETE_READ_TOKEN=${
-      config.sops.placeholder."melete/read-token"
+    sops.secrets."github/release-token".sopsFile = ../../secrets/github-release-token.yaml;
+    sops.templates."github-release-impure-env.conf".content = "impure-env = NIX_GITHUB_RELEASE_TOKEN=${
+      config.sops.placeholder."github/release-token"
     }";
     nix.settings.experimental-features = [ "configurable-impure-env" ];
     nix.extraOptions = ''
-      !include ${config.sops.templates."melete-impure-env.conf".path}
+      !include ${config.sops.templates."github-release-impure-env.conf".path}
     '';
 
     # ~/.local/bin is only in ~/.profile (login shells); add it to bashrc so
