@@ -109,6 +109,7 @@ in
             "npm:pi-subagents"
             "npm:pi-mcp-adapter"
             "npm:pi-web-access"
+            "npm:context-mode"
           ];
         };
       };
