@@ -34,6 +34,16 @@
       "syncthing.necoconeco.net"
       "status.necoconeco.net"
       "melete.necoconeco.net"
+      # MCP endpoint for the claude.ai connector. The tailscale funnel
+      # (sakaki.tailc27b51.ts.net -> 127.0.0.1:8787) is degraded by the
+      # Tailscale 1.102.x peerapi-ingress bug (tailscale#20746), so the
+      # connector rides the Cloudflare tunnel instead. Cloudflare owns TLS;
+      # melete's MCP server does its own OAuth (RFC 9728 challenge).
+      "mcp.necoconeco.net"
+      # Same for mneme's MCP server: its own tailscale funnel
+      # (mneme.tailc27b51.ts.net -> 127.0.0.1:8000) is on the same buggy
+      # tailscale path, so give it a Cloudflare route too.
+      "mneme.necoconeco.net"
     ];
   };
   dx.caddy = {
@@ -58,6 +68,16 @@
       # translation. Plain path-preserving redirect keeps old bookmarks and
       # API calls working ({uri} carries /, /api/pins, etc. straight
       # through to the folded equivalent).
+      # Melete's MCP server (OAuth + RFC 9728 challenge handled by melete
+      # itself, so a bare proxy is enough). The claude.ai connector points
+      # here because the tailscale funnel it used to ride is degraded by
+      # tailscale#20746 (peerapi ingress drops).
+      "mcp.necoconeco.net".proxy = "http://127.0.0.1:8787";
+
+      # Mneme's MCP server — same reasoning, same bare-proxy shape (mneme
+      # also does its own OAuth, issuer derived from the request host).
+      "mneme.necoconeco.net".proxy = "http://127.0.0.1:8000";
+
       "status.necoconeco.net".extraConfig = ''
         redir https://melete.necoconeco.net/sakaki-panel{uri} 302
       '';
