@@ -679,6 +679,38 @@
         "type": "github"
       }
     },
+    "melete-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786752869,
+        "narHash": "sha256-sGyw6wCDH73XpFPpiqYMk3FKmfD+ti1h0kHwfNUvAsg=",
+        "ref": "refs/heads/master",
+        "rev": "064ad366ea74d2e3065b1f4de32537ca09cd7959",
+        "revCount": 590,
+        "type": "git",
+        "url": "file:///home/khoa/melete"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/khoa/melete"
+      }
+    },
+    "mneme-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786772004,
+        "narHash": "sha256-2ZdPP9LWCjmCKdDsvzmPN2XfQ9sZD9aIHcxXoI3AdUU=",
+        "ref": "refs/heads/master",
+        "rev": "ae969c4915ed3beff448994a29153f3e8d959f97",
+        "revCount": 174,
+        "type": "git",
+        "url": "file:///home/khoa/mneme"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/khoa/mneme"
+      }
+    },
     "mnw": {
       "locked": {
         "lastModified": 1780772958,
@@ -936,6 +968,8 @@
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "hyprland-plugins": "hyprland-plugins",
+        "melete-src": "melete-src",
+        "mneme-src": "mneme-src",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
         "nvf": "nvf",

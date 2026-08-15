@@ -37,6 +37,31 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Melete and Mneme are developed in ~/<name> on sakaki, and those
+    # checkouts are what the flake builds now — no more fetching a release
+    # asset off the private GitHub repo (see pkgs/melete-package.nix).
+    #
+    # `git+file:` locks to a commit and copies only tracked files (no .git, no
+    # target/, .gitignore honored). A source change is therefore picked up
+    # explicitly, not silently:
+    #   nix flake update melete-src   # or mneme-src
+    # To build a DIRTY worktree without committing, override for that one
+    # rebuild — `path:` re-hashes the directory as it is on disk:
+    #   nixos-rebuild switch --flake .#sakaki \
+    #     --override-input melete-src path:/home/khoa/melete
+    #
+    # Only sakaki forces these (dx.melete/dx.mneme are false elsewhere, and
+    # module args are lazy), so chiyo/osaka still evaluate fine without the
+    # repos on disk — but `nix flake update` with no argument would try to
+    # re-lock them, so run it on sakaki, or name the inputs you mean.
+    melete-src = {
+      url = "git+file:///home/khoa/melete";
+      flake = false;
+    };
+    mneme-src = {
+      url = "git+file:///home/khoa/mneme";
+      flake = false;
+    };
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";

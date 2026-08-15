@@ -2,32 +2,38 @@
   lib,
   config,
   pkgs,
+  inputs,
   username,
   ...
 }:
 let
-  mnemePkg = pkgs.callPackage ../../pkgs/mneme-client-package.nix {
-    version = "0.4.3";
-    repo = "noah427/mneme";
-    target = "mneme-x86_64-unknown-linux-musl";
-    sha256 = "sha256-3V0NA5qZPelw/Nax3XjtlCX9edh7a4OAERaW+B3AOZY=";
+  # Built from the ~/mneme dev checkout (the `mneme-src` flake input)
+  # — version and contents follow that repo. See flake.nix for how to pick up
+  # a new commit or a dirty worktree.
+  #
+  # This no longer depends on dx.melete.enable: the release fetch used to
+  # borrow melete's GitHub token wiring, so mneme could only build alongside
+  # it. A source build needs no credential, so the two are independent now.
+  mnemePkg = pkgs.callPackage ../../pkgs/mneme-package.nix {
+    src = inputs.mneme-src;
   };
 in
 {
   options.dx.mneme.enable = lib.mkEnableOption "Mneme vault MCP server";
 
   config = lib.mkIf config.dx.mneme.enable {
-    # Reproducible baseline, mirrors melete.nix's meleteSeed. Nix pins a
-    # specific release (pkgs/mneme-client-package.nix). Unlike melete, mneme
-    # has no self-update of its own, so this is the ONLY thing that ever
-    # moves the binary -- between bumps it's just whatever was last seeded.
+    # Dev-checkout baseline, mirrors melete.nix's meleteSeed. Nix builds from
+    # ~/mneme (pkgs/mneme-package.nix). Unlike melete, mneme has no
+    # self-update of its own, so this is the ONLY thing that ever moves the
+    # binary. The stamp holds the store path rather than the version, so a
+    # source change reseeds even when Cargo.toml's version stands still.
     system.activationScripts.mnemeSeed = {
       deps = [ "users" ];
       text = ''
         bindir="/home/${username}/.local/bin"
         bin="$bindir/mneme"
         stamp="$bindir/.mneme-pinned"
-        want="${mnemePkg.version}"
+        want="${mnemePkg}"
         if [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || [ ! -e "$bin" ]; then
           install -Dm755 ${mnemePkg}/bin/mneme "$bin"
           printf '%s' "$want" > "$stamp"
