@@ -49,7 +49,7 @@
       # (one apps/gate_token for every app it fronts; app.toml has no per-app
       # auth field), and this is the one app meant to be readable without a
       # login.
-      "dispo.necoconeco.net"
+      "weedaq.necoconeco.net"
     ];
   };
   dx.caddy = {
@@ -103,7 +103,7 @@
       # is not GET/HEAD is refused at the edge before it reaches Rune. The
       # scraper is unaffected -- it POSTs to 127.0.0.1:8110 on the box, where
       # Caddy never sees the request.
-      "dispo.necoconeco.net".extraConfig = ''
+      "weedaq.necoconeco.net".extraConfig = ''
         @writes not method GET HEAD
         respond @writes "dispo-index is read-only over the public hostname" 405
 
