@@ -44,6 +44,12 @@
       # (mneme.tailc27b51.ts.net -> 127.0.0.1:8000) is on the same buggy
       # tailscale path, so give it a Cloudflare route too.
       "mneme.necoconeco.net"
+      # dispo-index, read-only to the public. Its own hostname rather than a
+      # fold under the melete gateway on purpose: the gateway is all-or-nothing
+      # (one apps/gate_token for every app it fronts; app.toml has no per-app
+      # auth field), and this is the one app meant to be readable without a
+      # login.
+      "dispo.necoconeco.net"
     ];
   };
   dx.caddy = {
@@ -80,6 +86,28 @@
 
       "status.necoconeco.net".extraConfig = ''
         redir https://melete.necoconeco.net/sakaki-panel{uri} 302
+      '';
+
+      # dispo-index, public READ ONLY.
+      #
+      # Port 8110, not the daemon's 8105: melete decides app auth by BIND
+      # ADDRESS, not by config -- a 127.0.0.1 bind serves without auth
+      # ("loopback dev bind"), while the daemon-hosted copy on 8105 stays
+      # gated behind apps/gate_token. 8110 is the dispo-public.service
+      # instance, which exists only so this hostname has something ungated
+      # to proxy.
+      #
+      # Which makes Caddy the ONLY thing between the open internet and
+      # /api/snapshot + /api/tiers, both of which WRITE. The method guard
+      # below is therefore load-bearing, not defence in depth: anything that
+      # is not GET/HEAD is refused at the edge before it reaches Rune. The
+      # scraper is unaffected -- it POSTs to 127.0.0.1:8110 on the box, where
+      # Caddy never sees the request.
+      "dispo.necoconeco.net".extraConfig = ''
+        @writes not method GET HEAD
+        respond @writes "dispo-index is read-only over the public hostname" 405
+
+        reverse_proxy http://127.0.0.1:8110
       '';
     };
   };
