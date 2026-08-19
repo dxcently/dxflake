@@ -110,6 +110,7 @@ in
             "npm:pi-mcp-adapter"
             "npm:pi-web-access"
             "npm:context-mode"
+            "npm:pi-cache-optimizer"
           ];
         };
       };
