@@ -57,6 +57,23 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # ── Aoide (AoideOS) integration ────────────────────────────────────────
+    # dxflake consumes Aoide as a flake input and, on integrating hosts, runs
+    # Aoide's module structure (nucleus/facets/song walked from the input) —
+    # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
+    # (hosts, hardware, secrets). git+file pins to Aoide's COMMITTED state
+    # (main HEAD), so Aoide's in-flight working-tree edits never leak into
+    # dxflake builds. Advance deliberately when Aoide is ready:
+    #   nix flake update aoide
+    aoide = {
+      url = "git+file:///home/khoa/Aoide";
+    };
+    quickshell = {
+      # Follows Aoide's own quickshell pin — the facet QML and the runtime
+      # must never drift apart.
+      follows = "aoide/quickshell";
+    };
   };
   outputs =
     {
@@ -69,8 +86,27 @@
     let
       system = "x86_64-linux";
       username = "khoa";
+
+      # Shared by dxflake's own walk and the Aoide walk: every .nix under a
+      # dir, shelved by a `_` prefix (dxflake/Aoide discipline, identical).
+      walk =
+        dir:
+        builtins.filter (
+          p:
+          let
+            s = toString p;
+          in
+          nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
+        ) (nixpkgs.lib.filesystem.listFilesRecursive dir);
+
+      # withAoide = true adds Aoide's walked module tree + songbook and the
+      # package overlays its modules expect. Everything Aoide ships is inert
+      # until the host flips aoide.* flags (aoide.enable / facets / dendrites
+      # all default OFF; aoide.song defaults to sonata, which only sets
+      # aoide.livery — read by facets alone). Activation is the host's own
+      # flag edit, never this file.
       mkHost =
-        name:
+        name: withAoide:
         nixpkgs.lib.nixosSystem {
           specialArgs = {
             host = name;
@@ -83,27 +119,35 @@
           };
           modules =
             let
-              discovered = builtins.filter (
-                p:
-                let
-                  s = toString p;
-                in
-                nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
-              ) (nixpkgs.lib.filesystem.listFilesRecursive ./modules);
+              discovered = walk ./modules;
+              aoideModules = walk (inputs.aoide + "/modules");
+              aoideSongbook = walk (inputs.aoide + "/song/songbook");
+              # The Aoide seam: pkgs.aoide (the CLI core) + the packages
+              # walker overlay (hyprglass, …) — Aoide's own mkHost adds
+              # exactly these two.
+              aoideSeam = {
+                nixpkgs.overlays = [
+                  (import (inputs.aoide + "/lib/pkgs.nix") { inherit (nixpkgs) lib; }).overlay
+                  (_final: _prev: { aoide = inputs.aoide.packages.${system}.default; })
+                ];
+              };
             in
             discovered
             ++ [
               inputs.disko.nixosModules.disko
               ./hosts/${name}
-            ];
+            ]
+            ++ nixpkgs.lib.optionals withAoide (aoideModules ++ aoideSongbook ++ [ aoideSeam ]);
         };
     in
     {
       nixosConfigurations = {
-        chiyo = mkHost "chiyo";
-        osaka = mkHost "osaka";
-        sakaki = mkHost "sakaki";
-        yomi-strix = mkHost "yomi-strix";
+        chiyo = mkHost "chiyo" false;
+        # Aoide's structure is walked in, asleep — flip aoide.* flags (and
+        # shelve the replaced dxflake dendrites) when Aoide is ready.
+        osaka = mkHost "osaka" true;
+        sakaki = mkHost "sakaki" false;
+        yomi-strix = mkHost "yomi-strix" false;
       };
     };
 }
