@@ -146,8 +146,9 @@
     {
       nixosConfigurations = {
         chiyo = mkHost "chiyo" false;
-        # Aoide's structure is walked in, asleep — flip aoide.* flags (and
-        # shelve the replaced dxflake dendrites) when Aoide is ready.
+        # Aoide's structure is walked in, asleep — activation is the host's
+        # own aoide.* flag flips (dxflake's shared dendrites are never
+        # shelved: chiyo still runs them; see yomi-strix for the shape).
         osaka = mkHost "osaka" true;
         sakaki = mkHost "sakaki" false;
         yomi-strix = mkHost "yomi-strix" true;
