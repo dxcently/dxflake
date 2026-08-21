@@ -64,10 +64,13 @@
     # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
     # (hosts, hardware, secrets). git+file pins to Aoide's COMMITTED state
     # (main HEAD), so Aoide's in-flight working-tree edits never leak into
-    # dxflake builds. Advance deliberately when Aoide is ready:
-    #   nix flake update aoide
+    # dxflake builds. Aoide's worktree currently carries an uncommitted diff,
+    # so the pin is a rev edited here by hand: `nix flake update aoide` would
+    # only re-lock the same dirty tree. Advance by bumping ?rev= to Aoide's
+    # new committed HEAD; drop ?rev= (back to plain `nix flake update aoide`)
+    # only once Aoide's worktree is clean.
     aoide = {
-      url = "git+file:///home/khoa/Aoide";
+      url = "git+file:///home/khoa/Aoide?rev=5dedff02b0123e2d74bb54609eb93d983d69ca7f";
     };
     quickshell = {
       # Follows Aoide's own quickshell pin — the facet QML and the runtime
