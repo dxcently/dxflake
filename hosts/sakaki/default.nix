@@ -44,12 +44,14 @@
       # (mneme.tailc27b51.ts.net -> 127.0.0.1:8000) is on the same buggy
       # tailscale path, so give it a Cloudflare route too.
       "mneme.necoconeco.net"
-      # dispo-index, read-only to the public. Its own hostname rather than a
-      # fold under the melete gateway on purpose: the gateway is all-or-nothing
+      # weedaq, read-only to the public, on its own registered domain rather
+      # than a fold under the melete gateway: the gateway is all-or-nothing
       # (one apps/gate_token for every app it fronts; app.toml has no per-app
       # auth field), and this is the one app meant to be readable without a
-      # login.
-      "weedaq.necoconeco.net"
+      # login. The gated admin copy still lives at
+      # melete.necoconeco.net/weedaq/ via apps.gateway_apps.
+      "weedaq.com"
+      "www.weedaq.com"
     ];
   };
   dx.caddy = {
@@ -88,14 +90,14 @@
         redir https://melete.necoconeco.net/sakaki-panel{uri} 302
       '';
 
-      # dispo-index, public READ ONLY.
+      # weedaq, public READ ONLY.
       #
       # Port 8110, not the daemon's 8105: melete decides app auth by BIND
       # ADDRESS, not by config -- a 127.0.0.1 bind serves without auth
       # ("loopback dev bind"), while the daemon-hosted copy on 8105 stays
-      # gated behind apps/gate_token. 8110 is the dispo-public.service
-      # instance, which exists only so this hostname has something ungated
-      # to proxy.
+      # gated behind apps/gate_token (that gated copy is the admin site,
+      # folded at melete.necoconeco.net/weedaq/). 8110 is the ungated
+      # loopback bind this hostname proxies.
       #
       # Which makes Caddy the ONLY thing between the open internet and
       # /api/snapshot + /api/tiers, both of which WRITE. The method guard
@@ -103,12 +105,17 @@
       # is not GET/HEAD is refused at the edge before it reaches Rune. The
       # scraper is unaffected -- it POSTs to 127.0.0.1:8110 on the box, where
       # Caddy never sees the request.
-      "weedaq.necoconeco.net".extraConfig = ''
+      "weedaq.com".extraConfig = ''
         @writes not method GET HEAD
-        respond @writes "dispo-index is read-only over the public hostname" 405
+        respond @writes "weedaq is read-only over the public hostname" 405
 
         reverse_proxy http://127.0.0.1:8110
       '';
+
+      "www.weedaq.com".extraConfig = ''
+        redir https://weedaq.com{uri} 301
+      '';
+
     };
   };
 
