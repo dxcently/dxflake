@@ -171,9 +171,9 @@
     {
       nixosConfigurations = {
         chiyo = mkHost "chiyo" false;
-        # Aoide's structure is walked in, asleep — activation is the host's
-        # own aoide.* flag flips (dxflake's shared dendrites are never
-        # shelved: chiyo still runs them; see yomi-strix for the shape).
+        # osaka runs the Aoide doors (CLI + aoided + A2A) alongside her own
+        # dx desktop — no facets, the dx rice keeps painting (dxflake's
+        # shared dendrites are never shelved: chiyo still runs them).
         osaka = mkHost "osaka" true;
         # sakaki runs Aoide headless (CLI + aoided + the A2A door) for
         # federation testing; yomi-strix stays on the Aoide flake itself and
