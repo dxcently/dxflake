@@ -82,6 +82,27 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # ── Aoide (AoideOS) integration ────────────────────────────────────────
+    # dxflake consumes Aoide as a flake input and, on integrating hosts, runs
+    # Aoide's module structure (nucleus/facets/song walked from the input) —
+    # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
+    # (hosts, hardware, secrets). git+file pins to Aoide's COMMITTED state
+    # (main HEAD), so Aoide's in-flight working-tree edits never leak into
+    # dxflake builds. The rev was hand-pinned because Aoide's worktree carried
+    # an uncommitted diff at pin time; with ?rev= explicit, `nix flake update
+    # aoide` is now a no-op. Advance by bumping ?rev= to Aoide's new committed
+    # HEAD; drop ?rev= (back to plain `nix flake update aoide`) only once
+    # Aoide's worktree is clean. (Original pin 5dedff0 was orphaned by an
+    # Aoide history rewrite; re-pinned to Aoide main HEAD at merge time.)
+    aoide = {
+      url = "git+file:///home/khoa/Aoide?rev=06d82a9fb835e5c71d8d825107406c6a1f13e060";
+    };
+    quickshell = {
+      # Follows Aoide's own quickshell pin — the facet QML and the runtime
+      # must never drift apart.
+      follows = "aoide/quickshell";
+    };
   };
   outputs =
     {
@@ -94,8 +115,27 @@
     let
       system = "x86_64-linux";
       username = "khoa";
+
+      # Shared by dxflake's own walk and the Aoide walk: every .nix under a
+      # dir, shelved by a `_` prefix (dxflake/Aoide discipline, identical).
+      walk =
+        dir:
+        builtins.filter (
+          p:
+          let
+            s = toString p;
+          in
+          nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
+        ) (nixpkgs.lib.filesystem.listFilesRecursive dir);
+
+      # withAoide = true adds Aoide's walked module tree + songbook and the
+      # package overlays its modules expect. Everything Aoide ships is inert
+      # until the host flips aoide.* flags (aoide.enable / facets / dendrites
+      # all default OFF; aoide.song defaults to sonata, which only sets
+      # aoide.livery — read by facets alone). Activation is the host's own
+      # flag edit, never this file.
       mkHost =
-        name:
+        name: withAoide:
         nixpkgs.lib.nixosSystem {
           specialArgs = {
             host = name;
@@ -108,27 +148,36 @@
           };
           modules =
             let
-              discovered = builtins.filter (
-                p:
-                let
-                  s = toString p;
-                in
-                nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
-              ) (nixpkgs.lib.filesystem.listFilesRecursive ./modules);
+              discovered = walk ./modules;
+              aoideModules = walk (inputs.aoide + "/modules");
+              aoideSongbook = walk (inputs.aoide + "/song/songbook");
+              # The Aoide seam: pkgs.aoide (the CLI core) + the packages
+              # walker overlay (hyprglass, …) — Aoide's own mkHost adds
+              # exactly these two.
+              aoideSeam = {
+                nixpkgs.overlays = [
+                  (import (inputs.aoide + "/lib/pkgs.nix") { inherit (nixpkgs) lib; }).overlay
+                  (_final: _prev: { aoide = inputs.aoide.packages.${system}.default; })
+                ];
+              };
             in
             discovered
             ++ [
               inputs.disko.nixosModules.disko
               ./hosts/${name}
-            ];
+            ]
+            ++ nixpkgs.lib.optionals withAoide (aoideModules ++ aoideSongbook ++ [ aoideSeam ]);
         };
     in
     {
       nixosConfigurations = {
-        chiyo = mkHost "chiyo";
-        osaka = mkHost "osaka";
-        sakaki = mkHost "sakaki";
-        yomi-strix = mkHost "yomi-strix";
+        chiyo = mkHost "chiyo" false;
+        # Aoide's structure is walked in, asleep — activation is the host's
+        # own aoide.* flag flips (dxflake's shared dendrites are never
+        # shelved: chiyo still runs them; see yomi-strix for the shape).
+        osaka = mkHost "osaka" true;
+        sakaki = mkHost "sakaki" false;
+        yomi-strix = mkHost "yomi-strix" true;
       };
     };
 }
