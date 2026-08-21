@@ -44,5 +44,23 @@
       sopsFile = ../../secrets/syncthing.yaml;
       owner = username;
     };
+
+    # nixpkgs' syncthing module defines syncthing-init.service with
+    # Requisite=syncthing.service (plus After=). Requisite fails the start
+    # job if syncthing.service is not ALREADY active — fine at boot, where
+    # one transaction pulls in both units and After= orders them, but a
+    # landmine during switch-to-configuration: the -ng rewrite submits one
+    # StartUnit call per unit in arbitrary HashMap order, so whenever
+    # syncthing-init's job runs before syncthing.service's job is queued the
+    # job dies with result 'dependency' and the whole activation exits 4
+    # (nh then aborts with "Activation (test) failed"). Seen 2026-08-13.
+    # Wants+After keeps the same boot/switch semantics without the failure
+    # mode: if syncthing isn't up yet it gets pulled in and ordered after,
+    # and merge-syncthing-config already tolerates an API that isn't
+    # answering yet (it polls, then gives up gracefully).
+    systemd.services.syncthing-init = {
+      requisite = lib.mkForce [ ];
+      wants = [ "syncthing.service" ];
+    };
   };
 }

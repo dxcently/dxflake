@@ -6,43 +6,9 @@
   ...
 }:
 let
-  # Pinned nixpkgs ships 0.79.8, but pi extensions (e.g. pi-web-access) import
-  # `@earendil-works/pi-ai/compat`, an export only added in 0.81.0. Override to
-  # a newer upstream release; drop this once nixpkgs catches up.
-  pi-coding-agent = pkgs.pi-coding-agent.overrideAttrs (
-    finalAttrs: prevAttrs: {
-      version = "0.83.0";
-      src = pkgs.fetchFromGitHub {
-        owner = "earendil-works";
-        repo = "pi";
-        tag = "v${finalAttrs.version}";
-        hash = "sha256-+XRJua2TSXkZMnWtxtLMskSzEHrGEFFyvYcPATi7An4=";
-      };
-      # extendMkDerivation's overrideAttrs doesn't recompute defaulted args,
-      # so npmDeps must be rebuilt against the new src explicitly.
-      npmDeps = pkgs.fetchNpmDeps {
-        inherit (finalAttrs) src;
-        name = "pi-coding-agent-${finalAttrs.version}-npm-deps";
-        hash = "sha256-AbSfP1Ion8bN309NUBQb1QSn2cIIUjNONmZgls9vnYE=";
-      };
-      # The provider model catalog (packages/ai/src/providers/data/) is generated
-      # by a network fetch and is gitignored upstream, so it is absent from the
-      # source tarball. Restore it from the matching published pi-ai npm package,
-      # which ships the hydrated catalog under dist/providers/data/.
-      # (Same approach as the 0.83.0 package in nixpkgs-unstable.)
-      modelData = pkgs.fetchurl {
-        url = "https://registry.npmjs.org/@earendil-works/pi-ai/-/pi-ai-${finalAttrs.version}.tgz";
-        hash = "sha256-+YPCiiEgkwXtnCdJd+KRMPpNiEjfbN836QlNlcx7xtQ=";
-      };
-      preConfigure = ''
-        mkdir -p packages/ai/src/providers/data
-        tar --extract --gzip --file=${finalAttrs.modelData} \
-          --directory=packages/ai/src/providers/data \
-          --strip-components=4 \
-          package/dist/providers/data
-      '';
-    }
-  );
+  # Pinned nixpkgs ships 0.84.1 — new enough for pi extensions (e.g.
+  # pi-web-access) that import `@earendil-works/pi-ai/compat` (added in 0.81.0).
+  pi-coding-agent = pkgs.pi-coding-agent;
 
   # Startup dashboard extension: replaces pi's minimal built-in header
   # (plain "pi vX" + keybinding list) with the mascot plus live session info.
@@ -143,6 +109,8 @@ in
             "npm:pi-subagents"
             "npm:pi-mcp-adapter"
             "npm:pi-web-access"
+            "npm:context-mode"
+            "npm:pi-cache-optimizer"
           ];
         };
       };

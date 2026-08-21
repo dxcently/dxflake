@@ -2,34 +2,43 @@
   lib,
   config,
   pkgs,
+  inputs,
   username,
   ...
 }:
 let
-  meletePkg = pkgs.callPackage ../../pkgs/melete-client-package.nix {
-    version = "0.3.3";
-    target = "melete-x86_64-unknown-linux-musl";
-    sha256 = "sha256-oO7l8e1DhwLzKmaC0I4FdI/8TYCRIkzgrZuCrqBm5lw=";
+  # Built from the ~/melete dev checkout (the `melete-src` flake
+  # input) — version and contents follow that repo. See flake.nix for how to
+  # pick up a new commit or a dirty worktree.
+  meletePkg = pkgs.callPackage ../../pkgs/melete-package.nix {
+    src = inputs.melete-src;
   };
 in
 {
   options.dx.melete.enable = lib.mkEnableOption "Melete AI harness service";
 
   config = lib.mkIf config.dx.melete.enable {
-    # --- Reproducible baseline, self-update floats above it ------------------
-    # Nix pins a specific release (pkgs/melete-client-package.nix). We seed
-    # ~/.local/bin/melete from that store binary ONLY when the pinned version
-    # changes (tracked by a stamp file). Between bumps the running binary is
-    # left untouched, so melete's self-update owns it and survives reboots.
-    # Bump version+sha256 at the call site above to deterministically reset
-    # every host to a known binary.
+    # --- Dev-checkout baseline, self-update floats above it ------------------
+    # Nix builds the binary from ~/melete (pkgs/melete-package.nix).
+    # We seed ~/.local/bin/melete from that store binary ONLY when the build
+    # changes (tracked by a stamp file). Between builds the running binary is
+    # left untouched, so anything that swapped it in place — melete's own
+    # self-update, a hand-built `cargo build` — survives reboots. (On sakaki
+    # self-update is off and managed_externally, so in practice this seed is
+    # the only thing that moves it; see pkgs/melete-package.nix.)
+    #
+    # The stamp holds the STORE PATH, not the version: the dev repo's Cargo
+    # version sits still across most commits, so a version stamp would leave
+    # the box running yesterday's build after a rebuild that had already
+    # compiled today's. The store path moves whenever the source does, which
+    # is exactly the "follow the dev repo" contract.
     system.activationScripts.meleteSeed = {
       deps = [ "users" ];
       text = ''
         bindir="/home/${username}/.local/bin"
         bin="$bindir/melete"
         stamp="$bindir/.melete-pinned"
-        want="${meletePkg.version}"
+        want="${meletePkg}"
         if [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || [ ! -e "$bin" ]; then
           install -Dm755 ${meletePkg}/bin/melete "$bin"
           printf '%s' "$want" > "$stamp"
@@ -38,69 +47,18 @@ in
       '';
     };
 
-    # The authenticated fixed-output fetch runs under nix-daemon. On Nix 2.34+,
-    # __impureEnvVars no longer reads ANY process environment — not the invoking
-    # shell, not the daemon's own env, not an EnvironmentFile / set-environment
-    # (verified empirically: a FOD listing TZDIR in __impureEnvVars sees it empty
-    # even though nix-daemon has TZDIR in its Environment=). The only channel
-    # that reaches a FOD builder now is the trusted `impure-env` setting, gated
-    # behind the `configurable-impure-env` experimental feature and honored only
-    # from trusted config (nix.conf), never from an untrusted client.
+    # Building from the dev checkout retired a whole apparatus that used to
+    # live here: a sops-rendered `impure-env = NIX_GITHUB_RELEASE_TOKEN=<token>`
+    # !included into nix.conf, so the release-asset fixed-output derivation
+    # could authenticate to the private repo. With it went its cold-host
+    # catch-22 (activation needed the token that only a successful activation
+    # installs), the nix-daemon-reads-nix.conf-once trap, and the pre-seed
+    # workaround for both. A local source build needs no credential at all.
     #
-    # sops renders `impure-env = NIX_MELETE_READ_TOKEN=<token>` into a root-only
-    # (0400) file that nix.conf `!include`s, so the token never lands in
-    # world-readable /etc/nix/nix.conf.
-    #
-    # COLD-HOST CATCH-22: the wiring above (experimental-features + !include)
-    # only exists in a host's nix.conf AFTER a successful activation — but
-    # activation has to build meletePkg, whose FOD needs the token that the
-    # wiring delivers. A host whose RUNNING generation predates this block
-    # therefore 401s forever: build fails -> rebuild aborts -> nix.conf never
-    # updated -> next attempt fails identically. Note the flake source being
-    # correct is not enough; what matters is the live /etc/nix/nix.conf of the
-    # generation currently booted.
-    #
-    # A WARM nix.conf ON DISK IS STILL NOT ENOUGH (found 2026-08-13): nix-daemon
-    # reads nix.conf once at its OWN process startup and does not hot-reload.
-    # A long-lived daemon predating the wiring will keep 401ing forever even
-    # though the file on disk is already correct -- this looks identical to a
-    # dead token from the curl error alone. Before concluding the token is
-    # dead, compare:
-    #   systemctl show nix-daemon --property=ActiveEnterTimestamp
-    #   stat -c %y /etc/nix/nix.conf /run/secrets/rendered/melete-impure-env.conf
-    # If the daemon is older than the config, that's the whole bug:
-    #   sudo systemctl restart nix-daemon
-    # then retry the build before touching anything else.
-    #
-    # DO NOT try to break it with --option impure-env. On Nix >= 2.34 that is a
-    # no-op: `--option extra-experimental-features configurable-impure-env`
-    # enables the feature for the CLIENT only, while impure-env is honored just
-    # when the feature is set in the DAEMON's own nix.conf. The setting is
-    # silently dropped ("Ignoring setting 'impure-env' because experimental
-    # feature 'configurable-impure-env' is not enabled") and root does not help.
-    #
-    # Break it by PRE-SEEDING the store instead. A fixed-output derivation is
-    # keyed by its output hash, so if that output already exists Nix never runs
-    # the fetch:
-    #   TOK=<token>
-    #   curl -fL -H "Authorization: Bearer $TOK" -o /tmp/melete-bin \
-    #     https://melete-distributor.rdct.dev/artifacts/v<version>/melete-x86_64-unknown-linux-musl
-    #   sha256sum /tmp/melete-bin   # must match the sha256 at the call site above
-    #   nix-store --add-fixed sha256 /tmp/melete-bin
-    # Then a plain `nixos-rebuild switch` needs no token, and THAT activation
-    # finally writes the wiring into the daemon's nix.conf — after which
-    # impure-env works and later canary bumps build automatically.
-    #
-    # For an already-wired host, copy the seeded path instead of re-fetching:
-    #   nix copy --to ssh://<host> /nix/store/<hash>-melete-bin-<version>
-    sops.secrets."melete/read-token".sopsFile = ../../secrets/melete-token.yaml;
-    sops.templates."melete-impure-env.conf".content = "impure-env = NIX_MELETE_READ_TOKEN=${
-      config.sops.placeholder."melete/read-token"
-    }";
-    nix.settings.experimental-features = [ "configurable-impure-env" ];
-    nix.extraOptions = ''
-      !include ${config.sops.templates."melete-impure-env.conf".path}
-    '';
+    # secrets/github-release-token.yaml is left on disk but is now
+    # unreferenced. `git show 99c7c55:modules/dendrites/melete.nix` has the
+    # full wiring and its debugging notes if a release-fetch build is ever
+    # wanted back.
 
     # ~/.local/bin is only in ~/.profile (login shells); add it to bashrc so
     # Hyprland terminal emulators (non-login) pick it up too.

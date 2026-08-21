@@ -2,7 +2,7 @@
 
 A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server).
 Melete (the AI agent harness, `dx.melete.enable`) runs sakaki-only — pinned client v0.2.0 via `pkgs/melete-client-package.nix` (call site in `modules/dendrites/melete.nix`).
-Melete's spawned agent turns route through `~/.config/melete/bin/melete-agent` (set as `[claude] binary` in the out-of-band `config.toml`): Melete orchestrates only, the pi agent executes — `deepseek/deepseek-v4-pro` for coding/execution with thinking scaled by complexity (default `high`; `melete code --model xhigh|max` escalates, `--model flash` drops to deepseek-v4-flash), `kimi-coding/k3-256k` (thinking `high`) for planning/escalation. The real `claude` CLI is the automatic fallback and the explicit escape hatch (`--model claude...`).
+Melete's spawned agent turns use the real `claude` CLI by default (resolved from PATH via `[claude] binary = "claude"` in the out-of-band `config.toml`). The pi-agent shim (`~/.config/melete/bin/melete-agent`) is retained on disk but no longer routed to — point `[claude] binary` back at it to restore pi routing (`deepseek/deepseek-v4-pro` for coding/execution with thinking scaled by complexity, `kimi-coding/k3-256k` for planning/escalation).
 This file is a **registry**: where things live and how to add them. For the *why*,
 read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki (below).
 
