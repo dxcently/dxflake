@@ -119,4 +119,13 @@
     };
   };
 
+  # Aoide, headless: the CLI + aoided runtime and the A2A door, for
+  # federation/doors testing against yomi-strix. No facets, no rice —
+  # nothing paints on this box. The door binds loopback:8710; a remote
+  # peer reaches it over an ssh tunnel or the tailnet, never a raw
+  # interface. Set aoide.a2a.tokenFile at rebuild time to require a
+  # bearer token (which also stops loopback being an implicit trust
+  # signal); spawnAgent stays empty so message/send cannot spawn.
+  aoide.enable = true;
+  aoide.a2a.enable = true;
 }

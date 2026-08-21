@@ -175,8 +175,11 @@
         # own aoide.* flag flips (dxflake's shared dendrites are never
         # shelved: chiyo still runs them; see yomi-strix for the shape).
         osaka = mkHost "osaka" true;
-        sakaki = mkHost "sakaki" false;
-        yomi-strix = mkHost "yomi-strix" true;
+        # sakaki runs Aoide headless (CLI + aoided + the A2A door) for
+        # federation testing; yomi-strix stays on the Aoide flake itself and
+        # is NOT activated here — its dxflake config remains the plain rig.
+        sakaki = mkHost "sakaki" true;
+        yomi-strix = mkHost "yomi-strix" false;
       };
     };
 }
