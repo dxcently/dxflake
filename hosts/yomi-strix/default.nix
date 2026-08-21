@@ -5,14 +5,11 @@
   ];
 
   # Desktop workstation. Dev tooling comes free from the nucleus (git, neovim,
-  # lazygit, jupyter, …); the desktop/hyprland roles bring the GUI.
-  dx.aggregations = {
-    desktop = true;
-    hyprland = true;
-  };
-
+  # lazygit, jupyter, …); the desktop/hyprland roles used to bring the GUI —
+  # Aoide owns the desktop now (aoide.* flags land in P3).
   dx.bluetooth.enable = true;
   dx.claude-code.enable = true;
+  dx.kimi-cli.enable = true;
   dx.gpu-amd.enable = true; # Strix Halo RDNA 3.5 iGPU
   dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm)
 

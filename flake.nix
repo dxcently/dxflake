@@ -150,7 +150,7 @@
         # shelve the replaced dxflake dendrites) when Aoide is ready.
         osaka = mkHost "osaka" true;
         sakaki = mkHost "sakaki" false;
-        yomi-strix = mkHost "yomi-strix" false;
+        yomi-strix = mkHost "yomi-strix" true;
       };
     };
 }
