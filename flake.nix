@@ -93,10 +93,9 @@
     # an uncommitted diff at pin time; with ?rev= explicit, `nix flake update
     # aoide` is now a no-op. Advance by bumping ?rev= to Aoide's new committed
     # HEAD; drop ?rev= (back to plain `nix flake update aoide`) only once
-    # Aoide's worktree is clean. (Original pin 5dedff0 was orphaned by an
-    # Aoide history rewrite; re-pinned to Aoide main HEAD at merge time.)
+    # Aoide's worktree is clean.
     aoide = {
-      url = "git+file:///home/khoa/Aoide?rev=06d82a9fb835e5c71d8d825107406c6a1f13e060";
+      url = "git+file:///home/khoa/Aoide?rev=5dedff02b0123e2d74bb54609eb93d983d69ca7f";
     };
     quickshell = {
       # Follows Aoide's own quickshell pin — the facet QML and the runtime
