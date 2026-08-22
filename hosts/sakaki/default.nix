@@ -128,4 +128,10 @@
   # signal); spawnAgent stays empty so message/send cannot spawn.
   aoide.enable = true;
   aoide.a2a.enable = true;
+
+  # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
+  # socket-only door, TOTP-gated. The operator joins the access group;
+  # enrollment is a separate, User-initiated act — never part of the switch.
+  aoide.secrets.enable = true;
+  aoide.secrets.members = [ "khoa" ];
 }
