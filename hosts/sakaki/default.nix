@@ -132,7 +132,7 @@
     a2a = {
       enable = true;
       spawnAgent = "claude";
-      discoveryAvertise = true;
+      discoveryAdvertise = true;
     };
     # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
     # socket-only door, TOTP-gated. The operator joins the access group;
