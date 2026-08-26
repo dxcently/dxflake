@@ -17,12 +17,14 @@
       requiredBy = [
         "jellyfin"
         "slskd"
+        "transmission"
       ];
     };
   };
   dx.mneme.enable = true;
   dx.immich.enable = true;
   dx.slskd.enable = true;
+  dx.transmission.enable = true;
 
   # Public face: Cloudflare Tunnel -> Caddy on loopback :8080. Media stays on
   # the tailnet; only the lightweight web UIs are exposed for now.
