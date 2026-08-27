@@ -1,9 +1,18 @@
-{ ... }: {
+{
+  pkgs,
+  lib,
+  username,
+  ...
+}: {
   imports = [ ./hardware.nix ];
   dx.aggregations = {
+    # desktop stays true: it carries pipewire, fonts, fcitx5, portals, and ly
+    # login — none of those collide with Aoide's paint. hyprland flips off
+    # below, once the paint facets are on.
     desktop = true;
-    hyprland = true;
+    hyprland = false;
   };
+  dx.stylix.enable = false;
   dx.bluetooth.enable = true;
   dx.claude-code.enable = true;
   dx.pi-coding-agent.enable = true;
@@ -20,27 +29,78 @@
   # secrets knobs set here yet.
   dx.aoide.enable = true;
 
-  # chiyo is the first host to carry lyra (the paint/rice binary) beside the
-  # core door — the minimal paint substrate, not the full desktop shape.
-  # aoide.facets.quickshell.enable is the actual render surface (bar/dock/
-  # notifications/…, modules/facets/quickshell); aoide.lyra.enable installs
-  # the `lyra` CLI that composes/mints a rice for it to render (it would
-  # default to following quickshell.enable — named explicitly here since
-  # this pairing IS the point of this host). Deliberately NOT
-  # aoide.facets.compositor or aoide.facets.stylix: chiyo already runs
-  # dxflake's own Hyprland + Stylix dendrites (dx.aggregations.hyprland/
-  # desktop above), which already provide the graphical session quickshell
-  # needs (graphical-session.target, WAYLAND_DISPLAY/
-  # HYPRLAND_INSTANCE_SIGNATURE imported) — Aoide's own compositor/stylix
-  # facets would duplicate that work and collide with it (both assign
-  # `wayland.windowManager.hyprland.systemd.variables` and `stylix.
-  # base16Scheme` outright; see modules/dendrites/aoide.nix's header for the
-  # full reasoning). aoide.song stays named explicitly for the same reason
-  # yomi-strix's own flake names it: "sonata" is already the default, but
-  # naming your song is good practice, not a sign it's a non-default pick.
+  # chiyo is the full AoideOS carrier (L-C4, task #107): the complete Aoide
+  # paint stack owns the session — compositor (Hyprland wiring + livery),
+  # stylix (base16 fan-out), and quickshell (bar/dock/launcher/theming) —
+  # replacing dxflake's own Hyprland + Stylix dendrites, which are turned off
+  # above (`dx.aggregations.hyprland = false`, `dx.stylix.enable = false`) so
+  # only one writer ever touches the leaf options the two stacks share (see
+  # modules/dendrites/aoide.nix's header for the full collision reasoning).
+  # aoide.hyprland.enable is the separate BEHAVIOUR dendrite (keybinds, input,
+  # tiling layout) that pairs with the compositor facet's LOOK — without it
+  # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
+  # no window movement). aoide.song stays named explicitly for the same
+  # reason yomi-strix's own flake names it: "sonata" is already the default,
+  # but naming your song is good practice, not a sign it's a non-default pick.
   aoide.song = "sonata";
   aoide.facets.quickshell.enable = true;
+  aoide.facets.compositor.enable = true;
+  aoide.facets.stylix.enable = true;
+  aoide.hyprland.enable = true;
   aoide.lyra.enable = true;
+
+  # Login stays dxflake's own ly (dx.aggregations.desktop above), not the
+  # compositor facet's greetd stub — two session managers must never race the
+  # same tty. The facet assigns `services.greetd.enable` plainly (true), so
+  # only an mkForce wins here.
+  services.greetd.enable = lib.mkForce false;
+
+  # Non-paint utilities the (now-off) hyprland aggregation used to carry.
+  # wl-clipboard/cliphist/satty/hyprshot are NOT re-added here: Aoide ships
+  # its own equivalents with matching systemd services and keybinds
+  # (aoide.clipboard.enable, aoide.screenshot.enable, both flipped below) —
+  # duplicating the packages here would just shadow those. brightnessctl and
+  # ydotool have no Aoide-side equivalent, so they're rescued directly.
+  aoide.clipboard.enable = true;
+  aoide.screenshot.enable = true;
+  environment.systemPackages = with pkgs; [
+    brightnessctl
+    ydotool
+  ];
+
+  # Host-specific Hyprland settings that died with the aggregation: chiyo's
+  # own monitor geometry and the fcitx5 IME autostart (fcitx5 itself stays on
+  # via the desktop aggregation; only the exec-once trigger lived in the
+  # aggregation's hyprland dendrite). `settings` is a separate option from
+  # the `extraConfig`/`lines` option Aoide's own facets and dendrites write
+  # to, so this merges alongside them rather than colliding. Only chiyo's own
+  # entries are carried — the AOC/Samsung monitor block in the aggregation's
+  # hyprland dendrite belongs to osaka, not chiyo. Keybinds/decoration/
+  # animations are NOT carried: AoideOS owns those (aoide.hyprland.enable
+  # above).
+  home-manager.users.${username} = {
+    wayland.windowManager.hyprland.settings = {
+      monitor = [
+        ", preferred, auto, 1"
+        "eDP-1, 1920x1080@60, auto, 1.25"
+      ];
+      "exec-once" = [ "fcitx5" ];
+    };
+
+    # dxflake's own neovim dendrite (modules/dendrites/neovim.nix, every host,
+    # unconditional) plainly assigns `vim.theme.name = "rose-pine"`. With
+    # dx.stylix.enable off, the safety net that used to suppress Stylix's own
+    # nvf target (dxflake's stylix.nix carried `stylix.targets.nvf.enable =
+    # false`, alongside the disabled dendrite above) is gone too, and Stylix's
+    # nvf target plainly assigns `theme.name = "base16"` once nvf is detected
+    # — a second unique-merge collision `nix build` catches at EVAL time
+    # (unlike the runtime-only ones above): "conflicting definition values".
+    # Aoide's own stylix facet has no equivalent disable (nvf/neovim isn't in
+    # its surface-ownership registry), so it's re-declared here, host-scoped,
+    # to keep dxflake's own editor theme rather than folding it into Aoide's
+    # base16.
+    stylix.targets.nvf.enable = lib.mkForce false;
+  };
 
   # chiyo lives mostly on public/corporate wifi that blocks WireGuard and
   # tailscale outright, so the tailnet can't be relied on to reach it. A

@@ -8,7 +8,19 @@
 }: {
   imports = [inputs.stylix.nixosModules.stylix];
 
-  config = lib.mkIf config.dx.aggregations.desktop {
+  # The stylix option TREE stays imported unconditionally above (Aoide's own
+  # stylix facet probes for its presence via `options ? stylix`, so the module
+  # must always ride). Whether THIS dendrite's dxflake scheme actually applies
+  # is a separate question, gated on dx.stylix.enable (defaulting to the
+  # desktop aggregation, so every existing desktop host keeps its scheme
+  # unless it opts out) — off on a host where Aoide's stylix facet
+  # (aoide.facets.stylix.enable) owns the theme instead, since both write the
+  # same `stylix.base16Scheme` leaf.
+  options.dx.stylix.enable = (lib.mkEnableOption "dxflake's own Stylix theme (Rosé Pine)") // {
+    default = config.dx.aggregations.desktop;
+  };
+
+  config = lib.mkIf config.dx.stylix.enable {
     stylix = {
       enable = true;
       polarity = "dark";

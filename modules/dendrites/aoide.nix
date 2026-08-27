@@ -33,26 +33,36 @@
 # is a per-host opt-in laid on TOP of this baseline, in that host's own file,
 # never inferred here.
 #
-# chiyo is the worked example (hosts/chiyo/default.nix): it enables this
-# dendrite for the core baseline, then separately sets
-# `aoide.facets.quickshell.enable` and `aoide.lyra.enable` itself. Notably it
-# does NOT enable `aoide.facets.compositor` or `aoide.facets.stylix` — chiyo
-# already runs dxflake's own Hyprland + Stylix dendrites
-# (dx.aggregations.hyprland/desktop), and Aoide's compositor/stylix facets
-# would fight them for the same options (Aoide's compositor facet sets its own
-# `wayland.windowManager.hyprland.systemd.variables` and a second
-# `extraConfig` block alongside dxflake's; its stylix facet assigns
-# `stylix.base16Scheme` outright, which dxflake's stylix.nix already sets to a
-# different scheme — two plain assignments to the same unique-merge leaf
-# options, a guaranteed eval conflict, confirmed by reading both modules
-# rather than assumed). The Quickshell facet and shellbridge
-# (nucleus/shellbridge.nix) have no such dependency: they only need
-# graphical-session.target and a compositor that imports WAYLAND_DISPLAY/
-# HYPRLAND_INSTANCE_SIGNATURE into the user session, which dxflake's own
-# Hyprland dendrite already provides. So a host with its own working desktop
-# only needs quickshell + lyra to gain paint; the compositor/stylix facets
-# exist for a host with no desktop of its own yet (yomi-strix's separate
-# ~/Aoide flake is that case).
+# osaka is the worked example of core-only (hosts/osaka/default.nix): it
+# enables this dendrite for the core baseline and sets nothing else under
+# `aoide.*` — dxflake's own Hyprland + Stylix dendrites
+# (dx.aggregations.hyprland/desktop) keep painting osaka's desktop, so with
+# the quickshell facet left off, aoided anchors to default.target and the
+# door rides it (loopback only). A host in this shape must never ALSO flip
+# `aoide.facets.compositor` or `aoide.facets.stylix` beside dxflake's own
+# Hyprland/Stylix dendrites: both pairs write the same unique-merge leaf
+# options (`wayland.windowManager.hyprland.systemd.variables`,
+# `stylix.base16Scheme`), and because those options are list-concat/attrs-merge
+# rather than a single value, nix eval stays clean — the two writers silently
+# combine into a value neither author intended, and the failure shows up only
+# at runtime (systemd.variables concatenates dxflake's `["--all"]` with
+# Aoide's five named vars, and dbus rejects the mixed "--all + names" line at
+# session start; two `services.greetd`/`services.displayManager.ly`
+# definitions would similarly leave two login managers racing a tty rather
+# than erroring at eval).
+#
+# The Quickshell facet and shellbridge (nucleus/shellbridge.nix) have no such
+# collision: they only need graphical-session.target and a compositor that
+# imports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE into the user session,
+# which either dxflake's own Hyprland dendrite OR Aoide's own compositor
+# facet can provide. chiyo (hosts/chiyo/default.nix) is the other shape: it
+# runs the full Aoide paint stack (`aoide.facets.compositor`,
+# `aoide.facets.stylix`, `aoide.facets.quickshell`, `aoide.hyprland.enable`)
+# and turns dxflake's own Hyprland/Stylix dendrites OFF
+# (`dx.aggregations.hyprland = false`, `dx.stylix.enable = false`) so only one
+# writer ever touches those leaf options — `dx.aggregations.desktop` stays on
+# for the pieces that don't collide (pipewire, fonts, fcitx5, portals, ly
+# login).
 { lib, config, ... }:
 {
   options.dx.aoide.enable = lib.mkEnableOption "core Aoide (binaries + aoided + A2A door + secrets broker), no paint";
