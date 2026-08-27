@@ -122,26 +122,23 @@
 
   # Aoide, headless: the CLI + aoided runtime and the A2A door, for
   # federation/doors testing against yomi-strix. No facets, no rice —
-  # nothing paints on this box. The door binds loopback:8710; a remote
+  # nothing paints on this box. The core baseline (aoide.enable, the A2A
+  # door, the secrets broker) comes from the shared dendrite
+  # (modules/dendrites/aoide.nix), chiyo and osaka's same one; everything
+  # below is what varies on THIS box. The door binds loopback:8710; a remote
   # peer reaches it over an ssh tunnel or the tailnet, never a raw
   # interface. Set aoide.a2a.tokenFile at rebuild time to require a
   # bearer token (which also stops loopback being an implicit trust
   # signal); spawnAgent is claude, with spawnPath carrying its package
   # onto the unit's PATH so the door can actually exec it.
-  aoide = {
-    enable = true;
-    a2a = {
-      enable = true;
-      spawnAgent = "claude";
-      spawnPath = [pkgs.claude-code];
-      discoveryAdvertise = true;
-    };
-    # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
-    # socket-only door, TOTP-gated. The operator joins the access group;
-    # enrollment is a separate, User-initiated act — never part of the switch.
-    secrets = {
-      enable = true;
-      members = ["khoa"];
-    };
+  dx.aoide.enable = true;
+  aoide.a2a = {
+    spawnAgent = "claude";
+    spawnPath = [pkgs.claude-code];
+    discoveryAdvertise = true;
   };
+  # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
+  # socket-only door, TOTP-gated. The operator joins the access group;
+  # enrollment is a separate, User-initiated act — never part of the switch.
+  aoide.secrets.members = ["khoa"];
 }
