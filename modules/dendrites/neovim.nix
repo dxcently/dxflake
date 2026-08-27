@@ -4,18 +4,39 @@
     config,
     inputs,
     lib,
+    options,
     ...
   }: {
+    # `imports` is static (never depends on `options`/`config`) — the
+    # options-dependent stylix-target guard below lives under `config`
+    # instead, siblings of `imports`, so import-discovery never has to force
+    # `options` before it exists.
     imports = [inputs.nvf.homeManagerModules.default];
 
-    programs.neovim = lib.mkForce {
-      enable = true;
-      vimAlias = true;
-      withRuby = false;
-      withPython3 = false;
-    };
+    # This dendrite's own `theme.name = "rose-pine"` below is a plain
+    # assignment, same as any Stylix `nvf`/`neovim` target that happens to
+    # auto-enable alongside it (either a plain second write to
+    # `vim.theme.name`, colliding at eval, or `neovim`'s mergeable
+    # `extraConfig` lines splicing a second colorscheme in beside this one,
+    # colliding silently). Every host runs this dendrite unconditionally, so
+    # the protection lives here rather than per-host: dxflake's own neovim
+    # theme is never Stylix's to touch, on any host, regardless of which
+    # Stylix (dxflake's own or Aoide's facet) happens to be active.
+    # Guarded on `options ? stylix`: a headless host (sakaki) carries no
+    # Stylix HM module at all, so the option doesn't exist there and a plain
+    # definition would error at eval rather than simply being inert.
+    config = lib.optionalAttrs (options ? stylix) {
+      stylix.targets.nvf.enable = lib.mkForce false;
+      stylix.targets.neovim.enable = lib.mkForce false;
+    } // {
+      programs.neovim = lib.mkForce {
+        enable = true;
+        vimAlias = true;
+        withRuby = false;
+        withPython3 = false;
+      };
 
-    programs.nvf = {
+      programs.nvf = {
       enable = true;
 
       settings.vim = {
@@ -277,5 +298,6 @@
         };
       };
     };
+  };
   };
 }

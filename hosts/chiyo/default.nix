@@ -49,11 +49,27 @@
   aoide.hyprland.enable = true;
   aoide.lyra.enable = true;
 
+  # dunst is the notification DAEMON (org.freedesktop.Notifications, history,
+  # pause levels) behind the quickshell herald, which only ever draws what
+  # dunst feeds it — no dunst, no notifications reach the bar/dock at all.
+  # Off by default (like every dendrite); named explicitly here, same as
+  # yomi-strix's own line. Requires aoide.lyra.enable (already on above): the
+  # herald-feed rule hands every notification to `lyra herald push`.
+  aoide.dunst.enable = true;
+
   # Login stays dxflake's own ly (dx.aggregations.desktop above), not the
   # compositor facet's greetd stub — two session managers must never race the
   # same tty. The facet assigns `services.greetd.enable` plainly (true), so
   # only an mkForce wins here.
   services.greetd.enable = lib.mkForce false;
+
+  # Lock screen: dxflake's hyprlock dendrite normally rides the hyprland
+  # aggregation (now off above), but Aoide's own hyprland dendrite binds
+  # SUPER+ESCAPE to hyprlock directly and shellbridge's powermenu Lock action
+  # shells the same binary — Aoide ships no lockscreen anchor of its own yet
+  # (modules/dendrites/hyprlock.nix), so the binary + PAM service are carved
+  # out and re-enabled independently here.
+  dx.hyprlock.enable = true;
 
   # Non-paint utilities the (now-off) hyprland aggregation used to carry.
   # wl-clipboard/cliphist/satty/hyprshot are NOT re-added here: Aoide ships
@@ -69,15 +85,18 @@
   ];
 
   # Host-specific Hyprland settings that died with the aggregation: chiyo's
-  # own monitor geometry and the fcitx5 IME autostart (fcitx5 itself stays on
+  # own monitor geometry, the fcitx5 IME autostart (fcitx5 itself stays on
   # via the desktop aggregation; only the exec-once trigger lived in the
-  # aggregation's hyprland dendrite). `settings` is a separate option from
-  # the `extraConfig`/`lines` option Aoide's own facets and dendrites write
-  # to, so this merges alongside them rather than colliding. Only chiyo's own
-  # entries are carried — the AOC/Samsung monitor block in the aggregation's
-  # hyprland dendrite belongs to osaka, not chiyo. Keybinds/decoration/
-  # animations are NOT carried: AoideOS owns those (aoide.hyprland.enable
-  # above).
+  # aggregation's hyprland dendrite), the env vars the aggregation's session
+  # used to set, and the brightness keys (a laptop-only bind AoideOS's own
+  # behaviour dendrite doesn't carry — see modules/dendrites/hyprland.nix's
+  # header: media/brightness XF86 keys are deliberately out of its scope).
+  # `settings` is a separate option from the `extraConfig`/`lines` option
+  # Aoide's own facets and dendrites write to, so this merges alongside them
+  # rather than colliding. Only chiyo's own entries are carried — the AOC/
+  # Samsung monitor block in the aggregation's hyprland dendrite belongs to
+  # osaka, not chiyo. Keybinds/decoration/animations are otherwise NOT
+  # carried: AoideOS owns those (aoide.hyprland.enable above).
   home-manager.users.${username} = {
     wayland.windowManager.hyprland.settings = {
       monitor = [
@@ -85,21 +104,17 @@
         "eDP-1, 1920x1080@60, auto, 1.25"
       ];
       "exec-once" = [ "fcitx5" ];
+      env = [
+        "XCURSOR_SIZE, 40"
+        "QT_QPA_PLATFORMTHEME, qt5ct"
+        "WLR_NO_HARDWARE_CURSORS, 1"
+        "HYPRLAND_NO_START_WRAPPERS, 1"
+      ];
+      bind = [
+        ", XF86MonBrightnessDown, exec, brightnessctl s 5%-"
+        ", XF86MonBrightnessUp, exec, brightnessctl s 5%+"
+      ];
     };
-
-    # dxflake's own neovim dendrite (modules/dendrites/neovim.nix, every host,
-    # unconditional) plainly assigns `vim.theme.name = "rose-pine"`. With
-    # dx.stylix.enable off, the safety net that used to suppress Stylix's own
-    # nvf target (dxflake's stylix.nix carried `stylix.targets.nvf.enable =
-    # false`, alongside the disabled dendrite above) is gone too, and Stylix's
-    # nvf target plainly assigns `theme.name = "base16"` once nvf is detected
-    # — a second unique-merge collision `nix build` catches at EVAL time
-    # (unlike the runtime-only ones above): "conflicting definition values".
-    # Aoide's own stylix facet has no equivalent disable (nvf/neovim isn't in
-    # its surface-ownership registry), so it's re-declared here, host-scoped,
-    # to keep dxflake's own editor theme rather than folding it into Aoide's
-    # base16.
-    stylix.targets.nvf.enable = lib.mkForce false;
   };
 
   # chiyo lives mostly on public/corporate wifi that blocks WireGuard and
