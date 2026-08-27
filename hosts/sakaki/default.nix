@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   imports = [
     ./hardware.nix
     ./syncthing.nix
@@ -126,12 +126,14 @@
   # peer reaches it over an ssh tunnel or the tailnet, never a raw
   # interface. Set aoide.a2a.tokenFile at rebuild time to require a
   # bearer token (which also stops loopback being an implicit trust
-  # signal); spawnAgent stays empty so message/send cannot spawn.
+  # signal); spawnAgent is claude, with spawnPath carrying its package
+  # onto the unit's PATH so the door can actually exec it.
   aoide = {
     enable = true;
     a2a = {
       enable = true;
       spawnAgent = "claude";
+      spawnPath = [pkgs.claude-code];
       discoveryAdvertise = true;
     };
     # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
