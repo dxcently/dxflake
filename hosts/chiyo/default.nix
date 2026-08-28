@@ -128,7 +128,7 @@
   # one-time `cloudflared tunnel create` + sops steps this depends on.
   dx.cloudflared = {
     enable = true;
-    tunnelId = "REPLACE_WITH_CHIYO_TUNNEL_UUID";
+    tunnelId = "18bb461d-818f-4768-adb1-89b5f21e5a10";
     credentialsSopsFile = ../../secrets/cloudflared-chiyo.yaml;
     sshHostnames = [ "chiyo-ssh.necoconeco.net" ];
   };
