@@ -25,9 +25,16 @@
 
   # Core Aoide (modules/dendrites/aoide.nix: binaries + aoided + the A2A
   # door + the secrets broker), joining the yomi-strix/sakaki/osaka
-  # federation mesh — same baseline as those two, no host-specific a2a/
-  # secrets knobs set here yet.
+  # federation mesh — same baseline as those two.
   dx.aoide.enable = true;
+  # The door can exec an agent for peer-summoned sessions (`peer spawn
+  # chiyo`), the same wiring sakaki carries — without it the door refuses
+  # with "A2A spawn not configured" (observed live 2026-08-28, first
+  # yomi→chiyo summon attempt after pairing).
+  aoide.a2a = {
+    spawnAgent = "claude";
+    spawnPath = [pkgs.claude-code];
+  };
 
   # chiyo is the full AoideOS carrier (L-C4, task #107): the complete Aoide
   # paint stack owns the session — compositor (Hyprland wiring + livery),
