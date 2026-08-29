@@ -109,6 +109,11 @@ in
         RestartSec = 10;
         CPUWeight = 200;
         OOMScoreAdjust = -500;
+        # -500 exempts melete from the kernel's global OOM killer, so without
+        # a cap of its own a runaway daemon drags the whole box into swap.
+        MemoryHigh = "6G";
+        MemoryMax = "8G";
+        MemorySwapMax = "1G";
         TimeoutStopSec = "16min";
       };
     };
