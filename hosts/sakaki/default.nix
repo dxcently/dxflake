@@ -54,6 +54,13 @@
       # melete.necoconeco.net/weedaq/ via apps.gateway_apps.
       "weedaq.com"
       "www.weedaq.com"
+
+      # FAU Cyber Security Club wiki (Hugo + relearn), test hostname. Static
+      # build output only: `hugo server` is a development server -- livereload
+      # websocket, in-memory render, no cache headers -- and never faces the
+      # tunnel. The repo lives at ~/projects/fau-cyber-security-club-wiki and
+      # `hugo` writes public/, which is copied to the /var/www root below.
+      "fau-cyber-wiki-test.necoconeco.net"
     ];
   };
   dx.caddy = {
@@ -117,8 +124,27 @@
       "www.weedaq.com".extraConfig = ''
         redir https://weedaq.com{uri} 301
       '';
+
+      # file_server, not a proxy: 90 prerendered pages, no runtime behind
+      # them. webRoot is a quoted STRING rather than a path literal -- a
+      # literal is copied into the nix store at eval, which would put 7.6M of
+      # build output in a store path and turn every content edit into a full
+      # nixos-rebuild. Served out of /var/www because /home/khoa is 0700 and
+      # caddy (uid 239) cannot traverse it.
+      "fau-cyber-wiki-test.necoconeco.net".webRoot = "/var/www/fau-cyber-wiki-test";
     };
   };
+
+  # The wiki's served root: owned by khoa so `hugo` output copies in without
+  # sudo, 0755 so caddy can read it.
+  systemd.tmpfiles.rules = [
+    "d /var/www                     0755 root root - -"
+    "d /var/www/fau-cyber-wiki-test 0755 khoa users - -"
+  ];
+
+  # hugo builds the wiki. Nothing else on this box uses it, so it stays
+  # host-local instead of joining the fleet-wide package set.
+  environment.systemPackages = [pkgs.hugo];
 
   # Aoide, headless: the CLI + aoided runtime and the A2A door, for
   # federation/doors testing against yomi-strix. No facets, no rice —
