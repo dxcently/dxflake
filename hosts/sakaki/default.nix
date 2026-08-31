@@ -140,7 +140,60 @@
   systemd.tmpfiles.rules = [
     "d /var/www                     0755 root root - -"
     "d /var/www/fau-cyber-wiki-test 0755 khoa users - -"
+    "d /var/lib/fau-cyber-wiki      0755 khoa users - -"
   ];
+
+  # Continuous deployment for the wiki. sakaki is outbound-only behind
+  # cloudflared, so GitHub cannot push in -- the box polls instead. A cycle
+  # that finds the hash unchanged exits before doing any work, so the
+  # steady-state cost is one fetch every five minutes.
+  #
+  # The deploy checkout is NOT ~/projects/fau-cyber-security-club-wiki. That
+  # is khoa's working copy and gets edited by hand; a deploy sharing it would
+  # either publish half-finished local work or wedge on a dirty tree. This
+  # one is `reset --hard` to origin/main every cycle, which is only safe
+  # because nothing ever edits it.
+  systemd.services.fau-cyber-wiki-deploy = {
+    description = "Build and publish the FAU Cyber Security Club wiki from origin/main";
+    path = [pkgs.git pkgs.hugo pkgs.rsync];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "khoa";
+      Group = "users";
+      WorkingDirectory = "/var/lib/fau-cyber-wiki";
+    };
+    script = ''
+      set -euo pipefail
+      # First cycle after a rebuild finds the tmpfiles dir empty and seeds it,
+      # then falls through and publishes. Every later cycle takes the else arm.
+      if [ ! -d .git ]; then
+        git clone --quiet --recurse-submodules \
+          https://github.com/dxcently/fau-cyber-security-club-wiki.git .
+      else
+        git fetch --quiet --prune origin main
+        if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ]; then
+          exit 0
+        fi
+        git reset --hard --quiet origin/main
+        # relearn is a submodule: without this hugo builds a layout-less site
+        # rather than failing, which would publish a broken wiki silently.
+        git submodule update --init --recursive --depth 1
+      fi
+      # baseURL is passed here, never committed -- hugo.toml keeps its
+      # placeholder so the repo is not pinned to one deployment hostname.
+      hugo --quiet --baseURL https://fau-cyber-wiki-test.necoconeco.net/
+      rsync -a --delete public/ /var/www/fau-cyber-wiki-test/
+    '';
+  };
+
+  systemd.timers.fau-cyber-wiki-deploy = {
+    description = "Poll origin/main for FAU Cyber Security Club wiki changes";
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnBootSec = "2min";
+      OnUnitActiveSec = "5min";
+    };
+  };
 
   # hugo builds the wiki. Nothing else on this box uses it, so it stays
   # host-local instead of joining the fleet-wide package set.
