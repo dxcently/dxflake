@@ -131,7 +131,19 @@
       # build output in a store path and turn every content edit into a full
       # nixos-rebuild. Served out of /var/www because /home/khoa is 0700 and
       # caddy (uid 239) cannot traverse it.
-      "fau-cyber-wiki-test.necoconeco.net".webRoot = "/var/www/fau-cyber-wiki-test";
+      "fau-cyber-wiki-test.necoconeco.net" = {
+        webRoot = "/var/www/fau-cyber-wiki-test";
+        # HTML went out with no Cache-Control, so browsers heuristically cached
+        # it and a redeploy showed up late -- a stale sidebar/title lingered on
+        # pages visited before the change. no-cache keeps ETag revalidation but
+        # forces a conditional request every load: cheap 304s, edits visible on
+        # the next navigation. Assets carry a content hash in their URL, so they
+        # are left to cache normally and only HTML is matched.
+        extraConfig = ''
+          @html path_regexp (\.html$|/$)
+          header @html Cache-Control "no-cache"
+        '';
+      };
     };
   };
 
