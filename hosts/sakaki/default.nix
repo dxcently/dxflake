@@ -140,8 +140,20 @@
         # the next navigation. Assets carry a content hash in their URL, so they
         # are left to cache normally and only HTML is matched.
         extraConfig = ''
+          # Compress text at the origin. Cloudflare compresses at its edge for
+          # visitors, but Caddy was sending raw bytes to it and to anything that
+          # reaches the box directly; ~4x on CSS/JS/HTML either way.
+          encode zstd gzip
+
           @html path_regexp (\.html$|/$)
           header @html Cache-Control "no-cache"
+
+          # Every CSS/JS link carries a build stamp in its query string that
+          # changes whenever the file does, so a cached copy can never go stale
+          # (a changed file is a new URL). Mark them immutable for a year. Fonts
+          # and images are not busted and keep the default.
+          @static path *.css *.js
+          header @static Cache-Control "public, max-age=31536000, immutable"
         '';
       };
     };
