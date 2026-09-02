@@ -22,6 +22,12 @@
   # quickshell facet off, aoided anchors to default.target and the door
   # rides it (loopback :8710, tunnel to reach).
   dx.aoide.enable = true;
+  # The pairing popup (Aoide task #135). Raises the typed-code dialog the
+  # moment an inbound pairing request parks, instead of it waiting in a
+  # terminal for someone to go looking. Osaka has no Aoide facets, so this
+  # takes the zenity path — the unit's gate is `a2a.enable && pairingPopup`
+  # precisely so a host painted by dxflake is not locked out of it.
+  aoide.a2a.pairingPopup = true;
   dx.nas-mounts = {
     enable = true;
     mounts."/mnt/kaori-media".export = "/volume1/media";
