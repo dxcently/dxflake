@@ -20,6 +20,11 @@
         "transmission"
       ];
     };
+    # Đồng (dxcently/dong): direct photo uploads only. Photos already in
+    # Immich are referenced in place on /mnt/immich and never copied here.
+    # No requiredBy: the app starts without it and autofs mounts on first
+    # write, so a missing export cannot take melete down with it.
+    mounts."/mnt/dong".export = "/volume1/dong";
   };
   dx.mneme.enable = true;
   dx.immich.enable = true;
