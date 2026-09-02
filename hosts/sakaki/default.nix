@@ -59,6 +59,13 @@
       # melete.necoconeco.net/weedaq/ via apps.gateway_apps.
       "weedaq.com"
       "www.weedaq.com"
+      # Đồng (dxcently/dong), shared with a few people under ONE shared
+      # password of its own, so it cannot sit behind the gateway's single
+      # login. Same shape as weedaq: an ungated loopback bind (:8111, the
+      # dong-public user unit) fronted by Caddy; the app's own /login is the
+      # door. The daemon-hosted copy on :8107 stays token-gated as the agent
+      # door (run_app_tool) and is also folded at melete.necoconeco.net/dong/.
+      "dong.necoconeco.net"
 
       # FAU Cyber Security Club wiki (Hugo + relearn), test hostname. Static
       # build output only: `hugo server` is a development server -- livereload
@@ -129,6 +136,14 @@
       "www.weedaq.com".extraConfig = ''
         redir https://weedaq.com{uri} 301
       '';
+
+      # Đồng, public with its own login. Port 8111 is the ungated loopback
+      # bind (dong-public user unit, ~/.config/systemd/user), the same trick
+      # as weedaq's 8110. Unlike weedaq there is no method guard: writes are
+      # the point, and the app refuses every page and every /api/* route
+      # without its session cookie. Bare proxy; Caddy forwards
+      # X-Forwarded-Proto so the app marks its cookie Secure.
+      "dong.necoconeco.net".proxy = "http://127.0.0.1:8111";
 
       # file_server, not a proxy: 90 prerendered pages, no runtime behind
       # them. webRoot is a quoted STRING rather than a path literal -- a
