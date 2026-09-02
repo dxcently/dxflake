@@ -30,6 +30,14 @@
             };
           };
         });
+        # soundconverter 4.0.6's test suite breaks under Python 3.14 (tests/test.py
+        # does args[1:] on a None argv); skip the install-check to unblock rebuilds.
+        soundconverter = prev.soundconverter.overrideAttrs (_: {
+          doInstallCheck = false;
+        });
+        # aseprite 1.3.18.1 won't compile against fmt 12 (fmt::format split out of
+        # base.h in fmt 11); pin it to the fmt 10 it was written for.
+        aseprite = prev.aseprite.override { fmt = prev.fmt_10; };
       })
     ];
   };
