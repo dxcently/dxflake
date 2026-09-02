@@ -3,7 +3,8 @@
   lib,
   username,
   ...
-}: {
+}:
+{
   imports = [ ./hardware.nix ];
   dx.aggregations = {
     # desktop stays true: it carries pipewire, fonts, fcitx5, portals, and ly
@@ -33,7 +34,7 @@
   # yomi→chiyo summon attempt after pairing).
   aoide.a2a = {
     spawnAgent = "claude";
-    spawnPath = [pkgs.claude-code];
+    spawnPath = [ pkgs.claude-code ];
   };
 
   # chiyo is the full AoideOS carrier (L-C4, task #107): the complete Aoide
@@ -91,6 +92,11 @@
     ydotool
   ];
 
+  # upowerd on the system bus — the bar's battery gauge and the power stele
+  # read Quickshell.Services.UPower, a client only; without the daemon every
+  # battery renders as absent ("AC — no battery present").
+  services.upower.enable = true;
+
   # Host-specific Hyprland settings that died with the aggregation: chiyo's
   # own monitor geometry, the fcitx5 IME autostart (fcitx5 itself stays on
   # via the desktop aggregation; only the exec-once trigger lived in the
@@ -124,11 +130,7 @@
     };
   };
 
-  # chiyo lives mostly on public/corporate wifi that blocks WireGuard and
-  # tailscale outright, so the tailnet can't be relied on to reach it. A
-  # Cloudflare Tunnel only ever dials OUT to the Cloudflare edge over https,
-  # which those networks let through — so it's the one mechanism that
-  # survives chiyo's usual network. No web service runs here (no dx.caddy),
+  # No web service runs here (no dx.caddy),
   # so this tunnel carries ssh only: sshHostnames routes straight to chiyo's
   # own sshd (already on by default, modules/nucleus/openssh.nix), with no
   # Caddy in the path. See modules/dendrites/cloudflared.nix for the

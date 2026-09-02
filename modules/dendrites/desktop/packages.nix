@@ -4,7 +4,8 @@
   config,
   lib,
   ...
-}: {
+}:
+{
   config = lib.mkIf config.dx.aggregations.desktop {
     programs = {
       virt-manager.enable = true;
@@ -15,7 +16,7 @@
     # Hyprland adds its own portal on top when that aggregation is present.
     xdg.portal = {
       enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
 
     environment.systemPackages = with pkgs; [
@@ -36,6 +37,8 @@
       playerctl # MPRIS2 media player controller
       ffmpegthumbnailer # video thumbnails via libffmpeg
       obs-studio # screen recording and live streaming
+      grim # Wayland screenshot capture (lyra screen shot's backend)
+      slurp # region picker for grim (lyra screen shot --pick)
       losslesscut-bin # lossless video/audio trimmer
       scrcpy # display and control Android devices
 
