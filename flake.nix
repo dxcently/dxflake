@@ -95,7 +95,7 @@
     # HEAD; drop ?rev= (back to plain `nix flake update aoide`) only once
     # Aoide's worktree is clean.
     aoide = {
-      url = "git+file:///home/khoa/Aoide?rev=692febfcfa409cc582a3194b46cf0d6bcbc42f49";
+      url = "git+file:///home/khoa/Aoide?rev=22586ec968046576114f8b90673b0eabfdd29557";
     };
     quickshell = {
       # Follows Aoide's own quickshell pin — the facet QML and the runtime
