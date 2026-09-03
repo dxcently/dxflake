@@ -33,16 +33,16 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1788389759,
-        "narHash": "sha256-AiCx8ajHmMWGkSRpD4X+1U3tslhvDWf/wTyApUWCfWE=",
+        "lastModified": 1788412816,
+        "narHash": "sha256-eaeRAskdufs54tgEptAQ5JLMSIJr5efVf2D5KZlsCbk=",
         "ref": "refs/heads/main",
-        "rev": "16639049a66d0d5abacde9aa82b33f0e333c288d",
-        "revCount": 964,
+        "rev": "692febfcfa409cc582a3194b46cf0d6bcbc42f49",
+        "revCount": 965,
         "type": "git",
         "url": "file:///home/khoa/Aoide"
       },
       "original": {
-        "rev": "16639049a66d0d5abacde9aa82b33f0e333c288d",
+        "rev": "692febfcfa409cc582a3194b46cf0d6bcbc42f49",
         "type": "git",
         "url": "file:///home/khoa/Aoide"
       }
