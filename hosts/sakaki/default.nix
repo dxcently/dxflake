@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./hardware.nix
     ./syncthing.nix
@@ -199,7 +199,11 @@
   # because nothing ever edits it.
   systemd.services.fau-cyber-wiki-deploy = {
     description = "Build and publish the FAU Cyber Security Club wiki from origin/main";
-    path = [pkgs.git pkgs.hugo pkgs.rsync];
+    path = [
+      pkgs.git
+      pkgs.hugo
+      pkgs.rsync
+    ];
     serviceConfig = {
       Type = "oneshot";
       User = "khoa";
@@ -212,7 +216,7 @@
       # then falls through and publishes. Every later cycle takes the else arm.
       if [ ! -d .git ]; then
         git clone --quiet --recurse-submodules \
-          https://github.com/dxcently/fau-cyber-security-club-wiki.git .
+          https://github.com/dxcently/FAU-CSC-WIKI.git .
       else
         git fetch --quiet --prune origin main
         if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ]; then
@@ -232,7 +236,7 @@
 
   systemd.timers.fau-cyber-wiki-deploy = {
     description = "Poll origin/main for FAU Cyber Security Club wiki changes";
-    wantedBy = ["timers.target"];
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnBootSec = "2min";
       OnUnitActiveSec = "5min";
@@ -241,7 +245,7 @@
 
   # hugo builds the wiki. Nothing else on this box uses it, so it stays
   # host-local instead of joining the fleet-wide package set.
-  environment.systemPackages = [pkgs.hugo];
+  environment.systemPackages = [ pkgs.hugo ];
 
   # Aoide, headless: the CLI + aoided runtime and the A2A door, for
   # federation/doors testing against yomi-strix. No facets, no rice —
@@ -257,11 +261,11 @@
   dx.aoide.enable = true;
   aoide.a2a = {
     spawnAgent = "claude";
-    spawnPath = [pkgs.claude-code];
+    spawnPath = [ pkgs.claude-code ];
     discoveryAdvertise = true;
   };
   # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
   # socket-only door, TOTP-gated. The operator joins the access group;
   # enrollment is a separate, User-initiated act — never part of the switch.
-  aoide.secrets.members = ["khoa"];
+  aoide.secrets.members = [ "khoa" ];
 }
