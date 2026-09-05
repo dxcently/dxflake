@@ -141,9 +141,42 @@
       # bind (dong-public user unit, ~/.config/systemd/user), the same trick
       # as weedaq's 8110. Unlike weedaq there is no method guard: writes are
       # the point, and the app refuses every page and every /api/* route
-      # without its session cookie. Bare proxy; Caddy forwards
-      # X-Forwarded-Proto so the app marks its cookie Secure.
-      "dong.necoconeco.net".proxy = "http://127.0.0.1:8111";
+      # without its session cookie. Caddy forwards X-Forwarded-Proto so the
+      # app marks its cookie Secure.
+      #
+      # Three paths go to the photo server (dong-photos user unit, 8203)
+      # instead of the app, because Melete's app host cannot serve image
+      # bytes: it has no filesystem capability and every reply is one 200
+      # text/html body. Every photograph now lives in Immich (the worker
+      # moves uploads there and drops the SQLite copy), so without this
+      # block every card is a grey box -- the app answers those paths with an
+      # HTML session shim that an <img> cannot render. The share paths are
+      # the worker's for a different reason: the host hands an app its body
+      # as from_utf8_lossy, which destroys a multipart JPEG before the app
+      # sees it. `handle` (not handle_path) for those: the worker matches the
+      # full path. NOT /api/share/* -- /api/share/token is the app's own.
+      #
+      # sw.js: a service worker may only claim a scope at or below its own
+      # directory, and this one lives under /static/ but needs the app root;
+      # the host cannot send the header that allows it, so Caddy does.
+      #
+      # Caddy evaluates handle/handle_path before a bare reverse_proxy
+      # regardless of textual order, so `proxy` stays the catch-all.
+      # See deploy/dong-workers.md §5 in dxcently/dong.
+      "dong.necoconeco.net" = {
+        proxy = "http://127.0.0.1:8111";
+        extraConfig = ''
+          handle_path /immich-photos/* {
+            reverse_proxy 127.0.0.1:8203
+          }
+          handle /api/share/upload    { reverse_proxy 127.0.0.1:8203 }
+          handle /api/share/parked/*  { reverse_proxy 127.0.0.1:8203 }
+          handle /static/sw.js {
+            header Service-Worker-Allowed "/"
+            reverse_proxy 127.0.0.1:8111
+          }
+        '';
+      };
 
       # file_server, not a proxy: 90 prerendered pages, no runtime behind
       # them. webRoot is a quoted STRING rather than a path literal -- a
