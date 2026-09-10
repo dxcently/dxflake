@@ -86,7 +86,7 @@
     # (hosts, hardware, secrets). Pin the published Aoide commit so every host
     # fetches the same source without a local Aoide checkout.
     aoide = {
-      url = "git+ssh://git@github.com/dxcently/Aoide.git?ref=main&rev=9ab69de249c023bf61feb4048c84f304de629b88";
+      url = "git+https://github.com/dxcently/Aoide.git?ref=main&rev=9ab69de249c023bf61feb4048c84f304de629b88";
     };
     quickshell = {
       # Follows Aoide's own quickshell pin — the facet QML and the runtime

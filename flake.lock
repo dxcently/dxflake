@@ -39,13 +39,13 @@
         "rev": "9ab69de249c023bf61feb4048c84f304de629b88",
         "revCount": 1043,
         "type": "git",
-        "url": "ssh://git@github.com/dxcently/Aoide.git"
+        "url": "https://github.com/dxcently/Aoide.git"
       },
       "original": {
         "ref": "main",
         "rev": "9ab69de249c023bf61feb4048c84f304de629b88",
         "type": "git",
-        "url": "ssh://git@github.com/dxcently/Aoide.git"
+        "url": "https://github.com/dxcently/Aoide.git"
       }
     },
     "aoide_2": {
