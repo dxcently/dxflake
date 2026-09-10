@@ -19,6 +19,7 @@
   dx.gpu-amd.enable = true;
   dx.gpu-screen-recorder.enable = true;
   dx.k3b.enable = true;
+  dx.autopsy.enable = true;
   # consolidated to sakaki-only, 2026-07-31
   dx.melete.enable = false;
   # Core Aoide (modules/dendrites/aoide.nix: binaries + aoided + the A2A

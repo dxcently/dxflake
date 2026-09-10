@@ -23,6 +23,7 @@
   # consolidated to sakaki-only, 2026-07-31
   dx.melete.enable = false;
   dx.gpu-intel.enable = true;
+  dx.autopsy.enable = true;
 
   # Core Aoide (modules/dendrites/aoide.nix: binaries + aoided + the A2A
   # door + the secrets broker), joining the yomi-strix/sakaki/osaka
