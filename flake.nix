@@ -83,15 +83,10 @@
     # dxflake consumes Aoide as a flake input and, on integrating hosts, runs
     # Aoide's module structure (nucleus/facets/song walked from the input) —
     # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
-    # (hosts, hardware, secrets). git+file pins to Aoide's COMMITTED state
-    # (main HEAD), so Aoide's in-flight working-tree edits never leak into
-    # dxflake builds. The rev was hand-pinned because Aoide's worktree carried
-    # an uncommitted diff at pin time; with ?rev= explicit, `nix flake update
-    # aoide` is now a no-op. Advance by bumping ?rev= to Aoide's new committed
-    # HEAD; drop ?rev= (back to plain `nix flake update aoide`) only once
-    # Aoide's worktree is clean.
+    # (hosts, hardware, secrets). Pin the published Aoide commit so every host
+    # fetches the same source without a local Aoide checkout.
     aoide = {
-      url = "git+file:///home/khoa/Aoide?rev=9f2629a9471fbb446b561a0c549f0bdbbbafda8a";
+      url = "git+ssh://git@github.com/dxcently/Aoide.git?ref=main&rev=9ab69de249c023bf61feb4048c84f304de629b88";
     };
     quickshell = {
       # Follows Aoide's own quickshell pin — the facet QML and the runtime
