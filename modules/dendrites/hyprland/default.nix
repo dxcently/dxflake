@@ -414,8 +414,9 @@ in {
         # manage_window_blur is a GLOBAL toggle in v0.7.0 — there is no
         # per-class targeting (confirmed against the built plugin's key table).
         # It stays on because the shader only paints visible translucent
-        # fragments: the frosted kitty gains refraction, opaque windows are
-        # untouched.
+        # fragments: an unfocused kitty gains refraction as it fades, while a
+        # focused (hovered) one is fully opaque and untouched, as is every
+        # other opaque window.
         #
         # The namespace list is the three surfaces Aoide glasses. It is static
         # here on purpose: Aoide's facet appends song-declared widget surfaces
@@ -439,10 +440,14 @@ in {
           }
 
           # ── Aero-glass terminal (pairs with the kitty dendrite) ────────────
-          # kitty's background_opacity makes the CELL background translucent;
-          # these rules do the WINDOW. Active stays fully crisp at 1.0, and an
-          # unfocused terminal fades to 0.80 so it visibly recedes behind the
-          # focused one. Terminals only, deliberately — this is not a global
+          # This rule is the ONLY source of terminal translucency: kitty runs
+          # background_opacity 1 (see the kitty dendrite for why), so 1.0 here
+          # really is 100% opaque rather than a ceiling over kitty's own baked
+          # alpha. `follow_mouse = 1` above makes focused == hovered, so the
+          # crisp state is the hovered one; an unfocused terminal fades to 0.80
+          # and visibly recedes, still blurred because
+          # `decoration.blur.ignore_opacity` blurs behind opacity-faded windows.
+          # Terminals only, deliberately — this is not a global
           # inactive_opacity, because media and browser windows carry arbitrary
           # content that must never be faded.
           #

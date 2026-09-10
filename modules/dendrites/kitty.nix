@@ -11,9 +11,9 @@
   # The aero glass keys on the FACET, not on aoide.enable: it is a look, and it
   # only pays off where something glosses it. hyprglass loads under the same
   # flag (modules/dendrites/hyprland/default.nix), and Hyprland's own blur pass
-  # is what shows through the translucent cell background. On a facet-off host
-  # this would just make terminals see-through with nothing behind them, so
-  # yomi-strix keeps its opaque kitty untouched.
+  # is what shows through an unfocused terminal. On a facet-off host this would
+  # just make terminals see-through with nothing behind them, so yomi-strix
+  # keeps its opaque kitty untouched.
   aoideFace = config.aoide.facets.quickshell.enable;
 in {
   config = lib.mkIf config.dx.aggregations.desktop {
@@ -94,12 +94,24 @@ in {
           tab_powerline_style = "slanted";
         }
         // lib.optionalAttrs aoideFace {
-          # Aero-glass terminal, ported from Aoide's kitty dendrite. Only the
-          # cell BACKGROUND goes translucent — glyphs stay fully opaque, so text
-          # loses no contrast — and Hyprland blurs behind the resulting surface
-          # for the frosted read. These two override the opaque defaults above,
-          # which is why the merge order matters.
-          background_opacity = "0.86";
+          # Aero-glass terminal, ported from Aoide's kitty dendrite — but the
+          # translucency is the COMPOSITOR's job here, not kitty's. Aoide sets
+          # background_opacity 0.86; dxflake deliberately leaves the opaque 1
+          # from the block above standing, because kitty bakes that alpha into
+          # its own buffer and Hyprland's `opacity` rule can only ever subtract
+          # from it. With 0.86 baked in, a HOVERED terminal maxed out at 0.86 —
+          # the windowrule's 1.0 had nothing to restore. Opaque kitty + the
+          # rule's 1.0/0.80 pair (hyprland/default.nix) gives the intended
+          # split: focused is 100% opaque, unfocused fades to 0.80 and still
+          # frosts, since `decoration.blur.ignore_opacity` blurs behind windows
+          # faded by an opacity rule. Under `follow_mouse = 1` focused ==
+          # hovered, so hover is the crisp state.
+          #
+          # Trade-off, taken knowingly: the rule fades the whole window rather
+          # than only the cell background, so unfocused GLYPHS fade too. Net
+          # legibility still improves — the old stack multiplied to 0.86 × 0.80
+          # = 0.69 behind the text, this is a flat 0.80.
+          #
           # OFF on purpose, not an oversight: kitty's own background_blur is a
           # macOS/KDE path and is inert under Hyprland. The compositor owns the
           # blur pass, so leaving this at dxflake's 1 would imply a second
