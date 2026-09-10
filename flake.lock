@@ -36,7 +36,7 @@
       "locked": {
         "lastModified": 1789032262,
         "narHash": "sha256-m2cX8Ew8go96g5uo9fpa3wFitiEcPiu41PLtJPZZ1io=",
-        "ref": "refs/heads/feat/openai-dendrite",
+        "ref": "refs/heads/main",
         "rev": "9f2629a9471fbb446b561a0c549f0bdbbbafda8a",
         "revCount": 985,
         "type": "git",
