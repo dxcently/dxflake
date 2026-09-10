@@ -48,7 +48,17 @@ rustPlatform.buildRustPackage {
       base != ".git" && base != "target";
   };
 
-  cargoLock.lockFile = src + "/Cargo.lock";
+  cargoLock = {
+    lockFile = src + "/Cargo.lock";
+    # Git dependencies (harnox, eidolon) live in PRIVATE noah427 repos. A
+    # sandboxed fixed-output fetch has no credentials and can never reach
+    # them, so let importCargoLock use builtins.fetchGit instead: it runs in
+    # the evaluator, as the user running the rebuild, with that user's git
+    # credential helper (gh). Pinned by exact rev from Cargo.lock, so still
+    # reproducible. Consequence: rebuild as khoa (`nh os switch`), not via
+    # a bare `sudo nixos-rebuild` — root has no GitHub credentials.
+    allowBuiltinFetchGit = true;
+  };
 
   # Upstream CI owns the test suite; this build exists to produce the binary
   # this host runs.

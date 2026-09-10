@@ -58,14 +58,6 @@
       url = "git+file:///home/khoa/mneme";
       flake = false;
     };
-    # harnox: the OAuth 2.1 crate mneme 0.5.0+ pulls from a PRIVATE GitHub
-    # repo (noah427/harnox, tag v0.1.0). A sandboxed cargo vendor can't reach
-    # it, so it's a local checkout like the two above; pkgs/mneme-package.nix
-    # rewrites the git dep to this path. Keep ~/harnox on the tag mneme pins.
-    harnox-src = {
-      url = "git+file:///home/khoa/harnox";
-      flake = false;
-    };
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";
