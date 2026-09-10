@@ -18,6 +18,7 @@
   dx.claude-code.enable = true;
   dx.pi-coding-agent.enable = true;
   dx.kimi-cli.enable = true;
+  dx.portmaster.enable = true;
   dx.syncthing.enable = true;
   dx.laptop.enable = true;
   # consolidated to sakaki-only, 2026-07-31
@@ -142,6 +143,10 @@
     credentialsSopsFile = ../../secrets/cloudflared-chiyo.yaml;
     sshHostnames = [ "chiyo-ssh.necoconeco.net" ];
   };
+
+  # CSC (FAU) Argo Tunnel token — manual use only, see
+  # modules/dendrites/csc-token.nix.
+  dx.cscToken.enable = true;
 
   boot = {
     initrd.kernelModules = [ "nvme" ];
