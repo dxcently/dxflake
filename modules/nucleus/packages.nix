@@ -1,8 +1,4 @@
-{
-  pkgs,
-  ...
-}:
-{
+{pkgs, ...}: {
   programs = {
     neovim = {
       enable = true;
@@ -35,9 +31,18 @@
         soundconverter = prev.soundconverter.overrideAttrs (_: {
           doInstallCheck = false;
         });
-        # aseprite 1.3.18.1 won't compile against fmt 12 (fmt::format split out of
-        # base.h in fmt 11); pin it to the fmt 10 it was written for.
-        aseprite = prev.aseprite.override { fmt = prev.fmt_10; };
+        # upstream's wrapper never puts sleuthkit's libtsk.so.23 on LD_LIBRARY_PATH,
+        # so the JNI bridge autopsy extracts to /tmp at launch can't dlopen it and
+        # dies behind an easy-to-miss "Fatal Error!" dialog. etc/autopsy.conf also
+        # ships with CRLF endings, spewing bash "$'\r': command not found" warnings
+        # and corrupting --userdir/--cachedir with a trailing \r.
+        autopsy = prev.autopsy.overrideAttrs (old: {
+          postInstall = ''
+            ${old.postInstall or ""}
+            sed -i 's/\r$//' $out/etc/autopsy.conf
+            wrapProgram $out/bin/autopsy --prefix LD_LIBRARY_PATH : "${prev.sleuthkit}/lib"
+          '';
+        });
       })
     ];
   };
@@ -95,5 +100,6 @@
     nh # Nix helper for rebuilds and cleanup
     ngrok # expose local servers via secure tunnels
     nodejs # cross-platform JavaScript runtime
+    autopsy
   ];
 }

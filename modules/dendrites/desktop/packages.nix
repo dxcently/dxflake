@@ -56,7 +56,6 @@
 
       # ── Creative ──
       gimp3-with-plugins # GNU Image Manipulation Program
-      #aseprite # pixel art editor and animation
       webcamoid # webcam capture with effects
       orca-slicer # G-code slicer for 3D printing
     ];
