@@ -1279,11 +1279,11 @@
     "mneme-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1786772004,
-        "narHash": "sha256-2ZdPP9LWCjmCKdDsvzmPN2XfQ9sZD9aIHcxXoI3AdUU=",
+        "lastModified": 1788924175,
+        "narHash": "sha256-fvqcfmLBuAs9TnlPrcyv5lXI8sy+lLJMiWspTawPXd0=",
         "ref": "refs/heads/master",
-        "rev": "ae969c4915ed3beff448994a29153f3e8d959f97",
-        "revCount": 174,
+        "rev": "35b0a4a3ffc52edee3e3a01b1d036089ce98e491",
+        "revCount": 179,
         "type": "git",
         "url": "file:///home/khoa/mneme"
       },

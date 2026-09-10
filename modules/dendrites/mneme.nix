@@ -16,6 +16,7 @@ let
   # it. A source build needs no credential, so the two are independent now.
   mnemePkg = pkgs.callPackage ../../pkgs/mneme-package.nix {
     src = inputs.mneme-src;
+    harnoxSrc = inputs.harnox-src;
   };
 in
 {
