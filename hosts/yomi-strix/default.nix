@@ -14,6 +14,7 @@
   dx.bluetooth.enable = true;
   dx.claude-code.enable = true;
   dx.kimi-cli.enable = true;
+  aoide.openai.enable = true; # Codex CLI + the official ChatGPT Linux desktop
   dx.gpu-amd.enable = true; # Strix Halo RDNA 3.5 iGPU
   dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm)
 
