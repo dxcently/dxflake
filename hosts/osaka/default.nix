@@ -3,8 +3,9 @@
   lib,
   username,
   ...
-}: {
-  imports = [./hardware.nix];
+}:
+{
+  imports = [ ./hardware.nix ];
   dx.aggregations = {
     desktop = true;
     hyprland = true;
@@ -34,7 +35,7 @@
   # the quickshell facet below.
   aoide.a2a = {
     spawnAgent = "claude";
-    spawnPath = [pkgs.claude-code];
+    spawnPath = [ pkgs.claude-code ];
     discoveryAdvertise = true;
     pairingPopup = true;
   };
@@ -47,15 +48,12 @@
   # and a compositor that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE,
   # which dx.aggregations.hyprland already provides.
   #
-  # The other two facets stay OFF here and that is load-bearing, not a
-  # preference: `aoide.facets.compositor` and `aoide.facets.stylix` write the
-  # same unique-merge leaves as dxflake's Hyprland/Stylix dendrites
-  # (`wayland.windowManager.hyprland.systemd.variables`, `stylix.base16Scheme`),
-  # and because those merge rather than conflict, nix eval stays green while
-  # the session breaks at runtime — see modules/dendrites/aoide.nix's header
-  # for the full reasoning. chiyo can run all three only because it turned
-  # dxflake's paint off entirely (dx.aggregations.hyprland = false,
-  # dx.stylix.enable = false). osaka does not, so it takes one.
+  # The compositor facet stays OFF so dxflake's Hyprland behavior stays intact.
+  # Stylix ownership is delegated to the AOIDE stylix facet so colors follow
+  # livery while dx.stylix keeps fonts/cursors/icons and non-style targets.
+  # This is load-bearing for Osaka specifically: chiyo turns dxflake paint off
+  # (`dx.aggregations.hyprland = false`, `dx.stylix.enable = false`) and can run
+  # all AOIDE facets because it no longer overlaps this side of the theme stack.
   #
   # ── Reverting to the plain flake rice ────────────────────────────────────
   # Flip `aoide.facets.quickshell.enable` back to false (and with it lyra and
@@ -108,6 +106,7 @@
   # default of ~/.aoide — retarget both together if that option ever moves.
   home-manager.users.${username}.home.file.".aoide/song/covers".source = ../../assets/wallpapers;
   aoide.facets.quickshell.enable = true;
+  aoide.facets.stylix.enable = true;
   # Installs the `lyra` binary and enables shellbridge (nucleus/shellbridge.nix
   # is gated on lyra AND the facet). Defaults to following the facet; named
   # explicitly the way chiyo and yomi-strix name it.
@@ -131,7 +130,7 @@
     stremio-linux-shell
   ];
   boot = {
-    initrd.kernelModules = ["nvme"];
-    kernelParams = ["mitigations=off"];
+    initrd.kernelModules = [ "nvme" ];
+    kernelParams = [ "mitigations=off" ];
   };
 }

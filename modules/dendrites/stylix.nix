@@ -5,78 +5,89 @@
   username,
   lib,
   ...
-}: {
-  imports = [inputs.stylix.nixosModules.stylix];
+}:
+let
+  aoideStylix = config.aoide.facets.stylix.enable;
+  fixedRosePine = {
+    base00 = "191724";
+    base01 = "1f1d2e";
+    base02 = "26233a";
+    base03 = "6e6a86";
+    base04 = "908caa";
+    base05 = "e0def4";
+    base06 = "e0def4";
+    base07 = "524f67";
+    base08 = "eb6f92";
+    base09 = "f6c177";
+    base0A = "ebbcba";
+    base0B = "31748f";
+    base0C = "9ccfd8";
+    base0D = "c4a7e7";
+    base0E = "f6c177";
+    base0F = "524f67";
+  };
+in
+{
+  imports = [ inputs.stylix.nixosModules.stylix ];
 
   # The stylix option TREE stays imported unconditionally above (Aoide's own
   # stylix facet probes for its presence via `options ? stylix`, so the module
   # must always ride). Whether THIS dendrite's dxflake scheme actually applies
   # is a separate question, gated on dx.stylix.enable (defaulting to the
   # desktop aggregation, so every existing desktop host keeps its scheme
-  # unless it opts out) — off on a host where Aoide's stylix facet
-  # (aoide.facets.stylix.enable) owns the theme instead, since both write the
-  # same `stylix.base16Scheme` leaf.
+  # unless it opts out). When Aoide's stylix facet is active, dx.stylix keeps
+  # only personal defaults and stays out of color ownership for
+  # `stylix.base16Scheme`/`stylix.polarity`.
   options.dx.stylix.enable = (lib.mkEnableOption "dxflake's own Stylix theme (Rosé Pine)") // {
     default = config.dx.aggregations.desktop;
   };
-
   config = lib.mkIf config.dx.stylix.enable {
-    stylix = {
-      enable = true;
-      polarity = "dark";
-      opacity.terminal = 1.0;
-      base16Scheme = {
-        #scheme: "Rosé Pine"
-        #author: "Emilia Dunfelt <edun@dunfelt.se>"
-        base00 = "191724";
-        base01 = "1f1d2e";
-        base02 = "26233a";
-        base03 = "6e6a86";
-        base04 = "908caa";
-        base05 = "e0def4";
-        base06 = "e0def4";
-        base07 = "524f67";
-        base08 = "eb6f92";
-        base09 = "f6c177";
-        base0A = "ebbcba";
-        base0B = "31748f";
-        base0C = "9ccfd8";
-        base0D = "c4a7e7";
-        base0E = "f6c177";
-        base0F = "524f67";
-      };
-      icons = {
-        enable = true;
-        package = pkgs.windows10-icons;
-        dark = "windows10";
-        light = "windows10";
-      };
-      cursor = {
-        size = 40;
-        package = pkgs.maplestory-cursor;
-        name = "Maple";
-      };
-      fonts = {
-        monospace = {
-          package = pkgs.nerd-fonts.lekton;
-          name = "Lekton Nerd Font Mono";
+    stylix =
+      (
+        {
+          enable = true;
+        }
+        // lib.optionalAttrs (!aoideStylix) {
+          polarity = "dark";
+          base16Scheme = fixedRosePine;
+        }
+      )
+      // {
+        # Aoide's stylix facet pins polarity and owns the full resolved scheme
+        # when active; only fixed-theme hosts keep the Rosé Pine dark contract.
+        opacity.terminal = 1.0;
+        icons = {
+          enable = true;
+          package = pkgs.windows10-icons;
+          dark = "windows10";
+          light = "windows10";
         };
-        sansSerif = {
-          package = pkgs.nerd-fonts.lekton;
-          name = "Lekton Nerd Font Mono";
+        cursor = {
+          size = 40;
+          package = pkgs.maplestory-cursor;
+          name = "Maple";
         };
-        serif = {
-          package = pkgs.nerd-fonts.lekton;
-          name = "Lekton Nerd Font Mono";
-        };
-        sizes = {
-          applications = 14;
-          terminal = 14;
-          desktop = 14;
-          popups = 12;
+        fonts = {
+          monospace = {
+            package = pkgs.nerd-fonts.lekton;
+            name = "Lekton Nerd Font Mono";
+          };
+          sansSerif = {
+            package = pkgs.nerd-fonts.lekton;
+            name = "Lekton Nerd Font Mono";
+          };
+          serif = {
+            package = pkgs.nerd-fonts.lekton;
+            name = "Lekton Nerd Font Mono";
+          };
+          sizes = {
+            applications = 14;
+            terminal = 14;
+            desktop = 14;
+            popups = 12;
+          };
         };
       };
-    };
 
     #stylix.image = ./
 

@@ -94,87 +94,100 @@
       follows = "aoide/quickshell";
     };
   };
-  outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-stable,
-    home-manager,
-    ...
-  } @ inputs: let
-    system = "x86_64-linux";
-    username = "khoa";
+  outputs =
+    {
+      self,
+      nixpkgs,
+      nixpkgs-stable,
+      home-manager,
+      ...
+    }@inputs:
+    let
+      system = "x86_64-linux";
+      username = "khoa";
 
-    # Shared by dxflake's own walk and the Aoide walk: every .nix under a
-    # dir, shelved by a `_` prefix (dxflake/Aoide discipline, identical).
-    walk = dir:
-      builtins.filter (
-        p: let
-          s = toString p;
-        in
+      # Shared by dxflake's own walk and the Aoide walk: every .nix under a
+      # dir, shelved by a `_` prefix (dxflake/Aoide discipline, identical).
+      walk =
+        dir:
+        builtins.filter (
+          p:
+          let
+            s = toString p;
+          in
           nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
-      ) (nixpkgs.lib.filesystem.listFilesRecursive dir);
+        ) (nixpkgs.lib.filesystem.listFilesRecursive dir);
 
-    # Aoide's walked module tree + songbook and the package overlays its
-    # modules expect ride EVERY host now (dendritic discipline: the module
-    # is always in the tree, a flag decides whether it does anything —
-    # AGENTS.md, root, "Everything is a plugin"). This used to be gated
-    # behind a per-host `withAoide` bool on mkHost, which was the exact
-    # anti-pattern that discipline exists to avoid: it gated the MODULE
-    # SURFACE at the flake level instead of gating BEHAVIOUR at the host
-    # level. Dropped after confirming every Aoide module that does
-    # anything wraps its whole `config` in `lib.mkIf config.aoide.enable`
-    # (or a narrower flag under it) — nucleus/options.nix is the one
-    # exception, and it declares options + eval-clean defaults only, no
-    # behaviour (its own header says so). So a host that never flips
-    # `aoide.enable` gets the full option surface and zero behaviour
-    # change; proven by yomi-strix's toplevel derivation hashing
-    # byte-identical before and after this fold (it sets no aoide.* flags
-    # at all — it manages its OWN Aoide integration from a separate flake
-    # at ~/Aoide, see hosts/yomi-strix/default.nix).
-    mkHost = name:
-      nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          host = name;
-          inherit username system nixpkgs-stable;
-          inputs = inputs // {aoide = inputs.aoide.inputs.aoide;};
-        };
-        modules = let
-          discovered = walk ./modules;
-          aoideModules = [ (inputs.aoide + "/modules/default.nix") ];
-          aoideSongbook = walk (inputs.aoide + "/song/songbook");
-          # The Aoide seam: pkgs.aoide (the CLI core) + the packages
-          # walker overlay (hyprglass, …) — Aoide's own mkHost adds
-          # exactly these two.
-          aoideSeam = {
-            nixpkgs.overlays = [
-              (import (inputs.aoide + "/lib/pkgs.nix") {inherit (nixpkgs) lib;}).overlay
-              (_final: _prev: {aoide = inputs.aoide.packages.${system}.default;})
-            ];
+      # Aoide's walked module tree + songbook and the package overlays its
+      # modules expect ride EVERY host now (dendritic discipline: the module
+      # is always in the tree, a flag decides whether it does anything —
+      # AGENTS.md, root, "Everything is a plugin"). This used to be gated
+      # behind a per-host `withAoide` bool on mkHost, which was the exact
+      # anti-pattern that discipline exists to avoid: it gated the MODULE
+      # SURFACE at the flake level instead of gating BEHAVIOUR at the host
+      # level. Dropped after confirming every Aoide module that does
+      # anything wraps its whole `config` in `lib.mkIf config.aoide.enable`
+      # (or a narrower flag under it) — nucleus/options.nix is the one
+      # exception, and it declares options + eval-clean defaults only, no
+      # behaviour (its own header says so). So a host that never flips
+      # `aoide.enable` gets the full option surface and zero behaviour
+      # change; proven by yomi-strix's toplevel derivation hashing
+      # byte-identical before and after this fold (it sets no aoide.* flags
+      # at all — it manages its OWN Aoide integration from a separate flake
+      # at ~/Aoide, see hosts/yomi-strix/default.nix).
+      mkHost =
+        name:
+        nixpkgs.lib.nixosSystem {
+          specialArgs = {
+            host = name;
+            inherit username system nixpkgs-stable;
+            resolveAoideLivery =
+              (import (inputs.aoide + "/lib/livery.nix") {
+                inherit (nixpkgs) lib;
+              }).resolve;
+            inputs = inputs // {
+              aoide = inputs.aoide.inputs.aoide;
+            };
           };
-        in
-          discovered
-          ++ aoideModules
-          ++ aoideSongbook
-          ++ [
-            inputs.disko.nixosModules.disko
-            aoideSeam
-            ./hosts/${name}
-          ];
+          modules =
+            let
+              discovered = walk ./modules;
+              aoideModules = [ (inputs.aoide + "/modules/default.nix") ];
+              aoideSongbook = walk (inputs.aoide + "/song/songbook");
+              # The Aoide seam: pkgs.aoide (the CLI core) + the packages
+              # walker overlay (hyprglass, …) — Aoide's own mkHost adds
+              # exactly these two.
+              aoideSeam = {
+                nixpkgs.overlays = [
+                  (import (inputs.aoide + "/lib/pkgs.nix") { inherit (nixpkgs) lib; }).overlay
+                  (_final: _prev: { aoide = inputs.aoide.packages.${system}.default; })
+                ];
+              };
+            in
+            discovered
+            ++ aoideModules
+            ++ aoideSongbook
+            ++ [
+              inputs.disko.nixosModules.disko
+              aoideSeam
+              ./hosts/${name}
+            ];
+        };
+    in
+    {
+      nixosConfigurations = {
+        # Every host now carries the Aoide option surface; which flags a host
+        # flips (aoide.enable, aoide.a2a.enable, aoide.facets.*, …) is a
+        # hosts/<name>/default.nix decision, not a flake-level one. chiyo,
+        # osaka and sakaki flip dx.aoide.enable (modules/dendrites/aoide.nix)
+        # for the shared core; chiyo additionally flips the paint facets
+        # directly (see its host file). yomi-strix sets no aoide.* flags here
+        # at all — it manages its own Aoide integration from ~/Aoide's own
+        # flake, kept byte-identical by this fold (see mkHost's comment).
+        chiyo = mkHost "chiyo";
+        osaka = mkHost "osaka";
+        sakaki = mkHost "sakaki";
+        yomi-strix = mkHost "yomi-strix";
       };
-  in {
-    nixosConfigurations = {
-      # Every host now carries the Aoide option surface; which flags a host
-      # flips (aoide.enable, aoide.a2a.enable, aoide.facets.*, …) is a
-      # hosts/<name>/default.nix decision, not a flake-level one. chiyo,
-      # osaka and sakaki flip dx.aoide.enable (modules/dendrites/aoide.nix)
-      # for the shared core; chiyo additionally flips the paint facets
-      # directly (see its host file). yomi-strix sets no aoide.* flags here
-      # at all — it manages its own Aoide integration from ~/Aoide's own
-      # flake, kept byte-identical by this fold (see mkHost's comment).
-      chiyo = mkHost "chiyo";
-      osaka = mkHost "osaka";
-      sakaki = mkHost "sakaki";
-      yomi-strix = mkHost "yomi-strix";
     };
-  };
 }

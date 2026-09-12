@@ -201,6 +201,32 @@ Apply them on the receiving host with:
 
 Those grants are not applied from this flake.
 
+## Livery -> theme flow and ownership
+
+On hosts that keep dxflake Hyprland behavior but enable `aoide.facets.stylix.enable`
+(for example Osaka), AOIDE owns baked theme ownership:
+
+- AOIDE resolves `aoide.livery` into a full scheme through upstream `lib/livery.nix`.
+- `stylix.base16Scheme` and `stylix.polarity` stay owned by AOIDE in that mode.
+- `modules/dendrites/stylix.nix` still provides dxflake font/cursor/icons and
+  fixed targets for non-color assets, but does not override colors or polarity
+  when AOIDE Stylix is active.
+- `modules/dendrites/hyprland/default.nix` derives active/inactive borders from
+  the resolved livery under AOIDE ownership, otherwise keeps historical RGBA.
+
+Hosts without AOIDE Stylix ownership keep non-lyra fallback:
+
+- `stylix` remains fixed Rosé Pine + `dark` polarity.
+- Hyprland borders remain:
+  - `col.active_border = rgba(ffffff99)`
+  - `col.inactive_border = rgba(000000cc)`
+
+Host-only tests are still done as eval-only overrides (no file changes): use an
+`extendModules` eval to set `config.aoide.livery.override.accent` and confirm both:
+
+- `config.stylix.base16Scheme.<slot>` (for authored-color propagation)
+- `config.home-manager.users.khoa.wayland.windowManager.hyprland.settings.general."col.active_border"`
+
 ---
 
 ## Adding a module
