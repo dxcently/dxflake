@@ -52,6 +52,8 @@ An aggregation is a **role flag**, not a bundle folder. `modules/aggregations.ni
 
 A host file = `imports = [ ./hardware.nix ]`, then a short set of `dx.*` flags (plus any host-only odds inline). No module imports. Read the flags and you know the machine.
 
+Chiyo enables its SSH tunnel through `dx.cloudflared`. This flake provides no CSC (FAU) manual tunnel token module or `dx.cscToken` option.
+
 > _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, gate it behind a **flag** — a role, or its own `enable` — and let a host speak the word. To take a thing away entirely, hush its name with a `_`. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
 
 **The two moving parts, plainly:**

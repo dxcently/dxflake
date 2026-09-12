@@ -144,10 +144,6 @@
     sshHostnames = [ "chiyo-ssh.necoconeco.net" ];
   };
 
-  # CSC (FAU) Argo Tunnel token — manual use only, see
-  # modules/dendrites/csc-token.nix.
-  dx.cscToken.enable = true;
-
   boot = {
     initrd.kernelModules = [ "nvme" ];
     resumeDevice = "/dev/nvme0n1p3";
