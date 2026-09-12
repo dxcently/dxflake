@@ -70,9 +70,10 @@
   # dies with the desktop session rather than with the boot.
   # The song carries the livery (palette + component tiers) and nothing else —
   # host-agnostic by contract, so this one line is the whole rice swap. Its own
-  # rice.nix self-gates on `aoide.song == "nocturne"`; every other song in the
-  # songbook stays inert. Back to the shipped standard by naming "sonata".
-  aoide.song = "nocturne";
+  # rice.nix self-gates on `aoide.song == "sonata"`; every other song in the
+  # songbook stays inert. Osaka keeps the shipped standard explicit by naming
+  # "sonata" here.
+  aoide.song = "sonata";
 
   # ── Cover art: the venue's own ground ────────────────────────────────────
   # Both nocturne and sonata leave the cover note null on purpose ("no cover"

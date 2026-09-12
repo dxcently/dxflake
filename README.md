@@ -178,6 +178,25 @@ hibernate        # systemctl hibernate
 lock             # hyprlock
 ```
 
+## Aoide directional trust (runtime)
+
+Aoide node permission grants (`read`/`message`/`spawn`) are runtime-owned in this
+repo for now; there is no declarative `dxflake` option that sets peer grants.
+
+On the approver host, authorize Osaka/Yomi/Sakaki explicitly at runtime:
+
+- `aoide node allow osaka read on`
+- `aoide node allow osaka message on`
+- `aoide node allow osaka spawn on`
+- `aoide node allow yomi-strix read on`
+- `aoide node allow yomi-strix message on`
+- `aoide node allow yomi-strix spawn on`
+- `aoide node allow sakaki read on`
+- `aoide node allow sakaki message on`
+- `aoide node allow sakaki spawn on`
+
+Those grants are not applied from this flake.
+
 ---
 
 ## Adding a module
