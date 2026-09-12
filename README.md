@@ -180,20 +180,24 @@ lock             # hyprlock
 
 ## Aoide directional trust (runtime)
 
-Aoide node permission grants (`read`/`message`/`spawn`) are runtime-owned in this
-repo for now; there is no declarative `dxflake` option that sets peer grants.
+Aoide runtime is wired from the pinned Aoide input by binding the core subflake as
+`inputs.aoide = inputs.aoide.inputs.aoide`, then importing the upstream module
+aggregate once via `modules/default.nix`.
 
-On the approver host, authorize Osaka/Yomi/Sakaki explicitly at runtime:
+Aoide node grants (`read`/`message`/`spawn`) are runtime-owned in this repo.
+Each receiving host grants only the other two peers:
 
-- `aoide node allow osaka read on`
-- `aoide node allow osaka message on`
-- `aoide node allow osaka spawn on`
-- `aoide node allow yomi-strix read on`
-- `aoide node allow yomi-strix message on`
-- `aoide node allow yomi-strix spawn on`
-- `aoide node allow sakaki read on`
-- `aoide node allow sakaki message on`
-- `aoide node allow sakaki spawn on`
+| Host       | Peers to allow |
+|------------|----------------|
+| Yomi       | osaka, sakaki  |
+| Osaka      | yomi-strix, sakaki |
+| Sakaki     | yomi-strix, osaka |
+
+Apply them on the receiving host with:
+
+- `aoide node allow <peer> read on`
+- `aoide node allow <peer> message on`
+- `aoide node allow <peer> spawn on`
 
 Those grants are not applied from this flake.
 

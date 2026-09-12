@@ -135,16 +135,12 @@
       nixpkgs.lib.nixosSystem {
         specialArgs = {
           host = name;
-          inherit
-            username
-            inputs
-            system
-            nixpkgs-stable
-            ;
+          inherit username system nixpkgs-stable;
+          inputs = inputs // {aoide = inputs.aoide.inputs.aoide;};
         };
         modules = let
           discovered = walk ./modules;
-          aoideModules = walk (inputs.aoide + "/modules");
+          aoideModules = [ (inputs.aoide + "/modules/default.nix") ];
           aoideSongbook = walk (inputs.aoide + "/song/songbook");
           # The Aoide seam: pkgs.aoide (the CLI core) + the packages
           # walker overlay (hyprglass, …) — Aoide's own mkHost adds
