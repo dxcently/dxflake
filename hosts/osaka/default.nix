@@ -27,6 +27,7 @@
   # door + the secrets broker), joining the yomi-strix/sakaki/chiyo
   # federation mesh.
   dx.aoide.enable = true;
+  aoide.openai.enable = true; # Codex CLI + the official ChatGPT Linux desktop
   # The pairing popup (Aoide task #135). Raises the typed-code dialog the
   # moment an inbound pairing request parks, instead of it waiting in a
   # terminal for someone to go looking. The unit's gate is

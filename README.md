@@ -186,6 +186,8 @@ Aoide runtime is wired from the pinned Aoide input by binding the core subflake 
 `inputs.aoide = inputs.aoide.inputs.aoide`, then importing the upstream module
 aggregate once via `modules/default.nix`.
 
+Osaka enables the upstream `aoide.openai` dendrite for the Codex CLI and official ChatGPT Linux desktop alongside its Aoide session tracking.
+
 Aoide node grants (`read`/`message`/`spawn`) are runtime-owned in this repo.
 Each receiving host grants only the other two peers:
 
