@@ -2,15 +2,20 @@
   imports = [
     ./hardware.nix
     ./disko.nix
+    ../../modules/dendrites/bluetooth.nix
+    ../../modules/dendrites/claude-code.nix
+    # Desktop workstation. Dev tooling comes free from the nucleus (git,
+    # neovim, lazygit, jupyter, …); desktop/hyprland bring the GUI.
+    ../../modules/dendrites/desktop
+    ../../modules/dendrites/gpu-amd.nix
+    ../../modules/dendrites/hyprland
+    ../../modules/dendrites/hyprlock.nix
+    ../../modules/dendrites/inference.nix
+    ../../modules/dendrites/kimi-cli.nix
   ];
 
-  # Desktop workstation. Dev tooling comes free from the nucleus (git, neovim,
-  # lazygit, jupyter, …); the desktop/hyprland roles bring the GUI.
-  dx.aggregations = {
-    desktop = true;
-    hyprland = true;
-  };
-
+  dx.stylix.enable = true;
+  dx.hyprlock.enable = true;
   dx.bluetooth.enable = true;
   dx.claude-code.enable = true;
   dx.kimi-cli.enable = true;

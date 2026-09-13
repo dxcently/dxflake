@@ -1,12 +1,10 @@
 {
   pkgs,
   inputs,
-  config,
-  lib,
   ...
 }:
 {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     programs = {
       virt-manager.enable = true;
       nm-applet.enable = true;

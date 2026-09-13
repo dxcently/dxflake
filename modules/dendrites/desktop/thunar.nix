@@ -1,10 +1,8 @@
 {
   pkgs,
-  config,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     programs = {
       thunar = {
         enable = true;

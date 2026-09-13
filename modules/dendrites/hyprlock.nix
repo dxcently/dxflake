@@ -1,14 +1,11 @@
 {username, config, lib, ...}: {
-  # Carved out of the hyprland aggregation like dx.stylix.enable: a host that
-  # turns dx.aggregations.hyprland off but still wants the lock binary + PAM
-  # service (chiyo — Aoide's own hyprland dendrite binds SUPER+ESCAPE to
-  # hyprlock and shellbridge's powermenu Lock action shells it, but Aoide
-  # ships no lockscreen anchor of its own yet) flips this on independently.
-  # Defaulting to the aggregation keeps every existing hyprland host
-  # unchanged.
-  options.dx.hyprlock.enable = (lib.mkEnableOption "dxflake's own hyprlock (binary + PAM service)") // {
-    default = config.dx.aggregations.hyprland;
-  };
+  # A host-selected single, not tied to the hyprland aggregate: chiyo wants
+  # the lock binary + PAM service without hyprland (Aoide's own hyprland
+  # dendrite binds SUPER+ESCAPE to hyprlock and shellbridge's powermenu Lock
+  # action shells it, but Aoide ships no lockscreen anchor of its own yet),
+  # while a hyprland host that wants both imports this file alongside the
+  # aggregate and sets the flag explicitly.
+  options.dx.hyprlock.enable = lib.mkEnableOption "dxflake's own hyprlock (binary + PAM service)";
 
   config = lib.mkIf config.dx.hyprlock.enable {
     programs.hyprlock.enable = true;

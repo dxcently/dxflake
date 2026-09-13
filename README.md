@@ -12,7 +12,7 @@ A composable, scalable, and natural architecture
 
 > _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
 
-Modules split by *scope*, not by host — a floor everyone gets, opt-in features, and roles that bundle them. Each directory names its own files in one `default.nix`; `flake.nix` imports the single pointer `./modules`. A host still just *flips the flags* it wants — no per-host import lists, no `if hostname ==` ladders.
+Modules split by *scope*, not by host — a floor everyone gets, shared aggregates a host selects, and singles a host selects on their own. Each directory names its own files in one `default.nix`; `flake.nix` imports the single pointer `./modules`, which reaches only the floor. A host imports the shared aggregate directories and single dendrites it wants — no `if hostname ==` ladders, but a host file is exactly where a module gets named from outside its own directory.
 
 ```
 dxflake/
@@ -25,11 +25,14 @@ dxflake/
 │   ├── nucleus/              # the floor. no flag — so it applies always, everywhere.
 │   │   ├── system.nix · networking.nix · user.nix · security.nix · boot.nix
 │   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
-│   ├── aggregations.nix      # declares the role flags: dx.aggregations.{desktop,hyprland,gaming,server}
-│   └── dendrites/            # default.nix lists every line below; each sleeps till a flag wakes it
-│       ├── <feature>.nix     #   one feature, one file — bluetooth, git, kitty, stylix …
-│       ├── desktop/ hyprland/ gaming/  #   each names its own files in its own default.nix
-│       └── _shelved.nix      #   no line in dendrites/default.nix — parked, not deleted
+│   └── dendrites/            # default.nix lists only the floor dendrites below
+│       ├── bash.nix · btop.nix · direnv.nix · git.nix · mcfly.nix · neovim.nix · nh.nix
+│       ├── starship.nix · stylix.nix · yazi.nix  #   always-on; stylix's option TREE must
+│       │                                          #   ride every host (Aoide's own probe)
+│       ├── <feature>.nix     #   a host-selected single — bluetooth, kitty, hyprlock …
+│       ├── desktop/ hyprland/ gaming/ server/  #   shared aggregates; each names its own
+│       │                                       #   files in its own default.nix
+│       └── _shelved.nix      #   no line anywhere — parked, not deleted
 ├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
 ├── assets/                   # wallpapers, screenshots
@@ -40,26 +43,26 @@ dxflake/
 
 `nucleus/` is the floor every host gets unconditionally — boot, users, network, ssh, secrets, dev tools. It is named like everything else, in `nucleus/default.nix`, but declares no toggle, so it always applies. Ungated *is* what makes it the nucleus.
 
-> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100 — and every arm reaches every machine._ Each is one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr._ But an arm that touches every machine would smother them all, so each one **sleeps** until its machine whispers the waking word: `dx.<name>.enable = true`. Lean close, whiskers and all — a single sleeping arm reaches into two worlds at once, one paw the **system**, one paw the **home**, both waking on the same word. A dendrite never asks _"which machine am I for?"_ It reaches all of them and waits to be called. This is the way. Nyaa. (=ↀωↀ=)✧
+> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100 — but only the always-on few reach every machine._ Each is one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr._ An arm that touches every machine would smother them all, so beyond the floor, each one **sleeps** until its machine names it. Lean close, whiskers and all — a single sleeping arm reaches into two worlds at once, one paw the **system**, one paw the **home**, both waking on the same import. A dendrite never asks _"which machine am I for?"_ It waits to be named. This is the way. Nyaa. (=ↀωↀ=)✧
 
-Every module under `modules/` is imported into *every* host — so a dendrite is one feature, one file, that does nothing until a flag turns it on. It carries its system config, its home-manager config, or both, all behind the same `lib.mkIf`. One file, both layers, one switch.
+The floor's dendrites are imported into *every* host; a single dendrite beyond the floor is one feature, one file, imported only by the hosts that select it, carrying its system config, its home-manager config, or both, in the same `config` block. One file, both layers, one import.
 
-> **The aggregations.** _Sometimes many arms must wake as one — the way the government pays me to deliver presents to all the children in Japan, in a single night._ `desktop`, `hyprland`, `gaming`, `server` are not folders now but *words* — role flags in `aggregations.nix`. Speak one word on a host and every arm that answers to it wakes together. One name, many arms — each still carrying its own two worlds. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
+> **The aggregations.** _Sometimes many arms must wake as one — the way the government pays me to deliver presents to all the children in Japan, in a single night._ `desktop`, `hyprland`, `gaming`, `server` are folders now, not words — shared aggregate directories under `modules/dendrites/`. Import one directory on a host and every arm inside it wakes together. One directory, many arms — each still carrying its own two worlds. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
 
-An aggregation is a **role flag**, not a bundle folder. `modules/aggregations.nix` declares `dx.aggregations.{desktop,hyprland,gaming,server}`; each dendrite that belongs to a role gates itself on it (`lib.mkIf config.dx.aggregations.desktop`). Flip the role once on a host and every member lights up.
+An aggregation is a **shared directory**, not a role flag. `modules/dendrites/{desktop,hyprland,gaming,server}/default.nix` each name their own member files, one line apiece; a host that wants the bundle imports the directory itself (`../../modules/dendrites/desktop`), never a file inside it. Import the directory once on a host and every member lights up.
 
-> **The hosts.** _And so a machine is no longer a long and tiresome confession — only a handful of wishes spoken aloud._ A host names its hardware, then flips the flags it wants. `sakaki` wishes only `server`, and purrs softly. `osaka` wishes desktop, hyprland, gaming, server — and does not tire. Read the wishes, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
+> **The hosts.** _And so a machine is no longer a long and tiresome confession — only a handful of wishes spoken aloud._ A host names its hardware, then imports the aggregates and singles it wants. `sakaki` wishes only `server`, and purrs softly. `osaka` wishes desktop, hyprland, gaming — and does not tire. Read the wishes, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
 
-A host file = `imports = [ ./hardware.nix ]`, then a short set of `dx.*` flags (plus any host-only odds inline). No module imports. Read the flags and you know the machine.
+A host file = `imports = [ ./hardware.nix ]`, plus the shared aggregate directories and single dendrites this host selects (`../../modules/dendrites/<x>`), then a short set of `dx.*` knobs for what genuinely varies (plus any host-only odds inline). A host file is the one place a module is ever named from outside the directory that holds it.
 
 Chiyo enables its SSH tunnel through `dx.cloudflared`. This flake provides no CSC (FAU) manual tunnel token module or `dx.cscToken` option.
 
-> _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, gate it behind a **flag** — a role, or its own `enable` — and let a host speak the word. To take a thing away entirely, hush its name with a `_`. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
+> _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, put it behind a **shared aggregate** or leave it a lone single, and let a host import it by name. To take a thing away entirely, hush its name with a `_`. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
 
 **The two moving parts, plainly:**
 
-- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once (`./desktop`, never `./desktop/packages.nix` from outside it). `flake.nix` imports one pointer, `./modules`.
-- **Gating** — since import no longer means active, each optional module wraps its `config` in `lib.mkIf` on a flag that is off by default. A host turns a feature on by setting the flag, not by importing the file.
+- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once (`./desktop`, never `./desktop/packages.nix` from outside it). `flake.nix` imports one pointer, `./modules`, which reaches only the floor.
+- **Selection** — a shared aggregate directory or a single dendrite is inert until some host imports it; a host's own `default.nix` is the one place that names a module from outside the directory that holds it. A `dx.*` option still gates the knobs that genuinely vary (`caddy.sites`, `nas-mounts.mounts`, …), never whether the file is reached at all.
 
 To shelve a module without deleting it, drop its line from the directory's `default.nix` (it conventionally keeps its `_`-prefixed name, e.g. `_foo.nix`, as a visual marker).
 
@@ -85,7 +88,7 @@ The difference is **pillar 2.** This flake takes pillar 1's shape — the import
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
-A host is a folder under `hosts/<name>/` with two files: a generated `hardware.nix` and a `default.nix` that flips the flags this machine wants. Every module in `modules/` reaches every host through the aggregate tree (`modules/default.nix` names `nucleus/` and `dendrites/`) — a host never imports them itself; the nucleus applies for free, and features wait behind their flags.
+A host is a folder under `hosts/<name>/` with two files: a generated `hardware.nix` and a `default.nix` that imports the aggregates and singles this machine wants. The floor reaches every host through `modules/default.nix` (`nucleus/` and the floor of `dendrites/`) with no host import needed; a shared aggregate directory or a single dendrite beyond the floor is reached only when a host names it in its own `imports`.
 Swap `<name>` for your host — it becomes the flake target.
 
 1. Clone the repo:
@@ -102,18 +105,17 @@ Swap `<name>` for your host — it becomes the flake target.
    sudo nixos-generate-config --show-hardware-config > hosts/<name>/hardware.nix
    ```
 
-3. Write `hosts/<name>/default.nix` — import only the hardware, then flip the flags this host wants (the nucleus comes for free; no module imports):
+3. Write `hosts/<name>/default.nix` — import the hardware, the shared aggregates and single dendrites this host wants (the nucleus comes for free, no import needed):
 
    ```nix
    {...}: {
-     imports = [ ./hardware.nix ];
-
-     dx.aggregations = {          # roles — each wakes a bundle of dendrites
-       desktop = true;
-       hyprland = true;
-     };
-     dx.bluetooth.enable = true;  # a single feature
-     dx.gpu-intel.enable = true;
+     imports = [
+       ./hardware.nix
+       ../../modules/dendrites/desktop    # a shared aggregate — wakes a bundle of dendrites
+       ../../modules/dendrites/hyprland
+       ../../modules/dendrites/bluetooth.nix  # a single feature
+       ../../modules/dendrites/gpu-intel.nix
+     ];
 
      # host-only odds and ends go inline:
      boot.initrd.kernelModules = [ "nvme" ];
@@ -263,12 +265,12 @@ A **home-manager** module — same gate, config nested under the user:
 
 Either way the host just speaks the word — `dx.foo.enable = true;`. One dendrite can carry **both** layers: put the system options *and* the `home-manager.users.${username}` block inside the same `mkIf` — one file, one switch, both worlds.
 
-**Three ways to gate**, pick per module:
-- **Own flag** — declare `options.dx.<name>.enable`, gate on it. Flip it per host. (`bluetooth.nix`)
-- **Ride a role** — no own option; gate on an existing aggregation, `config = lib.mkIf config.dx.aggregations.desktop {…}`. Wakes with the role. (`kitty.nix`)
-- **Always-on** — no `mkIf` at all; it applies everywhere like the nucleus. (`git.nix`)
+**Three ways to reach a host**, pick per module:
+- **Own flag** — declare `options.dx.<name>.enable`, gate on it, and have the host that wants it import the file. (`bluetooth.nix`)
+- **Ride a shared aggregate** — no own option; the file lives inside `desktop/`, `hyprland/`, `gaming/`, or `server/` and its `default.nix` names it. Wakes when a host imports the directory. (`kitty.nix`)
+- **Always-on** — no `mkIf` at all, listed in the floor's `dendrites/default.nix`; it applies everywhere like the nucleus. (`git.nix`)
 
-**What you never touch:** `flake.nix`, or another directory's `default.nix` — a file is only ever named from inside the directory that holds it. Need a brand-new role? Add it to `modules/aggregations.nix`. Want to park a file without deleting it? Drop its line from `dendrites/default.nix`.
+**What you never touch:** `flake.nix`, or another directory's `default.nix` — a file is only ever named from inside the directory that holds it, except a host's own `default.nix`, which is the one place that names a module from outside. Need a brand-new shared aggregate? Add the directory under `modules/dendrites/` and have the hosts that want it import it. Want to park a file without deleting it? Drop its line from the directory's `default.nix`.
 
 ---
 

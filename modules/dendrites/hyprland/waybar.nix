@@ -1,11 +1,9 @@
 {
   username,
-  config,
-  lib,
   ...
 }:
 {
-  config = lib.mkIf config.dx.aggregations.hyprland {
+  config = {
     home-manager.users.${username} =
       {
         pkgs,

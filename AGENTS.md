@@ -8,29 +8,29 @@ read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki 
 
 ## How it operates
 
-Two moving parts (`README.md:56`):
+Two moving parts (`README.md:64`):
 
-- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once. `flake.nix` imports one pointer, `./modules`. A shelved file just has no line (still `_`-prefixed by convention).
-- **Gating** — since "imported" no longer means "active", each module wraps its `config` in `lib.mkIf <flag>`, off by default. A host turns a feature on by *setting a flag*, never by importing a file.
+- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once. `flake.nix` imports one pointer, `./modules`, which reaches only the floor. A shelved file just has no line (still `_`-prefixed by convention).
+- **Selection** — the floor reaches every host for free; a shared aggregate directory or a single dendrite beyond the floor is inert until a host imports it. A host's own `default.nix` is the one place that ever names a module from outside the directory that holds it. A `dx.*` option still gates the knobs that genuinely vary, never whether the file is reached at all.
 
 Layout:
 
 - `modules/nucleus/` — the floor. No flag, so it applies on every host unconditionally (boot, users, network, ssh, sops, tailscale, base packages).
-- `modules/dendrites/` — one feature per file, asleep until a flag wakes it. `<feature>/` subdirs hold role-shared bits.
-- `modules/aggregations.nix` — declares role flags `dx.aggregations.{desktop,hyprland,gaming,server}`.
-- `hosts/<name>/` — `default.nix` imports only `./hardware.nix`, then flips `dx.*` flags. No module imports.
+- `modules/dendrites/` — `default.nix` lists only the always-on floor dendrites plus `stylix.nix` (its option tree must ride every host, Aoide's own probe). Everything else is a host-selected single or lives in a shared aggregate directory.
+- `modules/dendrites/{desktop,hyprland,gaming,server}/` — shared aggregate directories; each names its own member files in its own `default.nix`.
+- `hosts/<name>/` — `default.nix` imports `./hardware.nix`, the shared aggregates and single dendrites this host wants, then sets any `dx.*` knobs and host-only odds.
 
 ## Making / configuring a module
 
-Drop the file under `modules/dendrites/` (or its feature subdir) and add its line to that directory's `default.nix`. Then pick **one** gate (`README.md:168`):
+Drop the file under `modules/dendrites/` (or a shared aggregate subdir) and add its line to that directory's `default.nix`. Then pick **one** shape (`README.md:268`):
 
-- **Own flag** — `options.dx.<name>.enable = lib.mkEnableOption "<name>";` then `config = lib.mkIf config.dx.<name>.enable {…}`. Flip per host. (`bluetooth.nix`)
-- **Ride a role** — no own option; `config = lib.mkIf config.dx.aggregations.<role> {…}`. Wakes with the aggregation. (`kitty.nix`)
-- **Always-on** — no `mkIf`; applies everywhere like the nucleus. (`git.nix`)
+- **Own flag** — `options.dx.<name>.enable = lib.mkEnableOption "<name>";` then `config = lib.mkIf config.dx.<name>.enable {…}`; the host that wants it also imports the file. (`bluetooth.nix`)
+- **Ride a shared aggregate** — no own option; the file lives inside `desktop/`, `hyprland/`, `gaming/`, or `server/` and that directory's `default.nix` names it. Wakes when a host imports the directory. (`kitty.nix`)
+- **Always-on** — no `mkIf`, listed in the floor's `modules/dendrites/default.nix`; applies everywhere like the nucleus. (`git.nix`)
 
-A single dendrite can carry both system and home config: put the NixOS options *and* a `home-manager.users.${username}` block inside the same `mkIf`.
+A single dendrite can carry both system and home config: put the NixOS options *and* a `home-manager.users.${username}` block inside the same `config`.
 
-**Never** edit `flake.nix`, or name a file from outside the directory that holds it — each directory's own `default.nix` is the only place that lists it. A brand-new role goes in `modules/aggregations.nix`. To shelve a file without deleting it, drop its line from the directory's `default.nix`.
+**Never** edit `flake.nix`, or name a file from outside the directory that holds it, except a host's own `default.nix` — that is the one place selection happens. A brand-new shared aggregate is a new directory under `modules/dendrites/` with its own `default.nix`; hosts that want it import it. To shelve a file without deleting it, drop its line from the directory's `default.nix`.
 
 ## Secrets (sops-nix)
 

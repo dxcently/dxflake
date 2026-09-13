@@ -16,7 +16,7 @@
   # keeps its opaque kitty untouched.
   aoideFace = config.aoide.facets.quickshell.enable;
 in {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     home-manager.users.${username} = {
       pkgs,
       config,

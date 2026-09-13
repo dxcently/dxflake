@@ -5,14 +5,25 @@
   ...
 }:
 {
-  imports = [ ./hardware.nix ];
-  dx.aggregations = {
-    # desktop stays true: it carries pipewire, fonts, fcitx5, portals, and ly
-    # login — none of those collide with Aoide's paint. hyprland flips off
-    # below, once the paint facets are on.
-    desktop = true;
-    hyprland = false;
-  };
+  imports = [
+    ./hardware.nix
+    ../../modules/dendrites/aoide.nix
+    ../../modules/dendrites/autopsy.nix
+    ../../modules/dendrites/bluetooth.nix
+    ../../modules/dendrites/claude-code.nix
+    ../../modules/dendrites/cloudflared.nix
+    # desktop stays: it carries pipewire, fonts, fcitx5, portals, and ly
+    # login — none of those collide with Aoide's paint. hyprland is not
+    # imported, once the paint facets are on.
+    ../../modules/dendrites/desktop
+    ../../modules/dendrites/gpu-intel.nix
+    ../../modules/dendrites/hyprlock.nix
+    ../../modules/dendrites/kimi-cli.nix
+    ../../modules/dendrites/laptop.nix
+    ../../modules/dendrites/pi-coding-agent.nix
+    ../../modules/dendrites/portmaster.nix
+    ../../modules/dendrites/syncthing.nix
+  ];
   dx.stylix.enable = false;
   dx.bluetooth.enable = true;
   dx.claude-code.enable = true;
@@ -21,8 +32,6 @@
   dx.portmaster.enable = true;
   dx.syncthing.enable = true;
   dx.laptop.enable = true;
-  # consolidated to sakaki-only, 2026-07-31
-  dx.melete.enable = false;
   dx.gpu-intel.enable = true;
   dx.autopsy.enable = true;
 
@@ -43,8 +52,8 @@
   # paint stack owns the session — compositor (Hyprland wiring + livery),
   # stylix (base16 fan-out), and quickshell (bar/dock/launcher/theming) —
   # replacing dxflake's own Hyprland + Stylix dendrites, which are turned off
-  # above (`dx.aggregations.hyprland = false`, `dx.stylix.enable = false`) so
-  # only one writer ever touches the leaf options the two stacks share (see
+  # above (hyprland is not imported, `dx.stylix.enable = false`) so only one
+  # writer ever touches the leaf options the two stacks share (see
   # modules/dendrites/aoide.nix's header for the full collision reasoning).
   # aoide.hyprland.enable is the separate BEHAVIOUR dendrite (keybinds, input,
   # tiling layout) that pairs with the compositor facet's LOOK — without it
@@ -91,14 +100,14 @@
   # herald-feed rule hands every notification to `lyra herald push`.
   aoide.dunst.enable = true;
 
-  # Login stays dxflake's own ly (dx.aggregations.desktop above), not the
+  # Login stays dxflake's own ly (the desktop import above), not the
   # compositor facet's greetd stub — two session managers must never race the
   # same tty. The facet assigns `services.greetd.enable` plainly (true), so
   # only an mkForce wins here.
   services.greetd.enable = lib.mkForce false;
 
-  # Lock screen: dxflake's hyprlock dendrite normally rides the hyprland
-  # aggregation (now off above), but Aoide's own hyprland dendrite binds
+  # Lock screen: chiyo does not import the hyprland aggregate, so it takes
+  # dxflake's hyprlock dendrite on its own. Aoide's own hyprland dendrite binds
   # SUPER+ESCAPE to hyprlock directly and shellbridge's powermenu Lock action
   # shells the same binary — Aoide ships no lockscreen anchor of its own yet
   # (modules/dendrites/hyprlock.nix), so the binary + PAM service are carved

@@ -1,11 +1,9 @@
 {
   pkgs,
-  config,
   inputs,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     hardware = {
       opentabletdriver = {
         enable = true;

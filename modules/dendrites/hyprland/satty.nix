@@ -1,5 +1,5 @@
-{username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.hyprland {
+{username, ...}: {
+  config = {
     home-manager.users.${username} = {
       pkgs,
       config,

@@ -2,8 +2,22 @@
   imports = [
     ./hardware.nix
     ./syncthing.nix
+    ../../modules/dendrites/aoide.nix
+    ../../modules/dendrites/autologin.nix
+    ../../modules/dendrites/caddy.nix
+    ../../modules/dendrites/claude-code.nix
+    ../../modules/dendrites/cloudflared.nix
+    ../../modules/dendrites/immich.nix
+    ../../modules/dendrites/kimi-cli.nix
+    ../../modules/dendrites/melete.nix
+    ../../modules/dendrites/mneme.nix
+    ../../modules/dendrites/nas-mounts.nix
+    ../../modules/dendrites/pi-coding-agent.nix
+    ../../modules/dendrites/server
+    ../../modules/dendrites/slskd.nix
+    ../../modules/dendrites/syncthing.nix
+    ../../modules/dendrites/transmission.nix
   ];
-  dx.aggregations.server = true;
   dx.claude-code.enable = true;
   dx.pi-coding-agent.enable = true;
   dx.kimi-cli.enable = true;

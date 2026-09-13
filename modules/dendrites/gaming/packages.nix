@@ -1,10 +1,8 @@
 {
   pkgs,
-  config,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.gaming {
+  config = {
     environment.systemPackages = with pkgs; [
       osu-lazer-bin # osu! lazer rhythm game
       lutris # open gaming platform

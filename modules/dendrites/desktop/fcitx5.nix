@@ -1,11 +1,9 @@
 {
   pkgs,
   inputs,
-  config,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     i18n = {
       inputMethod = {
         enable = true;

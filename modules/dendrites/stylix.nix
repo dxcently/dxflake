@@ -32,15 +32,13 @@ in
 
   # The stylix option TREE stays imported unconditionally above (Aoide's own
   # stylix facet probes for its presence via `options ? stylix`, so the module
-  # must always ride). Whether THIS dendrite's dxflake scheme actually applies
-  # is a separate question, gated on dx.stylix.enable (defaulting to the
-  # desktop aggregation, so every existing desktop host keeps its scheme
-  # unless it opts out). When Aoide's stylix facet is active, dx.stylix keeps
+  # must always ride every host — this is the one dendrite that stays in the
+  # floor). Whether THIS dendrite's dxflake scheme actually applies is a
+  # separate question, gated on dx.stylix.enable, off by default: a host
+  # names it explicitly. When Aoide's stylix facet is active, dx.stylix keeps
   # only personal defaults and stays out of color ownership for
   # `stylix.base16Scheme`/`stylix.polarity`.
-  options.dx.stylix.enable = (lib.mkEnableOption "dxflake's own Stylix theme (Rosé Pine)") // {
-    default = config.dx.aggregations.desktop;
-  };
+  options.dx.stylix.enable = lib.mkEnableOption "dxflake's own Stylix theme (Rosé Pine)";
   config = lib.mkIf config.dx.stylix.enable {
     stylix =
       (

@@ -1,3 +1,9 @@
+# modules/dendrites/gaming/default.nix — the gaming aggregate. Names its own
+# files, one line each, LC_ALL=C order.
 {
-  imports = [ ./packages.nix ];
+  imports = [
+    ./aagl.nix
+    ./packages.nix
+    ./steam.nix
+  ];
 }

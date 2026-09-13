@@ -1,10 +1,8 @@
 {
   pkgs,
-  config,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.gaming {
+  config = {
     programs = {
       steam = {
         enable = true;

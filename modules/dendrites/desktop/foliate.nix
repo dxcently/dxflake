@@ -1,10 +1,8 @@
 {
   username,
-  config,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     home-manager.users.${username} = {
       pkgs,
       config,

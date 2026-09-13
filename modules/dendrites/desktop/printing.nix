@@ -1,5 +1,5 @@
-{config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
+{...}: {
+  config = {
     services.printing.enable = true;
     programs.system-config-printer.enable = true;
   };

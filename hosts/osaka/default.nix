@@ -5,12 +5,28 @@
   ...
 }:
 {
-  imports = [ ./hardware.nix ];
-  dx.aggregations = {
-    desktop = true;
-    hyprland = true;
-    gaming = true;
-  };
+  imports = [
+    ./hardware.nix
+    ../../modules/dendrites/aoide.nix
+    ../../modules/dendrites/autopsy.nix
+    ../../modules/dendrites/claude-code.nix
+    ../../modules/dendrites/desktop
+    ../../modules/dendrites/gaming
+    ../../modules/dendrites/gpu-amd.nix
+    ../../modules/dendrites/gpu-screen-recorder.nix
+    ../../modules/dendrites/hyprland
+    ../../modules/dendrites/hyprlock.nix
+    ../../modules/dendrites/inference.nix
+    ../../modules/dendrites/k3b.nix
+    ../../modules/dendrites/kimi-cli.nix
+    ../../modules/dendrites/nas-mounts.nix
+    ../../modules/dendrites/openrazer.nix
+    ../../modules/dendrites/pi-coding-agent.nix
+    ../../modules/dendrites/syncthing.nix
+    ../../modules/dendrites/virtualisation.nix
+  ];
+  dx.stylix.enable = true;
+  dx.hyprlock.enable = true;
   dx.claude-code.enable = true;
   dx.pi-coding-agent.enable = true;
   dx.kimi-cli.enable = true;
@@ -22,8 +38,6 @@
   dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm, discrete RX 7600)
   dx.k3b.enable = true;
   dx.autopsy.enable = true;
-  # consolidated to sakaki-only, 2026-07-31
-  dx.melete.enable = false;
   # Core Aoide (modules/dendrites/aoide.nix: binaries + aoided + the A2A
   # door + the secrets broker), joining the yomi-strix/sakaki/chiyo
   # federation mesh.
@@ -48,14 +62,14 @@
   # herald — and it is the only facet that composes with dxflake's own
   # Hyprland + Stylix dendrites: it needs nothing but graphical-session.target
   # and a compositor that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE,
-  # which dx.aggregations.hyprland already provides.
+  # which the hyprland import already provides.
   #
   # The compositor facet stays OFF so dxflake's Hyprland behavior stays intact.
   # Stylix ownership is delegated to the AOIDE stylix facet so colors follow
   # livery while dx.stylix keeps fonts/cursors/icons and non-style targets.
-  # This is load-bearing for Osaka specifically: chiyo turns dxflake paint off
-  # (`dx.aggregations.hyprland = false`, `dx.stylix.enable = false`) and can run
-  # all AOIDE facets because it no longer overlaps this side of the theme stack.
+  # This is load-bearing for Osaka specifically: chiyo does not import hyprland
+  # (`dx.stylix.enable = false`) and can run all AOIDE facets because it no
+  # longer overlaps this side of the theme stack.
   #
   # ── Reverting to the plain flake rice ────────────────────────────────────
   # Flip `aoide.facets.quickshell.enable` back to false (and with it lyra and

@@ -1,10 +1,8 @@
 {
   pkgs,
-  config,
-  lib,
   ...
 }: {
-  config = lib.mkIf config.dx.aggregations.hyprland {
+  config = {
     environment.systemPackages = with pkgs; [
       waybar # highly customizable Wayland status bar
       dunst # lightweight notification daemon

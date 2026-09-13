@@ -1,11 +1,9 @@
 {
-  config,
   pkgs,
-  lib,
   ...
 }:
 {
-  config = lib.mkIf config.dx.aggregations.desktop {
+  config = {
     fonts = {
       packages = with pkgs; [
         corefonts
@@ -20,8 +18,8 @@
         nerd-fonts.comic-shanns-mono
         nerd-fonts.shure-tech-mono
         nerd-fonts.lekton
-        (pkgs.callPackage ./../../pkgs/azuki-font-b { })
-        (pkgs.callPackage ./../../pkgs/azuki-font { })
+        (pkgs.callPackage ./../../../pkgs/azuki-font-b { })
+        (pkgs.callPackage ./../../../pkgs/azuki-font { })
       ];
     };
   };

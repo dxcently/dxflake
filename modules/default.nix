@@ -3,7 +3,6 @@
 # ever named from outside the directory that holds it.
 {
   imports = [
-    ./aggregations.nix
     ./dendrites
     ./nucleus
   ];
