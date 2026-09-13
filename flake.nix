@@ -151,7 +151,7 @@
           };
           modules =
             let
-              discovered = walk ./modules;
+              discovered = [ ./modules ];
               aoideModules = [ (inputs.aoide + "/modules/default.nix") ];
               aoideSongbook = walk (inputs.aoide + "/song/songbook");
               # The Aoide seam: pkgs.aoide (the CLI core) + the packages

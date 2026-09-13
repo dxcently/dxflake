@@ -12,24 +12,24 @@ A composable, scalable, and natural architecture
 
 > _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
 
-Modules split by *scope*, not by host — a floor everyone gets, opt-in features, and roles that bundle them. `flake.nix` finds every module by itself; a host just *flips the flags* it wants — no import lists, no `if hostname ==` ladders.
+Modules split by *scope*, not by host — a floor everyone gets, opt-in features, and roles that bundle them. Each directory names its own files in one `default.nix`; `flake.nix` imports the single pointer `./modules`. A host still just *flips the flags* it wants — no per-host import lists, no `if hostname ==` ladders.
 
 ```
 dxflake/
-├── flake.nix                 # the registry. discovers every module, summons a machine in one line.
+├── flake.nix                 # the registry. imports ./modules, summons a machine in one line.
 ├── hosts/
 │   ├── chiyo/                # laptop · Intel iGPU
 │   ├── osaka/                # workstation · AMD GPU
 │   └── sakaki/               # headless server
-├── modules/                  # ← flake.nix imports EVERY .nix in here, into every host
+├── modules/                  # default.nix names nucleus/ + dendrites/, into every host
 │   ├── nucleus/              # the floor. no flag — so it applies always, everywhere.
 │   │   ├── system.nix · networking.nix · user.nix · security.nix · boot.nix
 │   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
 │   ├── aggregations.nix      # declares the role flags: dx.aggregations.{desktop,hyprland,gaming,server}
-│   └── dendrites/            # the optional limbs — imported everywhere, asleep until a flag wakes them
+│   └── dendrites/            # default.nix lists every line below; each sleeps till a flag wakes it
 │       ├── <feature>.nix     #   one feature, one file — bluetooth, git, kitty, stylix …
-│       ├── desktop/ hyprland/ gaming/  #   role-shared bits (packages + the odd shared knob)
-│       └── _shelved.nix      #   a leading _ hides a file from discovery — parked, not deleted
+│       ├── desktop/ hyprland/ gaming/  #   each names its own files in its own default.nix
+│       └── _shelved.nix      #   no line in dendrites/default.nix — parked, not deleted
 ├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
 ├── assets/                   # wallpapers, screenshots
@@ -38,7 +38,7 @@ dxflake/
 
 > **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath all three machines: the system, the network, the user, the secrets that keep the night out, the developer's claws— er, _tools._ You do not _choose_ the nucleus. It wears no flag, and so it simply _is_ — on every machine, always. Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
 
-`nucleus/` is the floor every host gets unconditionally — boot, users, network, ssh, secrets, dev tools. It is discovered like everything else, but declares no toggle, so it always applies. Ungated *is* what makes it the nucleus.
+`nucleus/` is the floor every host gets unconditionally — boot, users, network, ssh, secrets, dev tools. It is named like everything else, in `nucleus/default.nix`, but declares no toggle, so it always applies. Ungated *is* what makes it the nucleus.
 
 > **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100 — and every arm reaches every machine._ Each is one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr._ But an arm that touches every machine would smother them all, so each one **sleeps** until its machine whispers the waking word: `dx.<name>.enable = true`. Lean close, whiskers and all — a single sleeping arm reaches into two worlds at once, one paw the **system**, one paw the **home**, both waking on the same word. A dendrite never asks _"which machine am I for?"_ It reaches all of them and waits to be called. This is the way. Nyaa. (=ↀωↀ=)✧
 
@@ -58,26 +58,26 @@ Chiyo enables its SSH tunnel through `dx.cloudflared`. This flake provides no CS
 
 **The two moving parts, plainly:**
 
-- **Discovery** — `flake.nix` hands every `.nix` under `modules/` to every host (`lib.filesystem.listFilesRecursive`, minus any `/_` path). No import lists to maintain.
+- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once (`./desktop`, never `./desktop/packages.nix` from outside it). `flake.nix` imports one pointer, `./modules`.
 - **Gating** — since import no longer means active, each optional module wraps its `config` in `lib.mkIf` on a flag that is off by default. A host turns a feature on by setting the flag, not by importing the file.
 
-To hide a module from discovery without deleting it, rename it with a leading underscore (`foo.nix` → `_foo.nix`).
+To shelve a module without deleting it, drop its line from the directory's `default.nix` (it conventionally keeps its `_`-prefixed name, e.g. `_foo.nix`, as a visual marker).
 
 ---
 
 ## Not the *pure* dendritic pattern
 
-This flake *is* dendritic — with auto-discovery the filesystem **is** the import list, every module is enumerated automatically, and each gates itself by option. That is the dendritic essence, and this flake has it. What it is **not** is the [*pure* dendritic pattern](https://github.com/mightyiam/dendritic) ([FAQ](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki/FAQ#dendritic-pattern-seems-just-like-a-buzzword-why-is-this-different-from-what-im-already-doing-for-the-configuration-of-my-hosts)): it stops one pillar short. Where they part is the foundation:
+This flake *is* dendritic — one file per feature, each gating itself by option, and the import list *is* the filesystem: every directory's own `default.nix` names exactly the files it holds, one line each. That is the dendritic essence, and this flake has it, on **explicit aggregation** rather than automatic enumeration. What it is **not** is the [*pure* dendritic pattern](https://github.com/mightyiam/dendritic) ([FAQ](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki/FAQ#dendritic-pattern-seems-just-like-a-buzzword-why-is-this-different-from-what-im-already-doing-for-the-configuration-of-my-hosts)): it stops one pillar short. Where they part is the foundation:
 
-| | this flake (auto-discovery) | dendritic pattern |
+| | this flake (explicit aggregation) | dendritic pattern |
 |---|---|---|
 | Foundation | `nixpkgs.lib.nixosSystem` | `flake-parts` |
-| Discovery | `lib.filesystem.listFilesRecursive` over `modules/` | `import-tree` |
+| Discovery | explicit `default.nix` aggregates, one line per file, over `modules/` | `import-tree` |
 | Auto-wiring **scope** | feeds `nixosConfigurations` **only** | one file registers into every output — `nixos` + `homeManager` + `perSystem` packages, devShells |
 | Scoping to a host | option flags (`dx.*`) | options / selection |
 | System + home | one dendrite carries both, via `home-manager.users.${username}` | one file registers into both module classes |
 
-The difference is **pillar 2.** This flake takes pillar 1 — auto-enumerate the tree — with no new dependency (`listFilesRecursive` ships in nixpkgs). Pillar 2 is `flake-parts`: a single file registering into *many* flake outputs at once (packages, devShells, multi-arch `perSystem`, whole configs). Taking it means a paradigm change (`nixosSystem → flake-parts`) plus `import-tree`, and it only pays off across outputs a single-target NixOS config doesn't ship. The "one dendrite reaches system + home" here works because `home-manager.users.${username}` is a NixOS option, not because a multi-output module system sits underneath.
+The difference is **pillar 2.** This flake takes pillar 1's shape — the import list mirrors the tree — by hand, one `default.nix` line per file, with no new dependency (`lib.filesystem.listFilesRecursive` still ships in nixpkgs; here it only serves the upstream Aoide input's songbook, not this flake's own `modules/`). Pillar 2 is `flake-parts`: a single file registering into *many* flake outputs at once (packages, devShells, multi-arch `perSystem`, whole configs). Taking it means a paradigm change (`nixosSystem → flake-parts`) plus `import-tree`, and it only pays off across outputs a single-target NixOS config doesn't ship. The "one dendrite reaches system + home" here works because `home-manager.users.${username}` is a NixOS option, not because a multi-output module system sits underneath.
 
 ---
 
@@ -85,7 +85,7 @@ The difference is **pillar 2.** This flake takes pillar 1 — auto-enumerate the
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
-A host is a folder under `hosts/<name>/` with two files: a generated `hardware.nix` and a `default.nix` that flips the flags this machine wants. Every module in `modules/` is auto-discovered — you never import them; the nucleus applies for free, and features wait behind their flags.
+A host is a folder under `hosts/<name>/` with two files: a generated `hardware.nix` and a `default.nix` that flips the flags this machine wants. Every module in `modules/` reaches every host through the aggregate tree (`modules/default.nix` names `nucleus/` and `dendrites/`) — a host never imports them itself; the nucleus applies for free, and features wait behind their flags.
 Swap `<name>` for your host — it becomes the flake target.
 
 1. Clone the repo:
@@ -235,7 +235,7 @@ Host-only tests are still done as eval-only overrides (no file changes): use an
 
 ## Adding a module
 
-Drop a `.nix` anywhere under `modules/` and it is already imported into every host — you never edit `flake.nix` or an imports list. The whole job is three steps: **write the file → gate it → flip the flag on a host.**
+Drop a `.nix` under `modules/dendrites/` (or the feature's own subdirectory) and add its line to that directory's `default.nix` — you never edit `flake.nix`. The whole job: **write the file → list it → gate it → flip the flag on a host.**
 
 A **system (NixOS)** module — its own switch, config at the system level:
 
@@ -268,7 +268,7 @@ Either way the host just speaks the word — `dx.foo.enable = true;`. One dendri
 - **Ride a role** — no own option; gate on an existing aggregation, `config = lib.mkIf config.dx.aggregations.desktop {…}`. Wakes with the role. (`kitty.nix`)
 - **Always-on** — no `mkIf` at all; it applies everywhere like the nucleus. (`git.nix`)
 
-**What you never touch:** `flake.nix`, any import list — discovery handles it. Need a brand-new role? Add it to `modules/aggregations.nix`. Want to park a file without deleting it? Prefix its name with `_`.
+**What you never touch:** `flake.nix`, or another directory's `default.nix` — a file is only ever named from inside the directory that holds it. Need a brand-new role? Add it to `modules/aggregations.nix`. Want to park a file without deleting it? Drop its line from `dendrites/default.nix`.
 
 ---
 

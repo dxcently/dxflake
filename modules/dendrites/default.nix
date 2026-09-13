@@ -1,0 +1,73 @@
+# modules/dendrites/default.nix — every active dendrite this tree ships.
+# One line per file, LC_ALL=C order; a directory with more than one file
+# names its own contents in its own default.nix and gets one line here for
+# the directory. A `_`-prefixed file is never listed — that is what
+# shelving means; the file stays on disk, parked.
+{
+  imports = [
+    ./aagl.nix
+    ./aoide.nix
+    ./autologin.nix
+    ./autopsy.nix
+    ./bash.nix
+    ./bluetooth.nix
+    ./btop.nix
+    ./caddy.nix
+    ./claude-code.nix
+    ./cloudflared.nix
+    ./composekey.nix
+    ./desktop
+    ./direnv.nix
+    ./displaymanager.nix
+    ./fastfetch
+    ./fcitx5.nix
+    ./flatpak.nix
+    ./floorp.nix
+    ./foliate.nix
+    ./fonts.nix
+    ./gaming
+    ./git.nix
+    ./gpu-amd.nix
+    ./gpu-intel.nix
+    ./gpu-screen-recorder.nix
+    ./gtk.nix
+    ./hardware.nix
+    ./hyprland
+    ./hyprlock.nix
+    ./immich.nix
+    ./inference.nix
+    ./jellyfin.nix
+    ./k3b.nix
+    ./kimi-cli.nix
+    ./kitty.nix
+    ./laptop.nix
+    ./mcfly.nix
+    ./melete.nix
+    ./mneme.nix
+    ./nas-mounts.nix
+    ./neovim.nix
+    ./nh.nix
+    ./openrazer.nix
+    ./pi-coding-agent.nix
+    ./pipewire.nix
+    ./portmaster.nix
+    ./printing.nix
+    ./qt.nix
+    ./rofi.nix
+    ./satty.nix
+    ./slskd.nix
+    ./starship.nix
+    ./steam.nix
+    ./stylix.nix
+    ./syncthing.nix
+    ./thunar.nix
+    ./transmission.nix
+    ./vesktop.nix
+    ./virtmanager.nix
+    ./virtualisation.nix
+    ./waybar.nix
+    ./wlogout.nix
+    ./xserver.nix
+    ./yazi.nix
+  ];
+}

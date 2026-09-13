@@ -50,6 +50,7 @@ let
   hyprglassTheme = if stylixPolarity == "light" then "light" else "dark";
 in
 {
+  imports = [ ./packages.nix ];
   config = lib.mkIf config.dx.aggregations.hyprland {
     programs.hyprland = {
       enable = true;

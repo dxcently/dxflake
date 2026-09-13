@@ -10,7 +10,7 @@ read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki 
 
 Two moving parts (`README.md:56`):
 
-- **Discovery** — `flake.nix` hands *every* `.nix` under `modules/` to *every* host via `listFilesRecursive`. There is no import list. A leading `_` on a filename hides it from discovery.
+- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once. `flake.nix` imports one pointer, `./modules`. A shelved file just has no line (still `_`-prefixed by convention).
 - **Gating** — since "imported" no longer means "active", each module wraps its `config` in `lib.mkIf <flag>`, off by default. A host turns a feature on by *setting a flag*, never by importing a file.
 
 Layout:
@@ -22,7 +22,7 @@ Layout:
 
 ## Making / configuring a module
 
-Drop the file under `modules/` — discovery imports it. Then pick **one** gate (`README.md:168`):
+Drop the file under `modules/dendrites/` (or its feature subdir) and add its line to that directory's `default.nix`. Then pick **one** gate (`README.md:168`):
 
 - **Own flag** — `options.dx.<name>.enable = lib.mkEnableOption "<name>";` then `config = lib.mkIf config.dx.<name>.enable {…}`. Flip per host. (`bluetooth.nix`)
 - **Ride a role** — no own option; `config = lib.mkIf config.dx.aggregations.<role> {…}`. Wakes with the aggregation. (`kitty.nix`)
@@ -30,7 +30,7 @@ Drop the file under `modules/` — discovery imports it. Then pick **one** gate 
 
 A single dendrite can carry both system and home config: put the NixOS options *and* a `home-manager.users.${username}` block inside the same `mkIf`.
 
-**Never** edit `flake.nix` or any imports list to add a module — discovery handles it. A brand-new role goes in `modules/aggregations.nix`. To shelve a file without deleting it, prefix its name with `_`.
+**Never** edit `flake.nix`, or name a file from outside the directory that holds it — each directory's own `default.nix` is the only place that lists it. A brand-new role goes in `modules/aggregations.nix`. To shelve a file without deleting it, drop its line from the directory's `default.nix`.
 
 ## Secrets (sops-nix)
 
