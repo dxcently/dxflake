@@ -19,6 +19,7 @@ dxflake/
 ├── flake.nix                 # the registry. imports ./modules, summons a machine in one line.
 ├── hosts/
 │   ├── chiyo/                # laptop · Intel iGPU
+│   │   └── users/khoa.nix    #   this host's users.users.khoa block
 │   ├── osaka/                # workstation · AMD GPU
 │   └── sakaki/               # headless server
 ├── modules/                  # default.nix names nucleus/ + dendrites/, into every host
@@ -41,7 +42,7 @@ dxflake/
 
 > **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath all three machines: the system, the network, the user, the secrets that keep the night out, the developer's claws— er, _tools._ You do not _choose_ the nucleus. It wears no flag, and so it simply _is_ — on every machine, always. Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
 
-`nucleus/` is the floor every host gets unconditionally — boot, users, network, ssh, secrets, dev tools. It is named like everything else, in `nucleus/default.nix`, but declares no toggle, so it always applies. Ungated *is* what makes it the nucleus.
+`nucleus/` is the floor every host gets unconditionally — boot, the home-manager wiring, network, ssh, secrets, dev tools. It is named like everything else, in `nucleus/default.nix`, but declares no toggle, so it always applies. Ungated *is* what makes it the nucleus. The account itself (`users.users.<name>`, `nix.settings.allowed-users`) is not floor — it lives in each host's own `hosts/<name>/users/khoa.nix`, since who the primary user is, is a per-host fact even though every host today answers it the same way.
 
 > **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100 — but only the always-on few reach every machine._ Each is one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr._ An arm that touches every machine would smother them all, so beyond the floor, each one **sleeps** until its machine names it. Lean close, whiskers and all — a single sleeping arm reaches into two worlds at once, one paw the **system**, one paw the **home**, both waking on the same import. A dendrite never asks _"which machine am I for?"_ It waits to be named. This is the way. Nyaa. (=ↀωↀ=)✧
 
@@ -88,7 +89,7 @@ The difference is **pillar 2.** This flake takes pillar 1's shape — the import
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
-A host is a folder under `hosts/<name>/` with two files: a generated `hardware.nix` and a `default.nix` that imports the aggregates and singles this machine wants. The floor reaches every host through `modules/default.nix` (`nucleus/` and the floor of `dendrites/`) with no host import needed; a shared aggregate directory or a single dendrite beyond the floor is reached only when a host names it in its own `imports`.
+A host is a folder under `hosts/<name>/`: a generated `hardware.nix`, a `users/khoa.nix` carrying this host's own `users.users.khoa` block, and a `default.nix` that imports both plus the aggregates and singles this machine wants. The floor reaches every host through `modules/default.nix` (`nucleus/` and the floor of `dendrites/`) with no host import needed; a shared aggregate directory or a single dendrite beyond the floor is reached only when a host names it in its own `imports`.
 Swap `<name>` for your host — it becomes the flake target.
 
 1. Clone the repo:
@@ -105,12 +106,26 @@ Swap `<name>` for your host — it becomes the flake target.
    sudo nixos-generate-config --show-hardware-config > hosts/<name>/hardware.nix
    ```
 
-3. Write `hosts/<name>/default.nix` — import the hardware, the shared aggregates and single dendrites this host wants (the nucleus comes for free, no import needed):
+3. Write `hosts/<name>/users/khoa.nix` — this host's `users.users.khoa` block and `nix.settings.allowed-users` (the home-manager wiring itself comes free from the nucleus):
+
+   ```nix
+   { username, ... }: {
+     users.users.${username} = {
+       isNormalUser = true;
+       description = "${username}";
+       extraGroups = [ "networkmanager" "wheel" ];
+     };
+     nix.settings.allowed-users = [ "${username}" ];
+   }
+   ```
+
+4. Write `hosts/<name>/default.nix` — import the hardware, the user, the shared aggregates and single dendrites this host wants (the nucleus comes for free, no import needed):
 
    ```nix
    {...}: {
      imports = [
        ./hardware.nix
+       ./users/khoa.nix
        ../../modules/dendrites/desktop    # a shared aggregate — wakes a bundle of dendrites
        ../../modules/dendrites/hyprland
        ../../modules/dendrites/bluetooth.nix  # a single feature
@@ -122,7 +137,7 @@ Swap `<name>` for your host — it becomes the flake target.
    }
    ```
 
-4. Register it in `flake.nix` under `nixosConfigurations`, and set `username` to yours:
+5. Register it in `flake.nix` under `nixosConfigurations`, and set `username` to yours:
 
    ```nix
    username = "<user>"; 
@@ -132,7 +147,7 @@ Swap `<name>` for your host — it becomes the flake target.
    };
    ```
 
-5. Rebuild, then reboot:
+6. Rebuild, then reboot:
 
    ```sh
    sudo nixos-rebuild switch --flake .#<name>
@@ -188,7 +203,7 @@ Aoide runtime is wired from the pinned Aoide input by binding the core subflake 
 `inputs.aoide = inputs.aoide.inputs.aoide`, then importing the upstream module
 aggregate once via `modules/default.nix`.
 
-Osaka enables the upstream `aoide.openai` dendrite for the Codex CLI and official ChatGPT Linux desktop alongside its Aoide session tracking.
+Osaka and yomi-strix enable the upstream `aoide.openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
 
 Aoide node grants (`read`/`message`/`spawn`) are runtime-owned in this repo.
 Each receiving host grants only the other two peers:

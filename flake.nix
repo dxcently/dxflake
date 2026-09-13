@@ -179,11 +179,12 @@
         # Every host now carries the Aoide option surface; which flags a host
         # flips (aoide.enable, aoide.a2a.enable, aoide.facets.*, …) is a
         # hosts/<name>/default.nix decision, not a flake-level one. chiyo,
-        # osaka and sakaki flip dx.aoide.enable (modules/dendrites/aoide.nix)
-        # for the shared core; chiyo additionally flips the paint facets
-        # directly (see its host file). yomi-strix sets no aoide.* flags here
-        # at all — it manages its own Aoide integration from ~/Aoide's own
-        # flake, kept byte-identical by this fold (see mkHost's comment).
+        # osaka and sakaki import the shared aoide dendrite
+        # (modules/dendrites/aoide.nix) for the core baseline; chiyo
+        # additionally flips the paint facets directly (see its host file).
+        # yomi-strix sets exactly one upstream flag, `aoide.openai.enable`
+        # (Codex CLI + the official ChatGPT Linux desktop), and manages the
+        # rest of its Aoide integration from its own flake at ~/Aoide.
         chiyo = mkHost "chiyo";
         osaka = mkHost "osaka";
         sakaki = mkHost "sakaki";

@@ -26,11 +26,6 @@
             };
           };
         });
-        # soundconverter 4.0.6's test suite breaks under Python 3.14 (tests/test.py
-        # does args[1:] on a None argv); skip the install-check to unblock rebuilds.
-        soundconverter = prev.soundconverter.overrideAttrs (_: {
-          doInstallCheck = false;
-        });
       })
     ];
   };

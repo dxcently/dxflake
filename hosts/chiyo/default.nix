@@ -7,6 +7,7 @@
 {
   imports = [
     ./hardware.nix
+    ./users/khoa.nix
     ../../modules/dendrites/aoide.nix
     ../../modules/dendrites/autopsy.nix
     ../../modules/dendrites/bluetooth.nix

@@ -2,6 +2,7 @@
   imports = [
     ./hardware.nix
     ./syncthing.nix
+    ./users/khoa.nix
     ../../modules/dendrites/aoide.nix
     ../../modules/dendrites/autologin.nix
     ../../modules/dendrites/caddy.nix

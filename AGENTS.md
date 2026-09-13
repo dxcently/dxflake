@@ -15,10 +15,10 @@ Two moving parts (`README.md:64`):
 
 Layout:
 
-- `modules/nucleus/` — the floor. No flag, so it applies on every host unconditionally (boot, users, network, ssh, sops, tailscale, base packages).
+- `modules/nucleus/` — the floor. No flag, so it applies on every host unconditionally (boot, the home-manager wiring, network, ssh, sops, tailscale, base packages, the `openldap` overlay — a fleet-wide build fix, not a host selection).
 - `modules/dendrites/` — `default.nix` lists only the always-on floor dendrites plus `stylix.nix` (its option tree must ride every host, Aoide's own probe). Everything else is a host-selected single or lives in a shared aggregate directory.
 - `modules/dendrites/{desktop,hyprland,gaming,server}/` — shared aggregate directories; each names its own member files in its own `default.nix`.
-- `hosts/<name>/` — `default.nix` imports `./hardware.nix`, the shared aggregates and single dendrites this host wants, then sets any `dx.*` knobs and host-only odds.
+- `hosts/<name>/` — `default.nix` imports `./hardware.nix`, `./users/khoa.nix`, the shared aggregates and single dendrites this host wants, then sets any `dx.*` knobs and host-only odds. `hosts/<name>/users/khoa.nix` is this host's own `users.users.khoa` block and `nix.settings.allowed-users` — the one piece of the user the nucleus does not carry. A host-only overlay (e.g. osaka's `soundconverter` fix) lives beside its consumer in that host's `default.nix`, not the nucleus.
 
 ## Making / configuring a module
 

@@ -2,6 +2,7 @@
   imports = [
     ./hardware.nix
     ./disko.nix
+    ./users/khoa.nix
     ../../modules/dendrites/bluetooth.nix
     ../../modules/dendrites/claude-code.nix
     # Desktop workstation. Dev tooling comes free from the nucleus (git,
