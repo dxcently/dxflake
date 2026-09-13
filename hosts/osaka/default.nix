@@ -93,6 +93,50 @@
   # Delete this line to hand the cover note back to whatever song is playing.
   aoide.livery.wallpaper = lib.mkForce ../../assets/wallpapers/hero.webp;
 
+  # ── Recolour: Rosé Pine over sonata's own warm ramp (osaka only) ─────────
+  # sonata's authored palette is a cream/gold ramp; osaka wants dxflake's
+  # usual Rosé Pine instead, but with AOIDE owning stylix here, the override
+  # tier (lib/livery.nix, host-set only) is the one legal way to get there —
+  # editing sonata's livery.json would repaint every host performing it, and
+  # sonata stays the standard song per the comment above.
+  #
+  # The five anchors below recolour every sonata slot built from that exact
+  # hex in one pass: palette.*, base16.{base00,base05,base0A,base08,base0B},
+  # bar.*, notif.* and window.border all trace back to bg/fg/accent/urgent/
+  # hot in sonata's own livery.json. The remaining base16 slots and
+  # window.borderInactive don't carry an anchor's value, so they're set by
+  # the named-key tier instead. Together this reproduces dxflake's own fixed
+  # Rosé Pine (modules/dendrites/stylix.nix's `fixedRosePine`) slot-for-slot,
+  # scoped to this host only.
+  aoide.livery.override = {
+    bg = "#191724";
+    fg = "#e0def4";
+    accent = "#ebbcba"; # rose — sonata's accent anchor lives at base0A
+    urgent = "#eb6f92"; # love — base08
+    hot = "#31748f"; # pine — base0B
+    base16 = {
+      base01 = "#1f1d2e";
+      base02 = "#26233a";
+      base03 = "#6e6a86";
+      base04 = "#908caa";
+      base06 = "#e0def4";
+      base07 = "#524f67";
+      base09 = "#f6c177";
+      base0C = "#9ccfd8";
+      base0D = "#c4a7e7";
+      base0E = "#f6c177";
+      base0F = "#524f67";
+    };
+    # foam — sonata's inactive border lives at base0C, not an anchor.
+    window.borderInactive = "#9ccfd8";
+  };
+  # The override tier only recolours livery hexes; AOIDE's stylix facet still
+  # pins `polarity = lib.mkDefault "light"` for every song, sonata included
+  # (its own rice.nix: "the song cannot flip it"). mkDefault is exactly the
+  # host-overridable seam, so this plain assignment wins over it here and
+  # matches the Rosé Pine base16 above without touching the song.
+  stylix.polarity = "dark";
+
   # ── The wallpaper picker's library ───────────────────────────────────────
   # SUPER+W summons AoideWallpaperPicker, which enumerates its grid by shelling
   # `ls -1 $AOIDE_ROOT/song/covers` and, on a pick, stages the chosen path into
