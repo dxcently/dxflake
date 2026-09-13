@@ -1,6 +1,4 @@
 {
-  lib,
-  config,
   pkgs,
   inputs,
   username,
@@ -15,9 +13,7 @@ let
   };
 in
 {
-  options.dx.melete.enable = lib.mkEnableOption "Melete AI harness service";
-
-  config = lib.mkIf config.dx.melete.enable {
+  config = {
     # --- Dev-checkout baseline, self-update floats above it ------------------
     # Nix builds the binary from ~/melete (pkgs/melete-package.nix).
     # We seed ~/.local/bin/melete from that store binary ONLY when the build

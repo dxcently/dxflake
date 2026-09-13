@@ -1,11 +1,5 @@
 {
-  pkgs,
-  config,
-  lib,
-  ...
-}: {
-  options.dx.virtualisation.enable = lib.mkEnableOption "virtualisation";
-  config = lib.mkIf config.dx.virtualisation.enable {
+  config = {
     virtualisation = {
       libvirtd = {
         enable = true;

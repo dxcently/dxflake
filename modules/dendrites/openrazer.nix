@@ -1,11 +1,5 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}: {
-  options.dx.openrazer.enable = lib.mkEnableOption "openrazer";
-  config = lib.mkIf config.dx.openrazer.enable {
+{ pkgs, ... }: {
+  config = {
     hardware.openrazer.enable = true;
     environment.systemPackages = with pkgs; [
       openrazer-daemon

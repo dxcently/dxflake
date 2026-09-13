@@ -15,13 +15,7 @@
   ];
 
   dx.stylix.enable = true;
-  dx.hyprlock.enable = true;
-  dx.bluetooth.enable = true;
-  dx.claude-code.enable = true;
-  dx.kimi-cli.enable = true;
   aoide.openai.enable = true; # Codex CLI + the official ChatGPT Linux desktop
-  dx.gpu-amd.enable = true; # Strix Halo RDNA 3.5 iGPU
-  dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm)
   dx.inference.igpu = true; # Strix Halo — unified memory, not a discrete card
 
   # Strix Halo (Ryzen AI Max) is new silicon — ride the latest kernel for the

@@ -1,6 +1,5 @@
-{config, lib, ...}: {
-  options.dx.laptop.enable = lib.mkEnableOption "laptop";
-  config = lib.mkIf config.dx.laptop.enable {
+{
+  config = {
     services.auto-cpufreq.enable = true;
     services.auto-cpufreq.settings = {
       battery = {

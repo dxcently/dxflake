@@ -1,6 +1,5 @@
 {
   lib,
-  config,
   pkgs,
   inputs,
   username,
@@ -11,7 +10,7 @@ let
   # — version and contents follow that repo. See flake.nix for how to pick up
   # a new commit or a dirty worktree.
   #
-  # This no longer depends on dx.melete.enable: the release fetch used to
+  # This no longer depends on the melete dendrite: the release fetch used to
   # borrow melete's GitHub token wiring, so mneme could only build alongside
   # it. A source build needs no credential, so the two are independent now.
   mnemePkg = pkgs.callPackage ../../pkgs/mneme-package.nix {
@@ -19,9 +18,7 @@ let
   };
 in
 {
-  options.dx.mneme.enable = lib.mkEnableOption "Mneme vault MCP server";
-
-  config = lib.mkIf config.dx.mneme.enable {
+  config = {
     # Dev-checkout baseline, mirrors melete.nix's meleteSeed. Nix builds from
     # ~/mneme (pkgs/mneme-package.nix). Unlike melete, mneme has no
     # self-update of its own, so this is the ONLY thing that ever moves the

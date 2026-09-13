@@ -15,7 +15,7 @@
 # and their own credentials secret (credentialsSopsFile below) — never the
 # same tunnelId or the same credentials file entry for two boxes.
 #
-# Getting started (once per host, before flipping dx.cloudflared.enable):
+# Getting started (once per host, before importing this dendrite):
 #   1. Buy a domain and move its DNS to Cloudflare (nameservers) — once, for
 #      the whole zone, not per host.
 #   2. On any machine with a browser:
@@ -26,18 +26,15 @@
 #        sops secrets/cloudflared-<hostname>.yaml   # key `credentials:` = the <uuid>.json content verbatim
 #      (sakaki, the first host wired here, kept the unsuffixed
 #      secrets/cloudflared.yaml — its credentialsSopsFile default.)
-#   4. In hosts/<hostname>/default.nix:
+#   4. In hosts/<hostname>/default.nix, import this file and dx.caddy.nix
+#      (only if `hostnames` is non-empty), then set:
 #        dx.cloudflared = {
-#          enable = true;
 #          tunnelId = "<uuid>";                                # from step 2
 #          credentialsSopsFile = ../../secrets/cloudflared-<hostname>.yaml; # from step 3, omit for sakaki
 #          hostnames = [ "example.com" "www.example.com" ];     # http, keep in sync with dx.caddy.sites
 #          sshHostnames = [ "<hostname>-ssh.example.com" ];     # ssh, no Caddy needed
 #        };
-#        dx.caddy = {                        # only if `hostnames` is non-empty
-#          enable = true;
-#          sites."example.com".webRoot = /var/www/personal;
-#        };
+#        dx.caddy.sites."example.com".webRoot = /var/www/personal;
 #   5. In Cloudflare DNS: CNAME each hostname (both lists) -> <tunnelId>.cfargotunnel.com (proxied).
 #   6. sudo nixos-rebuild switch --flake .#<hostname>
 #   7. To reach an sshHostnames entry from another box:
@@ -60,8 +57,6 @@ let
 in
 {
   options.dx.cloudflared = {
-    enable = lib.mkEnableOption "cloudflared Cloudflare Tunnel (locally managed, ingress in Nix)";
-
     tunnelId = lib.mkOption {
       type = lib.types.str;
       description = ''
@@ -109,7 +104,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = {
     sops.secrets."cloudflared/credentials" = {
       sopsFile = cfg.credentialsSopsFile;
     };

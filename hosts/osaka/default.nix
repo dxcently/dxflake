@@ -26,22 +26,6 @@
     ../../modules/dendrites/virtualisation.nix
   ];
   dx.stylix.enable = true;
-  dx.hyprlock.enable = true;
-  dx.claude-code.enable = true;
-  dx.pi-coding-agent.enable = true;
-  dx.kimi-cli.enable = true;
-  dx.syncthing.enable = true;
-  dx.virtualisation.enable = true;
-  dx.openrazer.enable = true;
-  dx.gpu-amd.enable = true;
-  dx.gpu-screen-recorder.enable = true;
-  dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm, discrete RX 7600)
-  dx.k3b.enable = true;
-  dx.autopsy.enable = true;
-  # Core Aoide (modules/dendrites/aoide.nix: binaries + aoided + the A2A
-  # door + the secrets broker), joining the yomi-strix/sakaki/chiyo
-  # federation mesh.
-  dx.aoide.enable = true;
   aoide.openai.enable = true; # Codex CLI + the official ChatGPT Linux desktop
   # The pairing popup (Aoide task #135). Raises the typed-code dialog the
   # moment an inbound pairing request parks, instead of it waiting in a
@@ -158,10 +142,7 @@
   # org.freedesktop.Notifications on the bus here. Every rule is skip_display;
   # dunst feeds `lyra herald push` and Quickshell draws.
   aoide.dunst.enable = true;
-  dx.nas-mounts = {
-    enable = true;
-    mounts."/mnt/kaori-media".export = "/volume1/media";
-  };
+  dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
   environment.systemPackages = with pkgs; [
     soundconverter
     udiskie

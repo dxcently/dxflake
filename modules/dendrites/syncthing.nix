@@ -5,8 +5,7 @@
   ...
 }:
 {
-  options.dx.syncthing.enable = lib.mkEnableOption "syncthing";
-  config = lib.mkIf config.dx.syncthing.enable {
+  config = {
     services = {
       syncthing = {
         enable = true;

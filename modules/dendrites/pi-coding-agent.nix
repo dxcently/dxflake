@@ -1,7 +1,5 @@
 {
   pkgs,
-  config,
-  lib,
   username,
   ...
 }:
@@ -90,8 +88,7 @@ let
   '';
 in
 {
-  options.dx.pi-coding-agent.enable = lib.mkEnableOption "pi coding agent CLI";
-  config = lib.mkIf config.dx.pi-coding-agent.enable {
+  config = {
     home-manager.users.${username} = {
       programs.pi-coding-agent = {
         enable = true;

@@ -1,11 +1,5 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}: {
-  options.dx.autopsy.enable = lib.mkEnableOption "Autopsy digital forensics suite";
-  config = lib.mkIf config.dx.autopsy.enable {
+{ pkgs, ... }: {
+  config = {
     nixpkgs.overlays = [
       (final: prev: {
         # upstream's wrapper never puts sleuthkit's libtsk.so.23 on LD_LIBRARY_PATH,

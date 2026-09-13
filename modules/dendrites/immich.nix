@@ -6,8 +6,6 @@
   cfg = config.dx.immich;
 in {
   options.dx.immich = {
-    enable = lib.mkEnableOption "Immich photo library (media on kaori over NFS)";
-
     mediaLocation = lib.mkOption {
       type = lib.types.path;
       default = "/mnt/immich";
@@ -15,7 +13,7 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = {
     # Media lives on kaori; Postgres and Redis stay on sakaki's NVMe. NFS
     # cannot be trusted with Postgres' file locking, and the module already
     # defaults the DB to a local unix socket -- so DO NOT set
@@ -48,12 +46,9 @@ in {
       }
     ];
 
-    dx.nas-mounts = {
-      enable = true;
-      mounts.${cfg.mediaLocation} = {
-        export = "/volume1/immich";
-        requiredBy = ["immich-server"];
-      };
+    dx.nas-mounts.mounts.${cfg.mediaLocation} = {
+      export = "/volume1/immich";
+      requiredBy = ["immich-server"];
     };
   };
 }

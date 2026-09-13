@@ -1,7 +1,5 @@
 { config, lib, username, ... }: {
-  options.dx.slskd.enable = lib.mkEnableOption "slskd (headless Soulseek daemon)";
-
-  config = lib.mkIf config.dx.slskd.enable {
+  config = {
     sops.secrets."slskd/username" = {
       sopsFile = ../../secrets/slskd.yaml;
       owner = username;

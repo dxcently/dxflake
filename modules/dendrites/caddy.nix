@@ -23,8 +23,6 @@ let
 in
 {
   options.dx.caddy = {
-    enable = lib.mkEnableOption "Caddy reverse proxy behind the cloudflared tunnel";
-
     sites = lib.mkOption {
       default = { };
       description = ''
@@ -61,7 +59,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = {
     services.caddy = {
       enable = true;
       # One site block per hostname, all bound to loopback :8080. Caddy merges

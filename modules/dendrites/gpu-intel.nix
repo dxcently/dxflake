@@ -1,11 +1,5 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}: {
-  options.dx.gpu-intel.enable = lib.mkEnableOption "gpu-intel";
-  config = lib.mkIf config.dx.gpu-intel.enable {
+{ pkgs, ... }: {
+  config = {
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [

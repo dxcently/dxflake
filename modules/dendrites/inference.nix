@@ -27,7 +27,6 @@ let
 in
 {
   options.dx.inference = {
-    enable = lib.mkEnableOption "local AI inference stack (Ollama + Open-WebUI, ROCm)";
     igpu = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -39,14 +38,15 @@ in
     };
   };
 
-  config = lib.mkIf config.dx.inference.enable {
+  config = {
     # Requires an AMD GPU wired up (ROCm userspace, amdgpu). The desktop hosts
-    # that turn this on also flip dx.gpu-amd.enable; assert so a misconfigured
-    # host fails loudly at eval instead of silently falling back to CPU.
+    # that turn this on also import dx.gpu-amd; assert on the driver it
+    # actually sets so a misconfigured host fails loudly at eval instead of
+    # silently falling back to CPU.
     assertions = [
       {
-        assertion = config.dx.gpu-amd.enable;
-        message = "dx.inference requires dx.gpu-amd.enable = true (ROCm/amdgpu).";
+        assertion = lib.elem "amdgpu" config.services.xserver.videoDrivers;
+        message = "dx.inference requires the gpu-amd dendrite imported (amdgpu in services.xserver.videoDrivers).";
       }
     ];
 

@@ -1,6 +1,5 @@
-{config, lib, ...}: {
-  options.dx.bluetooth.enable = lib.mkEnableOption "bluetooth";
-  config = lib.mkIf config.dx.bluetooth.enable {
+{
+  config = {
     hardware.bluetooth.enable = true;
     services.blueman.enable = true;
   };

@@ -1,7 +1,7 @@
 # CLAUDE.md — dxflake
 
 A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server).
-Melete (the AI agent harness, `dx.melete.enable`) runs sakaki-only — pinned client v0.2.0 via `pkgs/melete-client-package.nix` (call site in `modules/dendrites/melete.nix`).
+Melete (the AI agent harness, `modules/dendrites/melete.nix`) runs sakaki-only — imported there and nowhere else, pinned client v0.2.0 via `pkgs/melete-client-package.nix` (call site in the dendrite itself).
 Melete's spawned agent turns use the real `claude` CLI by default (resolved from PATH via `[claude] binary = "claude"` in the out-of-band `config.toml`). The pi-agent shim (`~/.config/melete/bin/melete-agent`) is retained on disk but no longer routed to — point `[claude] binary` back at it to restore pi routing (`deepseek/deepseek-v4-pro` for coding/execution with thinking scaled by complexity, `kimi-coding/k3-256k` for planning/escalation).
 This file is a **registry**: where things live and how to add them. For the *why*,
 read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki (below).
@@ -24,9 +24,10 @@ Layout:
 
 Drop the file under `modules/dendrites/` (or a shared aggregate subdir) and add its line to that directory's `default.nix`. Then pick **one** shape (`README.md:268`):
 
-- **Own flag** — `options.dx.<name>.enable = lib.mkEnableOption "<name>";` then `config = lib.mkIf config.dx.<name>.enable {…}`; the host that wants it also imports the file. (`bluetooth.nix`)
+- **Imported = active** — no `options.dx.<name>.enable`; `config` applies unconditionally once a host imports the file, and dropping the import is the opt-out. (`bluetooth.nix`)
+- **`dx.` knobs for what genuinely varies** — keep `options.dx.<name>.<knob>` only for config that differs per host, never for whether the module runs. (`caddy.sites`, `cloudflared.tunnelId`, `nas-mounts.mounts`)
 - **Ride a shared aggregate** — no own option; the file lives inside `desktop/`, `hyprland/`, `gaming/`, or `server/` and that directory's `default.nix` names it. Wakes when a host imports the directory. (`kitty.nix`)
-- **Always-on** — no `mkIf`, listed in the floor's `modules/dendrites/default.nix`; applies everywhere like the nucleus. (`git.nix`)
+- **Always-on** — listed in the floor's `modules/dendrites/default.nix`; applies everywhere like the nucleus. (`git.nix`)
 
 A single dendrite can carry both system and home config: put the NixOS options *and* a `home-manager.users.${username}` block inside the same `config`.
 

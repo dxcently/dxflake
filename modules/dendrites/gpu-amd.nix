@@ -1,11 +1,5 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}: {
-  options.dx.gpu-amd.enable = lib.mkEnableOption "gpu-amd";
-  config = lib.mkIf config.dx.gpu-amd.enable {
+{ pkgs, ... }: {
+  config = {
     boot.initrd.kernelModules = ["amdgpu"];
     services.xserver.videoDrivers = ["amdgpu"];
     hardware.graphics = {

@@ -8,8 +8,6 @@ let
 in
 {
   options.dx.nas-mounts = {
-    enable = lib.mkEnableOption "NFS mounts from the kaori NAS";
-
     server = lib.mkOption {
       type = lib.types.str;
       default = "192.168.1.203";
@@ -48,7 +46,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = {
     fileSystems = lib.mapAttrs (_: m: {
       device = "${cfg.server}:${m.export}";
       fsType = "nfs";

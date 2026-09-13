@@ -1,7 +1,5 @@
 {
   pkgs,
-  config,
-  lib,
   inputs,
   ...
 }:
@@ -13,8 +11,7 @@ let
   };
 in
 {
-  options.dx.kimi-cli.enable = lib.mkEnableOption "kimi-cli (Moonshot's Kimi coding agent)";
-  config = lib.mkIf config.dx.kimi-cli.enable {
+  config = {
     environment.systemPackages = [ kimi-cli ];
   };
 }

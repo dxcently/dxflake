@@ -25,20 +25,7 @@
     ../../modules/dendrites/syncthing.nix
   ];
   dx.stylix.enable = false;
-  dx.bluetooth.enable = true;
-  dx.claude-code.enable = true;
-  dx.pi-coding-agent.enable = true;
-  dx.kimi-cli.enable = true;
-  dx.portmaster.enable = true;
-  dx.syncthing.enable = true;
-  dx.laptop.enable = true;
-  dx.gpu-intel.enable = true;
-  dx.autopsy.enable = true;
 
-  # Core Aoide (modules/dendrites/aoide.nix: binaries + aoided + the A2A
-  # door + the secrets broker), joining the yomi-strix/sakaki/osaka
-  # federation mesh — same baseline as those two.
-  dx.aoide.enable = true;
   # The door can exec an agent for peer-summoned sessions (`peer spawn
   # chiyo`), the same wiring sakaki carries — without it the door refuses
   # with "A2A spawn not configured" (observed live 2026-08-28, first
@@ -107,12 +94,11 @@
   services.greetd.enable = lib.mkForce false;
 
   # Lock screen: chiyo does not import the hyprland aggregate, so it takes
-  # dxflake's hyprlock dendrite on its own. Aoide's own hyprland dendrite binds
-  # SUPER+ESCAPE to hyprlock directly and shellbridge's powermenu Lock action
-  # shells the same binary — Aoide ships no lockscreen anchor of its own yet
-  # (modules/dendrites/hyprlock.nix), so the binary + PAM service are carved
-  # out and re-enabled independently here.
-  dx.hyprlock.enable = true;
+  # dxflake's hyprlock dendrite on its own (imported above). Aoide's own
+  # hyprland dendrite binds SUPER+ESCAPE to hyprlock directly and
+  # shellbridge's powermenu Lock action shells the same binary — Aoide ships
+  # no lockscreen anchor of its own yet (modules/dendrites/hyprlock.nix), so
+  # the binary + PAM service are carved out and imported independently here.
 
   # Non-paint utilities the (now-off) hyprland aggregation used to carry.
   # wl-clipboard/cliphist/satty/hyprshot are NOT re-added here: Aoide ships
@@ -171,7 +157,6 @@
   # Caddy in the path. See modules/dendrites/cloudflared.nix for the
   # one-time `cloudflared tunnel create` + sops steps this depends on.
   dx.cloudflared = {
-    enable = true;
     tunnelId = "18bb461d-818f-4768-adb1-89b5f21e5a10";
     credentialsSopsFile = ../../secrets/cloudflared-chiyo.yaml;
     sshHostnames = [ "chiyo-ssh.necoconeco.net" ];

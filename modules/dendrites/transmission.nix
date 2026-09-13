@@ -1,7 +1,5 @@
-{ config, lib, pkgs, username, ... }: {
-  options.dx.transmission.enable = lib.mkEnableOption "transmission-daemon (headless BitTorrent client)";
-
-  config = lib.mkIf config.dx.transmission.enable {
+{ pkgs, username, ... }: {
+  config = {
     services.transmission = {
       enable = true;
       # transmission_3 was dropped from nixpkgs; must be pinned explicitly now.

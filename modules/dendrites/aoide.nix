@@ -5,16 +5,15 @@
 # the Aoide input, walked into every host's tree by flake.nix): `aoide.enable`,
 # `aoide.a2a.*`, `aoide.secrets.*`, `aoide.facets.*`, `aoide.lyra.enable`, and
 # so on. This dendrite is not a second option surface over that contract — it
-# is one line (`dx.aoide.enable`) that turns on the CORE baseline every
-# fleet box wants, so hosts.wiring stops repeating the same three flags. Every
-# knob that genuinely varies per host (a2a.spawnAgent/spawnPath/
-# discoveryAdvertise/tokenFile, secrets.members, aoide.song, …) is set by the
-# host directly on the raw `aoide.*` namespace once this dendrite (or any
-# aoide-enabled host) has put it in scope — exactly how sakaki and osaka
-# already did before this dendrite existed. Wrapping those in a parallel
-# `dx.aoide.*` mirror would just rename Aoide's own documented options for no
-# reason; convention here follows the option contract that already exists
-# rather than inventing one.
+# is one import that turns on the CORE baseline every fleet box wants, so
+# hosts.wiring stops repeating the same three flags. Every knob that
+# genuinely varies per host (a2a.spawnAgent/spawnPath/discoveryAdvertise/
+# tokenFile, secrets.members, aoide.song, …) is set by the host directly on
+# the raw `aoide.*` namespace once this dendrite (or any aoide-carrying host)
+# has put it in scope — exactly how sakaki and osaka already did before this
+# dendrite existed. Wrapping those in a parallel `dx.aoide.*` mirror would
+# just rename Aoide's own documented options for no reason; convention here
+# follows the option contract that already exists rather than inventing one.
 #
 # ── What "core" means ────────────────────────────────────────────────────
 #   aoide.enable        — the aoide/aoided binaries + daemon (nucleus/aoided.nix)
@@ -29,7 +28,7 @@
 # surface: bar/dock/notifications/…) and `aoide.lyra.enable` (installs the
 # `lyra` binary; defaults to following the quickshell facet, independently
 # overridable). This dendrite never touches either, so they stay at their
-# off-by-default value on every host that only flips `dx.aoide.enable` — paint
+# off-by-default value on every host that only imports this baseline — paint
 # is a per-host opt-in laid on TOP of this baseline, in that host's own file,
 # never inferred here.
 #
@@ -62,11 +61,8 @@
 # imported, `dx.stylix.enable = false`) so only one writer ever touches those
 # leaf options — the desktop aggregate stays imported for the pieces that
 # don't collide (pipewire, fonts, fcitx5, portals, ly login).
-{ lib, config, ... }:
 {
-  options.dx.aoide.enable = lib.mkEnableOption "core Aoide (binaries + aoided + A2A door + secrets broker), no paint";
-
-  config = lib.mkIf config.dx.aoide.enable {
+  config = {
     aoide.enable = true;
     aoide.a2a.enable = true;
     aoide.secrets.enable = true;

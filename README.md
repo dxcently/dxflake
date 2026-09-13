@@ -45,7 +45,7 @@ dxflake/
 
 > **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100 — but only the always-on few reach every machine._ Each is one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr._ An arm that touches every machine would smother them all, so beyond the floor, each one **sleeps** until its machine names it. Lean close, whiskers and all — a single sleeping arm reaches into two worlds at once, one paw the **system**, one paw the **home**, both waking on the same import. A dendrite never asks _"which machine am I for?"_ It waits to be named. This is the way. Nyaa. (=ↀωↀ=)✧
 
-The floor's dendrites are imported into *every* host; a single dendrite beyond the floor is one feature, one file, imported only by the hosts that select it, carrying its system config, its home-manager config, or both, in the same `config` block. One file, both layers, one import.
+The floor's dendrites are imported into *every* host; a single dendrite beyond the floor is one feature, one file, imported only by the hosts that select it, carrying its system config, its home-manager config, or both, in the same `config` block. One file, both layers, one import. `stylix.nix` is the floor's one exception: it keeps `dx.stylix.enable` (off by default, each host names it explicitly) rather than going flagless, because Aoide's own facets probe `options ? stylix` to decide whether to skip color derivation — the option tree must exist on every host, so the module stays in the floor import while the flag alone decides whether dxflake's own theme actually applies.
 
 > **The aggregations.** _Sometimes many arms must wake as one — the way the government pays me to deliver presents to all the children in Japan, in a single night._ `desktop`, `hyprland`, `gaming`, `server` are folders now, not words — shared aggregate directories under `modules/dendrites/`. Import one directory on a host and every arm inside it wakes together. One directory, many arms — each still carrying its own two worlds. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
 
@@ -237,38 +237,37 @@ Host-only tests are still done as eval-only overrides (no file changes): use an
 
 ## Adding a module
 
-Drop a `.nix` under `modules/dendrites/` (or the feature's own subdirectory) and add its line to that directory's `default.nix` — you never edit `flake.nix`. The whole job: **write the file → list it → gate it → flip the flag on a host.**
+Drop a `.nix` under `modules/dendrites/` (or the feature's own subdirectory) and add its line to that directory's `default.nix` — you never edit `flake.nix`. The whole job: **write the file → list it → import it on a host.**
 
-A **system (NixOS)** module — its own switch, config at the system level:
+A **system (NixOS)** module — its own config, unconditional once imported:
 
 ```nix
-{config, lib, ...}: {
-  options.dx.foo.enable = lib.mkEnableOption "foo";
-  config = lib.mkIf config.dx.foo.enable {
+{ ... }: {
+  config = {
     services.foo.enable = true;
   };
 }
 ```
 
-A **home-manager** module — same gate, config nested under the user:
+A **home-manager** module — same shape, config nested under the user:
 
 ```nix
-{username, config, lib, ...}: {
-  options.dx.foo.enable = lib.mkEnableOption "foo";
-  config = lib.mkIf config.dx.foo.enable {
-    home-manager.users.${username} = {pkgs, ...}: {
+{ username, ... }: {
+  config = {
+    home-manager.users.${username} = { pkgs, ... }: {
       programs.foo.enable = true;
     };
   };
 }
 ```
 
-Either way the host just speaks the word — `dx.foo.enable = true;`. One dendrite can carry **both** layers: put the system options *and* the `home-manager.users.${username}` block inside the same `mkIf` — one file, one switch, both worlds.
+Either way the host reaches it by importing the file — no flag to flip afterward. One dendrite can carry **both** layers: put the system options *and* the `home-manager.users.${username}` block inside the same `config` — one file, one import, both worlds.
 
-**Three ways to reach a host**, pick per module:
-- **Own flag** — declare `options.dx.<name>.enable`, gate on it, and have the host that wants it import the file. (`bluetooth.nix`)
-- **Ride a shared aggregate** — no own option; the file lives inside `desktop/`, `hyprland/`, `gaming/`, or `server/` and its `default.nix` names it. Wakes when a host imports the directory. (`kitty.nix`)
-- **Always-on** — no `mkIf` at all, listed in the floor's `dendrites/default.nix`; it applies everywhere like the nucleus. (`git.nix`)
+**Two kinds of module, by what they need from a host:**
+- **Imported = active** — no `options.dx.<name>.enable` at all; the file's whole `config` applies the moment a host imports it, and dropping the import is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every host-selected single that has no config knobs of its own)
+- **`dx.` knobs for what genuinely varies** — a module some hosts configure differently keeps `options.dx.<name>.<knob>` for that variance only, never for whether it runs (`caddy.sites`, `cloudflared.tunnelId`/`hostnames`, `immich.mediaLocation`, `inference.igpu`, `nas-mounts.server`/`mounts`).
+
+Shared aggregates and the always-on floor follow the same rule one level up: `desktop/`, `hyprland/`, `gaming/`, `server/` wake every member the moment a host imports the directory (`kitty.nix`); the floor's `dendrites/default.nix` list applies everywhere, same as the nucleus (`git.nix`).
 
 **What you never touch:** `flake.nix`, or another directory's `default.nix` — a file is only ever named from inside the directory that holds it, except a host's own `default.nix`, which is the one place that names a module from outside. Need a brand-new shared aggregate? Add the directory under `modules/dendrites/` and have the hosts that want it import it. Want to park a file without deleting it? Drop its line from the directory's `default.nix`.
 
