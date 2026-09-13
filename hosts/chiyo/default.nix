@@ -59,11 +59,7 @@
   aoide.hyprland.enable = true;
   aoide.lyra.enable = true;
 
-  # ── Recolour: Rosé Pine over sonata's own warm ramp ───────────────────────
-  # Same override as osaka's (hosts/osaka/default.nix has the full mechanism
-  # comment) — chiyo performs the same "sonata" song, so it needs the
-  # identical anchor + named-slot recolour to land on the same dxflake Rosé
-  # Pine, plus the polarity flip sonata's own rice.nix can't make itself.
+  # Same Rosé Pine override as osaka's (hosts/osaka/default.nix).
   aoide.livery.override = {
     bg = "#191724";
     fg = "#e0def4";
