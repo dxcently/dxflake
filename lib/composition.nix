@@ -52,9 +52,14 @@ let
     ) catalogue;
 
   # The schema every selection pass evaluates. `modules/default.nix` calls this
-  # with its own catalogue and adds the aggregations that steer it.
+  # with its own catalogue, plus the modules that steer a user scope —
+  # aggregations declare their membership in both scopes from one table, and
+  # the user submodule is where the home half of it lands.
   mkSchema =
-    { catalogue }:
+    {
+      catalogue,
+      userModules ? [ ],
+    }:
     { ... }:
     {
       options = {
@@ -70,24 +75,31 @@ let
           default = { };
           description = "Users attached to this host, and what each selects for its own home lane.";
           type = types.attrsOf (
-            types.submodule {
-              options = {
-                definition = mkOption {
-                  type = types.path;
-                  description = "Shared user definition: account lanes plus optional home preferences.";
-                };
-                homeManager.enable = mkOption {
-                  type = types.bool;
-                  default = false;
-                  description = "Evaluate this user's home lane. Off means no Home Manager module is imported for them at all.";
-                };
-                homeManager.config = mkOption {
-                  type = types.deferredModule;
-                  default = { };
-                  description = "Extra home settings for this user, evaluated only in the home lane.";
-                };
-                dendrites = selectionScope catalogue;
-              };
+            types.submoduleWith {
+              shorthandOnlyDefinesConfig = true;
+              specialArgs = { inherit lib; };
+              modules = [
+                {
+                  options = {
+                    definition = mkOption {
+                      type = types.path;
+                      description = "Shared user definition: account lanes plus optional home preferences.";
+                    };
+                    homeManager.enable = mkOption {
+                      type = types.bool;
+                      default = false;
+                      description = "Evaluate this user's home lane. Off means no Home Manager module is imported for them at all.";
+                    };
+                    homeManager.config = mkOption {
+                      type = types.deferredModule;
+                      default = { };
+                      description = "Extra home settings for this user, evaluated only in the home lane.";
+                    };
+                    dendrites = selectionScope catalogue;
+                  };
+                }
+              ]
+              ++ userModules;
             }
           );
         };
@@ -213,6 +225,7 @@ rec {
       users = lib.mapAttrs (_: u: {
         definition = toString u.definition;
         homeManager = u.homeManager.enable;
+        aggregations = lib.attrNames (lib.filterAttrs (_: a: a.enable) (u.aggregations or { }));
         dendrites = describe u.dendrites;
       }) selection.users;
     };

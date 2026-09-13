@@ -81,10 +81,17 @@ let
     xserver = ./dendrites/desktop/xserver.nix;
     yazi = ./dendrites/yazi.nix;
   };
+
+  # One table, two scopes: the host selects system lanes, each user selects
+  # home lanes. See modules/aggregations.nix.
+  aggregations = import ./aggregations.nix;
 in
 {
   imports = [
-    (composition.mkSchema { inherit catalogue; })
-    ./aggregations.nix
+    (composition.mkSchema {
+      inherit catalogue;
+      userModules = [ (aggregations "home") ];
+    })
+    (aggregations "system")
   ];
 }

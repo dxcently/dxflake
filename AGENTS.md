@@ -19,7 +19,7 @@ modules/default.nix (catalogue)  +  modules/aggregations.nix  +  hosts/<host>
                               |
                  pass 1: ordinary lib.evalModules
                               |
-          enabled names + chosen providers + users and their lanes
+      enabled names + chosen providers + per-user home selections
                               |
                  pass 2: import ONLY what was selected
                               |
@@ -42,10 +42,12 @@ marks parked files).
 - **Provider** — one implementation of a multi-implementation capability, and
   exclusive within a scope. `gpu` is the worked example: `amd` and `intel`, and
   the unchosen file is never imported.
-- **Aggregation** — `modules/aggregations.nix`. Shared membership plus the
-  preferences that belong with it, using `mkDefault` so a host's ordinary
-  selection outranks it. Two aggregations that default the same option to
-  different values collide; import order never picks a winner.
+- **Aggregation** — `modules/aggregations.nix`. One table, instantiated twice:
+  `aggregations.<name>.enable` on the host selects its system members,
+  `users.<u>.aggregations.<name>.enable` selects the same aggregation's home
+  members for that person. Membership uses `mkDefault`, so an ordinary selection
+  outranks it, and two aggregations that default the same option to different
+  values collide; import order never picks a winner.
 - **Nucleus** — `modules/nucleus/`, imported unconditionally on every host.
 - **Lane** — a module for one evaluator: `nixos`, `homeManager` (`darwin` is in
   the vocabulary, unused here). Selecting a dendrite for the system imports its
@@ -59,8 +61,9 @@ marks parked files).
   and select it from a host or an aggregation. Nothing else.
 - **A provider** — add the file and one line to that dendrite's `providers`
   registry; select it where wanted.
-- **A shared preference or package fix** — the owning aggregation, once. Never
-  repeated across hosts.
+- **A shared preference or package fix** — the owning aggregation, once, in the
+  `system` or `home` list that matches the lane it rides. Never repeated across
+  hosts.
 - **A host exception** — that host's own selection (`enable = false` beats a
   `mkDefault true`), or an ordinary setting in its `nixos` module.
 - **A user** — one definition under `users/`, attached by the hosts that want

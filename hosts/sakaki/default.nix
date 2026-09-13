@@ -15,7 +15,6 @@
     melete.enable = true;
     mneme.enable = true;
     nas-mounts.enable = true;
-    pi-coding-agent.enable = true;
     slskd.enable = true;
     syncthing.enable = true;
     transmission.enable = true;
@@ -24,6 +23,11 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
+    # The person, not the machine: these aggregations contribute home lanes.
+    aggregations = {
+      base.enable = true;
+    };
+    dendrites.pi-coding-agent.enable = true;
   };
 
   nixos =

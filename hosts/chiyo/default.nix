@@ -21,7 +21,6 @@
     hyprlock.enable = true;
     kimi-cli.enable = true;
     laptop.enable = true;
-    pi-coding-agent.enable = true;
     portmaster.enable = true;
     syncthing.enable = true;
   };
@@ -29,6 +28,12 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
+    # The person, not the machine: these aggregations contribute home lanes.
+    aggregations = {
+      base.enable = true;
+      desktop.enable = true;
+    };
+    dendrites.pi-coding-agent.enable = true;
   };
 
   nixos =

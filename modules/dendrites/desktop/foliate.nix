@@ -1,20 +1,11 @@
 {
-  nixos =
+  homeManager =
     {
-      username,
+      pkgs,
+      config,
       ...
     }:
     {
-      config = {
-        home-manager.users.${username} =
-          {
-            pkgs,
-            config,
-            ...
-          }:
-          {
-            programs.foliate.enable = true;
-          };
-      };
+      programs.foliate.enable = true;
     };
 }

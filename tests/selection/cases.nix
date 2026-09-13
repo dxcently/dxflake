@@ -112,13 +112,31 @@ rec {
       dendrites.notifications.provider = "herald";
     }).inv.dendrites.notifications.provider;
 
-  # The same override one scope down: a user outranks the aggregation that
-  # attached them, independently of the system selection.
+  # The same table one scope down: a user turning on an aggregation gets its
+  # home membership, and the system scope stays empty — the two halves of one
+  # aggregation reach different evaluators.
+  userAggregationContributesHomeMembers =
+    let
+      r = resolve {
+        users.alice = {
+          definition = ./users/alice.nix;
+          homeManager.enable = true;
+          aggregations.desk.enable = true;
+        };
+      };
+    in
+    r.inv.users.alice.dendrites.notifications.provider == "dunst" && r.lanes.system == [ ];
+
+  # A user outranks the aggregation that attached them, independently of the
+  # system selection.
   userOverridesAggregationProvider =
     (resolve {
-      aggregations.desk.enable = true;
-      users.alice.definition = ./users/alice.nix;
-      users.alice.dendrites.notifications.provider = "mako";
+      users.alice = {
+        definition = ./users/alice.nix;
+        homeManager.enable = true;
+        aggregations.desk.enable = true;
+        dendrites.notifications.provider = "mako";
+      };
     }).inv.users.alice.dendrites.notifications.provider;
 
   # false beats a default true.

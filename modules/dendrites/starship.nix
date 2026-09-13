@@ -1,6 +1,7 @@
 {
-  nixos = { username, ... }: {
-    home-manager.users.${username} = { ... }: {
+  homeManager =
+    { ... }:
+    {
       programs.starship = {
         enable = true;
         enableBashIntegration = true;
@@ -48,5 +49,4 @@
         };
       };
     };
-  };
 }

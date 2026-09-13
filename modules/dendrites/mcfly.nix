@@ -1,6 +1,7 @@
 {
-  nixos = { username, ... }: {
-    home-manager.users.${username} = { ... }: {
+  homeManager =
+    { ... }:
+    {
       programs.mcfly = {
         enable = true;
         enableBashIntegration = false;
@@ -8,5 +9,4 @@
         fuzzySearchFactor = 2;
       };
     };
-  };
 }

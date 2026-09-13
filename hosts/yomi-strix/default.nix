@@ -27,6 +27,12 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
+    # The person, not the machine: these aggregations contribute home lanes.
+    aggregations = {
+      base.enable = true;
+      desktop.enable = true;
+      hyprland.enable = true;
+    };
   };
 
   nixos =

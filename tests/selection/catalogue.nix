@@ -9,10 +9,15 @@ let
     notifications = ./dendrites/notifications;
     systemonly = ./dendrites/systemonly;
   };
+
+  aggregations = import ./aggregations.nix;
 in
 {
   imports = [
-    (composition.mkSchema { inherit catalogue; })
-    ./aggregations.nix
+    (composition.mkSchema {
+      inherit catalogue;
+      userModules = [ (aggregations "home") ];
+    })
+    (aggregations "system")
   ];
 }

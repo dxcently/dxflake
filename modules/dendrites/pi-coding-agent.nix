@@ -1,10 +1,6 @@
 {
-  nixos =
-    {
-      pkgs,
-      username,
-      ...
-    }:
+  homeManager =
+    { pkgs, ... }:
     let
       # Pinned nixpkgs ships 0.84.1 — new enough for pi extensions (e.g.
       # pi-web-access) that import `@earendil-works/pi-ai/compat` (added in 0.81.0).
@@ -90,32 +86,28 @@
       '';
     in
     {
-      config = {
-        home-manager.users.${username} = {
-          programs.pi-coding-agent = {
-            enable = true;
-            package = pi-coding-agent;
-            # pi installs npm:* packages by shelling out to npm on startup when a
-            # package declared in settings is missing from ~/.pi/agent/npm/.
-            extraPackages = [ pkgs.nodejs ];
-            settings = {
-              # Carried over from the previously hand-managed settings.json.
-              defaultProvider = "kimi-coding";
-              defaultModel = "k3-256k";
-              defaultThinkingLevel = "high";
-              # Declared here; pi auto-installs anything missing on first launch.
-              packages = [
-                "npm:pi-subagents"
-                "npm:pi-mcp-adapter"
-                "npm:pi-web-access"
-                "npm:context-mode"
-                "npm:pi-cache-optimizer"
-              ];
-            };
-          };
-
-          home.file.".pi/agent/extensions/dashboard.ts".text = dashboard;
+      programs.pi-coding-agent = {
+        enable = true;
+        package = pi-coding-agent;
+        # pi installs npm:* packages by shelling out to npm on startup when a
+        # package declared in settings is missing from ~/.pi/agent/npm/.
+        extraPackages = [ pkgs.nodejs ];
+        settings = {
+          # Carried over from the previously hand-managed settings.json.
+          defaultProvider = "kimi-coding";
+          defaultModel = "k3-256k";
+          defaultThinkingLevel = "high";
+          # Declared here; pi auto-installs anything missing on first launch.
+          packages = [
+            "npm:pi-subagents"
+            "npm:pi-mcp-adapter"
+            "npm:pi-web-access"
+            "npm:context-mode"
+            "npm:pi-cache-optimizer"
+          ];
         };
       };
+
+      home.file.".pi/agent/extensions/dashboard.ts".text = dashboard;
     };
 }

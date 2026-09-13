@@ -28,7 +28,6 @@
     # an Aoide option surface.
     openai.enable = true;
     openrazer.enable = true;
-    pi-coding-agent.enable = true;
     syncthing.enable = true;
     virtualisation.enable = true;
   };
@@ -36,6 +35,13 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
+    # The person, not the machine: these aggregations contribute home lanes.
+    aggregations = {
+      base.enable = true;
+      desktop.enable = true;
+      hyprland.enable = true;
+    };
+    dendrites.pi-coding-agent.enable = true;
   };
 
   nixos =
@@ -164,14 +170,24 @@
       # dunst feeds `lyra herald push` and Quickshell draws.
       aoide.dunst.enable = true;
       dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
-      # soundconverter 4.0.6's test suite breaks under Python 3.14 (tests/test.py
-      # does args[1:] on a None argv); skip the install-check to unblock rebuilds.
-      # Osaka is the only consumer, so the overlay lives here rather than the
-      # nucleus (moved from modules/nucleus/packages.nix).
+      # Two upstream test suites that do not survive this nixpkgs pin. Osaka is
+      # the only consumer of either package, so the overlay lives here rather
+      # than the nucleus (moved from modules/nucleus/packages.nix).
+      #
+      # soundconverter 4.0.6 breaks under Python 3.14 (tests/test.py does
+      # args[1:] on a None argv); skip the install-check.
+      #
+      # udiskie 2.7.0 fails TestPasswordCache::test_is_valid in the sandbox —
+      # it reads the kernel keyring and gets a payload whose length is not a
+      # multiple of 4 ("bytes length not a multiple of item size"). The rest of
+      # the suite passes; skip the one test rather than all checking.
       nixpkgs.overlays = [
         (final: prev: {
           soundconverter = prev.soundconverter.overrideAttrs (_: {
             doInstallCheck = false;
+          });
+          udiskie = prev.udiskie.overridePythonAttrs (old: {
+            disabledTests = (old.disabledTests or [ ]) ++ [ "test_is_valid" ];
           });
         })
       ];

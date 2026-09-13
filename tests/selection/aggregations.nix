@@ -1,8 +1,9 @@
-# Fixture aggregations. Membership and shared preferences use mkDefault, so a
-# host's ordinary selection outranks them and two aggregations that disagree at
-# equal priority collide instead of one quietly winning on import order.
-# workstation and kiosk steer the system scope; desk steers one user's, which
-# is the shape a real desktop aggregation uses.
+# Fixture aggregations, instantiated once per scope from one file — the shape
+# modules/aggregations.nix uses. Membership and shared preferences use
+# mkDefault, so an ordinary selection outranks them and two aggregations that
+# disagree at equal priority collide instead of one quietly winning on import
+# order. workstation and kiosk steer the system scope; desk steers a user's.
+scope:
 { lib, config, ... }:
 let
   inherit (lib)
@@ -27,22 +28,21 @@ in
   };
 
   config = lib.mkMerge [
-    (mkIf config.aggregations.workstation.enable {
+    (mkIf (scope == "system" && config.aggregations.workstation.enable) {
       dendrites.systemonly.enable = mkDefault true;
       dendrites.notifications = {
         enable = mkDefault true;
         provider = mkDefault "dunst";
       };
     })
-    (mkIf config.aggregations.kiosk.enable {
+    (mkIf (scope == "system" && config.aggregations.kiosk.enable) {
       dendrites.notifications = {
         enable = mkDefault true;
         provider = mkDefault "herald";
       };
     })
-    (mkIf config.aggregations.desk.enable {
-      users.alice.homeManager.enable = mkDefault true;
-      users.alice.dendrites.notifications = {
+    (mkIf (scope == "home" && config.aggregations.desk.enable) {
+      dendrites.notifications = {
         enable = mkDefault true;
         provider = mkDefault "dunst";
       };

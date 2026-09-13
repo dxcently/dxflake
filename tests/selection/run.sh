@@ -26,6 +26,7 @@ systemScopeWantsHomeOnlyDendrite    throws  'homeonly' is selected for the syste
 homeScopeWantsSystemOnlyDendrite    throws  'systemonly' is selected by user 'alice' but exposes no homeManager lane; it supports: nixos
 unknownDendrite                     throws  does not exist
 hostOverridesAggregationProvider    ok      "herald"
+userAggregationContributesHomeMembers ok    true
 userOverridesAggregationProvider    ok      "mako"
 hostDisablesAggregationMember       ok      false
 conflictingAggregationDefaults      throws  has conflicting definition values
