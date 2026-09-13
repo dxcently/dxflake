@@ -1,60 +1,130 @@
-# CLAUDE.md — dxflake
+# AGENTS.md — dxflake
 
-A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server).
-Melete (the AI agent harness, `modules/dendrites/melete.nix`) runs sakaki-only — imported there and nowhere else, pinned client v0.2.0 via `pkgs/melete-client-package.nix` (call site in the dendrite itself).
-Melete's spawned agent turns use the real `claude` CLI by default (resolved from PATH via `[claude] binary = "claude"` in the out-of-band `config.toml`). The pi-agent shim (`~/.config/melete/bin/melete-agent`) is retained on disk but no longer routed to — point `[claude] binary` back at it to restore pi routing (`deepseek/deepseek-v4-pro` for coding/execution with thinking scaled by complexity, `kimi-coding/k3-256k` for planning/escalation).
+A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server ·
+`yomi-strix` desktop).
 This file is a **registry**: where things live and how to add them. For the *why*,
-read `README.md` (*Architecture overview*, *Adding a module*) and the Magi wiki (below).
+read `README.md` and `~/Aoide/docs/architecture/NIX-COMPOSITION.md`, which is the
+authoritative design this tree implements.
 
 ## How it operates
 
-Two moving parts (`README.md:64`):
+Selection is resolved **before** any platform module graph exists.
 
-- **Aggregation** — each directory names its own files in its own `default.nix`, one line per file; a directory with subdirectories imports each once. `flake.nix` imports one pointer, `./modules`, which reaches only the floor. A shelved file just has no line (still `_`-prefixed by convention).
-- **Selection** — the floor reaches every host for free; a shared aggregate directory or a single dendrite beyond the floor is inert until a host imports it. A host's own `default.nix` is the one place that ever names a module from outside the directory that holds it. A `dx.*` option still gates the knobs that genuinely vary, never whether the file is reached at all.
+`mkDefault` sets definition priority and cannot decide imports; `mkIf` cannot keep
+an imported module's declarations out of the graph that imported them. So
+`lib/composition.nix` runs two passes:
 
-Layout:
+```text
+modules/default.nix (catalogue)  +  modules/aggregations.nix  +  hosts/<host>
+                              |
+                 pass 1: ordinary lib.evalModules
+                              |
+          enabled names + chosen providers + users and their lanes
+                              |
+                 pass 2: import ONLY what was selected
+                              |
+        nucleus + account lanes + system lanes + per-user home lanes
+                              |
+                     nixpkgs.lib.nixosSystem
+```
 
-- `modules/nucleus/` — the floor. No flag, so it applies on every host unconditionally (boot, the home-manager wiring, network, ssh, sops, tailscale, base packages, the `openldap` overlay — a fleet-wide build fix, not a host selection).
-- `modules/dendrites/` — `default.nix` lists only the always-on floor dendrites plus `stylix.nix` (its option tree must ride every host, Aoide's own probe). Everything else is a host-selected single or lives in a shared aggregate directory.
-- `modules/dendrites/{desktop,hyprland,gaming,server}/` — shared aggregate directories; each names its own member files in its own `default.nix`.
-- `hosts/<name>/` — `default.nix` imports `./hardware.nix`, `./users/khoa.nix`, the shared aggregates and single dendrites this host wants, then sets any `dx.*` knobs and host-only odds. `hosts/<name>/users/khoa.nix` is this host's own `users.users.khoa` block and `nix.settings.allowed-users` — the one piece of the user the nucleus does not carry. A host-only overlay (e.g. osaka's `soundconverter` fix) lives beside its consumer in that host's `default.nix`, not the nucleus.
+Nothing walks the filesystem. A capability exists because `modules/default.nix`
+names its path; a name with no catalogue line is unreachable, which is what
+shelving means now (the `_` filename prefix is the older convention and still
+marks parked files).
 
-## Making / configuring a module
+- **Catalogue** — `modules/default.nix`, one `name = ./path;` line per capability.
+  It generates `dendrites.<name>.enable` and `.provider`, so an unknown name
+  fails as an option that does not exist, naming the file that asked for it.
+- **Dendrite** — a selectable capability. One file exposing the lanes it
+  supports (`{ nixos = …; }`, `{ homeManager = …; }`, or both), or a directory
+  whose `default.nix` lists `providers = { … }` and imports none of them.
+- **Provider** — one implementation of a multi-implementation capability, and
+  exclusive within a scope. `gpu` is the worked example: `amd` and `intel`, and
+  the unchosen file is never imported.
+- **Aggregation** — `modules/aggregations.nix`. Shared membership plus the
+  preferences that belong with it, using `mkDefault` so a host's ordinary
+  selection outranks it. Two aggregations that default the same option to
+  different values collide; import order never picks a winner.
+- **Nucleus** — `modules/nucleus/`, imported unconditionally on every host.
+- **Lane** — a module for one evaluator: `nixos`, `homeManager` (`darwin` is in
+  the vocabulary, unused here). Selecting a dendrite for the system imports its
+  `nixos` lane; selecting it under a user imports its `homeManager` lane.
+  Neither installs the other, and selecting a lane a dendrite does not expose is
+  an error naming the dendrite, the scope and the lanes it does support.
 
-Drop the file under `modules/dendrites/` (or a shared aggregate subdir) and add its line to that directory's `default.nix`. Then pick **one** shape (`README.md:268`):
+## Adding things
 
-- **Imported = active** — no `options.dx.<name>.enable`; `config` applies unconditionally once a host imports the file, and dropping the import is the opt-out. (`bluetooth.nix`)
-- **`dx.` knobs for what genuinely varies** — keep `options.dx.<name>.<knob>` only for config that differs per host, never for whether the module runs. (`caddy.sites`, `cloudflared.tunnelId`, `nas-mounts.mounts`)
-- **Ride a shared aggregate** — no own option; the file lives inside `desktop/`, `hyprland/`, `gaming/`, or `server/` and that directory's `default.nix` names it. Wakes when a host imports the directory. (`kitty.nix`)
-- **Always-on** — listed in the floor's `modules/dendrites/default.nix`; applies everywhere like the nucleus. (`git.nix`)
+- **A dendrite** — write the file exposing its lane(s), add one catalogue line,
+  and select it from a host or an aggregation. Nothing else.
+- **A provider** — add the file and one line to that dendrite's `providers`
+  registry; select it where wanted.
+- **A shared preference or package fix** — the owning aggregation, once. Never
+  repeated across hosts.
+- **A host exception** — that host's own selection (`enable = false` beats a
+  `mkDefault true`), or an ordinary setting in its `nixos` module.
+- **A user** — one definition under `users/`, attached by the hosts that want
+  it. `users/khoa.nix` carries the account in its `nixos` lane and the shared
+  home floor in its `homeManager` lane; there are no per-host copies.
 
-A single dendrite can carry both system and home config: put the NixOS options *and* a `home-manager.users.${username}` block inside the same `config`.
+A host file is selection first, then its own platform settings under `nixos`.
+That `nixos` block is an ordinary NixOS module: hardware imports, `dx.*` knobs,
+host-only overlays and packages.
 
-**Never** edit `flake.nix`, or name a file from outside the directory that holds it, except a host's own `default.nix` — that is the one place selection happens. A brand-new shared aggregate is a new directory under `modules/dendrites/` with its own `default.nix`; hosts that want it import it. To shelve a file without deleting it, drop its line from the directory's `default.nix`.
+**Never** name a module file from anywhere but the catalogue.
 
-## Secrets (sops-nix)
+## Reviewing what a host resolved
 
-`modules/nucleus/sops.nix` wires it: each host decrypts with its **own SSH host key** (`ssh-to-age`), so no private key is ever copied around. To use a secret:
+```sh
+nix eval --json .#inventory.osaka | jq        # dendrites, providers, users, sources
+```
 
-1. Ensure the host's `ssh-to-age` pubkey is a recipient in `.sops.yaml` (already covers all three hosts). After changing recipients, re-encrypt: `sops updatekeys secrets/<name>.yaml`.
-2. Store the encrypted payload in `secrets/<name>.yaml` (`sops secrets/<name>.yaml` to edit).
-3. Consume it in a module: `sops.secrets."<name>".sopsFile = ../../secrets/<name>.yaml;`, then read the decrypted path at `config.sops.secrets."<name>".path`. For string interpolation, render a `sops.templates` entry with `config.sops.placeholder."<name>"`.
+Generated from selection, never maintained by hand.
 
 ## Verify
 
 ```sh
 nixfmt <file>.nix                          # format (repo style)
-nix flake check                            # evaluate all hosts
-sudo nixos-rebuild switch --flake .#<name> # apply to a host
+./tests/selection/run.sh                   # the constructor's executable schema
+nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
+sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
 
-Prefer `nix eval .#nixosConfigurations.<name>.config…` to confirm a change lands on the intended host before rebuilding.
+`tests/selection/` is the schema, not a description of one: its fixtures throw
+on import, so "an unselected file is never evaluated" is proved rather than
+asserted, and the runner greps real stderr, so a vague diagnostic fails.
+
+## The Aoide seam
+
+`flake.nix` still reaches into the Aoide input's tree — `modules/default.nix`,
+`lib/livery.nix`, `lib/pkgs.nix` and the five `song/songbook/*/rice.nix` files —
+because the Aoide flake exports `packages`, `songbookManifest` and
+`aoideOptions` but no `nixosModules` and no `lib`. Those paths are named in one
+place in `flake.nix` and collapse to public imports once upstream exports
+`nixosModules.default`, a songbook module, `lib.livery.resolve` and
+`overlays.default`. Do not add new private-tree paths elsewhere.
+
+Melete (`modules/dendrites/melete.nix`) is sakaki-only, pinned client v0.2.0 via
+`pkgs/melete-client-package.nix`. Its spawned agent turns use the real `claude`
+CLI by default (`[claude] binary = "claude"` in the out-of-band `config.toml`);
+the pi-agent shim at `~/.config/melete/bin/melete-agent` is retained on disk but
+not routed to.
+
+## Secrets (sops-nix)
+
+`modules/nucleus/sops.nix` wires it: each host decrypts with its **own SSH host
+key** (`ssh-to-age`), so no private key is ever copied around. To use a secret:
+
+1. Ensure the host's `ssh-to-age` pubkey is a recipient in `.sops.yaml` (already
+   covers all hosts). After changing recipients, re-encrypt:
+   `sops updatekeys secrets/<name>.yaml`.
+2. Store the encrypted payload in `secrets/<name>.yaml` (`sops secrets/<name>.yaml`).
+3. Consume it: `sops.secrets."<name>".sopsFile = ../../secrets/<name>.yaml;`, then
+   read `config.sops.secrets."<name>".path`. For string interpolation, render a
+   `sops.templates` entry with `config.sops.placeholder."<name>"`.
 
 ## Deeper reference
 
-Start with `README.md`. For the fuller picture, the Magi vault's `03 Homelab` wiki:
-
-- `~/Magi/06 • MAGI-WIKI/03 Homelab/concepts/dxflake-Architecture.md` — *why* the layout is shaped this way (auto-discovery, nucleus/dendrites, the scoping decision).
-- `~/Magi/06 • MAGI-WIKI/03 Homelab/concepts/dxflake-Authoring.md` — the practical how-to (where things belong, add-a-host, add-a-module, per-host divergence).
-- `~/Magi/06 • MAGI-WIKI/03 Homelab/notes/Build-Runbook.md` — Phase 0 covers sops setup and adding a host.
+- `~/Aoide/docs/architecture/NIX-COMPOSITION.md` — the authoritative design.
+- `README.md` — architecture overview.
+- `~/Magi/06 • MAGI-WIKI/03 Homelab/notes/Build-Runbook.md` — sops setup, adding a host.

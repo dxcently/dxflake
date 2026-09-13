@@ -13,6 +13,5 @@
     ./sops.nix
     ./system.nix
     ./tailscale.nix
-    ./user.nix
   ];
 }

@@ -1,15 +1,19 @@
-{username, ...}: {
-  config = {
-    home-manager.users.${username} = {
-      pkgs,
-      config,
-      lib,
-      ...
-    }: {
-      qt = {
-        enable = true;
-        platformTheme.name = lib.mkForce "qtct";
-      };
+{
+  nixos = { username, ... }: {
+    config = {
+      home-manager.users.${username} =
+        {
+          pkgs,
+          config,
+          lib,
+          ...
+        }:
+        {
+          qt = {
+            enable = true;
+            platformTheme.name = lib.mkForce "qtct";
+          };
+        };
     };
   };
 }

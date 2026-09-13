@@ -1,14 +1,20 @@
 {
-  username,
-  ...
-}: {
-  config = {
-    home-manager.users.${username} = {
-      pkgs,
-      config,
+  nixos =
+    {
+      username,
       ...
-    }: {
-      programs.foliate.enable = true;
+    }:
+    {
+      config = {
+        home-manager.users.${username} =
+          {
+            pkgs,
+            config,
+            ...
+          }:
+          {
+            programs.foliate.enable = true;
+          };
+      };
     };
-  };
 }

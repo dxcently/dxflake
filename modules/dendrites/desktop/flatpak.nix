@@ -1,5 +1,7 @@
-{...}: {
-  config = {
-    services.flatpak.enable = true;
+{
+  nixos = { ... }: {
+    config = {
+      services.flatpak.enable = true;
+    };
   };
 }

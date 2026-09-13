@@ -1,15 +1,19 @@
-{username, ...}: {
-  config = {
-    home-manager.users.${username} = {
-      pkgs,
-      config,
-      inputs,
-      ...
-    }: {
-      programs.rofi = {
-        enable = true;
-        package = pkgs.rofi;
-      };
+{
+  nixos = { username, ... }: {
+    config = {
+      home-manager.users.${username} =
+        {
+          pkgs,
+          config,
+          inputs,
+          ...
+        }:
+        {
+          programs.rofi = {
+            enable = true;
+            package = pkgs.rofi;
+          };
+        };
     };
   };
 }

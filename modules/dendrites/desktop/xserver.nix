@@ -1,14 +1,18 @@
 {
-  pkgs,
-  ...
-}: {
-  config = {
-    services = {
-      xserver = {
-        enable = true;
-        xkb.layout = "us,jp";
+  nixos =
+    {
+      pkgs,
+      ...
+    }:
+    {
+      config = {
+        services = {
+          xserver = {
+            enable = true;
+            xkb.layout = "us,jp";
+          };
+        };
+        systemd.settings.Manager.DefaultTimeoutStopSec = "10s";
       };
     };
-    systemd.settings.Manager.DefaultTimeoutStopSec = "10s";
-  };
 }

@@ -1,6 +1,8 @@
 {
-  config = {
-    hardware.bluetooth.enable = true;
-    services.blueman.enable = true;
+  nixos = {
+    config = {
+      hardware.bluetooth.enable = true;
+      services.blueman.enable = true;
+    };
   };
 }

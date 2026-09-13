@@ -1,5 +1,7 @@
 {
-  config = {
-    programs.k3b.enable = true;
+  nixos = {
+    config = {
+      programs.k3b.enable = true;
+    };
   };
 }

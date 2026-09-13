@@ -243,6 +243,11 @@ rec {
       # Home Manager is wired only where a user actually asked for it; a host
       # with no home user never imports it. Asking for a home dendrite with the
       # lane switched off is a configuration error, not a quiet no-op.
+      args = specialArgs // {
+        inherit system;
+        host = hostName;
+      };
+
       hmUsers = lib.filterAttrs (_: u: u.homeManager.enable) selection.users;
       strandedHome = lib.concatMap (
         userName:
@@ -290,7 +295,7 @@ rec {
           useUserPackages = true;
           useGlobalPkgs = true;
           backupFileExtension = "backup";
-          extraSpecialArgs = specialArgs;
+          extraSpecialArgs = args;
           users = lib.mapAttrs homeFor hmUsers;
         };
       };
@@ -312,10 +317,7 @@ rec {
         inventory = inventoryOf { inherit hostName selection; };
         system = nixpkgs.lib.nixosSystem {
           inherit modules;
-          specialArgs = specialArgs // {
-            inherit system;
-            host = hostName;
-          };
+          specialArgs = args;
         };
       };
 }

@@ -62,9 +62,11 @@
 # leaf options — the desktop aggregate stays imported for the pieces that
 # don't collide (pipewire, fonts, fcitx5, portals, ly login).
 {
-  config = {
-    aoide.enable = true;
-    aoide.a2a.enable = true;
-    aoide.secrets.enable = true;
+  nixos = {
+    config = {
+      aoide.enable = true;
+      aoide.a2a.enable = true;
+      aoide.secrets.enable = true;
+    };
   };
 }
