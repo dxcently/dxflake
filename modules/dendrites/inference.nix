@@ -5,10 +5,11 @@
   ...
 }:
 let
-  # Strix Halo's iGPU is RDNA 3.5 = gfx1151. ROCm ships tuned kernels only for a
-  # handful of gfx targets; gfx1151 rides on the gfx11 (11.0.0) tensile libs via
-  # HSA_OVERRIDE_GFX_VERSION. If a future ROCm gains native gfx1151 support, drop
-  # the override. This is the single knob most likely to need tuning on new silicon.
+  # ROCm ships tuned tensile kernels for only a handful of gfx targets — gfx1100
+  # chief among gfx11 parts. Every other RDNA3/3.5 chip rides those gfx1100
+  # kernels via HSA_OVERRIDE_GFX_VERSION: yomi-strix's Strix Halo iGPU (gfx1151)
+  # and osaka's discrete Navi 33 (gfx1102) both need it. If a future ROCm gains
+  # native support for a given target, drop the override for that host.
   gfxOverride = "11.0.0";
 
   # Client-side AI tooling. torch-rocm is intentionally OMITTED: it isn't in the
@@ -25,7 +26,18 @@ let
   );
 in
 {
-  options.dx.inference.enable = lib.mkEnableOption "local AI inference stack (Ollama + Open-WebUI, ROCm)";
+  options.dx.inference = {
+    enable = lib.mkEnableOption "local AI inference stack (Ollama + Open-WebUI, ROCm)";
+    igpu = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        This host's ROCm GPU is integrated (unified memory) rather than discrete.
+        Ollama drops integrated GPUs unless told otherwise, so this flips
+        OLLAMA_IGPU_ENABLE. Leave off for a discrete card.
+      '';
+    };
+  };
 
   config = lib.mkIf config.dx.inference.enable {
     # Requires an AMD GPU wired up (ROCm userspace, amdgpu). The desktop hosts
@@ -45,14 +57,16 @@ in
       rocmOverrideGfx = gfxOverride;
       host = "127.0.0.1";
       port = 11434;
-      # Strix Halo has a huge unified-memory pool; let Ollama keep models warm.
+      # Single-user local box; let Ollama keep models warm rather than reloading
+      # them every request.
       environmentVariables = {
         HSA_OVERRIDE_GFX_VERSION = gfxOverride;
-        # Strix Halo's GPU is an iGPU; ollama drops integrated GPUs unless told
-        # otherwise. Without this it silently runs CPU-only (verified in logs).
-        OLLAMA_IGPU_ENABLE = "1";
         OLLAMA_KEEP_ALIVE = "30m";
         OLLAMA_FLASH_ATTENTION = "1";
+      }
+      // lib.optionalAttrs config.dx.inference.igpu {
+        # Without this, an iGPU host silently runs CPU-only (verified in logs).
+        OLLAMA_IGPU_ENABLE = "1";
       };
     };
 

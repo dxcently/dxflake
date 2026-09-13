@@ -19,6 +19,7 @@
   dx.openrazer.enable = true;
   dx.gpu-amd.enable = true;
   dx.gpu-screen-recorder.enable = true;
+  dx.inference.enable = true; # Ollama + Open-WebUI + llama.cpp (ROCm, discrete RX 7600)
   dx.k3b.enable = true;
   dx.autopsy.enable = true;
   # consolidated to sakaki-only, 2026-07-31
