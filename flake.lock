@@ -1263,11 +1263,11 @@
     "melete-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788025308,
-        "narHash": "sha256-GvYxLoOGIeyWo9qNb38Tdrg/qkX7d48kmy/bh1ZtW70=",
-        "ref": "refs/heads/memory-bounds",
-        "rev": "b3c6bcb509eb943bae14a0d58e247332256f7f31",
-        "revCount": 607,
+        "lastModified": 1786932850,
+        "narHash": "sha256-ZdHAExljHzkRLLY8YFZnNh6XynVBVUw2x/VzL97IAlc=",
+        "ref": "refs/heads/master",
+        "rev": "7619d40939f7e6cf4307b32d7e2928e27a0dff23",
+        "revCount": 598,
         "type": "git",
         "url": "file:///home/khoa/melete"
       },
@@ -1279,11 +1279,11 @@
     "mneme-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788924175,
-        "narHash": "sha256-fvqcfmLBuAs9TnlPrcyv5lXI8sy+lLJMiWspTawPXd0=",
+        "lastModified": 1788476565,
+        "narHash": "sha256-cEF6vFLS4B+4MkidFN2R/jzhLZeHJr2plqL77pAfnvI=",
         "ref": "refs/heads/master",
-        "rev": "35b0a4a3ffc52edee3e3a01b1d036089ce98e491",
-        "revCount": 179,
+        "rev": "551229919fac07724de029dfbb7325b29dddbc16",
+        "revCount": 177,
         "type": "git",
         "url": "file:///home/khoa/mneme"
       },
