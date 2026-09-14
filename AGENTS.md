@@ -4,7 +4,9 @@ A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` serv
 `yomi-strix` desktop).
 This file is a **registry**: where things live and how to add them. For the *why*,
 read `README.md` and `~/Aoide/docs/architecture/NIX-COMPOSITION.md`, which is the
-authoritative design this tree implements.
+authoritative design this tree implements. To add a file, start from
+`templates/` — one copyable example per authoring role, with `templates/README.md`
+mapping role to destination.
 
 ## How it operates
 
@@ -12,52 +14,94 @@ Selection is resolved **before** any platform module graph exists.
 
 `mkDefault` sets definition priority and cannot decide imports; `mkIf` cannot keep
 an imported module's declarations out of the graph that imported them. So
-`lib/composition.nix` runs two passes:
+`lib/composition.nix` resolves the whole selection first, with an ordinary
+`lib.evalModules` pass that knows nothing about NixOS, and only then assembles
+the import list:
 
 ```text
-modules/default.nix (catalogue)  +  modules/dendrites/ (groups)  +  hosts/<host>
+modules/default.nix (catalogue)  modules/aggregations/ (discovery)  hosts/<host>
                               |
-                 pass 1: ordinary lib.evalModules
+      gate     which aggregations did this host or its users select?
+                              |
+      select   import THOSE bodies; they declare their provider selectors
+               and write their membership. No other body is read.
                               |
       enabled names + chosen providers + per-user home selections
                               |
-                 pass 2: import ONLY what was selected
+      platform import ONLY the dendrite and provider files selection kept
                               |
         nucleus + account lanes + system lanes + per-user home lanes
                               |
                      nixpkgs.lib.nixosSystem
 ```
 
-Nothing walks the filesystem. A capability exists because `modules/default.nix`
-names its path; a name with no catalogue line is unreachable, which is what
-shelving means now (the `_` filename prefix is the older convention and still
-marks parked files).
+The gate step exists because the host interface nests provider choices under the
+aggregation that owns them, and those option names come from the aggregation's
+own body. In the gate step every discovered aggregation declares only `enable`
+and the rest of its attrset is freeform and ignored; in the select step the
+chosen bodies declare the real thing. A body is **data**, so it cannot enable
+another aggregation — the gate step's answer is final, and no recursion
+machinery exists.
 
-- **Catalogue** — `modules/default.nix`, one `name = ./path;` line per capability.
+**The evaluation boundary, exactly.** `modules/aggregations/default.nix` names
+directories without importing them. An aggregation body is imported iff this
+host *or one of its users* selected it — the union, so a body a user selected is
+also present, gated off, in the host scope. A dendrite implementation and a
+provider file are imported only in the platform pass, only if selection kept
+them. Nothing else under `modules/dendrites/` is read at all.
+
+- **Catalogue** — `modules/default.nix`. Not a module: plain data, one
+  `name = ./path;` line per capability plus `aggregations = import ./aggregations;`.
   It generates `dendrites.<name>.enable` and `.provider`, so an unknown name
-  fails as an option that does not exist, naming the file that asked for it.
+  fails as an option that does not exist, naming the file that asked for it. A
+  name with no catalogue line is unreachable, which is what shelving means now
+  (the `_` filename prefix is the older convention and still marks parked files).
 - **Dendrite** — a selectable capability. One file exposing the lanes it
   supports (`{ nixos = …; }`, `{ homeManager = …; }`, or both), or a directory
   whose `default.nix` lists `providers = { … }` and imports none of them.
 - **Provider** — one implementation of a multi-implementation capability, and
-  exclusive within a scope. `gpu` is the worked example: `amd` and `intel`, and
-  the unchosen file is never imported.
-- **Aggregation** — one group, one directory: `modules/dendrites/<group>/`
-  owns its own `aggregation.<name>.enable` option, its `mkIf` gate, both halves
-  of its membership and any shared preference that rides along.
-  `modules/dendrites/default.nix` imports the groups and does nothing else.
-  Each group file is evaluated **twice** — once for the host, once per user —
-  and tells the two apart by the `scope` argument (`"system"` / `"home"`) the
-  constructor supplies, so `aggregation.desktop.enable` on the host selects the
-  system members and `users.khoa.aggregation.desktop.enable` selects the home
-  ones. Membership uses `mkDefault`, so an ordinary selection outranks it, and
-  two groups that default the same option to different values collide; import
-  order never picks a winner.
-  A directory can hold both kinds of file. A `default.nix` **named by the
-  catalogue** is an implementation; a `default.nix` **imported by
-  `modules/dendrites/default.nix`** is a selection module. The two sets never
-  overlap — `hyprland/` is the worked example, where the compositor moved to
-  `hyprland/compositor.nix` so its `default.nix` could become the group.
+  exclusive within a scope. `compositor` and `gpu` are the worked examples; the
+  unchosen file is never imported. A single-implementation dendrite has no
+  provider option at all.
+- **Aggregation** — one group, one directory: `modules/aggregations/<group>/default.nix`.
+  Its `default.nix` is plain data — no options, no `mkIf`, no arguments:
+
+  ```nix
+  {
+    description = "One line, shown on the generated enable option.";
+    system = {
+      members = [ "catalogue-name" … ];   # single-implementation members
+      providers.compositor = null;        # provider-bearing member, no default
+      nixos = { … };                      # optional preference that rides along
+    };
+    home = {
+      members = [ … ];
+      providers.notifications = "mako";   # shared default a user may override
+      homeManager = { … };                # optional
+    };
+  }
+  ```
+
+  `modules/aggregations/default.nix` discovers every immediate child directory
+  holding a `default.nix` and does nothing else — there is no collector line to
+  add. `aggregation.desktop.enable` on the host selects the `system` half;
+  `users.khoa.aggregation.desktop.enable` selects the `home` half. An absent half
+  is a real answer, not a placeholder.
+
+  Each key of a `providers` attrset becomes a selector on that aggregation's own
+  interface, in that scope — which is where a host states its choice:
+
+  ```nix
+  aggregation.shell = {
+    enable = true;
+    compositor.provider = "hyprland";
+  };
+  ```
+
+  Membership and provider are `mkDefault`, so an ordinary selection outranks
+  them, two aggregations naming the same dendrite on the same terms **merge**
+  into one selection, and two that name different providers for it collide with
+  both values in the error. Import order never picks a winner.
 - **Nucleus** — `modules/nucleus/`, imported unconditionally on every host.
 - **Lane** — a module for one evaluator: `nixos`, `homeManager` (`darwin` is in
   the vocabulary, unused here). Selecting a dendrite for the system imports its
@@ -67,19 +111,22 @@ marks parked files).
 
 ## Adding things
 
+Every row below has a template in `templates/`; `templates/README.md` maps role
+to destination.
+
 - **A dendrite** — write the file exposing its lane(s), add one catalogue line,
   and select it from a host or a group. Nothing else.
 - **A provider** — add the file and one line to that dendrite's `providers`
   registry; select it where wanted.
-- **A group** — a directory under `modules/dendrites/` whose `default.nix`
-  declares `aggregation.<name>.enable` and gates both membership branches on
-  `scope`, plus one line in `modules/dendrites/default.nix`.
+- **A group** — a directory under `modules/aggregations/` whose `default.nix`
+  holds the data above. Discovery finds it; there is no import line anywhere.
 - **A shared preference or package fix** — the owning group's `default.nix`,
-  once, in the `scope` branch that matches the lane it rides; a deferred
-  platform preference goes in that branch's `nixos` block. Never repeated
-  across hosts.
+  once, in the half that matches the lane it rides: `system.nixos` for a
+  deferred platform preference, `home.homeManager` for a home one. Never
+  repeated across hosts.
 - **A host exception** — that host's own selection (`enable = false` beats a
-  `mkDefault true`), or an ordinary setting in its `nixos` module.
+  `mkDefault true`, and `dendrites.<name>.provider` beats a group's choice), or
+  an ordinary setting in its `nixos` module.
 - **A user** — one definition under `users/`, attached by the hosts that want
   it. `users/khoa.nix` carries the account in its `nixos` lane and the shared
   home floor in its `homeManager` lane; there are no per-host copies.
@@ -93,7 +140,7 @@ host-only overlays and packages.
 ## Reviewing what a host resolved
 
 ```sh
-nix eval --json .#inventory.osaka | jq        # dendrites, providers, users, sources
+nix eval --json .#inventory.osaka | jq        # aggregations, dendrites, providers, users, sources
 ```
 
 Generated from selection, never maintained by hand.
@@ -103,13 +150,17 @@ Generated from selection, never maintained by hand.
 ```sh
 nixfmt <file>.nix                          # format (repo style)
 ./tests/selection/run.sh                   # the constructor's executable schema
+./tests/templates/run.sh                   # templates/ still copyable and correct
 nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
 sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
 
 `tests/selection/` is the schema, not a description of one: its fixtures throw
 on import, so "an unselected file is never evaluated" is proved rather than
-asserted, and the runner greps real stderr, so a vague diagnostic fails.
+asserted — for an unselected provider *and* for an unselected aggregation body —
+and the runner greps real stderr, so a vague diagnostic fails.
+`tests/templates/` assembles a whole tree out of `templates/`, resolves two
+hosts against the real constructor, and checks the same non-evaluation there.
 
 ## The Aoide seam
 
@@ -153,4 +204,5 @@ key** (`ssh-to-age`), so no private key is ever copied around. To use a secret:
 
 - `~/Aoide/docs/architecture/NIX-COMPOSITION.md` — the authoritative design.
 - `README.md` — architecture overview.
+- `templates/README.md` — one copyable example per authoring role.
 - `~/Magi/06 • MAGI-WIKI/03 Homelab/notes/Build-Runbook.md` — sops setup, adding a host.

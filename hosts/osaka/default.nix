@@ -5,7 +5,10 @@
     base.enable = true;
     desktop.enable = true;
     gaming.enable = true;
-    hyprland.enable = true;
+    shell = {
+      enable = true;
+      compositor.provider = "hyprland";
+    };
   };
 
   dendrites = {
@@ -39,7 +42,7 @@
     aggregation = {
       base.enable = true;
       desktop.enable = true;
-      hyprland.enable = true;
+      shell.enable = true;
     };
     dendrites.pi-coding-agent.enable = true;
   };
@@ -73,20 +76,20 @@
       # herald — and it is the only facet that composes with dxflake's own
       # Hyprland + Stylix dendrites: it needs nothing but graphical-session.target
       # and a compositor that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE,
-      # which the hyprland import already provides.
+      # which the compositor dendrite already provides.
       #
       # The compositor facet stays OFF so dxflake's Hyprland behavior stays intact.
       # Stylix ownership is delegated to the AOIDE stylix facet so colors follow
       # livery while dx.stylix keeps fonts/cursors/icons and non-style targets.
-      # This is load-bearing for Osaka specifically: chiyo does not import hyprland
+      # This is load-bearing for Osaka specifically: chiyo does not select the shell aggregation
       # (`dx.stylix.enable = false`) and can run all AOIDE facets because it no
       # longer overlaps this side of the theme stack.
       #
       # ── Reverting to the plain flake rice ────────────────────────────────────
       # Flip `aoide.facets.quickshell.enable` back to false (and with it lyra and
       # dunst below, which have no purpose without the surface). That single flag
-      # is what the waybar/awww/rofi stand-down in modules/dendrites/hyprland/
-      # default.nix keys on, so waybar, both awww wallpapers and SUPER+SPACE→rofi
+      # is what the waybar/awww/rofi stand-down in modules/dendrites/compositor/
+      # hyprland.nix keys on, so waybar, both awww wallpapers and SUPER+SPACE→rofi
       # all come back exactly as they were, and aoided drops back to anchoring on
       # default.target instead of graphical-session.target. Nothing else to undo.
       #
@@ -164,7 +167,7 @@
       # explicitly the way chiyo and yomi-strix name it.
       aoide.lyra.enable = true;
       # The notification DAEMON behind the herald surface. dxflake ships the dunst
-      # PACKAGE in the hyprland dendrite but never starts a service, so there is no
+      # PACKAGE in the hyprland-packages dendrite but never starts a service, so there is no
       # second daemon to collide with — this is what actually puts
       # org.freedesktop.Notifications on the bus here. Every rule is skip_display;
       # dunst feeds `lyra herald push` and Quickshell draws.

@@ -4,9 +4,12 @@
   aggregation = {
     base.enable = true;
     # Dev tooling comes free from base and the nucleus (git, neovim, …);
-    # desktop and hyprland bring the GUI.
+    # desktop and shell bring the GUI.
     desktop.enable = true;
-    hyprland.enable = true;
+    shell = {
+      enable = true;
+      compositor.provider = "hyprland";
+    };
   };
 
   dendrites = {
@@ -31,7 +34,7 @@
     aggregation = {
       base.enable = true;
       desktop.enable = true;
-      hyprland.enable = true;
+      shell.enable = true;
     };
   };
 

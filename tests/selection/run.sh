@@ -18,6 +18,7 @@ lib="(builtins.getFlake \"github:nixos/nixpkgs/$rev\").lib"
 cases=$(cat <<'EOF'
 disabledIsInert                     ok      "fixture"
 unselectedProviderIsInert           ok      "dunst"
+unselectedAggregationIsInert        ok      "fixture"
 missingProvider                     throws  chose no provider; available providers: dunst, herald, landmine, mako
 unknownProvider                     throws  has no provider 'nope'; available providers: dunst, herald, landmine, mako
 providerOnSingleImpl                throws  single implementation and takes no provider (got 'mako')
@@ -25,11 +26,16 @@ systemScopeWantsHomeOnlyProvider    throws  'notifications/mako' is selected for
 systemScopeWantsHomeOnlyDendrite    throws  'homeonly' is selected for the system but exposes no nixos lane; it supports: homeManager
 homeScopeWantsSystemOnlyDendrite    throws  'systemonly' is selected by user 'alice' but exposes no homeManager lane; it supports: nixos
 unknownDendrite                     throws  does not exist
+unknownAggregation                  throws  does not exist
+unknownAggregationSelector          throws  aggregation.workstation.compositor
+aggregationProviderSelector         ok      "herald"
 hostOverridesAggregationProvider    ok      "herald"
+aggregationsMergeOnSharedDendrite   ok      true
+conflictingAggregationProviders     throws  has conflicting definition values
+hostDisablesAggregationMember       ok      false
+aggregationRidesPlatformSettings    ok      "workstation-fixture"
 userAggregationContributesHomeMembers ok    true
 userOverridesAggregationProvider    ok      "mako"
-hostDisablesAggregationMember       ok      false
-conflictingAggregationDefaults      throws  has conflicting definition values
 twoUserScopes                       ok      "mako+dunst"
 scopesDoNotLeak                     ok      true
 homeSelectionWithoutHomeManager     throws  homeManager.enable = false but selects home dendrites: notifications

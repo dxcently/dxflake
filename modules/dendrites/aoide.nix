@@ -34,8 +34,8 @@
 #
 # osaka is the worked example of core-only (hosts/osaka/default.nix): it
 # enables this dendrite for the core baseline and sets nothing else under
-# `aoide.*` — dxflake's own Hyprland + Stylix dendrites (the hyprland/desktop
-# aggregates, imported directly) keep painting osaka's desktop, so with
+# `aoide.*` — dxflake's own compositor + stylix dendrites (selected by the
+# shell and base aggregations) keep painting osaka's desktop, so with
 # the quickshell facet left off, aoided anchors to default.target and the
 # door rides it (loopback only). A host in this shape must never ALSO flip
 # `aoide.facets.compositor` or `aoide.facets.stylix` beside dxflake's own
@@ -58,8 +58,8 @@
 # runs the full Aoide paint stack (`aoide.facets.compositor`,
 # `aoide.facets.stylix`, `aoide.facets.quickshell`, `aoide.hyprland.enable`)
 # and turns dxflake's own Hyprland/Stylix dendrites OFF (hyprland is not
-# imported, `dx.stylix.enable = false`) so only one writer ever touches those
-# leaf options — the desktop aggregate stays imported for the pieces that
+# selected, `dx.stylix.enable = false`) so only one writer ever touches those
+# leaf options — the desktop aggregation stays selected for the pieces that
 # don't collide (pipewire, fonts, fcitx5, portals, ly login).
 {
   nixos = {

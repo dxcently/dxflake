@@ -1,5 +1,5 @@
 # sakaki — the server. Headless: Aoide runs here with no facets and nothing
-# paints, so no desktop or hyprland aggregation and no graphical dendrite.
+# paints, so no desktop or shell aggregation and no graphical dendrite.
 {
   aggregation.base.enable = true;
 

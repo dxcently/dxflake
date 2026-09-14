@@ -18,7 +18,7 @@
 
       # The aero glass keys on the FACET, not on aoide.enable: it is a look, and it
       # only pays off where something glosses it. hyprglass loads under the same
-      # flag (modules/dendrites/hyprland/default.nix), and Hyprland's own blur pass
+      # flag (modules/dendrites/compositor/hyprland.nix), and Hyprland's own blur pass
       # is what shows through an unfocused terminal. On a facet-off host this would
       # just make terminals see-through with nothing behind them, so yomi-strix
       # keeps its opaque kitty untouched.
@@ -115,7 +115,7 @@
                   # its own buffer and Hyprland's `opacity` rule can only ever subtract
                   # from it. With 0.86 baked in, a HOVERED terminal maxed out at 0.86 —
                   # the windowrule's 1.0 had nothing to restore. Opaque kitty + the
-                  # rule's 1.0/0.80 pair (hyprland/default.nix) gives the intended
+                  # rule's 1.0/0.80 pair (compositor/hyprland.nix) gives the intended
                   # split: focused is 100% opaque, unfocused fades to 0.80 and still
                   # frosts, since `decoration.blur.ignore_opacity` blurs behind windows
                   # faded by an opacity rule. Under `follow_mouse = 1` focused ==

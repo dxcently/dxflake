@@ -3,7 +3,7 @@
   aggregation = {
     base.enable = true;
     # desktop stays: it carries pipewire, fonts, fcitx5, portals and ly login —
-    # none of those collide with Aoide's paint. The hyprland aggregation is NOT
+    # none of those collide with Aoide's paint. The shell aggregation is NOT
     # selected here, once the paint facets are on.
     desktop.enable = true;
   };
@@ -108,13 +108,13 @@
       # same tty. The facet assigns `services.greetd.enable` plainly (true), so
       # only an mkForce wins here.
       services.greetd.enable = lib.mkForce false;
-      # Lock screen: chiyo does not import the hyprland aggregate, so it takes
+      # Lock screen: chiyo does not select the shell aggregation, so it takes
       # dxflake's hyprlock dendrite on its own (imported above). Aoide's own
       # hyprland dendrite binds SUPER+ESCAPE to hyprlock directly and
       # shellbridge's powermenu Lock action shells the same binary — Aoide ships
       # no lockscreen anchor of its own yet (modules/dendrites/hyprlock.nix), so
       # the binary + PAM service are carved out and imported independently here.
-      # Non-paint utilities the (now-off) hyprland aggregation used to carry.
+      # Non-paint utilities the (unselected) shell aggregation used to carry.
       # wl-clipboard/cliphist/satty/hyprshot are NOT re-added here: Aoide ships
       # its own equivalents with matching systemd services and keybinds
       # (aoide.clipboard.enable, aoide.screenshot.enable, both flipped below) —
@@ -130,17 +130,17 @@
       # read Quickshell.Services.UPower, a client only; without the daemon every
       # battery renders as absent ("AC — no battery present").
       services.upower.enable = true;
-      # Host-specific Hyprland settings that died with the aggregation: chiyo's
+      # Host-specific Hyprland settings the shell aggregation would have carried: chiyo's
       # own monitor geometry, the fcitx5 IME autostart (fcitx5 itself stays on
       # via the desktop aggregation; only the exec-once trigger lived in the
-      # aggregation's hyprland dendrite), the env vars the aggregation's session
+      # shell aggregation's compositor dendrite), the env vars that session
       # used to set, and the brightness keys (a laptop-only bind AoideOS's own
-      # behaviour dendrite doesn't carry — see modules/dendrites/hyprland.nix's
+      # behaviour dendrite doesn't carry — see modules/dendrites/compositor/hyprland.nix's
       # header: media/brightness XF86 keys are deliberately out of its scope).
       # `settings` is a separate option from the `extraConfig`/`lines` option
       # Aoide's own facets and dendrites write to, so this merges alongside them
       # rather than colliding. Only chiyo's own entries are carried — the AOC/
-      # Samsung monitor block in the aggregation's hyprland dendrite belongs to
+      # Samsung monitor block in the compositor dendrite belongs to
       # osaka, not chiyo. Keybinds/decoration/animations are otherwise NOT
       # carried: AoideOS owns those (aoide.hyprland.enable above).
       home-manager.users.${username} = {

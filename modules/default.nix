@@ -1,19 +1,15 @@
-# modules/default.nix — the catalogue and the selection schema.
+# modules/default.nix — the registry.
 #
-# This is NOT a NixOS module. It is evaluated in the constructor's first pass,
-# by ordinary lib.evalModules, before any platform module graph exists. It
-# names one path per capability and declares the enable/provider options those
-# names generate; there is no registry file beside it and nothing walks the
-# directory. A capability exists here or it cannot be selected, and a name with
-# no line is unreachable — which is what shelving means now.
+# This is NOT a module. It is plain data, read by the constructor before any
+# module graph exists: one catalogue line per capability, plus the aggregations
+# discovered beside it. Nothing walks the dendrite tree — a capability exists
+# here or it cannot be selected, and a name with no line is unreachable, which
+# is what shelving means now.
 #
 # A dendrite with one implementation is one file exposing the lanes it
 # supports. A dendrite with several is a directory whose default.nix lists
 # provider paths and imports none of them.
-{ lib, ... }:
-let
-  composition = import ../lib/composition.nix { inherit lib; };
-
+{
   catalogue = {
     aagl = ./dendrites/gaming/aagl.nix;
     aoide = ./dendrites/aoide.nix;
@@ -26,6 +22,7 @@ let
     claude-code = ./dendrites/claude-code.nix;
     cloudflared = ./dendrites/cloudflared.nix;
     composekey = ./dendrites/desktop/composekey.nix;
+    compositor = ./dendrites/compositor;
     desktop-hardware = ./dendrites/desktop/hardware.nix;
     desktop-packages = ./dendrites/desktop/packages.nix;
     direnv = ./dendrites/direnv.nix;
@@ -41,7 +38,6 @@ let
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/desktop/gtk.nix;
-    hyprland = ./dendrites/hyprland/compositor.nix;
     hyprland-packages = ./dendrites/hyprland/packages.nix;
     hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;
@@ -82,18 +78,8 @@ let
     yazi = ./dendrites/yazi.nix;
   };
 
-  # The group declarations. One import, evaluated in BOTH selection scopes —
-  # the host scope and every user's — because a group owns both halves of its
-  # membership. Each group tells the two apart by the `scope` argument the
-  # constructor supplies. See modules/dendrites/default.nix.
-  groups = ./dendrites;
-in
-{
-  imports = [
-    (composition.mkSchema {
-      inherit catalogue;
-      userModules = [ groups ];
-    })
-    groups
-  ];
+  # The aggregations, discovered one level deep. Names and paths only: no body
+  # is imported here, and the constructor imports only the ones this host or one
+  # of its users selected. See modules/aggregations/default.nix.
+  aggregations = import ./aggregations;
 }

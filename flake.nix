@@ -145,10 +145,8 @@
         composition.mkNixosHost {
           inherit nixpkgs system;
           hostName = name;
-          selectionModules = [
-            ./modules
-            ./hosts/${name}
-          ];
+          registry = import ./modules;
+          hostModules = [ ./hosts/${name} ];
           nucleus = ./modules/nucleus;
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
           extraModules = aoideTree ++ [ inputs.disko.nixosModules.disko ];
