@@ -34,7 +34,7 @@ dxflake/
 │   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── base/ desktop/ gaming/ shell/  #   each default.nix is DATA, not a module
+│   │   └── base/ desktop/ gaming/ hyprland/ shell/  # each default.nix is DATA
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability, exposing the lanes it supports
@@ -42,12 +42,13 @@ dxflake/
 │       ├── bluetooth.nix · syncthing.nix …    #   { nixos = …; }
 │       ├── openai.nix                         #   { nixos = …; homeManager = …; }
 │       ├── compositor/ gpu/                   #   a provider registry each
-│       ├── desktop/ gaming/ hyprland/ server/ #   plain folders of implementations
+│       ├── desktop/ gaming/ hyprland/ server/ #   plain folders, nothing walks them
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── templates/                # copyable example-*.nix, one per authoring role
 ├── tests/selection/          # the constructor's executable schema
 ├── tests/templates/          # proves templates/ still assembles into a real tree
 ├── tests/session-guard/      # a nested Hyprland must not walk off with the desktop
+├── docs/HYPRLAND-SPLIT.md    # which file owns which old compositor block
 ├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
 ├── assets/                   # wallpapers, screenshots

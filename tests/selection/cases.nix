@@ -191,6 +191,34 @@ let
         ];
       }).config.networking.hostName;
 
+    # ── A backend-specific aggregation is not dragged in by its sibling ───────
+    # modules/aggregations/hyprland/ holds the members only the hyprland
+    # provider can run, precisely so a host that answers `compositor.provider`
+    # with something else never evaluates them. `backend`'s only member throws
+    # on import: selecting the provider-bearing aggregation beside it, and
+    # forcing the whole resolution, must still succeed.
+    backendAggregationIsInert =
+      (resolve {
+        users.alice = {
+          definition = ./users/alice.nix;
+          homeManager.enable = true;
+          aggregation.desk = {
+            enable = true;
+            notifications.provider = "dunst";
+          };
+        };
+      }).inv.host;
+
+    # The landmine is real: selecting the backend aggregation does reach it.
+    backendAggregationIsReachable =
+      (resolve {
+        users.alice = {
+          definition = ./users/alice.nix;
+          homeManager.enable = true;
+          aggregation.backend.enable = true;
+        };
+      }).inv.host;
+
     # ── Scopes ─────────────────────────────────────────────────────────────────
     # The same aggregation one scope down: a user turning it on gets its home
     # membership, and the system scope stays empty — the two halves of one

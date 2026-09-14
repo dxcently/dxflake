@@ -6,8 +6,10 @@
     }:
     {
       config = {
+        # waybar is NOT here: `programs.waybar.enable` in the waybar dendrite
+        # already installs it into home.packages, and carrying it here too put
+        # two copies on every shell host.
         environment.systemPackages = with pkgs; [
-          waybar # highly customizable Wayland status bar
           dunst # lightweight notification daemon
           awww # animated wallpaper daemon for Wayland
           wl-clipboard # copy/paste CLI for Wayland

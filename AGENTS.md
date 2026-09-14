@@ -113,6 +113,13 @@ are proved cold.
   them, two aggregations naming the same dendrite on the same terms **merge**
   into one selection, and two that name different providers for it collide with
   both values in the error. Import order never picks a winner.
+
+  Membership is **static**: the list does not vary with the provider that was
+  chosen. So a member only one implementation can run — a compositor plugin, a
+  config written in that compositor's own language — belongs to an aggregation
+  of its own, beside the provider-bearing one. `shell` holds what any wlroots
+  compositor can run and owns `compositor.provider`; `hyprland` holds what only
+  Hyprland can, and a host on another compositor selects `shell` alone.
 - **Override record** — a fix that belongs to a capability rather than to a
   host: `modules/overrides/<name>.nix`. It names the dendrites it is about,
   optionally the hosts it is confined to, and carries an `overlay`, a `nixos`
@@ -155,6 +162,10 @@ to destination.
   registry; select it where wanted.
 - **A group** — a directory under `modules/aggregations/` whose `default.nix`
   holds the data above. Discovery finds it; there is no import line anywhere.
+- **A backend-specific member** — one an aggregation cannot name because only
+  one provider can run it. Its own group beside the provider-bearing one
+  (`modules/aggregations/hyprland/` beside `shell/`), so choosing another
+  provider leaves it unselected and unevaluated.
 - **A shared preference or package fix** — the owning group's `default.nix`,
   once, in the half that matches the lane it rides: `system.nixos` for a
   deferred platform preference, `home.homeManager` for a home one. Never
@@ -213,6 +224,27 @@ a live nesting; its source half renders every host's `hyprland.conf` out of the
 flake and fails if home-manager's unguarded lines are back. A host the fix
 cannot reach is named in the runner with its reason and reports `KNOWN` — and
 fails if it ever comes back clean, so the exemption cannot outlive the bug.
+
+## The Hyprland split
+
+`modules/dendrites/compositor/hyprland.nix` is the provider and does one job:
+make a Hyprland session RUN. Package, Wayland environment, monitors, and the
+guarded session handoff below. It installs nothing.
+
+Everything opinionated is a dendrite under `modules/dendrites/hyprland/` —
+`hyprland-keybinds`, `hyprland-decoration`, `hyprland-autostart`, `hyprglass`,
+plus the surfaces `waybar`/`rofi`/`satty`/`wlogout`. That folder is a plain
+directory with no `default.nix`: nothing walks it, and every file in it is
+reachable only through its own catalogue line. (`compositor/` and `gpu/` DO
+carry a `default.nix` — those are provider registries, a different thing.)
+
+`docs/HYPRLAND-SPLIT.md` maps every old block to the file that owns it now, and
+records which units are independently selectable versus private helpers.
+
+One ordering consequence: `exec-once` is now written from two files, and list
+definitions concatenate in module order. The provider pins its guard entry with
+`lib.mkBefore` so it stays first; `tests/session-guard` asserts that against the
+rendered config.
 
 ## The session handoff
 

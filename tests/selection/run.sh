@@ -34,6 +34,8 @@ aggregationsMergeOnSharedDendrite   ok      true
 conflictingAggregationProviders     throws  has conflicting definition values
 hostDisablesAggregationMember       ok      false
 aggregationRidesPlatformSettings    ok      "workstation-fixture"
+backendAggregationIsInert           ok      "fixture"
+backendAggregationIsReachable       throws  landmine/default.nix was imported
 userAggregationContributesHomeMembers ok    true
 userOverridesAggregationProvider    ok      "mako"
 twoUserScopes                       ok      "mako+dunst"

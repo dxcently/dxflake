@@ -38,6 +38,10 @@
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/desktop/gtk.nix;
+    hyprglass = ./dendrites/hyprland/hyprglass.nix;
+    hyprland-autostart = ./dendrites/hyprland/autostart.nix;
+    hyprland-decoration = ./dendrites/hyprland/decoration.nix;
+    hyprland-keybinds = ./dendrites/hyprland/keybinds.nix;
     hyprland-packages = ./dendrites/hyprland/packages.nix;
     hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;

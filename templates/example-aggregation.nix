@@ -43,6 +43,20 @@
     # error along with the providers that exist.
     providers.compositor = null;
 
+    # ── When a member only ONE provider can run ──────────────────────────────
+    # Membership is static: this list is the same whatever `providers.compositor`
+    # resolves to. So a member that only works under one implementation — a
+    # plugin compiled against it, a config written in its own language — must
+    # NOT be named here, or picking a different provider would evaluate it
+    # anyway.
+    #
+    # Give those members a group of their own, beside this one, and let the host
+    # select both. `modules/aggregations/hyprland/` is the worked example: it
+    # holds what only Hyprland can run, `shell` holds what any wlroots
+    # compositor can, and a host on another compositor selects `shell` alone.
+    # tests/selection's `backendAggregationIsInert` proves the separation
+    # against a member that throws on import.
+
     # Optional. A preference or a package that belongs with the group rather
     # than with any one member. An ordinary NixOS module, evaluated only in the
     # platform pass — never during selection.
