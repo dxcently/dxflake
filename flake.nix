@@ -140,11 +140,22 @@
         }
       ];
 
-      hosts = lib.genAttrs [ "chiyo" "osaka" "sakaki" "yomi-strix" ] (
+      hostNames = [
+        "chiyo"
+        "osaka"
+        "sakaki"
+        "yomi-strix"
+      ];
+
+      hosts = lib.genAttrs hostNames (
         name:
         composition.mkNixosHost {
           inherit nixpkgs system;
           hostName = name;
+          # Override records name the hosts they are confined to; the constructor
+          # checks those names against this list so a typo fails loudly instead
+          # of applying nowhere.
+          knownHosts = hostNames;
           registry = import ./modules;
           hostModules = [ ./hosts/${name} ];
           nucleus = ./modules/nucleus;

@@ -78,6 +78,12 @@
     yazi = ./dendrites/yazi.nix;
   };
 
+  # The override records, discovered beside the aggregations: capability-scoped
+  # fixes, matched against what a host resolved. Names and paths only here; the
+  # constructor imports each record to read its targets. See
+  # modules/overrides/default.nix.
+  overrides = import ./overrides;
+
   # The aggregations, discovered one level deep. Names and paths only: no body
   # is imported here, and the constructor imports only the ones this host or one
   # of its users selected. See modules/aggregations/default.nix.

@@ -35,6 +35,8 @@ dxflake/
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
 │   │   └── base/ desktop/ gaming/ shell/  #   each default.nix is DATA, not a module
+│   ├── overrides/            # capability-scoped fixes. empty is a real answer
+│   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability, exposing the lanes it supports
 │       ├── git.nix · btop.nix · yazi.nix …    #   { homeManager = …; }
 │       ├── bluetooth.nix · syncthing.nix …    #   { nixos = …; }
@@ -92,7 +94,7 @@ Chiyo enables its SSH tunnel through `dx.cloudflared`. This flake provides no CS
 
 **The three moving parts, plainly:**
 
-- **Catalogue** — `modules/default.nix`, one `name = ./path;` line per capability. It generates `dendrites.<name>.enable` and `.provider`, so an unknown name fails as an option that does not exist, naming the file that asked for it. A capability with no catalogue line is unreachable — that is what shelving means now. The file is not a module: it is plain data, `{ catalogue = { … }; aggregations = import ./aggregations; }`, and `flake.nix` hands it to the constructor as `registry` alongside `hostModules = [ ./hosts/<name> ]`.
+- **Catalogue** — `modules/default.nix`, one `name = ./path;` line per capability. It generates `dendrites.<name>.enable` and `.provider`, so an unknown name fails as an option that does not exist, naming the file that asked for it. A capability with no catalogue line is unreachable — that is what shelving means now. The file is not a module: it is plain data, `{ catalogue = { … }; aggregations = import ./aggregations; overrides = import ./overrides; }`, and `flake.nix` hands it to the constructor as `registry` alongside `hostModules = [ ./hosts/<name> ]`.
 - **Aggregations** — `modules/aggregations/<group>/default.nix`, found by directory name one level deep. Dendrites are written down by hand because an implementation must never become reachable by dropping a file somewhere; an aggregation body is inert data whose only effect is the gate it answers, so its directory name is enough.
 - **Selection** — resolved *before* any platform module graph exists, because `mkDefault` sets definition priority and cannot decide imports, and `mkIf` cannot keep an imported module's declarations out of the graph that imported them. Pass one is an ordinary `lib.evalModules` over enable/provider options; pass two imports only what it resolved, so an unselected file is never read. A `dx.*` option still gates the knobs that genuinely vary (`caddy.sites`, `nas-mounts.mounts`, …), never whether the file is reached at all.
 
@@ -112,6 +114,8 @@ platform import the chosen dendrite files and the chosen provider files.
 ```
 
 A body is data, so it cannot enable another aggregation: the gate step's answer is the select step's answer, and no recursion machinery exists to say so. A body one of the users selected is present in the host scope too, gated off — the union is imported, not a separate list per scope.
+
+Override records are the one documented exception to all of that, and the weaker boundary is stated rather than glossed. A record under `modules/overrides/` is a fix that belongs to a capability instead of to a host — a package upstream broke, a setting everyone running the thing needs. It names its targets by catalogue name, optionally confines itself to named hosts, and carries an `overlay`, a `nixos` module, a `homeManager` module, or any combination. Every host **imports every record file**, because matching means reading which dendrites a record targets; what an unmatched host never spends is the *work*, since those three are functions and nothing calls them. A record never selects anything, applies at most once however many of its targets were hit, and takes its order from the record name. This tree ships no live record — `modules/overrides/` holds only its discovery file.
 
 To shelve a capability without deleting it, strike its catalogue line; the file conventionally keeps its `_`-prefixed name, e.g. `_foo.nix`, as a visual marker.
 
@@ -376,6 +380,21 @@ Discovery finds it by directory name; nothing imports it until a host or a user 
 Aggregations follow the same rule one level up: a group names each member once, in the half that matches the lane it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `nixos`/`homeManager` block, never a repeat across hosts.
 
 **What you never touch:** `flake.nix`, or any module path outside `modules/default.nix` and the provider registry of the capability you are adding to — those are the only places a file is named. Need a new aggregation? Add a directory under `modules/aggregations/` with a `default.nix` holding its `description` and its halves; there is no import line to add, because discovery names it and the constructor supplies the gate. Want to park a capability without deleting it? Strike its catalogue line.
+
+An **override record** is the last shape, and the one to reach for only when a fix belongs to a capability rather than to a host — a package upstream broke, a setting every machine running the thing needs. Drop a file under `modules/overrides/`:
+
+```nix
+# modules/overrides/browser.nix
+{
+  dendrites = [ "browser" ];        # catalogue names — required
+  hosts = [ "osaka" "sakaki" ];     # optional; omit for every host that selected one
+  overlay = _final: prev: { … };    # host package set
+  nixos = { lib, ... }: { … };      # deferred platform module
+  homeManager = { … };              # rides only the users who selected a target
+}
+```
+
+Discovery finds it; there is no catalogue line and no collector. A record never *selects* anything — targeting a capability nobody chose is a record that does not apply. Repeating the fix in each host drifts, putting it in the dendrite confuses what the thing IS with a patch log, and a new aggregation or provider turns a patch into a capability: none of those. Unknown fields, unknown targets and unknown host names fail on **every** host, naming the record, so a broken one cannot hide on the machines it would not have applied to.
 
 **Prove it still holds:**
 

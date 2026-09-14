@@ -28,9 +28,12 @@ modules/default.nix (catalogue)  modules/aggregations/ (discovery)  hosts/<host>
                               |
       enabled names + chosen providers + per-user home selections
                               |
+      match    which override records name something this host selected?
+                              |
       platform import ONLY the dendrite and provider files selection kept
                               |
         nucleus + account lanes + system lanes + per-user home lanes
+            + the overlays and modules the matched records carried
                               |
                      nixpkgs.lib.nixosSystem
 ```
@@ -49,6 +52,14 @@ host *or one of its users* selected it — the union, so a body a user selected 
 also present, gated off, in the host scope. A dendrite implementation and a
 provider file are imported only in the platform pass, only if selection kept
 them. Nothing else under `modules/dendrites/` is read at all.
+
+**Override records are the one weaker boundary, and it is stated rather than
+glossed.** `modules/overrides/*.nix` is imported on every host, because matching
+means reading which dendrites a record targets. What an unmatched host never
+spends is the *work*: `overlay`, `nixos` and `homeManager` are functions and
+nothing calls them. Keep imports, fetches and package computation inside those
+functions — metadata that computes defeats this, and only the function bodies
+are proved cold.
 
 - **Catalogue** — `modules/default.nix`. Not a module: plain data, one
   `name = ./path;` line per capability plus `aggregations = import ./aggregations;`.
@@ -102,6 +113,30 @@ them. Nothing else under `modules/dendrites/` is read at all.
   them, two aggregations naming the same dendrite on the same terms **merge**
   into one selection, and two that name different providers for it collide with
   both values in the error. Import order never picks a winner.
+- **Override record** — a fix that belongs to a capability rather than to a
+  host: `modules/overrides/<name>.nix`. It names the dendrites it is about,
+  optionally the hosts it is confined to, and carries an `overlay`, a `nixos`
+  module, a `homeManager` module, or any combination:
+
+  ```nix
+  {
+    dendrites = [ "browser" ];        # catalogue names — required
+    hosts = [ "osaka" "sakaki" ];     # optional; omit for every host that selected one
+    overlay = _final: prev: { … };    # host package set
+    nixos = { lib, ... }: { … };      # deferred platform module
+    homeManager = { … };              # rides only the users who selected a target
+  }
+  ```
+
+  Discovery is every `*.nix` file beside `modules/overrides/default.nix`; there
+  is no catalogue line. A record **never selects anything** — targeting a
+  capability nobody chose is a record that does not apply. A record applies at
+  most once however many of its targets were selected, matched records apply in
+  record-name order, and a record outranks everything the constructor imported
+  on its behalf while the host's own `nixos` block still outranks the record.
+  Unknown fields, unknown targets and unknown host names fail on *every* host,
+  naming the record — a broken record cannot hide on the machines it would not
+  have applied to.
 - **Nucleus** — `modules/nucleus/`, imported unconditionally on every host.
 - **Lane** — a module for one evaluator: `nixos`, `homeManager` (`darwin` is in
   the vocabulary, unused here). Selecting a dendrite for the system imports its
@@ -124,6 +159,11 @@ to destination.
   once, in the half that matches the lane it rides: `system.nixos` for a
   deferred platform preference, `home.homeManager` for a home one. Never
   repeated across hosts.
+- **A capability-wide fix** — an override record under `modules/overrides/`,
+  when a package or a setting is wrong for everyone who runs the thing.
+  Repeating it per host drifts; putting it in the dendrite confuses what the
+  thing IS with a patch log; a new aggregation or provider turns a patch into a
+  capability. None of those.
 - **A host exception** — that host's own selection (`enable = false` beats a
   `mkDefault true`, and `dendrites.<name>.provider` beats a group's choice), or
   an ordinary setting in its `nixos` module.
@@ -140,7 +180,7 @@ host-only overlays and packages.
 ## Reviewing what a host resolved
 
 ```sh
-nix eval --json .#inventory.osaka | jq        # aggregations, dendrites, providers, users, sources
+nix eval --json .#inventory.osaka | jq        # aggregations, dendrites, providers, users, sources, matched overrides
 ```
 
 Generated from selection, never maintained by hand.
@@ -157,10 +197,13 @@ sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 
 `tests/selection/` is the schema, not a description of one: its fixtures throw
 on import, so "an unselected file is never evaluated" is proved rather than
-asserted — for an unselected provider *and* for an unselected aggregation body —
-and the runner greps real stderr, so a vague diagnostic fails.
+asserted — for an unselected provider, for an unselected aggregation body, and
+for an unmatched override record whose overlay and module both throw — and the
+runner greps real stderr, so a vague diagnostic fails.
 `tests/templates/` assembles a whole tree out of `templates/`, resolves two
-hosts against the real constructor, and checks the same non-evaluation there.
+hosts against the real constructor, and checks the same non-evaluation there. It
+also runs the override template's `nixos` half through the real NixOS module
+system, so "real options" is checked rather than claimed.
 
 ## The Aoide seam
 

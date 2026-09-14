@@ -40,12 +40,27 @@ twoUserScopes                       ok      "mako+dunst"
 scopesDoNotLeak                     ok      true
 homeSelectionWithoutHomeManager     throws  homeManager.enable = false but selects home dendrites: notifications
 homeManagerAbsent                   ok      true
+overrideMatchesSelectedTarget       ok      "allhosts"
+overrideHostFilterAdmits            ok      "allhosts,confined,homely"
+overrideHostFilterExcludes          ok      "allhosts,homely"
+overrideAppliesOnceForTwoTargets    ok      1
+overrideNeedsSelectedTarget         ok      0
+overrideNixosModuleApplies          ok      "allhosts"
+overrideHomeOnlySelectionIsHostScoped ok    "patched"
+overrideHomeModuleTargetsSelectingUserOnly ok "1:0"
+overrideUnmatchedBodiesAreInert     ok      true
+overrideMatchedBodyIsCallable       throws  tripwire overlay was evaluated
+overrideUnknownField                throws  unknown field(s): nixOS; a record takes only
+overrideNoTarget                    throws  names no dendrites; a record must say which capabilities
+overrideStrayTarget                 throws  targets unknown dendrite(s): frobnicate
+overrideStrayHost                   throws  confined to unknown host(s): gamma
+overrideCarriesNothing              throws  carries nothing to apply
 EOF
 )
 
 only="${1:-}"
 pass=0; fail=0
-printf '%-34s %s\n' "CASE" "RESULT"
+printf '%-42s %s\n' "CASE" "RESULT"
 printf '%s\n' "------------------------------------------------------------"
 while read -r name expect want; do
   [ -z "$name" ] && continue
@@ -55,17 +70,17 @@ while read -r name expect want; do
   rc=$?
   if [ "$expect" = ok ]; then
     if [ $rc -eq 0 ] && [ "$(printf '%s' "$out" | tail -1)" = "$want" ]; then
-      printf '%-34s PASS\n' "$name"; pass=$((pass+1))
+      printf '%-42s PASS\n' "$name"; pass=$((pass+1))
     else
-      printf '%-34s FAIL (want %s, rc=%s)\n' "$name" "$want" "$rc"
+      printf '%-42s FAIL (want %s, rc=%s)\n' "$name" "$want" "$rc"
       printf '%s\n' "$out" | tail -6 | sed 's/^/    | /'
       fail=$((fail+1))
     fi
   else
     if [ $rc -ne 0 ] && printf '%s' "$out" | grep -qF -- "$want"; then
-      printf '%-34s PASS  (%s)\n' "$name" "$want"; pass=$((pass+1))
+      printf '%-42s PASS  (%s)\n' "$name" "$want"; pass=$((pass+1))
     else
-      printf '%-34s FAIL (error missing %s, rc=%s)\n' "$name" "$want" "$rc"
+      printf '%-42s FAIL (error missing %s, rc=%s)\n' "$name" "$want" "$rc"
       printf '%s\n' "$out" | grep -v '^ *$' | tail -8 | sed 's/^/    | /'
       fail=$((fail+1))
     fi

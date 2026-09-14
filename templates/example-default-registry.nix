@@ -30,4 +30,9 @@
 
   # The aggregations, discovered one level deep. Names and paths only.
   aggregations = import ./aggregations;
+
+  # The override records, discovered beside them: capability-scoped fixes,
+  # matched against what each host resolved. Leave the directory holding only
+  # its discovery file until you have a fix to put there.
+  overrides = import ./overrides;
 }

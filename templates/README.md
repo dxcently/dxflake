@@ -5,7 +5,9 @@ anything: no catalogue line names these files, `modules/aggregations/default.nix
 does not discover this directory, and `flake.nix` never sees it. **Copying a
 template does not enable it** — a dendrite goes live when the catalogue names it
 *and* something selects it; an aggregation goes live when it sits in
-`modules/aggregations/<group>/` *and* a host selects it by name.
+`modules/aggregations/<group>/` *and* a host selects it by name; an override
+record goes live when it sits in `modules/overrides/` *and* a host selected one
+of the capabilities it targets.
 
 Read `../AGENTS.md` for where things live and `~/Aoide/docs/architecture/NIX-COMPOSITION.md`
 for why. Verify a copy with `../tests/selection/run.sh`; verify the templates
@@ -26,7 +28,8 @@ files nobody selected stayed unread.
 | a person | `example-user.nix` | `users/<name>.nix` | attach from each host that wants them |
 | something every host gets | `example-nucleus-module.nix` | `modules/nucleus/<topic>.nix` | one import line in `modules/nucleus/default.nix` |
 | a package nixpkgs lacks | `example-package.nix` | `pkgs/<name>/default.nix` | `pkgs.callPackage` it from the lane that wants it |
-| a whole new tree | `example-default-registry.nix`, `example-default-aggregations.nix` | `modules/default.nix`, `modules/aggregations/default.nix` | these two are the floor everything else plugs into |
+| a fix a capability needs everywhere | `example-override.nix` | `modules/overrides/<name>.nix` | nothing — discovery finds it; it applies where a target was selected |
+| a whole new tree | `example-default-registry.nix`, `example-default-aggregations.nix`, `example-default-overrides.nix` | `modules/default.nix`, `modules/aggregations/default.nix`, `modules/overrides/default.nix` | these three are the floor everything else plugs into |
 
 `example-host.nix` and `example-host-headless.nix` are one role answered twice —
 read them side by side. They share a group, choose different implementations of
@@ -36,7 +39,7 @@ account.
 ## What the templates assume you replace
 
 Every file opens with a `Copy to:` / `Then:` / `Replace:` header. Beyond that,
-three things are placeholders and will not work as shipped:
+four things are placeholders and will not work as shipped:
 
 - `hashedPassword = "!"` in `example-user.nix` — generate your own, or move it
   to sops-nix and use `hashedPasswordFile`.
@@ -45,6 +48,9 @@ three things are placeholders and will not work as shipped:
 - `./hardware.nix` in both host templates — generate yours with
   `nixos-generate-config`. The hardware in this tree's hosts is specific to
   those machines and is not a template.
+- the `ripgrep` overlay and the `systemd.services.example` fix in
+  `example-override.nix` — a shape to copy, not a fix anyone asked for. Ship a
+  record only for a problem you have actually verified.
 
 The generic names (`exampletool`, `examplewidget`, `workspace`, `exampleuser`)
 are meant to be renamed. The `services.example.*` / `programs.example.*`
@@ -86,12 +92,14 @@ platform     import the chosen dendrite files and the chosen provider files.
              Nothing else in modules/dendrites/ is read at all.
 ```
 
+Override records are the documented exception — see below.
+
 An aggregation body is data — `members`, `providers`, `nixos` — so it cannot
 enable another aggregation, and the gate step's answer is final. That is also
 why a body needs no `mkIf` and no `mkOption` of its own: the constructor wraps
 it once.
 
-## Overrides, in priority order
+## Selection priority, in order
 
 Membership and provider choices from an aggregation are `mkDefault`, so:
 
@@ -101,6 +109,29 @@ Membership and provider choices from an aggregation are `mkDefault`, so:
   selection, not two instances.
 - Two groups naming **different** providers for it collide, with both values in
   the error. Import order never picks a winner.
+
+## Override records
+
+`example-override.nix` is the odd one out and worth reading before you copy it.
+A record is a fix that belongs to a CAPABILITY — a package upstream broke, a
+setting every machine running the thing needs — and it lives in
+`modules/overrides/<name>.nix` rather than in every host that selected the
+thing. It names its targets by catalogue name, optionally confines itself to
+named hosts, and carries an `overlay`, a `nixos` module, a `homeManager` module,
+or any combination.
+
+A record **never selects anything**: targeting a capability nobody chose is a
+record that does not apply, not a capability that gets installed. It applies at
+most once however many of its targets were selected, matched records apply in
+record-name order, and its overlay goes on the HOST package set — `useGlobalPkgs`
+means the home lanes see it too, and there is no private per-dendrite instance.
+Its `homeManager` half rides only the users whose own selection hit a target.
+
+The evaluation boundary is weaker here than for selection, and saying so is the
+point: a record file IS imported on every host, because matching means reading
+which dendrites it targets. What an unmatched host never spends is the work —
+`overlay` and the lane modules are functions, and nothing calls them. Keep
+imports, fetches and package computation inside those functions.
 
 ## Pending: songs and palettes
 

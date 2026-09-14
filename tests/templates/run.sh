@@ -36,11 +36,13 @@ t=$(mktemp -d) || exit 1
 trap 'rm -rf "$t"' EXIT
 T="$root/templates"
 
-mkdir -p "$t"/modules/{aggregations/base,aggregations/workspace,aggregations/landmine,dendrites/notifications,dendrites/compositor,nucleus} \
+mkdir -p "$t"/modules/{aggregations/base,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor,nucleus} \
          "$t"/hosts/{examplehost,exampleserver} "$t"/users "$t"/pkgs/example-tool
 
 cp "$T/example-default-registry.nix"          "$t/modules/default.nix"
 cp "$T/example-default-aggregations.nix"      "$t/modules/aggregations/default.nix"
+cp "$T/example-default-overrides.nix"         "$t/modules/overrides/default.nix"
+cp "$T/example-override.nix"                 "$t/modules/overrides/examplefix.nix"
 cp "$T/example-aggregation.nix"               "$t/modules/aggregations/workspace/default.nix"
 cp "$T/example-default-provider-registry.nix" "$t/modules/dendrites/notifications/default.nix"
 cp "$T/example-provider.nix"                  "$t/modules/dendrites/notifications/mako.nix"
@@ -83,16 +85,36 @@ cat > "$t/modules/aggregations/landmine/default.nix" <<'EOF'
 throw "aggregations/landmine was imported — an unselected aggregation body was evaluated"
 EOF
 
+# A record nothing matches, sitting beside the one that does. `examplebar` is
+# catalogued and wanted by the workspace group, but examplehost switches it off
+# and exampleserver never takes the group — so no host selects it, and both
+# bodies below must stay uncalled.
+cat > "$t/modules/overrides/tripwire.nix" <<'EOF'
+{
+  dendrites = [ "examplebar" ];
+  overlay = _final: _prev: throw "an unmatched override overlay was evaluated";
+  nixos = _: throw "an unmatched override module was evaluated";
+}
+EOF
+
 # Resolve both hosts and force everything a real host would force.
 expr="
 let
   lib = $lib;
   composition = import $root/lib/composition.nix { inherit lib; };
   registry = import $t/modules;
-  resolve = host:
+  hostNames = [ \"examplehost\" \"exampleserver\" ];
+  resolve = name: host:
     let
       selection = composition.evalSelection { inherit registry; modules = [ host ]; };
-      inv = composition.inventoryOf { hostName = \"fixture\"; inherit selection; };
+      inv = composition.inventoryOf { hostName = name; inherit selection; };
+      overrides = composition.overridesFor {
+        inherit (selection) catalogue;
+        inherit (registry) overrides;
+        knownHosts = hostNames;
+        hostName = name;
+        inherit selection;
+      };
       lanes = {
         system = composition.lanesFor {
           inherit (selection) catalogue;
@@ -103,9 +125,9 @@ let
           selected = u.dendrites; lane = \"homeManager\"; scope = \"by user '\\\${n}'\";
         }) selection.users;
       };
-    in builtins.deepSeq lanes { inherit inv lanes; };
-  a = resolve $t/hosts/examplehost;
-  b = resolve $t/hosts/exampleserver;
+    in builtins.deepSeq [ lanes overrides ] { inherit inv lanes overrides; };
+  a = resolve \"examplehost\" $t/hosts/examplehost;
+  b = resolve \"exampleserver\" $t/hosts/exampleserver;
 in {
   aCompositor = a.inv.dendrites.compositor.provider;
   aNotifications = a.inv.users.exampleuser.dendrites.notifications.provider;
@@ -117,6 +139,32 @@ in {
   bNotifications = b.inv.dendrites ? notifications;
   bHomeManager = b.inv.users.exampleuser.homeManager;
   bHomeLanes = builtins.length b.lanes.home.exampleuser;
+
+  # The override record: matched where its host filter and a selected target
+  # agree, and carrying all three halves.
+  aMatched = builtins.concatStringsSep \",\" a.overrides.matched;
+  aHomeFix = builtins.length a.overrides.homeManager.exampleuser;
+  bMatched = builtins.length b.overrides.matched;
+
+  # The overlay really is an overlay: feed it a stub package set shaped like
+  # the one attribute it touches and watch it come back overridden.
+  aOverlayApplies =
+    ((builtins.head a.overrides.overlays) { } {
+      ripgrep.overrideAttrs = f: { inherit (f { }) doCheck; };
+    }).ripgrep.doCheck;
+
+  # And the nixos half names REAL options: evaluated by the real NixOS module
+  # system, so a misspelt option is a failing test rather than a comment.
+  recordUsesRealOptions = (lib.nixosSystem {
+    modules = [
+      (builtins.head a.overrides.nixos)
+      { nixpkgs.hostPlatform = \"x86_64-linux\";
+        boot.loader.grub.enable = false;
+        fileSystems.\"/\" = { device = \"none\"; fsType = \"tmpfs\"; };
+        system.stateVersion = \"25.11\";
+      }
+    ];
+  }).config.systemd.services.example.serviceConfig.DynamicUser;
 }"
 
 if ! out=$(nix eval --impure --json --show-trace --expr "$expr" 2>&1); then
@@ -140,6 +188,14 @@ else
   check "unselected group's members stay unselected" "false" "$(g bNotifications)"
   check "no home lane where HM is off"            "false"    "$(g bHomeManager)"
   check "and no home modules are assembled"       "0"        "$(g bHomeLanes)"
+  # The override record. tripwire.nix targets a capability neither host
+  # selected and throws in both its bodies; the deepSeq above would have caught
+  # a call, so "unmatched work is never done" is proved, not asserted.
+  check "record matches its targeted host"        "examplefix" "$(g aMatched)"
+  check "its overlay applies to the host packages" "false"   "$(g aOverlayApplies)"
+  check "its home half rides the selecting user"  "1"        "$(g aHomeFix)"
+  check "its nixos half names real NixOS options" "false"    "$(g recordUsesRealOptions)"
+  check "host filter keeps it off the other host" "0"        "$(g bMatched)"
 fi
 
 printf '%s\n' "--------------------------------------------------------------"

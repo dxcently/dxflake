@@ -326,6 +326,129 @@ let
     ) (lib.attrNames catalogue);
 
   enabledNames = selected: lib.attrNames (lib.filterAttrs (_: d: d.enable) selected);
+
+  # ── Override records ───────────────────────────────────────────────────────
+  # Some fixes belong to a CAPABILITY rather than to a host: a package whose
+  # upstream build broke, a setting every machine that runs the thing wants. A
+  # record names the dendrites it is about and, optionally, the hosts it is
+  # confined to; the constructor applies it to the hosts that actually selected
+  # one of those dendrites. It does not select anything — a record targeting a
+  # capability nobody chose simply never applies.
+  #
+  # The evaluation boundary here is WEAKER than selection's, and this is the
+  # honest statement of it: every host imports every record file, because
+  # matching is reading. What stays unevaluated is the work — `overlay` and the
+  # lane modules are functions, and an unmatched record's functions are never
+  # called. Keep imports and package computation inside them; metadata that
+  # computes defeats this, and the tests prove only the function bodies.
+  #
+  # `darwin` is absent on purpose: there is no darwin constructor to apply it,
+  # and a field that is silently dropped is worse than one that does not exist.
+  overrideFields = [
+    "dendrites"
+    "hosts"
+    "overlay"
+    "nixos"
+    "homeManager"
+  ];
+
+  # Read and validate one record. Typos fail here, naming the record and the
+  # file, rather than applying to nothing and looking like a working fix.
+  readRecord =
+    {
+      catalogue,
+      knownHosts,
+      name,
+      path,
+    }:
+    let
+      body = import path;
+      where = "override record '${name}' (${toString path})";
+      unknown = lib.subtractLists overrideFields (lib.attrNames body);
+      targets = body.dendrites or [ ];
+      strays = lib.filter (d: !(catalogue ? ${d})) targets;
+      hosts = body.hosts or null;
+      badHosts = lib.filter (h: !(lib.elem h knownHosts)) (if hosts == null then [ ] else hosts);
+      carries = lib.filter (f: body ? ${f}) [
+        "overlay"
+        "nixos"
+        "homeManager"
+      ];
+    in
+    if unknown != [ ] then
+      throw "${where} has unknown field(s): ${lib.concatStringsSep ", " unknown}; a record takes only ${lib.concatStringsSep ", " overrideFields}"
+    else if !(lib.isList targets) || targets == [ ] then
+      throw "${where} names no dendrites; a record must say which capabilities it is about"
+    else if strays != [ ] then
+      throw "${where} targets unknown dendrite(s): ${lib.concatStringsSep ", " strays}; every target must be a catalogue name"
+    else if badHosts != [ ] then
+      throw "${where} is confined to unknown host(s): ${lib.concatStringsSep ", " badHosts}"
+    else if carries == [ ] then
+      throw "${where} carries nothing to apply; give it an overlay, a nixos module or a homeManager module"
+    else
+      {
+        inherit name hosts;
+        dendrites = targets;
+      }
+      // lib.getAttrs carries body;
+
+  # Which records apply to this host, and to which of its users.
+  #
+  # A record matches the HOST when its host filter admits this host and any
+  # dendrite it targets was selected here — for the system OR by one of its
+  # users, because `useGlobalPkgs` means a home lane draws from the host's own
+  # package set and there is no separate home one to fix. Its `overlay` and
+  # `nixos` module then apply once, however many of its targets were selected.
+  #
+  # A record matches a USER when its host filter admits this host and that
+  # user's own home selection hits a target; only then does its `homeManager`
+  # module ride that user's lane. The alternative — every user on a matched
+  # host — would put one person's fix in everyone else's home.
+  #
+  # Order is record name, so what the list holds does not depend on the
+  # filesystem. Overlays then compose the ordinary Nix way, each seeing the
+  # previous one as `prev`: later wins on the same attribute, and there is no
+  # overlap detection beyond that.
+  overridesFor =
+    {
+      catalogue,
+      overrides,
+      knownHosts,
+      hostName,
+      selection,
+    }:
+    let
+      records = lib.mapAttrsToList (
+        name: path:
+        readRecord {
+          inherit
+            catalogue
+            knownHosts
+            name
+            path
+            ;
+        }
+      ) overrides;
+
+      homeOf = u: enabledNames u.dendrites;
+      here = lib.unique (
+        enabledNames selection.dendrites ++ lib.concatMap homeOf (lib.attrValues selection.users)
+      );
+
+      admitsHost = r: r.hosts == null || lib.elem hostName r.hosts;
+      hits = names: r: lib.any (d: lib.elem d names) r.dendrites;
+
+      forHost = lib.filter (r: admitsHost r && hits here r) records;
+      carried = field: rs: lib.concatMap (r: lib.optional (r ? ${field}) r.${field}) rs;
+    in
+    {
+      overlays = carried "overlay" forHost;
+      nixos = carried "nixos" forHost;
+      homeManager = lib.mapAttrs (
+        _: u: carried "homeManager" (lib.filter (r: admitsHost r && hits (homeOf u) r) records)
+      ) selection.users;
+      matched = map (r: r.name) forHost;
+    };
 in
 rec {
   inherit
@@ -333,6 +456,7 @@ rec {
     laneNames
     lanesFor
     implOf
+    overridesFor
     ;
 
   # Gate, then select. Ordinary lib.evalModules both times — no NixOS, no
@@ -400,6 +524,7 @@ rec {
     {
       nixpkgs,
       hostName,
+      knownHosts ? [ hostName ],
       registry,
       hostModules,
       nucleus,
@@ -420,6 +545,18 @@ rec {
         selected = selection.dendrites;
         lane = "nixos";
         scope = "for the system";
+      };
+
+      # Capability-scoped fixes, resolved once selection is final and applied
+      # before anything evaluates a package set.
+      overrides = overridesFor {
+        inherit
+          catalogue
+          knownHosts
+          hostName
+          selection
+          ;
+        overrides = registry.overrides or { };
       };
 
       # Home Manager is wired only where a user actually asked for it; a host
@@ -468,6 +605,7 @@ rec {
               lane = "homeManager";
               scope = "by user '${userName}'";
             }
+            ++ (overrides.homeManager.${userName} or [ ])
             ++ [ u.homeManager.config ];
         };
 
@@ -489,6 +627,10 @@ rec {
       ++ systemLanes
       ++ lib.optional (hmUsers != { }) homeWiring
       ++ extraModules
+      # A record outranks everything the constructor imported on its behalf; the
+      # host's own module still outranks the record.
+      ++ overrides.nixos
+      ++ lib.optional (overrides.overlays != [ ]) { nixpkgs.overlays = overrides.overlays; }
       ++ [ selection.nixos ];
     in
     if strandedHome != [ ] then
@@ -496,7 +638,9 @@ rec {
     else
       {
         inherit selection;
-        inventory = inventoryOf { inherit hostName selection; };
+        inventory = inventoryOf { inherit hostName selection; } // {
+          overrides = overrides.matched;
+        };
         system = nixpkgs.lib.nixosSystem {
           inherit modules;
           specialArgs = args;
