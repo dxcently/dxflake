@@ -1,4 +1,5 @@
-# hyprland — the parts of the desktop that only Hyprland can run.
+# compositor — the compositor's own session: keybinds, decoration, autostart,
+# lock and idle glass. Hyprland is what runs it today.
 #
 # Separate from `shell` on purpose, and the separation is load-bearing rather
 # than tidy. Everything `shell` groups works on any wlroots compositor: waybar,
@@ -15,12 +16,12 @@
 #
 # Every member is a homeManager lane, so a host selects this on its user:
 #
-#   users.khoa.aggregation.hyprland.enable = true;
+#   users.khoa.aggregation.compositor.enable = true;
 #
 # Selecting it for the system is harmless and does nothing — there is no system
 # half to contribute.
 {
-  description = "The parts of the desktop that only Hyprland can run.";
+  description = "The compositor's own session: keybinds, decoration, autostart, lock and idle glass.";
 
   home.members = [
     "hyprglass"

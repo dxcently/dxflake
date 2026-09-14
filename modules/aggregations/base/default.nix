@@ -9,7 +9,7 @@
 # `base` is a membership, not a brand or a shrug: these are the capabilities
 # every host gets, which is why it is the one aggregation every host selects.
 {
-  description = "Shell, editor and prompt tooling every host carries.";
+  description = "The command line every host carries: prompt, editor, fuzzy history, file and process browsers.";
 
   # stylix rides base on every host, including hosts that leave
   # `dx.stylix.enable` false: Aoide probes `options ? stylix`, so the option

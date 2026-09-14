@@ -51,7 +51,7 @@
     # anyway.
     #
     # Give those members a group of their own, beside this one, and let the host
-    # select both. `modules/aggregations/hyprland/` is the worked example: it
+    # select both. `modules/aggregations/compositor/` is the worked example: it
     # holds what only Hyprland can run, `shell` holds what any wlroots
     # compositor can, and a host on another compositor selects `shell` alone.
     # tests/selection's `backendAggregationIsInert` proves the separation

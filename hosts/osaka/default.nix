@@ -44,8 +44,8 @@
       desktop.enable = true;
       # The Hyprland-only half of the desktop (keybinds, decoration, autostart,
       # hyprglass). Separate from `shell` so a host on another compositor never
-      # evaluates it — see modules/aggregations/hyprland/default.nix.
-      hyprland.enable = true;
+      # evaluates it — see modules/aggregations/compositor/default.nix.
+      compositor.enable = true;
       shell.enable = true;
     };
     dendrites.pi-coding-agent.enable = true;

@@ -34,8 +34,8 @@ dxflake/
 │   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── base/ desktop/ gaming/ hyprland/ shell/  # each default.nix is DATA,
-│   │                                                #   beside an optional packages.nix
+│   │   └── base/ compositor/ desktop/ gaming/ shell/  # each default.nix is DATA,
+│   │                                                  #   beside an optional packages.nix
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability, exposing the lanes it supports

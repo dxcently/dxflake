@@ -126,8 +126,8 @@ are proved cold.
   chosen. So a member only one implementation can run — a compositor plugin, a
   config written in that compositor's own language — belongs to an aggregation
   of its own, beside the provider-bearing one. `shell` holds what any wlroots
-  compositor can run and owns `compositor.provider`; `hyprland` holds what only
-  Hyprland can, and a host on another compositor selects `shell` alone.
+  compositor can run and owns `compositor.provider`; `compositor` holds what
+  only Hyprland can, and a host on another compositor selects `shell` alone.
 - **Override record** — a fix that belongs to a capability rather than to a
   host: `modules/overrides/<name>.nix`. It names the dendrites it is about,
   optionally the hosts it is confined to, and carries an `overlay`, a `nixos`
@@ -172,7 +172,7 @@ to destination.
   holds the data above. Discovery finds it; there is no import line anywhere.
 - **A backend-specific member** — one an aggregation cannot name because only
   one provider can run it. Its own group beside the provider-bearing one
-  (`modules/aggregations/hyprland/` beside `shell/`), so choosing another
+  (`modules/aggregations/compositor/` beside `shell/`), so choosing another
   provider leaves it unselected and unevaluated.
 - **A package the group just installs** — that group's `packages.nix`, or its
   inline `nixos` half. Never a catalogue line: there is nothing to select.
@@ -286,7 +286,7 @@ directory with no `default.nix`: nothing walks it, and every file in it is
 reachable only through its own catalogue line. (`compositor/` and `gpu/` DO
 carry a `default.nix` — those are provider registries, a different thing.)
 
-The folder is not the membership. The first four are the `hyprland` group's;
+The folder is not the membership. The first four are the `compositor` group's;
 the four surfaces are compositor-agnostic and belong to `shell`, which also
 installs the Wayland tool belt from its own `packages.nix`.
 

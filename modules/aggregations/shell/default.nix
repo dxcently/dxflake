@@ -1,4 +1,5 @@
-# shell — the desktop shell: the compositor and the surfaces drawn on it.
+# shell — the desktop shell: which compositor runs, and the surfaces drawn on
+# it that work under any of them.
 #
 # `compositor` is a provider-bearing dendrite, so this aggregation exposes the
 # choice on its own interface and a host writes it there:
@@ -20,11 +21,11 @@
 # are usually met.
 #
 # The Hyprland-ONLY pieces — keybinds, decoration, autostart, hyprglass — are
-# the `hyprland` aggregation's, precisely so that answering
+# the `compositor` aggregation's, precisely so that answering
 # `compositor.provider` with something else leaves them unselected and
 # unevaluated. docs/HYPRLAND-SPLIT.md is the old-block → new-owner map.
 {
-  description = "The desktop shell: the compositor and the surfaces drawn on it.";
+  description = "Which compositor runs, and the compositor-agnostic surfaces drawn on it.";
 
   system = {
     providers.compositor = null;

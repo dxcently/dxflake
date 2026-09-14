@@ -13,7 +13,7 @@ navigable Hyprland and nothing opinionated.
 **Everything else is ecosystem**, lives under `modules/dendrites/hyprland/`,
 and is selected by name. Each one is independently selectable because each
 answers a question a host can answer differently — chiyo answers all of them
-with Aoide's facets instead, selects neither `shell` nor `hyprland`, and
+with Aoide's facets instead, selects neither `shell` nor `compositor`, and
 imports the single dendrite (`hyprlock`) it still wants.
 
 ## Old block → new owner
@@ -52,10 +52,10 @@ by exactly one aggregation:
 | ---------------------- | ------------------------------------ | ----------- | ------------ |
 | `compositor`           | `dendrites/compositor` (provider)    | nixos       | `shell`      |
 | `rofi` `satty` `waybar` `wlogout` | `dendrites/hyprland/*.nix` | homeManager | `shell`      |
-| `hyprland-autostart`   | `dendrites/hyprland/autostart.nix`   | homeManager | `hyprland`   |
-| `hyprland-decoration`  | `dendrites/hyprland/decoration.nix`  | homeManager | `hyprland`   |
-| `hyprland-keybinds`    | `dendrites/hyprland/keybinds.nix`    | homeManager | `hyprland`   |
-| `hyprglass`            | `dendrites/hyprland/hyprglass.nix`   | homeManager | `hyprland`   |
+| `hyprland-autostart`   | `dendrites/hyprland/autostart.nix`   | homeManager | `compositor` |
+| `hyprland-decoration`  | `dendrites/hyprland/decoration.nix`  | homeManager | `compositor` |
+| `hyprland-keybinds`    | `dendrites/hyprland/keybinds.nix`    | homeManager | `compositor` |
+| `hyprglass`            | `dendrites/hyprland/hyprglass.nix`   | homeManager | `compositor` |
 
 Private helpers — no catalogue line, reachable only from the file that imports
 them by relative path:
@@ -70,7 +70,7 @@ folder**, like `desktop/` and `gaming/`: it has no `default.nix` and nothing
 walks it, every file in it is reachable only through its own catalogue line,
 and four of the files in it (`rofi`, `satty`, `waybar`, `wlogout`, all
 compositor-agnostic surfaces that predate this split) belong to `shell`, not to
-`hyprland`. What a host gets is decided by the aggregation that names a
+`compositor`. What a host gets is decided by the aggregation that names a
 dendrite, never by the directory it sits in. Contrast `dendrites/compositor/`
 and `dendrites/gpu/`, which DO carry a `default.nix` — those are provider
 registries, a different thing, and they still import only the chosen provider.
@@ -85,7 +85,7 @@ not free-floating membership, so the three `hypr*` tools travel with the file
 that invokes them: `hyprpolkitagent` → `hyprland-autostart` (it runs
 `systemctl --user start` on it), `hyprshot` + `hyprpicker` →
 `hyprland-keybinds` (its binds shell out to both). Both dendrites are the
-`hyprland` aggregation's, so a host on another compositor installs neither.
+`compositor` aggregation's, so a host on another compositor installs neither.
 
 **A package nothing in particular calls is the aggregation's own install**, and
 an install is not a capability — it answers no question a host could answer
@@ -122,7 +122,7 @@ else. Putting it in a *sibling aggregation* is what actually gates it, because
 selection happens one level up:
 
 1. the provider registry imports only the chosen implementation, and
-2. every Hyprland-only dendrite is named by `modules/aggregations/hyprland/`,
+2. every Hyprland-only dendrite is named by `modules/aggregations/compositor/`,
    which a non-Hyprland host simply does not select.
 
 `tests/selection` proves both against `tests/selection/aggregations/backend/`,

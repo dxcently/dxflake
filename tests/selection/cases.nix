@@ -192,7 +192,7 @@ let
       }).config.networking.hostName;
 
     # ── A backend-specific aggregation is not dragged in by its sibling ───────
-    # modules/aggregations/hyprland/ holds the members only the hyprland
+    # modules/aggregations/compositor/ holds the members only the hyprland
     # provider can run, precisely so a host that answers `compositor.provider`
     # with something else never evaluates them. `backend`'s only member throws
     # on import: selecting the provider-bearing aggregation beside it, and
