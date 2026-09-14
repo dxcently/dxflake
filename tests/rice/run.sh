@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# The rice is a look held in three places at once: an authored livery.json, the
-# Stylix scheme that actually paints GTK and Qt, and a stylesheet template that
-# two different renderers can fill. Each pair can drift, and drift in a look is
-# silent — nothing fails to evaluate, the desktop just comes up slightly wrong.
-# So each pair gets an assertion.
+# The rice is a look with one source, palette.nix, read by three places: the
+# generated livery.json, the Stylix scheme that actually paints GTK and Qt, and
+# a stylesheet template that two different renderers can fill. Each place can
+# drift from the source, and drift in a look is silent — nothing fails to
+# evaluate, the desktop just comes up slightly wrong. So each one gets an
+# assertion.
 #
 #   ./tests/rice/run.sh
 set -uo pipefail
@@ -25,11 +26,27 @@ work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
 export AOIDE_ROOT=$work/aoide-root
 mkdir -p "$AOIDE_ROOT"
 
-# ── the authored palette IS the painted palette ──────────────────────────────
-# livery.json is transience's record; modules/dendrites/stylix.nix is the
-# fan-out that paints everything Stylix reaches. They are written twice on
-# purpose — different schemas, different consumers — so this is what stops them
-# becoming two different reds.
+# ── the record matches the source ────────────────────────────────────────────
+# livery.json is generated from palette.nix, not authored — if a hex is ever
+# hand-edited in the JSON without touching palette.nix, this is what catches
+# the checked-in file going stale.
+if command -v nix >/dev/null 2>&1 &&
+  nix eval --json --file "$song/palette.nix" livery 2>/dev/null | jq . >"$work/livery.json" 2>/dev/null &&
+  [ -s "$work/livery.json" ]; then
+  if diff -q "$work/livery.json" "$song/livery.json" >/dev/null 2>&1; then
+    ok liveryJsonIsGenerated "matches palette.nix"
+  else
+    bad liveryJsonIsGenerated "$(diff "$work/livery.json" "$song/livery.json" | head -4 | tr '\n' ' ')"
+  fi
+else
+  bad liveryJsonIsGenerated "nix eval --file palette.nix livery produced nothing"
+fi
+
+# ── the source IS the painted palette ────────────────────────────────────────
+# livery.json is transience's generated record; modules/dendrites/stylix.nix
+# reads the same palette.nix for the scheme it actually paints with. This
+# proves the chain lands on a real host, not just that the two files agree on
+# paper — and catches Aoide's own stylix facet quietly overriding it.
 authored=$(jq -r '.base16 | to_entries | sort_by(.key) | .[] | "\(.key)=\(.value|ascii_downcase|ltrimstr("#"))"' "$song/livery.json")
 # The --apply expression is Nix source and must reach nix verbatim.
 # shellcheck disable=SC2016

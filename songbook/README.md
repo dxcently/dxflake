@@ -13,7 +13,9 @@ songbook/
 ├── default.nix              the registry: names paths, imports none
 └── transience/
     ├── rice.nix             the composition — a homeManager lane
-    ├── livery.json          the palette, in Aoide's v0 livery schema
+    ├── palette.nix          the palette, the one source
+    ├── livery.json          generated from palette.nix, Aoide's v0 livery schema
+    ├── regen-livery.sh      writes livery.json from palette.nix
     ├── design/intent.md     what this look is, and what it deliberately omits
     └── source/waybar.css    owned source, a {{base16.baseXX}} template
 ```
@@ -32,11 +34,12 @@ guarantee as `modules/dendrites/compositor/` and proved by the same fixture in
 
 ## Why the layout mirrors Aoide's `song/songbook/`
 
-Because the palette format is genuinely shared. `livery.json` is authored in
-Aoide's v0 livery schema, so `lyra livery lint`, `livery resolve` and
-`livery emit` all work on a rice here unchanged, and `source/waybar.css` uses
-Lyra's own `{{group.key}}` template syntax — `tests/rice` asserts that the Nix
-render and `lyra livery emit file` produce the same bytes.
+Because the palette format is genuinely shared. `livery.json` is generated
+from `palette.nix` in Aoide's v0 livery schema, so `lyra livery lint`,
+`livery resolve` and `livery emit` all work on a rice here unchanged, and
+`source/waybar.css` uses Lyra's own `{{group.key}}` template syntax —
+`tests/rice` asserts that the Nix render and `lyra livery emit file` produce
+the same bytes.
 
 What is **not** shared: a song in Aoide's songbook is a QML rice, with widget
 bodies mounted into Quickshell by `aoide.arrangement`. Nothing in that schema
@@ -48,9 +51,11 @@ stages or hot-loads. See `transience/design/intent.md` for the full boundary.
 ## Adding a rice
 
 A directory beside `transience/`, one line in `default.nix`, and the host that
-wants it names it. Author `livery.json` against the same schema and lint it:
+wants it names it. Author `palette.nix`, generate `livery.json` from it, and
+lint the result:
 
 ```sh
+songbook/<name>/regen-livery.sh
 lyra livery lint songbook/<name>/livery.json
 ./tests/rice/run.sh
 ```

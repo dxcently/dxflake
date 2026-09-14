@@ -1,11 +1,8 @@
 {
-  "schemaVersion": "0",
-  "palette": {
-    "bg":     "#191724",
-    "fg":     "#e0def4",
+  "bar": {
     "accent": "#ebbcba",
-    "urgent": "#eb6f92",
-    "hot":    "#9ccfd8"
+    "bg": "#191724",
+    "fg": "#e0def4"
   },
   "base16": {
     "base00": "#191724",
@@ -25,18 +22,21 @@
     "base0E": "#f6c177",
     "base0F": "#524f67"
   },
-  "bar": {
-    "bg":     "#191724",
-    "fg":     "#e0def4",
-    "accent": "#ebbcba"
-  },
   "notif": {
-    "bg":     "#191724",
-    "fg":     "#e0def4",
+    "bg": "#191724",
+    "fg": "#e0def4",
     "urgent": "#eb6f92"
   },
+  "palette": {
+    "accent": "#ebbcba",
+    "bg": "#191724",
+    "fg": "#e0def4",
+    "hot": "#9ccfd8",
+    "urgent": "#eb6f92"
+  },
+  "schemaVersion": "0",
   "window": {
-    "border":         "#ebbcba",
+    "border": "#ebbcba",
     "borderInactive": "#191724"
   }
 }

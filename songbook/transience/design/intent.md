@@ -17,14 +17,18 @@ rewrite of three dendrites.
 
 ## The palette
 
-Rosé Pine, dark, the sixteen in `livery.json`. They are the same sixteen
-`modules/dendrites/stylix.nix` pins today — that duplication is deliberate and
-guarded rather than accidental: Stylix is the fan-out that paints GTK, Qt,
-kitty and the rest, and it stays the floor's business, while `livery.json` is
-transience's own authored record in Aoide's v0 livery schema. `tests/rice`
-asserts the two agree, so they cannot drift into two different reds.
+Rosé Pine, dark, the sixteen in `palette.nix` — the one source. Both consumers
+read it rather than hold their own copy: `modules/dendrites/stylix.nix` reads
+`palette.nix` directly for the scheme it pins to Stylix, the fan-out that
+paints GTK, Qt, kitty and the rest and stays the floor's business; `livery.json`
+is `regen-livery.sh`'s output, transience's generated record in Aoide's v0
+livery schema. Neither can drift from `palette.nix`, because neither carries
+its own hexes to drift with — `tests/rice`'s `liveryJsonIsGenerated` and
+`liveryMatchesStylixScheme` cases exist to catch a checked-in `livery.json`
+that fell out of sync, or a real host that stopped reading `palette.nix` at
+all.
 
-Authoring it in Aoide's schema is not decoration. It means
+Generating `livery.json` in Aoide's schema is not decoration. It means
 `lyra livery lint songbook/transience/livery.json` is a real check,
 `lyra livery resolve` prints the resolved set, and `lyra livery emit` can drive
 the very same stylesheet template this rice renders through Nix. Both renderers

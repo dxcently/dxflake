@@ -14,10 +14,11 @@
 # ── What transience actually owns ─────────────────────────────────────────
 # waybar     the stylesheet (source/waybar.css) and the bar's own composition
 #            — which modules sit where, and how each one reads.
-# the palette  livery.json, authored in Aoide's v0 livery schema so
-#            `lyra livery lint songbook/transience/livery.json` is a real check
-#            on it and `lyra livery emit` can drive the same template. Rosé
-#            Pine, the sixteen colours this desktop has always used.
+# the palette  palette.nix is the source; livery.json is generated from it in
+#            Aoide's v0 livery schema so `lyra livery lint
+#            songbook/transience/livery.json` is a real check on it and
+#            `lyra livery emit` can drive the same template. Rosé Pine, the
+#            sixteen colours this desktop has always used.
 # rofi, wlogout  NOTHING bespoke, and that is the honest answer rather than an
 #            omission: both take the base16 scheme through Stylix and never had
 #            a sheet of their own. Recording that here is the preservation —
@@ -32,9 +33,8 @@
 # the two cannot drift into different sheets. At build time the values come
 # from `config.lib.stylix.colors`, which is what the sheet read before it was a
 # file, so a host whose palette is repainted by Aoide's stylix facet is still
-# repainted. livery.json is transience's AUTHORED palette: the same sixteen
-# that modules/dendrites/stylix.nix pins today, and tests/rice asserts the two
-# agree so they cannot drift apart silently.
+# repainted. Both `livery.json` and `modules/dendrites/stylix.nix` read
+# `palette.nix`, the one source, and tests/rice asserts the chain still lands.
 {
   homeManager =
     {

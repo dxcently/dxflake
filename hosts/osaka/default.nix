@@ -126,8 +126,8 @@
       # Delete this line to hand the cover note back to whatever song is playing.
       aoide.livery.wallpaper = lib.mkForce ../../assets/wallpapers/hero.webp;
 
-      # Rosé Pine (stylix.nix's fixedRosePine) over sonata, host-scoped: the song
-      # itself is shared with yomi-strix, so the override tier, not livery.json.
+      # Rosé Pine (songbook/transience/palette.nix) over sonata, host-scoped: the
+      # song itself is shared with yomi-strix, so the override tier, not livery.json.
       aoide.livery.override = {
         bg = "#191724";
         fg = "#e0def4";
