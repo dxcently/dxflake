@@ -24,7 +24,6 @@
     composekey = ./dendrites/desktop/composekey.nix;
     compositor = ./dendrites/compositor;
     desktop-hardware = ./dendrites/desktop/hardware.nix;
-    desktop-packages = ./dendrites/desktop/packages.nix;
     direnv = ./dendrites/direnv.nix;
     displaymanager = ./dendrites/desktop/displaymanager.nix;
     fastfetch = ./dendrites/desktop/fastfetch;
@@ -33,7 +32,6 @@
     floorp = ./dendrites/desktop/floorp.nix;
     foliate = ./dendrites/desktop/foliate.nix;
     fonts = ./dendrites/desktop/fonts.nix;
-    gaming-packages = ./dendrites/gaming/packages.nix;
     git = ./dendrites/git.nix;
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
@@ -42,7 +40,6 @@
     hyprland-autostart = ./dendrites/hyprland/autostart.nix;
     hyprland-decoration = ./dendrites/hyprland/decoration.nix;
     hyprland-keybinds = ./dendrites/hyprland/keybinds.nix;
-    hyprland-packages = ./dendrites/hyprland/packages.nix;
     hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;
     inference = ./dendrites/inference.nix;

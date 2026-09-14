@@ -9,7 +9,6 @@
   system = {
     members = [
       "desktop-hardware"
-      "desktop-packages"
       "displaymanager"
       "fcitx5"
       "flatpak"
@@ -21,9 +20,13 @@
       "xserver"
     ];
 
-    # Gaming and electron want a high mmap count; shared by every desktop. A
-    # preference of the aggregation, deferred to the platform pass.
+    # What `desktop` installs, plus one preference. Both are the aggregation's
+    # own, deferred until the platform pass — see ./packages.nix for why the
+    # list is not a dendrite.
     nixos = {
+      imports = [ ./packages.nix ];
+
+      # Gaming and electron want a high mmap count; shared by every desktop.
       boot.kernel.sysctl."vm.max_map_count" = 2147483642;
     };
   };

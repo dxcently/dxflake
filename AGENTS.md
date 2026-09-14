@@ -114,6 +114,14 @@ are proved cold.
   into one selection, and two that name different providers for it collide with
   both values in the error. Import order never picks a winner.
 
+  What a group **installs** is not membership. A package list answers no
+  question a host could answer differently, so it gets no catalogue line and is
+  not a dendrite: it goes in the group's own `nixos`/`homeManager` half, in a
+  `packages.nix` beside the `default.nix` when it is long enough to want a file
+  (`desktop/`, `shell/`) and inline when it is not (`gaming`). Those lists are
+  `lib.mkAfter`, so they order last into `system.path`, where collisions resolve
+  first-wins — a group's convenience list never shadows a selected capability.
+
   Membership is **static**: the list does not vary with the provider that was
   chosen. So a member only one implementation can run — a compositor plugin, a
   config written in that compositor's own language — belongs to an aggregation
@@ -166,6 +174,8 @@ to destination.
   one provider can run it. Its own group beside the provider-bearing one
   (`modules/aggregations/hyprland/` beside `shell/`), so choosing another
   provider leaves it unselected and unevaluated.
+- **A package the group just installs** — that group's `packages.nix`, or its
+  inline `nixos` half. Never a catalogue line: there is nothing to select.
 - **A shared preference or package fix** — the owning group's `default.nix`,
   once, in the half that matches the lane it rides: `system.nixos` for a
   deferred platform preference, `home.homeManager` for a home one. Never
@@ -237,6 +247,10 @@ plus the surfaces `waybar`/`rofi`/`satty`/`wlogout`. That folder is a plain
 directory with no `default.nix`: nothing walks it, and every file in it is
 reachable only through its own catalogue line. (`compositor/` and `gpu/` DO
 carry a `default.nix` — those are provider registries, a different thing.)
+
+The folder is not the membership. The first four are the `hyprland` group's;
+the four surfaces are compositor-agnostic and belong to `shell`, which also
+installs the Wayland tool belt from its own `packages.nix`.
 
 `docs/HYPRLAND-SPLIT.md` maps every old block to the file that owns it now, and
 records which units are independently selectable versus private helpers.

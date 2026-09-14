@@ -1,0 +1,77 @@
+# The desktop aggregation's own installation membership.
+#
+# Not a dendrite: nothing here answers a question a host could answer
+# differently, so there is nothing to select. It is what `desktop` means,
+# spelled out, and only the desktop aggregation imports it. A package list is
+# not a capability — giving it a catalogue line would invite a host to take
+# "the desktop packages" without the desktop.
+#
+# The program options below install their own packages; the list underneath is
+# only for what no module option covers.
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+{
+  programs = {
+    virt-manager.enable = true;
+    nm-applet.enable = true;
+  };
+
+  # Flatpak/portal plumbing — a desktop concern, not the universal floor.
+  # Hyprland adds its own portal on top when that aggregation is present.
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
+  # `mkAfter`, so this list is ordered LAST into system.path. Collisions there
+  # are resolved first-wins, and an aggregation's convenience list should never
+  # shadow a capability a host actually selected. Without a pin the position is
+  # an accident of module order.
+  environment.systemPackages = lib.mkAfter (
+    with pkgs;
+    [
+      # ── Terminal & Monitors (GUI) ──
+      kitty # GPU-accelerated terminal emulator
+      mission-center # GUI resource monitor with GPU usage
+
+      # ── Files & Disks (GUI) ──
+      file-roller # GNOME archive manager (Thunar integration)
+      gparted # graphical partition editor
+
+      # ── Multimedia ──
+      mpv # scriptable command-line media player
+      vlc # cross-platform multimedia player
+      wireplumber # PipeWire session and policy manager
+      pavucontrol # PulseAudio/PipeWire volume control GUI
+      strawberry # music player with audio CD and lyrics
+      playerctl # MPRIS2 media player controller
+      ffmpegthumbnailer # video thumbnails via libffmpeg
+      obs-studio # screen recording and live streaming
+      grim # Wayland screenshot capture (lyra screen shot's backend)
+      slurp # region picker for grim (lyra screen shot --pick)
+      losslesscut-bin # lossless video/audio trimmer
+      scrcpy # display and control Android devices
+
+      # ── Networking & Web ──
+      inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+      chromium # open source web browser from Google
+      qbittorrent # open-source BitTorrent client
+      nicotine-plus # Soulseek peer-to-peer client
+      zoom-us # video conferencing
+
+      # ── Productivity & Knowledge ──
+      obsidian # markdown personal knowledge base
+      anki-bin # spaced repetition flashcards
+      pear-desktop # unofficial YouTube Music client
+
+      # ── Creative ──
+      gimp3-with-plugins # GNU Image Manipulation Program
+      webcamoid # webcam capture with effects
+      orca-slicer # G-code slicer for 3D printing
+    ]
+  );
+}

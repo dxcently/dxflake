@@ -51,7 +51,6 @@ by exactly one aggregation:
 | name                   | path                                 | lane        | named by     |
 | ---------------------- | ------------------------------------ | ----------- | ------------ |
 | `compositor`           | `dendrites/compositor` (provider)    | nixos       | `shell`      |
-| `hyprland-packages`    | `dendrites/hyprland/packages.nix`    | nixos       | `shell`      |
 | `rofi` `satty` `waybar` `wlogout` | `dendrites/hyprland/*.nix` | homeManager | `shell`      |
 | `hyprland-autostart`   | `dendrites/hyprland/autostart.nix`   | homeManager | `hyprland`   |
 | `hyprland-decoration`  | `dendrites/hyprland/decoration.nix`  | homeManager | `hyprland`   |
@@ -78,26 +77,36 @@ registries, a different thing, and they still import only the chosen provider.
 
 ## Packages
 
-The compositor implementation installs nothing. Membership is the owning
-aggregation's, declared the way this repo already declares it — by naming
-member dendrites, not by carrying a package list in an aggregation body:
+The compositor implementation installs nothing. Two rules decide where a
+package goes instead.
 
-- `hyprland-packages` (system, `shell`) — the Wayland tool belt: dunst, awww,
-  wl-clipboard, satty, cliphist, brightnessctl, ydotool, yad, zenity. Nothing
-  in it is Hyprland-specific, so it stays with the compositor-agnostic half.
-- the three `hypr*` tools moved to the dendrite that *invokes* them, because a
-  package whose only caller is one `exec-once` or one `bind` is that dendrite's
-  dependency, not free-floating membership:
-  `hyprpolkitagent` → `hyprland-autostart` (it runs `systemctl --user start`
-  on it), `hyprshot` + `hyprpicker` → `hyprland-keybinds` (its binds shell out
-  to both). Both dendrites are the `hyprland` aggregation's, so a host on
-  another compositor installs neither.
+**A package whose only caller is one dendrite is that dendrite's dependency**,
+not free-floating membership, so the three `hypr*` tools travel with the file
+that invokes them: `hyprpolkitagent` → `hyprland-autostart` (it runs
+`systemctl --user start` on it), `hyprshot` + `hyprpicker` →
+`hyprland-keybinds` (its binds shell out to both). Both dendrites are the
+`hyprland` aggregation's, so a host on another compositor installs neither.
+
+**A package nothing in particular calls is the aggregation's own install**, and
+an install is not a capability — it answers no question a host could answer
+differently, so it gets no catalogue line. The Wayland tool belt (dunst, awww,
+wl-clipboard, satty, cliphist, brightnessctl, ydotool, yad, zenity) is now
+`modules/aggregations/shell/packages.nix`, imported by that aggregation's
+`system.nixos` and by nothing else. There is no `hyprland-packages` dendrite any
+more — nor `desktop-packages` or `gaming-packages`, which moved the same way.
+Nothing in the tool belt is Hyprland-specific, so it stays with the
+compositor-agnostic half.
+
+Those lists are `lib.mkAfter`. `system.path` resolves file collisions
+first-wins, and without a pin an aggregation's list sits wherever module order
+happens to put it; ordering it last means a convenience package can never
+shadow a capability a host actually selected.
 
 Package *builds* did not move: `pkgs/` is untouched, and `pkgs.hyprglass`
 still comes from the Aoide input's overlay.
 
-**One duplicate removed.** `waybar` was installed twice — once by
-`hyprland-packages` into `environment.systemPackages`, and again by
+**One duplicate removed.** `waybar` was installed twice — once by the tool belt
+into `environment.systemPackages`, and again by
 `programs.waybar.enable` into `home.packages`. The systemPackages copy is gone;
 the module option's copy is the one that was always carrying the config.
 

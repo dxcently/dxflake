@@ -5,9 +5,33 @@
 {
   description = "Steam, gamescope and the launchers.";
 
-  system.members = [
-    "aagl"
-    "gaming-packages"
-    "steam"
-  ];
+  system = {
+    members = [
+      "aagl"
+      "steam"
+    ];
+
+    # The launchers that are nothing but a package. Short enough to say here
+    # rather than in a ./packages.nix of its own; either way it is the
+    # aggregation's own installation membership, not a selectable capability.
+    nixos =
+      { pkgs, lib, ... }:
+      {
+        # Ordered last into system.path, like the other aggregation lists.
+        environment.systemPackages = lib.mkAfter (
+          with pkgs;
+          [
+            osu-lazer-bin # osu! lazer rhythm game
+            lutris # open gaming platform
+            wine # run Windows applications on Linux
+            protonup-qt # GUI manager for Proton-GE/Wine-GE
+            bottles # manage Wine prefixes with a GTK4 UI
+            prismlauncher # Minecraft launcher
+            r2modman # mod manager
+            winetricks # helper for Wine prefixes
+            protontricks # winetricks for Proton/Steam
+          ]
+        );
+      };
+  };
 }

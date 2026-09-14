@@ -57,13 +57,20 @@
     # tests/selection's `backendAggregationIsInert` proves the separation
     # against a member that throws on import.
 
-    # Optional. A preference or a package that belongs with the group rather
-    # than with any one member. An ordinary NixOS module, evaluated only in the
+    # ── What the group INSTALLS ─────────────────────────────────────────────
+    # Not membership. A package list answers no question a host could answer
+    # differently, so it gets no catalogue line and is not a dendrite — it goes
+    # here, in the group's own half. Long lists earn a ./packages.nix beside
+    # this file (`imports = [ ./packages.nix ];`); short ones stay inline.
+    #
+    # `mkAfter` because system.path resolves file collisions first-wins: order
+    # the group's convenience list last and it can never shadow a capability a
+    # host actually selected. An ordinary NixOS module, evaluated only in the
     # platform pass — never during selection.
     nixos =
-      { pkgs, ... }:
+      { pkgs, lib, ... }:
       {
-        environment.systemPackages = [ pkgs.jq ];
+        environment.systemPackages = lib.mkAfter [ pkgs.jq ];
         boot.kernel.sysctl."vm.max_map_count" = 2147483642;
       };
   };

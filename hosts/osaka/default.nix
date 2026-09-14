@@ -171,8 +171,8 @@
       # explicitly the way chiyo and yomi-strix name it.
       aoide.lyra.enable = true;
       # The notification DAEMON behind the herald surface. dxflake ships the dunst
-      # PACKAGE in the hyprland-packages dendrite but never starts a service, so there is no
-      # second daemon to collide with — this is what actually puts
+      # PACKAGE from the shell aggregation but never starts a service, so there is
+      # no second daemon to collide with — this is what actually puts
       # org.freedesktop.Notifications on the bus here. Every rule is skip_display;
       # dunst feeds `lyra herald push` and Quickshell draws.
       aoide.dunst.enable = true;

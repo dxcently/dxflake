@@ -34,7 +34,8 @@ dxflake/
 │   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── base/ desktop/ gaming/ hyprland/ shell/  # each default.nix is DATA
+│   │   └── base/ desktop/ gaming/ hyprland/ shell/  # each default.nix is DATA,
+│   │                                                #   beside an optional packages.nix
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability, exposing the lanes it supports
@@ -365,8 +366,8 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
   description = "The desktop shell: the compositor and the surfaces drawn on it.";
 
   system = {
-    members = [ "hyprland-packages" ];
     providers.compositor = null;     # no default: every host that takes this must choose
+    nixos.imports = [ ./packages.nix ];   # what this aggregation installs; not a dendrite
   };
 
   home.members = [ "rofi" "satty" "waybar" "wlogout" ];
@@ -374,6 +375,8 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 ```
 
 Discovery finds it by directory name; nothing imports it until a host or a user selects it. Members are catalogue names, so they stay where they live under `modules/dendrites/` rather than moving under the group. Each `providers` key becomes a `<name>.provider` option on this aggregation, in that scope — `null` demands a choice, a string is a default a host may override. A half that does not apply is left out; `gaming` has no `home` at all.
+
+What an aggregation **installs** goes in its own `nixos`/`homeManager` block, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. Long lists live in a `packages.nix` beside the `default.nix` that imports it — `desktop/` and `shell/` have one; `gaming` says its nine launchers inline, which is the same thing at a size that does not need a file.
 
 **Two kinds of module, by what they need from a host:**
 - **Selected = active** — no `options.dx.<name>.enable` at all; the lane applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)

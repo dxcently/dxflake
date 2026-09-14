@@ -15,10 +15,9 @@
 # ── Membership ────────────────────────────────────────────────────────────
 # The compositor provider makes a session RUN and installs nothing. Everything
 # this aggregation adds around it works on ANY wlroots compositor: waybar, rofi,
-# satty and wlogout draw surfaces through Wayland protocols, and
-# `hyprland-packages` is a tool belt (dunst, awww, wl-clipboard, cliphist,
-# brightnessctl, ydotool, yad, zenity) with nothing Hyprland-specific in it
-# despite the folder it sits in.
+# satty and wlogout draw surfaces through Wayland protocols, and ./packages.nix
+# is a tool belt with nothing Hyprland-specific in it despite where those tools
+# are usually met.
 #
 # The Hyprland-ONLY pieces — keybinds, decoration, autostart, hyprglass — are
 # the `hyprland` aggregation's, precisely so that answering
@@ -28,8 +27,11 @@
   description = "The desktop shell: the compositor and the surfaces drawn on it.";
 
   system = {
-    members = [ "hyprland-packages" ];
     providers.compositor = null;
+
+    # The Wayland tool belt this aggregation installs. Its own membership, not a
+    # selectable capability — see ./packages.nix.
+    nixos.imports = [ ./packages.nix ];
   };
 
   home.members = [

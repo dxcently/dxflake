@@ -2,7 +2,7 @@
 #
 # Separate from `shell` on purpose, and the separation is load-bearing rather
 # than tidy. Everything `shell` groups works on any wlroots compositor: waybar,
-# rofi, satty, wlogout, and the Wayland tool belt in `hyprland-packages` are all
+# rofi, satty, wlogout, and the Wayland tool belt shell installs are all
 # compositor-agnostic. The four members below are not — each writes
 # `wayland.windowManager.hyprland.*`, and hyprglass is a PLUGIN compiled against
 # one compositor commit.
