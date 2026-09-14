@@ -66,6 +66,11 @@
             lib,
             ...
           }:
+          let
+            # The guarded session handoff. See session-import.nix, and
+            # hypr-session-import.sh for why it exists at all.
+            sessionImport = import ./session-import.nix { inherit pkgs; };
+          in
           {
             home = {
               packages = with pkgs; [
@@ -78,11 +83,24 @@
 
             wayland.windowManager.hyprland = {
               enable = true;
-              systemd = {
-                enable = true;
-                enableXdgAutostart = true;
-                variables = [ "--all" ];
-              };
+              # ── Session handoff: guarded, not home-manager's ─────────────────────
+              # `systemd.enable = false` switches OFF the two lines the HM module
+              # would write at the top of hyprland.conf — and ONLY those two lines.
+              # Everything they did still happens, from `exec-once`/`exec-shutdown`
+              # below, through hypr-session-import: the environment import, the
+              # target restart, the stop on exit. What changes is that each one now
+              # asks Hyprland whether this instance owns the login session first.
+              #
+              # It has to be done here rather than through an HM option because the
+              # generated line is `dbus-update-activation-environment … && systemctl
+              # …` — `systemd.variables` and `systemd.extraCommands` are spliced into
+              # the middle of that command, so neither can put a condition in front
+              # of the part that does the damage.
+              #
+              # hyprland-session.target is re-declared below, identically, because it
+              # is the other thing `systemd.enable` produced and waybar (through
+              # graphical-session.target) and the portals are wantedBy it.
+              systemd.enable = false;
               xwayland.enable = true;
 
               # ── hyprglass — the gloss on top of the glass ────────────────────────
@@ -137,7 +155,11 @@
                 # with its two `img` calls: nothing else drives it, and a daemon with
                 # no image to hold is just a process sitting on the Quickshell
                 # wallpaper surface's output.
+                # FIRST, ahead of everything that needs a session: the environment
+                # import and hyprland-session.target, guarded so a nested Hyprland
+                # cannot move the real desktop into its own window.
                 "exec-once" = [
+                  "${sessionImport}/bin/hypr-session-import start"
                   "systemctl --user start hyprpolkitagent"
                   "nm-applet --indicator"
                   "systemd"
@@ -155,6 +177,11 @@
                   "fcitx5"
                   "[workspace 1 silent] zen"
                 ];
+
+                # The other half of the handoff, and the sharper edge: unguarded,
+                # closing a NESTED Hyprland stops the real session's target and takes
+                # the desktop down with it.
+                exec-shutdown = "${sessionImport}/bin/hypr-session-import stop";
 
                 extraConfig = "
               windowrule {
@@ -484,6 +511,31 @@
                 # nothing rounds only the terminal.
                 windowrule = rounding 0, match:class kitty
               '';
+            };
+
+            # ── hyprland-session.target ──────────────────────────────────────────
+            # The other half of what `wayland.windowManager.hyprland.systemd.enable`
+            # produced, kept verbatim from the home-manager module so that turning
+            # its exec-once off changes nothing else. This target is the whole
+            # session graph on these hosts: it BindsTo graphical-session.target, and
+            # waybar, the portals and the Aoide user services all hang off that.
+            # Deleting it — not guarding the exec-once — would be the change that
+            # "disables the HM integration".
+            systemd.user.targets.hyprland-session = {
+              Unit = {
+                Description = "Hyprland compositor session";
+                Documentation = [ "man:systemd.special(7)" ];
+                BindsTo = [ "graphical-session.target" ];
+                Wants = [
+                  "graphical-session-pre.target"
+                  # `systemd.enableXdgAutostart = true` was the other setting this
+                  # dendrite carried; these two lines are what it did.
+                  "xdg-desktop-autostart.target"
+                ];
+                After = [ "graphical-session-pre.target" ];
+                Before = [ "xdg-desktop-autostart.target" ];
+                PropagatesStopTo = [ "graphical-session.target" ];
+              };
             };
           };
       };

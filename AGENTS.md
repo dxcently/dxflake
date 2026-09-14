@@ -191,6 +191,7 @@ Generated from selection, never maintained by hand.
 nixfmt <file>.nix                          # format (repo style)
 ./tests/selection/run.sh                   # the constructor's executable schema
 ./tests/templates/run.sh                   # templates/ still copyable and correct
+./tests/session-guard/run.sh               # nested Hyprland cannot take the desktop
 nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
 sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
@@ -204,6 +205,60 @@ runner greps real stderr, so a vague diagnostic fails.
 hosts against the real constructor, and checks the same non-evaluation there. It
 also runs the override template's `nixos` half through the real NixOS module
 system, so "real options" is checked rather than claimed.
+
+`tests/session-guard/` covers the session handoff (below). Its behavioural half
+runs the shipped guard script against a stubbed `hyprctl`/`systemctl`/`dbus`,
+over instance lists derived from a real `hyprctl instances -j` captured during
+a live nesting; its source half renders every host's `hyprland.conf` out of the
+flake and fails if home-manager's unguarded lines are back. A host the fix
+cannot reach is named in the runner with its reason and reports `KNOWN` — and
+fails if it ever comes back clean, so the exemption cannot outlive the bug.
+
+## The session handoff
+
+`wayland.windowManager.hyprland.systemd.enable` is **off** in
+`modules/dendrites/compositor/hyprland.nix`, and the two lines it used to write
+are issued by `modules/dendrites/compositor/hypr-session-import.sh` instead,
+from `exec-once` and `exec-shutdown`. This is a guard, not a removal: the
+environment import, the target restart and the stop on exit all still happen,
+and `hyprland-session.target` is re-declared in the dendrite with home-manager's
+own `Unit` block, verbatim.
+
+The reason is that home-manager's lines are unconditional, and a nested
+Hyprland — one launched from a terminal inside a running session — loads the
+same config:
+
+```
+  login Hyprland  ── wayland-1 ── owns hyprland-session.target
+        └── terminal
+              └── nested Hyprland ── wayland-2
+                    exec-once:     repoints the user manager at wayland-2,
+                                   stops + restarts the target, and every
+                                   service on it follows into the window
+                    exec-shutdown: closing the window stops the REAL target
+```
+
+The guard asks Hyprland's own IPC — `hyprctl instances` — whether a live
+instance started *before* this one. If one did, this instance is not the
+session owner and does nothing. Every uncertain answer ("no IPC", "I am not in
+the list", "that entry has no timestamp") resolves to *owner*, because a guard
+that cannot tell must never be the thing that breaks a login. The script's
+header records the two cheaper discriminators that were tried against the live
+fleet and rejected.
+
+It cannot be expressed as a home-manager option: the generated line is
+`dbus-update-activation-environment … && systemctl …`, and `systemd.variables`
+and `systemd.extraCommands` splice into the middle of it, so neither can put a
+condition ahead of the part that does the damage. `--all` stays, because
+narrowing the variable set here would change what a normal login exports.
+
+**chiyo is not covered.** Its `hyprland.conf` comes from Aoide's compositor
+facet, which carries the same defect and belongs to Fable; the durable fix is
+upstream (in home-manager, ultimately) and reaches dxflake by pin bump. Patching
+it from here would put a second writer on the very leaf options
+`modules/dendrites/aoide.nix` documents as a silent-merge trap.
+`tests/session-guard/run.sh` reports it `KNOWN` and will fail the moment the
+exemption stops being true.
 
 ## The Aoide seam
 

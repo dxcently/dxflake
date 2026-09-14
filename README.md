@@ -47,6 +47,7 @@ dxflake/
 ├── templates/                # copyable example-*.nix, one per authoring role
 ├── tests/selection/          # the constructor's executable schema
 ├── tests/templates/          # proves templates/ still assembles into a real tree
+├── tests/session-guard/      # a nested Hyprland must not walk off with the desktop
 ├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
 ├── assets/                   # wallpapers, screenshots
@@ -418,6 +419,7 @@ nix eval --json .#inventory.<host> | jq   # what this host resolved, and from wh
 - stylix theming
 - fcitx5 input method
 - multihost (chiyo + osaka + sakaki + yomi-strix)
+- a nested Hyprland that cannot steal your session out from under you
 - sops-nix secrets
 - jellyfin + steam + aagl on osaka
 - one-line new-host: a name in the catalogue-driven host list

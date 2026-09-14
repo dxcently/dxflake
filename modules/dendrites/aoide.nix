@@ -39,16 +39,20 @@
 # the quickshell facet left off, aoided anchors to default.target and the
 # door rides it (loopback only). A host in this shape must never ALSO flip
 # `aoide.facets.compositor` or `aoide.facets.stylix` beside dxflake's own
-# Hyprland/Stylix dendrites: both pairs write the same unique-merge leaf
-# options (`wayland.windowManager.hyprland.systemd.variables`,
-# `stylix.base16Scheme`), and because those options are list-concat/attrs-merge
-# rather than a single value, nix eval stays clean — the two writers silently
-# combine into a value neither author intended, and the failure shows up only
-# at runtime (systemd.variables concatenates dxflake's `["--all"]` with
-# Aoide's five named vars, and dbus rejects the mixed "--all + names" line at
-# session start; two `services.greetd`/`services.displayManager.ly`
-# definitions would similarly leave two login managers racing a tty rather
-# than erroring at eval).
+# Hyprland/Stylix dendrites. For stylix the two writers meet on
+# `stylix.base16Scheme`, an attrs-merge leaf: nix eval stays clean and the two
+# silently combine into a value neither author intended, so the failure shows
+# up only at runtime. Two `services.greetd`/`services.displayManager.ly`
+# definitions fail the same quiet way, leaving two login managers racing a tty
+# rather than erroring at eval.
+#
+# The compositor pair no longer merges quietly. dxflake's dendrite sets
+# `wayland.windowManager.hyprland.systemd.enable = false` and does the session
+# handoff itself, guarded (see AGENTS.md, "The session handoff"), so a host
+# that flipped both would now hit a plain conflicting-definition error on that
+# bool at eval instead of concatenating dxflake's `["--all"]` onto Aoide's five
+# named `systemd.variables` and having dbus reject the mixed line at session
+# start. Still do not flip both — but it now tells you.
 #
 # The Quickshell facet and shellbridge (nucleus/shellbridge.nix) have no such
 # collision: they only need graphical-session.target and a compositor that
