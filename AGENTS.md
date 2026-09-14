@@ -107,11 +107,20 @@ place in `flake.nix` and collapse to public imports once upstream exports
 `nixosModules.default`, a songbook module, `lib.livery.resolve` and
 `overlays.default`. Do not add new private-tree paths elsewhere.
 
-Melete (`modules/dendrites/melete.nix`) is sakaki-only, pinned client v0.2.0 via
-`pkgs/melete-client-package.nix`. Its spawned agent turns use the real `claude`
-CLI by default (`[claude] binary = "claude"` in the out-of-band `config.toml`);
-the pi-agent shim at `~/.config/melete/bin/melete-agent` is retained on disk but
-not routed to.
+Melete and Mneme (`modules/dendrites/{melete,mneme}.nix`) are sakaki-only. Both
+build from their canonical **private** GitHub repos — `noah427/melete`,
+`noah427/mneme` — pinned to `refs/heads/master` by `flake.lock`. A checkout in
+`~/melete` is a place to develop, never the pin: bump with
+`nix flake update melete-src` (or `mneme-src`), and use
+`--override-input melete-src path:/home/khoa/melete` for a one-off dirty build.
+Because the repos and their cargo git dependencies are private, **evaluate as
+`khoa`** (`nh os switch`, which is what `dxrebuild` runs) — a bare
+`sudo nixos-rebuild` evaluates as root, which has no GitHub credential.
+
+Melete's spawned agent turns use the real `claude` CLI by default
+(`[claude] binary = "claude"` in the out-of-band `config.toml`); the pi-agent
+shim at `~/.config/melete/bin/melete-agent` is retained on disk but not routed
+to.
 
 ## Secrets (sops-nix)
 

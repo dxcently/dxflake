@@ -7,17 +7,17 @@
       ...
     }:
     let
-      # Built from the ~/melete dev checkout (the `melete-src` flake
-      # input) — version and contents follow that repo. See flake.nix for how to
-      # pick up a new commit or a dirty worktree.
+      # Built from github.com/noah427/melete's default branch (the `melete-src`
+      # flake input) — version and contents follow upstream. See flake.nix for
+      # how to pick up a new commit or build a dirty local worktree.
       meletePkg = pkgs.callPackage ../../pkgs/melete-package.nix {
         src = inputs.melete-src;
       };
     in
     {
       config = {
-        # --- Dev-checkout baseline, self-update floats above it ------------------
-        # Nix builds the binary from ~/melete (pkgs/melete-package.nix).
+        # --- Pinned-upstream baseline, self-update floats above it ---------------
+        # Nix builds the binary from the pinned melete-src (pkgs/melete-package.nix).
         # We seed ~/.local/bin/melete from that store binary ONLY when the build
         # changes (tracked by a stamp file). Between builds the running binary is
         # left untouched, so anything that swapped it in place — melete's own
@@ -25,11 +25,11 @@
         # self-update is off and managed_externally, so in practice this seed is
         # the only thing that moves it; see pkgs/melete-package.nix.)
         #
-        # The stamp holds the STORE PATH, not the version: the dev repo's Cargo
+        # The stamp holds the STORE PATH, not the version: upstream's Cargo
         # version sits still across most commits, so a version stamp would leave
         # the box running yesterday's build after a rebuild that had already
         # compiled today's. The store path moves whenever the source does, which
-        # is exactly the "follow the dev repo" contract.
+        # is exactly the "follow upstream" contract.
         system.activationScripts.meleteSeed = {
           deps = [ "users" ];
           text = ''
@@ -45,13 +45,16 @@
           '';
         };
 
-        # Building from the dev checkout retired a whole apparatus that used to
+        # Building from a git source retired a whole apparatus that used to
         # live here: a sops-rendered `impure-env = NIX_GITHUB_RELEASE_TOKEN=<token>`
         # !included into nix.conf, so the release-asset fixed-output derivation
         # could authenticate to the private repo. With it went its cold-host
         # catch-22 (activation needed the token that only a successful activation
         # installs), the nix-daemon-reads-nix.conf-once trap, and the pre-seed
-        # workaround for both. A local source build needs no credential at all.
+        # workaround for both. A git source still needs a GitHub credential —
+        # both repos are private — but it is the rebuilding user's own, read by
+        # git at evaluation time, not a secret this flake has to render into
+        # nix.conf for the sandbox.
         #
         # secrets/github-release-token.yaml is left on disk but is now
         # unreferenced. `git show 99c7c55:modules/dendrites/melete.nix` has the

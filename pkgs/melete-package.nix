@@ -4,14 +4,15 @@
   src,
 }:
 
-# Melete, built from the dev checkout wired in as the `melete-src` flake input
-# (~/melete). That repo is the source of truth now; this replaces the
-# release-asset fetch that used to live in pkgs/melete-client-package.nix,
-# along with the whole NIX_GITHUB_RELEASE_TOKEN / impure-env apparatus it
-# needed to reach a private repo's assets (git history has both, if a
-# fetch-the-release build is ever wanted again).
+# Melete, built from the `melete-src` flake input — github.com/noah427/melete,
+# pinned to that repo's default branch. Upstream is the source of truth, not a
+# checkout on the box doing the rebuild. This replaces the release-asset fetch
+# that used to live in pkgs/melete-client-package.nix, along with the whole
+# NIX_GITHUB_RELEASE_TOKEN / impure-env apparatus it needed to reach a private
+# repo's assets (git history has both, if a fetch-the-release build is ever
+# wanted again).
 #
-# Version comes from the checkout's own Cargo.toml, so it tracks the dev repo
+# Version comes from the pinned tree's own Cargo.toml, so it tracks upstream
 # rather than a number pinned here that has to be bumped in lockstep.
 #
 # MELETE_RELEASE is deliberately NOT stamped: that env var is a *release*
@@ -34,7 +35,7 @@ rustPlatform.buildRustPackage {
   pname = "melete";
   version = cargoToml.package.version;
 
-  # `git+file:` already delivers a clean tree; the filter is what makes the
+  # `git+https:` already delivers a clean tree; the filter is what makes the
   # `path:` override (uncommitted edits — see flake.nix) usable, since that
   # fetcher copies the directory verbatim and .git/ churn alone would
   # otherwise force a full rebuild.
@@ -65,7 +66,7 @@ rustPlatform.buildRustPackage {
   doCheck = false;
 
   meta = {
-    description = "Melete — Mneme's companion AI harness, built from the local dev checkout";
+    description = "Melete — Mneme's companion AI harness, built from upstream master";
     mainProgram = "melete";
   };
 }

@@ -1263,33 +1263,33 @@
     "melete-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1786932850,
-        "narHash": "sha256-ZdHAExljHzkRLLY8YFZnNh6XynVBVUw2x/VzL97IAlc=",
+        "lastModified": 1789348589,
+        "narHash": "sha256-gS51O5zYZkRDZZIVGJIJFIiMWwpadHelsjtu5PvDXUc=",
         "ref": "refs/heads/master",
-        "rev": "7619d40939f7e6cf4307b32d7e2928e27a0dff23",
-        "revCount": 598,
+        "rev": "adfbac7cbf8835ca50ad978683ea44e8262bb9b8",
+        "revCount": 635,
         "type": "git",
-        "url": "file:///home/khoa/melete"
+        "url": "https://github.com/noah427/melete"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/khoa/melete"
+        "url": "https://github.com/noah427/melete"
       }
     },
     "mneme-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1788476565,
-        "narHash": "sha256-cEF6vFLS4B+4MkidFN2R/jzhLZeHJr2plqL77pAfnvI=",
+        "lastModified": 1789173056,
+        "narHash": "sha256-x/oOVxu/lHk3cmgX94/apSxWN8guONHbzSG7ss8Ul+Y=",
         "ref": "refs/heads/master",
-        "rev": "551229919fac07724de029dfbb7325b29dddbc16",
-        "revCount": 177,
+        "rev": "6eb0810ff315ba8ff836df745ef4023d92b7b7bf",
+        "revCount": 182,
         "type": "git",
-        "url": "file:///home/khoa/mneme"
+        "url": "https://github.com/noah427/mneme"
       },
       "original": {
         "type": "git",
-        "url": "file:///home/khoa/mneme"
+        "url": "https://github.com/noah427/mneme"
       }
     },
     "mnw": {

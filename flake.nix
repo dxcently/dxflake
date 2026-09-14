@@ -33,11 +33,16 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Melete and Mneme are developed in ~/<name> on sakaki, and those
-    # checkouts are what the flake builds now — no more fetching a release
-    # asset off the private GitHub repo (see pkgs/melete-package.nix).
+    # Melete and Mneme come from their canonical GitHub repositories, pinned to
+    # the default branch (master). A checkout tip on whichever box happens to be
+    # rebuilding is not upstream, so the flake no longer treats it as one.
     #
-    # `git+file:` locks to a commit and copies only tracked files (no .git, no
+    # Both repos are PRIVATE, so fetching them needs GitHub credentials at
+    # EVALUATION time. `git+https:` goes through git, which picks up the `gh`
+    # credential helper this user already has configured — so evaluate as that
+    # user (`nh os switch` does) rather than as root.
+    #
+    # `git+https:` locks to a commit and copies only tracked files (no .git, no
     # target/, .gitignore honored). A source change is therefore picked up
     # explicitly, not silently:
     #   nix flake update melete-src   # or mneme-src
@@ -47,15 +52,13 @@
     #     --override-input melete-src path:/home/khoa/melete
     #
     # Only sakaki forces these (dx.melete/dx.mneme are false elsewhere, and
-    # module args are lazy), so chiyo/osaka still evaluate fine without the
-    # repos on disk — but `nix flake update` with no argument would try to
-    # re-lock them, so run it on sakaki, or name the inputs you mean.
+    # module args are lazy), so no other host ever builds them.
     melete-src = {
-      url = "git+file:///home/khoa/melete";
+      url = "git+https://github.com/noah427/melete";
       flake = false;
     };
     mneme-src = {
-      url = "git+file:///home/khoa/mneme";
+      url = "git+https://github.com/noah427/mneme";
       flake = false;
     };
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.
