@@ -1,7 +1,7 @@
 # osaka — the workstation. Selection first, then this host's own platform
 # settings; the shared user is attached, not copied.
 {
-  aggregations = {
+  aggregation = {
     base.enable = true;
     desktop.enable = true;
     gaming.enable = true;
@@ -35,8 +35,8 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
-    # The person, not the machine: these aggregations contribute home lanes.
-    aggregations = {
+    # The person, not the machine: these groups contribute home lanes.
+    aggregation = {
       base.enable = true;
       desktop.enable = true;
       hyprland.enable = true;

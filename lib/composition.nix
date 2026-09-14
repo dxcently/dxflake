@@ -52,9 +52,9 @@ let
     ) catalogue;
 
   # The schema every selection pass evaluates. `modules/default.nix` calls this
-  # with its own catalogue, plus the modules that steer a user scope —
-  # aggregations declare their membership in both scopes from one table, and
-  # the user submodule is where the home half of it lands.
+  # with its own catalogue, plus the group declarations that steer a user scope.
+  # A group is written once and imported into both scopes; it tells them apart
+  # by the `scope` argument ("system" or "home") each pass supplies.
   mkSchema =
     {
       catalogue,
@@ -77,7 +77,10 @@ let
           type = types.attrsOf (
             types.submoduleWith {
               shorthandOnlyDefinesConfig = true;
-              specialArgs = { inherit lib; };
+              specialArgs = {
+                inherit lib;
+                scope = "home";
+              };
               modules = [
                 {
                   options = {
@@ -202,7 +205,10 @@ rec {
     { modules }:
     (lib.evalModules {
       inherit modules;
-      specialArgs = { inherit lib; };
+      specialArgs = {
+        inherit lib;
+        scope = "system";
+      };
     }).config;
 
   # A host's resolved shape: what it selected, from where, for which lane.
@@ -220,12 +226,12 @@ rec {
     in
     {
       host = hostName;
-      aggregations = lib.attrNames (lib.filterAttrs (_: a: a.enable) (selection.aggregations or { }));
+      aggregation = lib.attrNames (lib.filterAttrs (_: a: a.enable) (selection.aggregation or { }));
       dendrites = describe selection.dendrites;
       users = lib.mapAttrs (_: u: {
         definition = toString u.definition;
         homeManager = u.homeManager.enable;
-        aggregations = lib.attrNames (lib.filterAttrs (_: a: a.enable) (u.aggregations or { }));
+        aggregation = lib.attrNames (lib.filterAttrs (_: a: a.enable) (u.aggregation or { }));
         dendrites = describe u.dendrites;
       }) selection.users;
     };

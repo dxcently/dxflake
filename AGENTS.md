@@ -15,7 +15,7 @@ an imported module's declarations out of the graph that imported them. So
 `lib/composition.nix` runs two passes:
 
 ```text
-modules/default.nix (catalogue)  +  modules/aggregations.nix  +  hosts/<host>
+modules/default.nix (catalogue)  +  modules/dendrites/ (groups)  +  hosts/<host>
                               |
                  pass 1: ordinary lib.evalModules
                               |
@@ -42,12 +42,22 @@ marks parked files).
 - **Provider** — one implementation of a multi-implementation capability, and
   exclusive within a scope. `gpu` is the worked example: `amd` and `intel`, and
   the unchosen file is never imported.
-- **Aggregation** — `modules/aggregations.nix`. One table, instantiated twice:
-  `aggregations.<name>.enable` on the host selects its system members,
-  `users.<u>.aggregations.<name>.enable` selects the same aggregation's home
-  members for that person. Membership uses `mkDefault`, so an ordinary selection
-  outranks it, and two aggregations that default the same option to different
-  values collide; import order never picks a winner.
+- **Aggregation** — one group, one directory: `modules/dendrites/<group>/`
+  owns its own `aggregation.<name>.enable` option, its `mkIf` gate, both halves
+  of its membership and any shared preference that rides along.
+  `modules/dendrites/default.nix` imports the groups and does nothing else.
+  Each group file is evaluated **twice** — once for the host, once per user —
+  and tells the two apart by the `scope` argument (`"system"` / `"home"`) the
+  constructor supplies, so `aggregation.desktop.enable` on the host selects the
+  system members and `users.khoa.aggregation.desktop.enable` selects the home
+  ones. Membership uses `mkDefault`, so an ordinary selection outranks it, and
+  two groups that default the same option to different values collide; import
+  order never picks a winner.
+  A directory can hold both kinds of file. A `default.nix` **named by the
+  catalogue** is an implementation; a `default.nix` **imported by
+  `modules/dendrites/default.nix`** is a selection module. The two sets never
+  overlap — `hyprland/` is the worked example, where the compositor moved to
+  `hyprland/compositor.nix` so its `default.nix` could become the group.
 - **Nucleus** — `modules/nucleus/`, imported unconditionally on every host.
 - **Lane** — a module for one evaluator: `nixos`, `homeManager` (`darwin` is in
   the vocabulary, unused here). Selecting a dendrite for the system imports its
@@ -58,12 +68,16 @@ marks parked files).
 ## Adding things
 
 - **A dendrite** — write the file exposing its lane(s), add one catalogue line,
-  and select it from a host or an aggregation. Nothing else.
+  and select it from a host or a group. Nothing else.
 - **A provider** — add the file and one line to that dendrite's `providers`
   registry; select it where wanted.
-- **A shared preference or package fix** — the owning aggregation, once, in the
-  `system` or `home` list that matches the lane it rides. Never repeated across
-  hosts.
+- **A group** — a directory under `modules/dendrites/` whose `default.nix`
+  declares `aggregation.<name>.enable` and gates both membership branches on
+  `scope`, plus one line in `modules/dendrites/default.nix`.
+- **A shared preference or package fix** — the owning group's `default.nix`,
+  once, in the `scope` branch that matches the lane it rides; a deferred
+  platform preference goes in that branch's `nixos` block. Never repeated
+  across hosts.
 - **A host exception** — that host's own selection (`enable = false` beats a
   `mkDefault true`), or an ordinary setting in its `nixos` module.
 - **A user** — one definition under `users/`, attached by the hosts that want

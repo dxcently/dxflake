@@ -108,11 +108,11 @@ rec {
   # A host's ordinary selection outranks an aggregation's mkDefault.
   hostOverridesAggregationProvider =
     (resolve {
-      aggregations.workstation.enable = true;
+      aggregation.workstation.enable = true;
       dendrites.notifications.provider = "herald";
     }).inv.dendrites.notifications.provider;
 
-  # The same table one scope down: a user turning on an aggregation gets its
+  # The same group one scope down: a user turning on a group gets its
   # home membership, and the system scope stays empty — the two halves of one
   # aggregation reach different evaluators.
   userAggregationContributesHomeMembers =
@@ -121,7 +121,7 @@ rec {
         users.alice = {
           definition = ./users/alice.nix;
           homeManager.enable = true;
-          aggregations.desk.enable = true;
+          aggregation.desk.enable = true;
         };
       };
     in
@@ -134,7 +134,7 @@ rec {
       users.alice = {
         definition = ./users/alice.nix;
         homeManager.enable = true;
-        aggregations.desk.enable = true;
+        aggregation.desk.enable = true;
         dendrites.notifications.provider = "mako";
       };
     }).inv.users.alice.dendrites.notifications.provider;
@@ -142,16 +142,16 @@ rec {
   # false beats a default true.
   hostDisablesAggregationMember =
     (resolve {
-      aggregations.workstation.enable = true;
+      aggregation.workstation.enable = true;
       dendrites.systemonly.enable = false;
     }).inv.dendrites ? systemonly;
 
-  # Two aggregations defaulting the same option to different values collide;
+  # Two groups defaulting the same option to different values collide;
   # import order never picks a winner.
   conflictingAggregationDefaults =
     (resolve {
-      aggregations.workstation.enable = true;
-      aggregations.kiosk.enable = true;
+      aggregation.workstation.enable = true;
+      aggregation.kiosk.enable = true;
     }).inv.dendrites.notifications.provider;
 
   # ── Users ──────────────────────────────────────────────────────────────────

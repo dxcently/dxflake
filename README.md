@@ -29,15 +29,16 @@ dxflake/
 │   └── khoa.nix              # ONE shared account — `nixos` lane + `homeManager` lane
 ├── modules/
 │   ├── default.nix           # THE CATALOGUE. one `name = ./path;` line per capability
-│   ├── aggregations.nix      # base · desktop · hyprland · gaming — system + home halves
 │   ├── nucleus/              # the floor. no flag — so it applies always, everywhere.
 │   │   ├── system.nix · networking.nix · security.nix · boot.nix
 │   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
 │   └── dendrites/            # one file per capability, exposing the lanes it supports
+│       ├── default.nix       #   imports the groups below. nothing else lives here
 │       ├── git.nix · btop.nix · yazi.nix …    #   { homeManager = …; }
 │       ├── bluetooth.nix · syncthing.nix …    #   { nixos = …; }
 │       ├── openai.nix                         #   { nixos = …; homeManager = …; }
 │       ├── gpu/                               #   a provider registry — amd.nix · intel.nix
+│       ├── base/ desktop/ gaming/ hyprland/   #   a GROUP each: gate + both halves
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── tests/selection/          # the constructor's executable schema
 ├── pkgs/                     # custom derivations
@@ -56,13 +57,15 @@ A dendrite is one capability, one file, exposing the lanes it supports: `{ nixos
 
 `stylix` is the one capability every host selects whether or not it paints: Aoide's facets probe `options ? stylix` to decide whether to skip colour derivation, so the option tree must exist everywhere while `dx.stylix.enable` alone decides whether dxflake's own theme applies.
 
-> **The aggregations.** _Sometimes many arms must wake as one — the way the government pays me to deliver presents to all the children in Japan, in a single night._ `base`, `desktop`, `hyprland`, `gaming` are words again, not folders — one table in `modules/aggregations.nix`. Say a word over a **machine** and its system arms wake; say the same word over a **person** and that person's home arms wake. One word, two halves, nothing to hunt through. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
+> **The aggregations.** _Sometimes many arms must wake as one — the way the government pays me to deliver presents to all the children in Japan, in a single night._ `base`, `desktop`, `hyprland`, `gaming` each keep one small house of their own under `modules/dendrites/`, and every house holds its own word, its own list for the **machine** and its own list for the **person**. Say the word over a machine and its system arms wake; say the same word over a person and that person's home arms wake. One word, two halves, one place to look. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
 
-An aggregation is shared membership plus the preferences that belong with it — one table, instantiated twice. `aggregations.desktop.enable = true` on a host selects desktop's *system* members; `users.khoa.aggregations.desktop.enable = true` selects its *home* members for that person. Membership is `mkDefault`, so a host's own `enable = false` beats it, and two aggregations that default the same option to different values collide rather than letting import order pick a winner.
+An aggregation is shared membership plus the preferences that belong with it, and it owns its own directory: `modules/dendrites/desktop/default.nix` declares `aggregation.desktop.enable`, gates itself with `mkIf`, and lists both halves of its membership. `aggregation.desktop.enable = true` on a host selects desktop's *system* members; `users.khoa.aggregation.desktop.enable = true` selects its *home* members for that person — the same file, evaluated a second time, telling the two apart by the `scope` argument the constructor hands it. `modules/dendrites/default.nix` imports the groups and does nothing else. Membership is `mkDefault`, so a host's own `enable = false` beats it, and two groups that default the same option to different values collide rather than letting import order pick a winner.
+
+Two kinds of `default.nix` live under `modules/dendrites/`, and they never overlap: one **named by the catalogue** is an implementation, one **imported by `modules/dendrites/default.nix`** is a group. `hyprland/` shows both — the compositor is `hyprland/compositor.nix`, catalogued as `hyprland`, and `hyprland/default.nix` is the group that selects it.
 
 > **The hosts.** _And so a machine is no longer a long and tiresome confession — only a handful of wishes spoken aloud._ A host names its hardware, then *wishes* — the aggregations and lone arms it wants, for the machine and for the person sitting at it. `sakaki` wishes only `base`, and purrs softly. `osaka` wishes desktop, hyprland, gaming — and does not tire. Read the wishes, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
 
-A host file is a *selection* — `aggregations`, `dendrites`, `users` — followed by its own `nixos` block: hardware imports, the `dx.*` knobs for what genuinely varies, host-only overlays and packages. A host names no module file. Nothing outside `modules/default.nix` ever does.
+A host file is a *selection* — `aggregation`, `dendrites`, `users` — followed by its own `nixos` block: hardware imports, the `dx.*` knobs for what genuinely varies, host-only overlays and packages. A host names no module file. Nothing outside `modules/default.nix` ever does.
 
 Chiyo enables its SSH tunnel through `dx.cloudflared`. This flake provides no CSC (FAU) manual tunnel token module or `dx.cscToken` option.
 
@@ -118,7 +121,7 @@ Swap `<name>` for your host — it becomes the flake target.
 
    ```nix
    {
-     aggregations = {
+     aggregation = {
        base.enable = true;        # the machine's half: stylix
        desktop.enable = true;     # audio, fonts, portals, login …
      };
@@ -134,7 +137,7 @@ Swap `<name>` for your host — it becomes the flake target.
      users.khoa = {
        definition = ../../users/khoa.nix;
        homeManager.enable = true;
-       aggregations = {
+       aggregation = {
          base.enable = true;      # the person's half: bash, git, neovim …
          desktop.enable = true;
        };
@@ -307,9 +310,9 @@ Then `gpu = { enable = true; provider = "amd"; }` on the host — `intel.nix` is
 - **Selected = active** — no `options.dx.<name>.enable` at all; the lane applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)
 - **`dx.` knobs for what genuinely varies** — a capability some hosts configure differently keeps `options.dx.<name>.<knob>` for that variance only, never for whether it runs (`caddy.sites`, `cloudflared.tunnelId`/`hostnames`, `immich.mediaLocation`, `inference.igpu`, `nas-mounts.server`/`mounts`).
 
-Aggregations follow the same rule one level up: `modules/aggregations.nix` names each member once, in the `system` or `home` list that matches the lane it rides, and a host or a user says the word.
+Aggregations follow the same rule one level up: a group's `default.nix` names each member once, in the `scope` branch that matches the lane it rides, and a host or a user says the word.
 
-**What you never touch:** `flake.nix`, or any module path outside `modules/default.nix` — the catalogue is the only place a file is named. Need a new aggregation? Add a row to the table in `modules/aggregations.nix`. Want to park a capability without deleting it? Strike its catalogue line.
+**What you never touch:** `flake.nix`, or any module path outside `modules/default.nix` — the catalogue is the only place a capability file is named. Need a new aggregation? Add a directory under `modules/dendrites/` whose `default.nix` declares its `aggregation.<name>.enable` and both membership branches, then one import line in `modules/dendrites/default.nix`. Want to park a capability without deleting it? Strike its catalogue line.
 
 **Prove it still holds:**
 

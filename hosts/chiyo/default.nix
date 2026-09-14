@@ -1,6 +1,6 @@
 # chiyo — the laptop, and the full AoideOS paint carrier.
 {
-  aggregations = {
+  aggregation = {
     base.enable = true;
     # desktop stays: it carries pipewire, fonts, fcitx5, portals and ly login —
     # none of those collide with Aoide's paint. The hyprland aggregation is NOT
@@ -28,8 +28,8 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
-    # The person, not the machine: these aggregations contribute home lanes.
-    aggregations = {
+    # The person, not the machine: these groups contribute home lanes.
+    aggregation = {
       base.enable = true;
       desktop.enable = true;
     };

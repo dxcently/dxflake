@@ -1,7 +1,7 @@
 # yomi-strix — Strix Halo desktop. It drives its own Aoide from a separate
 # flake at ~/Aoide, so it selects no aoide dendrite here.
 {
-  aggregations = {
+  aggregation = {
     base.enable = true;
     # Dev tooling comes free from base and the nucleus (git, neovim, …);
     # desktop and hyprland bring the GUI.
@@ -27,8 +27,8 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
-    # The person, not the machine: these aggregations contribute home lanes.
-    aggregations = {
+    # The person, not the machine: these groups contribute home lanes.
+    aggregation = {
       base.enable = true;
       desktop.enable = true;
       hyprland.enable = true;

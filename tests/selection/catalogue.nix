@@ -1,6 +1,6 @@
-# The fixture catalogue and aggregations the selection cases select from.
-# Deliberately includes implementations that throw when imported: that is how
-# "an unselected file is never evaluated" is proved rather than asserted.
+# The fixture catalogue and the group declarations the selection cases select
+# from. Deliberately includes implementations that throw when imported: that is
+# how "an unselected file is never evaluated" is proved rather than asserted.
 { lib, composition }:
 let
   catalogue = {
@@ -10,14 +10,15 @@ let
     systemonly = ./dendrites/systemonly;
   };
 
-  aggregations = import ./aggregations.nix;
+  # One import, both selection scopes — see modules/default.nix.
+  groups = ./dendrites;
 in
 {
   imports = [
     (composition.mkSchema {
       inherit catalogue;
-      userModules = [ (aggregations "home") ];
+      userModules = [ groups ];
     })
-    (aggregations "system")
+    groups
   ];
 }

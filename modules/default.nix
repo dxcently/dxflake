@@ -41,7 +41,7 @@ let
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/desktop/gtk.nix;
-    hyprland = ./dendrites/hyprland;
+    hyprland = ./dendrites/hyprland/compositor.nix;
     hyprland-packages = ./dendrites/hyprland/packages.nix;
     hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;
@@ -82,16 +82,18 @@ let
     yazi = ./dendrites/yazi.nix;
   };
 
-  # One table, two scopes: the host selects system lanes, each user selects
-  # home lanes. See modules/aggregations.nix.
-  aggregations = import ./aggregations.nix;
+  # The group declarations. One import, evaluated in BOTH selection scopes —
+  # the host scope and every user's — because a group owns both halves of its
+  # membership. Each group tells the two apart by the `scope` argument the
+  # constructor supplies. See modules/dendrites/default.nix.
+  groups = ./dendrites;
 in
 {
   imports = [
     (composition.mkSchema {
       inherit catalogue;
-      userModules = [ (aggregations "home") ];
+      userModules = [ groups ];
     })
-    (aggregations "system")
+    groups
   ];
 }

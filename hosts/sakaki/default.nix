@@ -1,7 +1,7 @@
 # sakaki — the server. Headless: Aoide runs here with no facets and nothing
 # paints, so no desktop or hyprland aggregation and no graphical dendrite.
 {
-  aggregations.base.enable = true;
+  aggregation.base.enable = true;
 
   dendrites = {
     aoide.enable = true;
@@ -23,8 +23,8 @@
   users.khoa = {
     definition = ../../users/khoa.nix;
     homeManager.enable = true;
-    # The person, not the machine: these aggregations contribute home lanes.
-    aggregations = {
+    # The person, not the machine: these groups contribute home lanes.
+    aggregation = {
       base.enable = true;
     };
     dendrites.pi-coding-agent.enable = true;
