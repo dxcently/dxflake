@@ -1,0 +1,169 @@
+* {
+font-family: "Lekton Nerd Font";
+font-size: 16;
+border-radius: 0px;
+transition-property: background-color;
+transition-duration: 0.5s;
+}
+@keyframes blink_red {
+to {
+color: {{base16.base08}};
+}
+}
+.warning, .critical, .urgent {
+animation-name: blink_red;
+animation-duration: 1s;
+animation-timing-function: linear;
+animation-iteration-count: infinite;
+animation-direction: alternate;
+}
+window#waybar {
+background-color: rgba(0,0,0,0.1);
+}
+window > box {
+background-color: transparent;
+border-bottom: 1px solid black;
+}
+#workspaces {
+padding-left: 0px;
+padding-right: 4px;
+}
+#workspaces button {
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 6px;
+padding-right: 6px;
+color: black;
+font-weight: 400;
+font-size: 20;
+}
+#workspaces button.active {
+background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.75), rgba(255,255,255, 0) ), transparent;
+border: 1px solid black;
+padding-top: 4px;
+padding-bottom: 3px;
+padding-left: 6px;
+padding-right: 6px;
+color: black;
+}
+#workspaces button.urgent {
+color: {{base16.base08}};
+}
+#workspaces button:hover {
+background: radial-gradient( 40px circle at top left, rgba(255, 255, 255, 0.75), rgba(255,255,255, 0) ), transparent;
+color: {{base16.base0A}};
+border: 0px;
+}
+tooltip {
+background: white;
+border: 1px solid black;
+border-radius: 0px;
+}
+tooltip label {
+color: #000000;
+}
+#custom-rofi {
+font-size: 20px;
+padding-left: 8px;
+padding-right: 8px;
+color: #000000;
+}
+#mode, #clock, #backlight, #wireplumber, #network, #battery, #custom-powermenu {
+padding-left: 5px;
+padding-right: 8px;
+}
+#mpris {
+padding-left: 5px;
+padding-right: 0px;
+}
+#memory {
+color: {{base16.base0B}};
+}
+#cpu {
+color: {{base16.base0C}};
+}
+#clock {
+  color: white;
+  font-weight: 600;
+  text-shadow:
+   -1px -1px 0 black,
+    1px -1px 0 black,
+   -1px  1px 0 black,
+    1px  1px 0 black;
+}
+#window {
+  color: white;
+  font-weight: 600;
+  text-shadow:
+   -1px -1px 0 black,
+    1px -1px 0 black,
+   -1px  1px 0 black,
+    1px  1px 0 black;
+}
+#custom-wall {
+color: #B38DAC;
+}
+#temperature {
+color: {{base16.base09}};
+}
+#backlight {
+color: {{base16.base08}};
+}
+#mpris {
+  color: white;
+  font-weight: 600;
+  text-shadow:
+   -1px -1px 0 black,
+    1px -1px 0 black,
+   -1px  1px 0 black,
+    1px  1px 0 black;
+}
+#wireplumber {
+  color: white;
+  font-weight: 600;
+  text-shadow:
+   -1px -1px 0 black,
+    1px -1px 0 black,
+   -1px  1px 0 black,
+    1px  1px 0 black;
+}
+#network {
+color: black;
+}
+
+#network.disconnected {
+color: #CCCCCC;
+}
+#battery.charging, #battery.full, #battery.discharging {
+  color: white;
+  font-weight: 600;
+  text-shadow:
+   -1px -1px 0 black,
+    1px -1px 0 black,
+   -1px  1px 0 black,
+    1px  1px 0 black;
+}
+#battery.critical:not(.charging) {
+color: #D6DCE7;
+}
+#custom-powermenu {
+color: white;
+font-size: 20px;
+padding-left: 8px;
+padding-right: 8px;
+text-shadow:
+  1px 1px 0 black,
+  -1px -1px 0 black,
+  -1px  1px 0 black,
+  1px  -1px 0 black;
+}
+#tray {
+padding-right: 8;
+padding-left: 0;
+}
+#tray menu {
+background: white;
+border: 1px solid black;
+border-radius: 0px;
+color: black;
+}

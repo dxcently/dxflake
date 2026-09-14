@@ -61,6 +61,7 @@
     portmaster = ./dendrites/portmaster.nix;
     printing = ./dendrites/desktop/printing.nix;
     qt = ./dendrites/desktop/qt.nix;
+    rice = ../songbook;
     rofi = ./dendrites/hyprland/rofi.nix;
     satty = ./dendrites/hyprland/satty.nix;
     slskd = ./dendrites/slskd.nix;

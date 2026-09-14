@@ -23,6 +23,7 @@ files nobody selected stayed unread.
 | a capability with several | `example-default-provider-registry.nix` | `modules/dendrites/<name>/default.nix` | one catalogue line naming the **directory** |
 | one of those implementations | `example-provider.nix` | `modules/dendrites/<name>/<provider>.nix` | one line in that directory's `default.nix` |
 | a group of capabilities | `example-aggregation.nix` | `modules/aggregations/<group>/default.nix` | nothing — discovery finds it; select it from a host |
+| a new look (a rice) | `example-provider.nix` | `songbook/<name>/rice.nix` | one line in `songbook/default.nix`; author `livery.json` beside it and lint it with `lyra livery lint` |
 | a machine | `example-host.nix` | `hosts/<host>/default.nix` | add `"<host>"` to the host list in `flake.nix` |
 | a headless machine | `example-host-headless.nix` | `hosts/<host>/default.nix` | same |
 | a person | `example-user.nix` | `users/<name>.nix` | attach from each host that wants them |

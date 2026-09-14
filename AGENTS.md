@@ -176,6 +176,11 @@ to destination.
   provider leaves it unselected and unevaluated.
 - **A package the group just installs** — that group's `packages.nix`, or its
   inline `nixos` half. Never a catalogue line: there is nothing to select.
+- **A rice** — structurally a provider, so `example-provider.nix` is still the
+  template, but it lives at `songbook/<name>/rice.nix` beside its `livery.json`,
+  `design/intent.md` and source assets, and `songbook/default.nix` is its
+  registry. The look only; the wiring stays in the dendrites.
+  `songbook/transience/` is the worked example.
 - **A shared preference or package fix** — the owning group's `default.nix`,
   once, in the half that matches the lane it rides: `system.nixos` for a
   deferred platform preference, `home.homeManager` for a home one. Never
@@ -213,6 +218,7 @@ nixfmt <file>.nix                          # format (repo style)
 ./tests/selection/run.sh                   # the constructor's executable schema
 ./tests/templates/run.sh                   # templates/ still copyable and correct
 ./tests/session-guard/run.sh               # nested Hyprland cannot take the desktop
+./tests/rice/run.sh                        # the rice and the palette have not drifted
 nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
 sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
@@ -227,6 +233,14 @@ hosts against the real constructor, and checks the same non-evaluation there. It
 also runs the override template's `nixos` half through the real NixOS module
 system, so "real options" is checked rather than claimed.
 
+`tests/rice/` covers the look: that transience's authored `livery.json` still
+agrees with the Stylix scheme that actually paints, that every `{{base16.*}}`
+placeholder in the stylesheet is filled, that the pure-Nix render and
+`lyra livery emit file` produce the same bytes, and that look and wiring have
+not leaked back into each other. Drift in a look is silent — nothing fails to
+evaluate, the desktop just comes up slightly wrong — so each pair that can
+drift gets an assertion.
+
 `tests/session-guard/` covers the session handoff (below). Its behavioural half
 runs the shipped guard script against a stubbed `hyprctl`/`systemctl`/`dbus`,
 over instance lists derived from a real `hyprctl instances -j` captured during
@@ -234,6 +248,30 @@ a live nesting; its source half renders every host's `hyprland.conf` out of the
 flake and fails if home-manager's unguarded lines are back. A host the fix
 cannot reach is named in the runner with its reason and reports `KNOWN` — and
 fails if it ever comes back clean, so the exemption cannot outlive the bug.
+
+## The rice
+
+The look is a capability with providers, like the compositor: `songbook/` is the
+registry, one directory per rice, and the `shell` aggregation answers it —
+`transience` by default, because dxflake ships one rice and that is the look
+this desktop has always had. `users.<u>.aggregation.shell.rice.provider` is
+where a host says otherwise.
+
+A **rice** is the palette and the stylesheets. A **dendrite** is whether the
+program runs. `modules/dendrites/hyprland/waybar.nix` is `enable` and a systemd
+decision; `songbook/transience/rice.nix` is the sheet and the bar's own
+composition. Swapping the rice must never mean re-deciding whether the bar
+exists, and `tests/rice` fails if either side grows back into the other.
+
+`songbook/transience/livery.json` is authored in **Aoide's v0 livery schema**,
+which is the whole bridge and is deliberately the only one: `lyra livery lint`
+is a real check on it, and `source/waybar.css` uses Lyra's own `{{group.key}}`
+template syntax, so the identical file renders through pure Nix at build time
+and through `lyra livery emit file` at runtime — `tests/rice` asserts the two
+agree byte for byte. Nothing here is declared into Aoide, nothing stages or
+hot-loads, and `lyra rice compose/stage/draft/declare` do not apply: those are
+the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
+`songbook/transience/design/intent.md` records the boundary in full.
 
 ## The Hyprland split
 
