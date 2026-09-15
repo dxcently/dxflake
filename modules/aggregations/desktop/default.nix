@@ -32,6 +32,7 @@
   };
 
   home.members = [
+    "cheatsheet"
     "composekey"
     "fastfetch"
     "floorp"

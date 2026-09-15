@@ -24,6 +24,7 @@
     bluetooth = ./dendrites/bluetooth.nix;
     btop = ./dendrites/btop.nix;
     caddy = ./dendrites/caddy.nix;
+    cheatsheet = ./dendrites/cheatsheet;
     claude-code = ./dendrites/claude-code.nix;
     cloudflared = ./dendrites/cloudflared.nix;
     composekey = ./dendrites/composekey.nix;

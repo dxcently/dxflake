@@ -79,7 +79,9 @@
             "SUPER, S, exec, pkill hyprpicker; hyprshot -z --raw -m region | satty --filename -"
             "SUPER SHIFT, S, exec, pkill hyprpicker; hyprshot -z --raw -m output | satty --filename -"
             "SUPER, Tab, exec, rofi -show"
-            "SUPER, B, exec, bash /home/khoa/dxflake/scripts/keybinds.bash"
+            # The binary is the cheatsheet dendrite's, by NAME; a host that does
+            # not select it gets an inert key.
+            "SUPER, B, exec, cheatsheet"
             "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
             "SUPER, Q, killactive"
             "SUPER, V, togglefloating"

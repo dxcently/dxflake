@@ -40,6 +40,7 @@
     {
       config,
       lib,
+      pkgs,
       ...
     }:
     let
@@ -63,6 +64,16 @@
       ];
       colour = slot: "#${config.lib.stylix.colors.${slot}}";
       fill = builtins.replaceStrings (map (s: "{{base16.${s}}}") slots) (map colour slots);
+      sinkChanger = pkgs.writeShellApplication {
+        name = "sink-changer";
+        runtimeInputs = with pkgs; [
+          wireplumber
+          dunst
+          gnugrep
+          coreutils
+        ];
+        text = builtins.readFile ./source/sink_changer.sh;
+      };
     in
     {
       programs.waybar = {
@@ -177,7 +188,7 @@
                 ];
               };
               "on-click" = "pavucontrol";
-              "on-click-right" = "bash ~/dxflake/scripts/sink_changer.sh";
+              "on-click-right" = "${sinkChanger}/bin/sink-changer";
               "tooltip" = true;
             };
             "battery" = {

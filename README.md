@@ -56,8 +56,7 @@ dxflake/
 ├── docs/HYPRLAND-SPLIT.md    # which file owns which old compositor block
 ├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
-├── assets/                   # wallpapers, screenshots
-└── scripts/                  # runtime shell scripts (keybinds, sink switcher)
+└── assets/                   # wallpapers, screenshots
 ```
 
 > **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath every machine: the system, the network, the secrets that keep the night out, the developer's claws— er, _tools._ You do not _choose_ the nucleus. It wears no flag, and so it simply _is_ — on every machine, always. Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
