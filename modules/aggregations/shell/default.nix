@@ -45,7 +45,7 @@
 
     # The look the surfaces wear. Unlike `compositor` this one HAS a default:
     # dxflake ships one rice, and transience is the look this desktop has always
-    # had, so a host that says nothing keeps it. songbook/default.nix is the
+    # had, so a host that says nothing keeps it. song/songbook/default.nix is the
     # registry; a host that wants another writes
     # `users.<u>.aggregation.shell.rice.provider`.
     providers.rice = "transience";

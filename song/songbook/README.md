@@ -9,20 +9,22 @@ rice reuses them. Swapping the rice must never mean re-deciding whether the bar
 exists.
 
 ```
-songbook/
-├── default.nix              the registry: names paths, imports none
-├── covers/                  the cover art, shared by every rice
-└── transience/
-    ├── rice.nix             the composition — a homeManager lane
-    ├── palette.nix          the palette, the one source
-    ├── livery.json          generated from palette.nix, Aoide's v0 livery schema
-    ├── regen-livery.sh      writes livery.json from palette.nix
-    ├── design/intent.md     what this look is, and what it deliberately omits
-    └── source/waybar.css    owned source, a {{base16.baseXX}} template
+song/
+├── songbook/
+│   ├── default.nix              the registry: names paths, imports none
+│   └── transience/
+│       ├── rice.nix             the composition — a homeManager lane
+│       ├── palette.nix          the palette, the one source
+│       ├── livery.json          generated from palette.nix, Aoide's v0 livery schema
+│       ├── regen-livery.sh      writes livery.json from palette.nix
+│       ├── design/intent.md     what this look is, and what it deliberately omits
+│       └── source/waybar.css    owned source, a {{base16.baseXX}} template
+├── covers/                      the cover art, shared by every rice
+└── stage/                       runtime only, gitignored — never committed
 ```
 
 `covers/` is the cover art — what the compositor sets as the wallpaper, and
-what Aoide's picker enumerates. It sits beside the rices rather than inside one
+what Aoide's picker enumerates. It sits beside the songbook, not inside it,
 because an image is not a look: any rice may wear any cover, and osaka deploys
 the whole directory to `~/.aoide/song/covers` so the picker has a library. The
 name mirrors Aoide's `song/covers/`, and the registry names its providers by
@@ -63,7 +65,7 @@ wants it names it. Author `palette.nix`, generate `livery.json` from it, and
 lint the result:
 
 ```sh
-songbook/<name>/regen-livery.sh
-lyra livery lint songbook/<name>/livery.json
+song/songbook/<name>/regen-livery.sh
+lyra livery lint song/songbook/<name>/livery.json
 ./tests/rice/run.sh
 ```

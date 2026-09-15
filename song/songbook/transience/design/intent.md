@@ -29,7 +29,7 @@ that fell out of sync, or a real host that stopped reading `palette.nix` at
 all.
 
 Generating `livery.json` in Aoide's schema is not decoration. It means
-`lyra livery lint songbook/transience/livery.json` is a real check,
+`lyra livery lint song/songbook/transience/livery.json` is a real check,
 `lyra livery resolve` prints the resolved set, and `lyra livery emit` can drive
 the very same stylesheet template this rice renders through Nix. Both renderers
 were run against `source/waybar.css` and agree byte for byte.
@@ -56,7 +56,7 @@ keybind. Preserving it means not substituting one and not drawing a second
 surface beside it. transience carries the same palette into it through the
 shared livery instead.
 
-**the wallpapers** — `songbook/covers/`, set by `awww img` from the autostart
+**the wallpapers** — `song/covers/`, set by `awww img` from the autostart
 dendrite. They are content, not rice, and stay shared: a second rice should be
 able to keep the same picture.
 

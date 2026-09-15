@@ -1,11 +1,11 @@
-# songbook/transience/rice.nix — "transience", the rice dxflake has always worn.
+# song/songbook/transience/rice.nix — "transience", the rice dxflake has always worn.
 #
 # A RICE is the look: the palette, and the stylesheets the surfaces wear. It is
 # not the wiring. `programs.waybar.enable`, its systemd unit, `programs.rofi`
 # and `programs.wlogout` stay in their dendrites, where any rice can reuse them
 # — swapping the rice must never mean re-deciding whether waybar runs.
 #
-# Selected through the `rice` provider registry (songbook/default.nix), which
+# Selected through the `rice` provider registry (song/songbook/default.nix), which
 # the `shell` aggregation answers with "transience" by default. A host that
 # wants another look writes one line:
 #
@@ -16,7 +16,7 @@
 #            — which modules sit where, and how each one reads.
 # the palette  palette.nix is the source; livery.json is generated from it in
 #            Aoide's v0 livery schema so `lyra livery lint
-#            songbook/transience/livery.json` is a real check on it and
+#            song/songbook/transience/livery.json` is a real check on it and
 #            `lyra livery emit` can drive the same template. Rosé Pine, the
 #            sixteen colours this desktop has always used.
 # rofi, wlogout  NOTHING bespoke, and that is the honest answer rather than an

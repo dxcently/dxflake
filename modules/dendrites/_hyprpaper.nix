@@ -18,8 +18,8 @@
           settings = {
             ipc = "true";
             splash = false;
-            preload = [ " ~/dxflake/songbook/covers/hero.webp" ];
-            wallpaper = [ ",~/dxflake/songbook/covers/hero.webp" ];
+            preload = [ " ~/dxflake/song/covers/hero.webp" ];
+            wallpaper = [ ",~/dxflake/song/covers/hero.webp" ];
           };
         };
       };

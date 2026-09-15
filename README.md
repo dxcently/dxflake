@@ -45,9 +45,11 @@ dxflake/
 │       ├── compositor/ gpu/                   #   a provider registry each
 │       ├── desktop/ gaming/ hyprland/ server/ #   plain folders, nothing walks them
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
-├── songbook/                 # the rices. one directory each, the look only
-│   ├── default.nix           #   provider registry: names paths, imports none
-│   └── transience/           #   livery.json · rice.nix · design/ · source/
+├── song/                     # rices, shared cover art; mirrors ~/.aoide/song/
+│   ├── songbook/             #   the rices. one directory each, the look only
+│   │   ├── default.nix       #   provider registry: names paths, imports none
+│   │   └── transience/       #   livery.json · rice.nix · design/ · source/
+│   └── covers/               #   shared cover art, deployed to ~/.aoide/song/covers
 ├── templates/                # copyable example-*.nix, one per authoring role
 ├── tests/rice/               # the look has not drifted from the palette
 ├── tests/selection/          # the constructor's executable schema
@@ -387,7 +389,7 @@ What an aggregation **installs** goes in its own `nixos`/`homeManager` block, no
 
 Aggregations follow the same rule one level up: a group names each member once, in the half that matches the lane it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `nixos`/`homeManager` block, never a repeat across hosts.
 
-**The look is a capability too.** `songbook/` is a provider registry of rices, and the `shell` aggregation answers it with `transience` — the look this desktop has always had, now written down instead of scattered. A rice owns the palette and the stylesheets; the dendrite owns whether the program runs, so swapping the rice never re-decides whether waybar exists. `songbook/transience/livery.json` is authored in Aoide's v0 livery schema and `source/waybar.css` uses Lyra's `{{group.key}}` template syntax, so `lyra livery lint` is a real check and the pure-Nix render and `lyra livery emit file` produce the same bytes — `./tests/rice/run.sh` asserts it. See `songbook/README.md`.
+**The look is a capability too.** `song/songbook/` is a provider registry of rices, and the `shell` aggregation answers it with `transience` — the look this desktop has always had, now written down instead of scattered. A rice owns the palette and the stylesheets; the dendrite owns whether the program runs, so swapping the rice never re-decides whether waybar exists. `song/songbook/transience/livery.json` is authored in Aoide's v0 livery schema and `source/waybar.css` uses Lyra's `{{group.key}}` template syntax, so `lyra livery lint` is a real check and the pure-Nix render and `lyra livery emit file` produce the same bytes — `./tests/rice/run.sh` asserts it. See `song/songbook/README.md`.
 
 **What you never touch:** `flake.nix`, or any module path outside `modules/default.nix` and the provider registry of the capability you are adding to — those are the only places a file is named. Need a new aggregation? Add a directory under `modules/aggregations/` with a `default.nix` holding its `description` and its halves; there is no import line to add, because discovery names it and the constructor supplies the gate. Want to park a capability without deleting it? Strike its catalogue line.
 

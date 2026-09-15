@@ -12,8 +12,8 @@
       aoideStylix = config.aoide.facets.stylix.enable;
       # dxflake ships one rice today, so the floor's fixed scheme is that
       # rice's palette. When a second rice lands this moves behind the `rice`
-      # provider (songbook/default.nix).
-      transiencePalette = import ../../songbook/transience/palette.nix;
+      # provider (song/songbook/default.nix).
+      transiencePalette = import ../../song/songbook/transience/palette.nix;
     in
     {
       imports = [ inputs.stylix.nixosModules.stylix ];

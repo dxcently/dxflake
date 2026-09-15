@@ -24,3 +24,6 @@ result-*
 *.plain.yaml
 secrets/*.dec.*
 .pi-subagents/
+
+# runtime state written by lyra/aoide, mirrors ~/.aoide/song/stage, never committed
+song/stage/

@@ -10,7 +10,7 @@
 set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 root=$(cd ../.. && pwd)
-song=$root/songbook/transience
+song=$root/song/songbook/transience
 
 pass=0; fail=0
 ok()   { printf '%-34s PASS%s\n' "$1" "${2:+  ($2)}"; pass=$((pass+1)); }
@@ -124,7 +124,7 @@ else
   ok dendriteIsWiringOnly
 fi
 if grep -qE '^\s*enable = true;' "$song/rice.nix"; then
-  bad riceIsLookOnly "songbook/transience/rice.nix enables a program — that is the dendrite's job"
+  bad riceIsLookOnly "song/songbook/transience/rice.nix enables a program — that is the dendrite's job"
 else
   ok riceIsLookOnly
 fi
@@ -132,10 +132,10 @@ fi
 # The registry must name paths and import none, or an unselected rice would be
 # evaluated on every host. tests/selection proves the mechanism; this proves
 # this registry still uses it.
-if grep -qE '^\s*(imports|import )' "$root/songbook/default.nix"; then
-  bad registryImportsNothing "songbook/default.nix imports a rice body"
+if grep -qE '^\s*(imports|import )' "$root/song/songbook/default.nix"; then
+  bad registryImportsNothing "song/songbook/default.nix imports a rice body"
 else
-  ok registryImportsNothing "$(grep -c "= \./" "$root/songbook/default.nix") rice(s) named"
+  ok registryImportsNothing "$(grep -c "= \./" "$root/song/songbook/default.nix") rice(s) named"
 fi
 rule
 

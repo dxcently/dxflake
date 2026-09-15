@@ -4,7 +4,7 @@
 # still read it as a real path, so it stays checked in, but edit palette.nix
 # and rerun this rather than editing the JSON.
 #
-#   ./songbook/transience/regen-livery.sh
+#   ./song/songbook/transience/regen-livery.sh
 set -euo pipefail
 cd "$(dirname "$0")" || exit 1
 

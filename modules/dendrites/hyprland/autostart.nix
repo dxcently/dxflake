@@ -49,8 +49,8 @@
       ]
       ++ lib.optionals (!aoideFace) [
         "awww-daemon"
-        "awww img -o DP-1 ~/dxflake/songbook/covers/hero.webp"
-        "awww img -o HDMI-A-1 ~/dxflake/songbook/covers/yuki-standing.png"
+        "awww img -o DP-1 ~/dxflake/song/covers/hero.webp"
+        "awww img -o HDMI-A-1 ~/dxflake/song/covers/yuki-standing.png"
         "waybar"
       ]
       ++ [

@@ -177,10 +177,10 @@ to destination.
 - **A package the group just installs** — that group's `packages.nix`, or its
   inline `nixos` half. Never a catalogue line: there is nothing to select.
 - **A rice** — structurally a provider, so `example-provider.nix` is still the
-  template, but it lives at `songbook/<name>/rice.nix` beside its `livery.json`,
-  `design/intent.md` and source assets, and `songbook/default.nix` is its
+  template, but it lives at `song/songbook/<name>/rice.nix` beside its `livery.json`,
+  `design/intent.md` and source assets, and `song/songbook/default.nix` is its
   registry. The look only; the wiring stays in the dendrites.
-  `songbook/transience/` is the worked example.
+  `song/songbook/transience/` is the worked example.
 - **A shared preference or package fix** — the owning group's `default.nix`,
   once, in the half that matches the lane it rides: `system.nixos` for a
   deferred platform preference, `home.homeManager` for a home one. Never
@@ -251,19 +251,19 @@ fails if it ever comes back clean, so the exemption cannot outlive the bug.
 
 ## The rice
 
-The look is a capability with providers, like the compositor: `songbook/` is the
-registry, one directory per rice, and the `shell` aggregation answers it —
-`transience` by default, because dxflake ships one rice and that is the look
-this desktop has always had. `users.<u>.aggregation.shell.rice.provider` is
-where a host says otherwise.
+The look is a capability with providers, like the compositor:
+`song/songbook/` is the registry, one directory per rice, and the `shell`
+aggregation answers it — `transience` by default, because dxflake ships one
+rice and that is the look this desktop has always had.
+`users.<u>.aggregation.shell.rice.provider` is where a host says otherwise.
 
 A **rice** is the palette and the stylesheets. A **dendrite** is whether the
 program runs. `modules/dendrites/waybar.nix` is `enable` and a systemd
-decision; `songbook/transience/rice.nix` is the sheet and the bar's own
+decision; `song/songbook/transience/rice.nix` is the sheet and the bar's own
 composition. Swapping the rice must never mean re-deciding whether the bar
 exists, and `tests/rice` fails if either side grows back into the other.
 
-`songbook/transience/livery.json` is authored in **Aoide's v0 livery schema**,
+`song/songbook/transience/livery.json` is authored in **Aoide's v0 livery schema**,
 which is the whole bridge and is deliberately the only one: `lyra livery lint`
 is a real check on it, and `source/waybar.css` uses Lyra's own `{{group.key}}`
 template syntax, so the identical file renders through pure Nix at build time
@@ -271,7 +271,7 @@ and through `lyra livery emit file` at runtime — `tests/rice` asserts the two
 agree byte for byte. Nothing here is declared into Aoide, nothing stages or
 hot-loads, and `lyra rice compose/stage/draft/declare` do not apply: those are
 the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
-`songbook/transience/design/intent.md` records the boundary in full.
+`song/songbook/transience/design/intent.md` records the boundary in full.
 
 ## The Hyprland split
 

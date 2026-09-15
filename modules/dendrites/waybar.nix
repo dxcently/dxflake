@@ -2,7 +2,7 @@
 #
 # This dendrite is wiring only: the program, and the deliberate choice not to
 # let home-manager start it. The stylesheet and the bar's composition live in
-# the selected rice (songbook/<rice>/rice.nix), so a host can change how the
+# the selected rice (song/songbook/<rice>/rice.nix), so a host can change how the
 # desktop looks without touching whether the bar exists.
 {
   homeManager = _: {

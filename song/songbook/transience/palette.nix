@@ -1,4 +1,4 @@
-# songbook/transience/palette.nix — the one source of the transience palette.
+# song/songbook/transience/palette.nix — the one source of the transience palette.
 # Rosé Pine, dark, the sixteen this desktop has always worn.
 #
 # Bare hex is canonical, because that is what modules/dendrites/stylix.nix's
