@@ -8,11 +8,25 @@
 
 ## Architecture overview
 
-A composable, scalable, and natural architecture
-
 > _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
 
-Modules split by *capability*, not by host. `modules/default.nix` is the **registry** — a catalogue of one `name = ./path;` line per capability, plus the aggregations discovered beside it — and a host writes a *selection*, not an import list. Selection is resolved first, by an ordinary `lib.evalModules` pass that knows nothing about NixOS; only what that pass resolved is then imported. No `if hostname ==` ladders. The flake reads the filesystem in exactly one place, one level deep: `modules/aggregations/default.nix` names its own child directories and imports none of them.
+### Why
+
+- A module is written **once, per capability, never per host.** A host is a selection, not an import list.
+- Selection is resolved **before** any NixOS module graph exists — a plain `lib.evalModules` pass over enable/provider options — so an unselected file is never read. Not `mkIf`: `mkIf` cannot keep an imported module's option declarations out of the graph that imported them.
+- Paths are named in exactly two kinds of place: the **catalogue** (`modules/default.nix`) and a **provider registry** (`modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix`). Hosts and aggregations use **names**, so a capability is removable by deleting its file and its one line.
+- One shape everywhere:
+
+  ```nix
+  { nixos = …; homeManager = …; }                             # a dendrite: one file, its lanes
+  { providers = { amd = ./amd.nix; intel = ./intel.nix; }; }  # a provider registry: names paths, imports none
+  { description = …; system.members = [ … ]; home = { … }; }  # an aggregation: plain data
+  ```
+
+  Grouping is the aggregations' job, so `modules/dendrites/` stays flat — one folder only when a capability needs several files (`fastfetch/`, `cheatsheet/`), or is a provider registry (`gpu/`, `compositor/`). `hyprland/` is the one grouping exception: files written against Hyprland itself.
+- `song/` mirrors Aoide's `song/` and the runtime `~/.aoide/song/` — `songbook/` the rices, `covers/` the shared art, `stage/` the gitignored hot layer — so a path that works in the repo works on the box.
+
+### Tree
 
 ```
 dxflake/
@@ -43,13 +57,15 @@ dxflake/
 │       ├── bluetooth.nix · syncthing.nix …    #   { nixos = …; }
 │       ├── openai.nix                         #   { nixos = …; homeManager = …; }
 │       ├── compositor/ gpu/                   #   a provider registry each
-│       ├── desktop/ gaming/ hyprland/ server/ #   plain folders, nothing walks them
+│       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
+│       ├── hyprland/                          #   the one grouping folder: written against Hyprland itself
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── song/                     # rices, shared cover art; mirrors ~/.aoide/song/
 │   ├── songbook/             #   the rices. one directory each, the look only
 │   │   ├── default.nix       #   provider registry: names paths, imports none
 │   │   └── transience/       #   livery.json · rice.nix · design/ · source/
-│   └── covers/               #   shared cover art, deployed to ~/.aoide/song/covers
+│   ├── covers/               #   shared cover art, deployed to ~/.aoide/song/covers
+│   └── stage/                #   gitignored; lyra's hot layer, same path as ~/.aoide/song/stage
 ├── templates/                # copyable example-*.nix, one per authoring role
 ├── tests/rice/               # the look has not drifted from the palette
 ├── tests/selection/          # the constructor's executable schema
@@ -58,57 +74,23 @@ dxflake/
 ├── docs/HYPRLAND-SPLIT.md    # which file owns which old compositor block
 ├── pkgs/                     # custom derivations
 ├── secrets/                  # sops-encrypted
-└── assets/                   # wallpapers, screenshots
+└── assets/                   # screenshots
 ```
 
-> **The nucleus.** _At the heart of every flake sits a thing that cannot be removed — like my love of tomatoes._ `modules/nucleus/` is that floor beneath every machine: the system, the network, the secrets that keep the night out, the developer's claws— er, _tools._ You do not _choose_ the nucleus. It wears no flag, and so it simply _is_ — on every machine, always. Eat your tomatoes, Chiyo. Nyan. (=^･ω･^=)
+### Moving parts
 
-`nucleus/` is the floor every host gets unconditionally — boot, network, ssh, secrets, dev tools. It is not in the catalogue and declares no toggle, so it always applies. Ungated *is* what makes it the nucleus. The account is not floor: it lives in `users/khoa.nix`, one shared definition a host *attaches* (`users.khoa.definition = ../../users/khoa.nix`), carrying `users.users.<name>` in its `nixos` lane and the home floor in its `homeManager` lane. There are no per-host copies.
+| what it is | where | what it names | what it never does |
+|---|---|---|---|
+| **Catalogue** | `modules/default.nix` | one `name = ./path;` line per capability, by hand | walk the dendrite tree — a capability with no line is unreachable |
+| **Provider registry** | `modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix` | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
+| **Aggregation** | `modules/aggregations/<group>/default.nix`, by directory name | its `members` by catalogue name, the `providers` a host may choose, its own deferred preference | declare options, carry `mkIf`, or take a `scope` argument — it is plain data |
+| **Selection** | the host's `default.nix`, resolved by `lib/composition.nix` | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
 
-> **The dendrites.** _From the frozen center, the arms reach outward — at Mach 100._ Each is one idea only — `bluetooth.nix`, `git.nix`, `waybar.nix` — _purr._ An arm that touched every machine would smother them all, so each one **sleeps** until it is named. Lean close, whiskers and all — an arm may have two paws, one for the **system** and one for the **home**, and each paw is called by name. Neither drags the other along. A dendrite never asks _"which machine am I for?"_ It waits to be selected. This is the way. Nyaa. (=ↀωↀ=)✧
-
-A dendrite is one capability, one file, exposing the lanes it supports: `{ nixos = …; }`, `{ homeManager = …; }`, or both. Selecting it for the system imports its `nixos` lane; selecting it under a user imports its `homeManager` lane. Neither installs the other, and asking for a lane a dendrite does not expose is an error that names the dendrite, the scope, and the lanes it does have. A capability with several implementations is a directory whose `default.nix` lists `providers = { … }` and imports none of them — `gpu` is the worked example, and the unchosen `amd.nix`/`intel.nix` is never read. `compositor` is the same shape with one provider so far, `hyprland`; adding a second is a file beside it and a line in that registry, and nothing else moves.
-
-`stylix` is the one capability every host selects whether or not it paints: Aoide's facets probe `options ? stylix` to decide whether to skip colour derivation, so the option tree must exist everywhere while `dx.stylix.enable` alone decides whether dxflake's own theme applies.
-
-> **The aggregations.** _Sometimes many arms must wake as one — the way the government pays me to deliver presents to all the children in Japan, in a single night._ `base`, `desktop`, `shell`, `gaming` each keep one small house of their own under `modules/aggregations/`, and the **name on the door is the word** — inside there is no spell at all, only its list for the **machine** and its list for the **person**. Say the word over a machine and its system arms wake; say the same word over a person and that person's home arms wake. One word, two halves, one place to look. …Purr-fect, is it not. Nyan! ≽^•⩊•^≼
-
-An aggregation is shared membership plus the preferences that belong with it, and it owns one directory: `modules/aggregations/desktop/default.nix`. That file is **data** — a `description`, a `system` half and a `home` half, each naming its `members` by catalogue name, the `providers` it lets a host choose, and an optional deferred `nixos`/`homeManager` block for a preference that rides along. It declares no options, carries no `mkIf`, and never sees a `scope` argument; the constructor wraps it in the gate, once, in the only place a gate exists. Either half may be absent — `gaming` has no home half, and that absence is a real answer, not an empty placeholder.
-
-`aggregation.desktop.enable = true` on a host selects desktop's *system* members; `users.khoa.aggregation.desktop.enable = true` selects its *home* members for that person. `modules/aggregations/default.nix` is one `readDir` one level deep: every immediate child directory holding a `default.nix` is an aggregation, named by its directory, and it produces `name = path` without importing a body.
-
-Provider choices nest under the aggregation that owns the dendrite. Every key in a half's `providers` becomes a `<name>.provider` option on that aggregation's own interface, in that scope:
-
-```nix
-aggregation.shell = {
-  enable = true;
-  compositor.provider = "hyprland";
-};
-```
-
-`null` in the body means the group has no default and every host that selects it must choose, by name, or be told so; a string is a shared default a host may override. Those names are existing dendrites, not a new capability layer — a single-implementation member gets no provider option at all. The top-level `dendrites.<name>.provider` escape hatch still exists and still outranks the aggregation; an ordinary choice no longer needs it.
-
-Membership and provider are both `mkDefault`, so a host's own `enable = false` beats them, two aggregations naming the same dendrite **merge** into one selection instead of instantiating it twice, and two that choose different providers for it collide with `has conflicting definition values`, naming the option and both values. Import order never decides.
-
-Every `default.nix` under `modules/dendrites/` is therefore one thing now: an implementation the catalogue names, or a provider registry that lists paths and imports none. Groups live in their own tree, so the old two-kinds-of-`default.nix` ambiguity is gone.
-
-> **The hosts.** _And so a machine is no longer a long and tiresome confession — only a handful of wishes spoken aloud._ A host names its hardware, then *wishes* — the aggregations and lone arms it wants, for the machine and for the person sitting at it. `sakaki` wishes only `base`, and purrs softly. `osaka` wishes desktop, shell, gaming — and does not tire. Read the wishes, and you will know the machine's dreams. ﻌ ฅ(=・ﻌ・=)ฅ
-
-A host file is a *selection* — `aggregation`, `dendrites`, `users` — followed by its own `nixos` block: hardware imports, the `dx.*` knobs for what genuinely varies, host-only overlays and packages. A host names no module file, and neither does an aggregation — its members are catalogue names. Only the catalogue and a provider registry ever name a path.
-
-Chiyo enables its SSH tunnel through `dx.cloudflared`. This flake provides no CSC (FAU) manual tunnel token module or `dx.cscToken` option.
-
-> _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._ …That is all. I must go now — I can fly, you know. At Mach 100. Nyaaa~ =^ｪ^= ⌒☆ 🐾💨
-
-**The three moving parts, plainly:**
-
-- **Catalogue** — `modules/default.nix`, one `name = ./path;` line per capability. It generates `dendrites.<name>.enable` and `.provider`, so an unknown name fails as an option that does not exist, naming the file that asked for it. A capability with no catalogue line is unreachable — that is what shelving means now. The file is not a module: it is plain data, `{ catalogue = { … }; aggregations = import ./aggregations; overrides = import ./overrides; }`, and `flake.nix` hands it to the constructor as `registry` alongside `hostModules = [ ./hosts/<name> ]`.
-- **Aggregations** — `modules/aggregations/<group>/default.nix`, found by directory name one level deep. Dendrites are written down by hand because an implementation must never become reachable by dropping a file somewhere; an aggregation body is inert data whose only effect is the gate it answers, so its directory name is enough.
-- **Selection** — resolved *before* any platform module graph exists, because `mkDefault` sets definition priority and cannot decide imports, and `mkIf` cannot keep an imported module's declarations out of the graph that imported them. Pass one is an ordinary `lib.evalModules` over enable/provider options; pass two imports only what it resolved, so an unselected file is never read. A `dx.*` option still gates the knobs that genuinely vary (`caddy.sites`, `nas-mounts.mounts`, …), never whether the file is reached at all.
-
-Pass one runs in two steps, because the nested provider option names come out of the bodies themselves:
+### Flow
 
 ```text
+hosts/<h>/default.nix            the selection: aggregation.* · dendrites.* · users.<u>.*
+       ↓
 modules/aggregations/default.nix   names directories, imports no body
        ↓
 gate     every aggregation declares only `enable`; the rest of its attrset is
@@ -121,27 +103,120 @@ platform import the chosen dendrite files and the chosen provider files.
          Nothing else under modules/dendrites/ is read at all.
 ```
 
-A body is data, so it cannot enable another aggregation: the gate step's answer is the select step's answer, and no recursion machinery exists to say so. A body one of the users selected is present in the host scope too, gated off — the union is imported, not a separate list per scope.
+### In practice
 
-Override records are the one documented exception to all of that, and the weaker boundary is stated rather than glossed. A record under `modules/overrides/` is a fix that belongs to a capability instead of to a host — a package upstream broke, a setting everyone running the thing needs. It names its targets by catalogue name, optionally confines itself to named hosts, and carries an `overlay`, a `nixos` module, a `homeManager` module, or any combination. Every host **imports every record file**, because matching means reading which dendrites a record targets; what an unmatched host never spends is the *work*, since those three are functions and nothing calls them. A record never selects anything, applies at most once however many of its targets were hit, and takes its order from the record name. This tree ships no live record — `modules/overrides/` holds only its discovery file.
+**A host is a selection.** `hosts/osaka/default.nix`, top of file:
 
-To shelve a capability without deleting it, strike its catalogue line; the file conventionally keeps its `_`-prefixed name, e.g. `_foo.nix`, as a visual marker.
+```nix
+{
+  aggregation = {
+    base.enable = true;
+    desktop.enable = true;
+    gaming.enable = true;
+    shell = {
+      enable = true;
+      compositor.provider = "hyprland";
+    };
+  };
 
----
+  dendrites = {
+    aoide.enable = true;
+    autopsy.enable = true;
+    # Radeon. The intel provider is never imported on this box.
+    gpu = { enable = true; provider = "amd"; };
+    # … more, each one line
+  };
 
-## Not the *pure* dendritic pattern
+  users.khoa = {
+    definition = ../../users/khoa.nix;
+    homeManager.enable = true;
+    aggregation = {
+      base.enable = true;
+      desktop.enable = true;
+      compositor.enable = true;
+      shell.enable = true;
+    };
+    dendrites.pi-coding-agent.enable = true;
+  };
 
-This flake *is* dendritic — one file per capability, each carrying its own lanes, and the import list is written rather than discovered: `modules/default.nix` names exactly the capabilities that exist, one line each. Group *names* are the one thing read off disk, and a name found that way imports nothing until a host says it. That is the dendritic essence, and this flake has it, on an **explicit catalogue plus selection** rather than automatic enumeration. What it is **not** is the [*pure* dendritic pattern](https://github.com/mightyiam/dendritic) ([FAQ](https://github.com/Doc-Steve/dendritic-design-with-flake-parts/wiki/FAQ#dendritic-pattern-seems-just-like-a-buzzword-why-is-this-different-from-what-im-already-doing-for-the-configuration-of-my-hosts)): it stops one pillar short. Where they part is the foundation:
+  nixos = { … };  # hardware imports, dx.* knobs, host-only packages
+}
+```
 
-| | this flake (catalogue + selection) | dendritic pattern |
-|---|---|---|
-| Foundation | `nixpkgs.lib.nixosSystem`, behind a selection-then-platform constructor | `flake-parts` |
-| Discovery | an explicit catalogue, one line per capability, in `modules/default.nix`; group *names* from one `readDir`, one level deep, importing nothing | `import-tree`, the whole tree, recursively |
-| Auto-wiring **scope** | feeds `nixosConfigurations` **only** | one file registers into every output — `nixos` + `homeManager` + `perSystem` packages, devShells |
-| Scoping to a host | selection, resolved before any import | options / selection |
-| System + home | one dendrite exposes a `nixos` lane, a `homeManager` lane, or both; each is selected on its own | one file registers into both module classes |
+Groups by name, lone capabilities by name, the account attached from `users/`. The `nixos` block below names no module file — it is ordinary platform settings.
 
-The difference is **pillar 2.** This flake takes pillar 1's shape — the import list is data, not a directory walk — by hand, one catalogue line per capability, with no new dependency (`lib.filesystem.listFilesRecursive` still ships in nixpkgs; this flake calls it nowhere — even the upstream Aoide songs are named one by one in `flake.nix`). The one filesystem read left is `builtins.readDir` in `modules/aggregations/default.nix`, one level deep over directory names, and it imports nothing: `import-tree` enumerates files *into* the module graph, while a name found here is inert until a host selects it, and no implementation is ever reachable by dropping a file in a directory. Pillar 2 is `flake-parts`: a single file registering into *many* flake outputs at once (packages, devShells, multi-arch `perSystem`, whole configs). Taking it means a paradigm change (`nixosSystem → flake-parts`) plus `import-tree`, and it only pays off across outputs a single-target NixOS config doesn't ship. The "one dendrite reaches system + home" here works because the constructor hands each lane to the evaluator that asked for it and Home Manager rides the NixOS module, not because a multi-output module system sits underneath.
+**Add a capability.** `modules/dendrites/cheatsheet/default.nix`:
+
+```nix
+{
+  homeManager =
+    { pkgs, ... }:
+    {
+      home.packages = [
+        (pkgs.writeShellApplication {
+          name = "cheatsheet";
+          runtimeInputs = with pkgs; [
+            yad
+            findutils # the EXIT trap pipes `jobs -p` into xargs
+          ];
+          text = builtins.readFile ./cheatsheet.sh;
+        })
+      ];
+    };
+}
+```
+
+Plus one line in the catalogue:
+
+```nix
+cheatsheet = ./dendrites/cheatsheet;
+```
+
+It is reached by **name**: `modules/dendrites/hyprland/keybinds.nix` binds `"SUPER, B, exec, cheatsheet"`, so a host that does not select it just has an inert key. The `desktop` aggregation lists `"cheatsheet"` in its home members, which is how osaka gets it; a host without that group selects it alone with `users.khoa.dendrites.cheatsheet.enable = true;`.
+
+**Swap a provider.** `modules/dendrites/gpu/default.nix`:
+
+```nix
+{
+  providers = {
+    amd = ./amd.nix;
+    intel = ./intel.nix;
+  };
+}
+```
+
+```nix
+dendrites.gpu = {
+  enable = true;
+  provider = "amd";
+};
+```
+
+`intel.nix` is never read on that box — that is the whole point of the registry.
+
+**Change the look.** `song/songbook/default.nix` is a provider registry of rices:
+
+```nix
+{
+  providers = {
+    transience = ./transience/rice.nix;
+  };
+}
+```
+
+The shell aggregation carries the default (`modules/aggregations/shell/default.nix` sets `providers.rice = "transience"`), and a host overrides it there or per user:
+
+```nix
+users.khoa.aggregation.shell.rice.provider = "transience";
+```
+
+Adding a rice is a directory beside `transience/` and one line in the registry; the wiring does not move.
+
+**Shelve.** Strike the catalogue line and rename the file `_foo.nix`. The file sleeps on disk, nothing evaluates it, and no other line changes.
+
+A capability-scoped fix — a package upstream broke, a setting everyone running the thing needs — is an **override record** under `modules/overrides/`, not a repeat across hosts. It names its dendrites, optionally the hosts it is confined to, and carries an `overlay`, a `nixos` module, a `homeManager` module, or any combination; discovery finds it, so there is no catalogue line.
+
+> _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._
 
 ---
 
