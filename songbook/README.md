@@ -11,6 +11,7 @@ exists.
 ```
 songbook/
 ├── default.nix              the registry: names paths, imports none
+├── covers/                  the cover art, shared by every rice
 └── transience/
     ├── rice.nix             the composition — a homeManager lane
     ├── palette.nix          the palette, the one source
@@ -19,6 +20,13 @@ songbook/
     ├── design/intent.md     what this look is, and what it deliberately omits
     └── source/waybar.css    owned source, a {{base16.baseXX}} template
 ```
+
+`covers/` is the cover art — what the compositor sets as the wallpaper, and
+what Aoide's picker enumerates. It sits beside the rices rather than inside one
+because an image is not a look: any rice may wear any cover, and osaka deploys
+the whole directory to `~/.aoide/song/covers` so the picker has a library. The
+name mirrors Aoide's `song/covers/`, and the registry names its providers by
+hand, so a directory here is never mistaken for a rice.
 
 Selected through the `shell` aggregation, which answers with `transience` by
 default because dxflake ships one rice and that is the look this desktop has

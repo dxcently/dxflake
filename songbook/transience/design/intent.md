@@ -56,7 +56,7 @@ keybind. Preserving it means not substituting one and not drawing a second
 surface beside it. transience carries the same palette into it through the
 shared livery instead.
 
-**the wallpapers** — `assets/wallpapers/`, set by `awww img` from the autostart
+**the wallpapers** — `songbook/covers/`, set by `awww img` from the autostart
 dendrite. They are content, not rice, and stay shared: a second rice should be
 able to keep the same picture.
 

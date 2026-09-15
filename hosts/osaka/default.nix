@@ -124,7 +124,7 @@
       # working in BOTH directions. What it buys with that: a future song that
       # carries real cover art of its own will have it overridden on osaka.
       # Delete this line to hand the cover note back to whatever song is playing.
-      aoide.livery.wallpaper = lib.mkForce ../../assets/wallpapers/hero.webp;
+      aoide.livery.wallpaper = lib.mkForce ../../songbook/covers/hero.webp;
 
       # Rosé Pine (songbook/transience/palette.nix) over sonata, host-scoped: the
       # song itself is shared with yomi-strix, so the override tier, not livery.json.
@@ -163,7 +163,7 @@
       # The baked cover above stays the DEFAULT ground that survives a rebuild;
       # this is the live override seam on top of it. Path tracks `aoide.root`'s
       # default of ~/.aoide — retarget both together if that option ever moves.
-      home-manager.users.${username}.home.file.".aoide/song/covers".source = ../../assets/wallpapers;
+      home-manager.users.${username}.home.file.".aoide/song/covers".source = ../../songbook/covers;
       aoide.facets.quickshell.enable = true;
       aoide.facets.stylix.enable = true;
       # Installs the `lyra` binary and enables shellbridge (nucleus/shellbridge.nix
