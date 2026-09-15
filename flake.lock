@@ -293,6 +293,22 @@
         "type": "github"
       }
     },
+    "eidolon-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789427929,
+        "narHash": "sha256-DkuXUEfiSZqRxNPJJiNSORYDXjrdV4Qv3T2itzPYVKM=",
+        "ref": "refs/heads/master",
+        "rev": "012b3583b522c97223dc411ef22712c312fc025e",
+        "revCount": 131,
+        "type": "git",
+        "url": "https://github.com/noah427/eidolon"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://github.com/noah427/eidolon"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -516,6 +532,22 @@
         "ref": "50.1",
         "repo": "gnome-shell",
         "type": "gitlab"
+      }
+    },
+    "harnox-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1789375339,
+        "narHash": "sha256-fuOEwmQpuczhyksWN+7tswKp8gPE7G2Rpwwti3UlGik=",
+        "ref": "refs/heads/master",
+        "rev": "858f5975694f97708f9c34cff6ff9e960a913661",
+        "revCount": 40,
+        "type": "git",
+        "url": "https://github.com/noah427/harnox"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://github.com/noah427/harnox"
       }
     },
     "home-manager": {
@@ -1616,6 +1648,8 @@
         "aagl": "aagl",
         "aoide": "aoide",
         "disko": "disko",
+        "eidolon-src": "eidolon-src",
+        "harnox-src": "harnox-src",
         "home-manager": "home-manager_2",
         "hyprland": "hyprland_2",
         "hyprland-plugins": "hyprland-plugins",

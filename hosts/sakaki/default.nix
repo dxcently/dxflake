@@ -9,6 +9,7 @@
     caddy.enable = true;
     claude-code.enable = true;
     cloudflared.enable = true;
+    eidolon.enable = true;
     immich.enable = true;
     jellyfin.enable = true;
     kimi-cli.enable = true;

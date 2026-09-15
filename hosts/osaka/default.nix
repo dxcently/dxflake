@@ -15,6 +15,7 @@
     aoide.enable = true;
     autopsy.enable = true;
     claude-code.enable = true;
+    eidolon.enable = true;
     # Radeon. The intel provider is never imported on this box.
     gpu = {
       enable = true;

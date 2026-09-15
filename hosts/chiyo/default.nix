@@ -14,6 +14,7 @@
     bluetooth.enable = true;
     claude-code.enable = true;
     cloudflared.enable = true;
+    eidolon.enable = true;
     gpu = {
       enable = true;
       provider = "intel";

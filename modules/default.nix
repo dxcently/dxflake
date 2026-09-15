@@ -40,6 +40,7 @@
     floorp = ./dendrites/floorp.nix;
     foliate = ./dendrites/foliate.nix;
     fonts = ./dendrites/fonts.nix;
+    eidolon = ./dendrites/eidolon.nix;
     git = ./dendrites/git.nix;
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;

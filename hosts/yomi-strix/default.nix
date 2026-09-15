@@ -15,6 +15,7 @@
   dendrites = {
     bluetooth.enable = true;
     claude-code.enable = true;
+    eidolon.enable = true;
     gpu = {
       enable = true;
       provider = "amd";

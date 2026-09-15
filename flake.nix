@@ -61,6 +61,41 @@
       url = "git+https://github.com/noah427/mneme";
       flake = false;
     };
+    # Eidolon — same PRIVATE-repo, git+https, default-branch deal as melete/mneme
+    # above. Bump with `nix flake update eidolon-src`, or override for a dirty
+    # worktree the same way.
+    #
+    # It carries one more wrinkle: its own workspace patches `harnox` to a
+    # sibling `../harnox` checkout (eidolon's Cargo.toml, and nix/eidolon.nix's
+    # own comment), and eidolon's committed Cargo.lock was generated under that
+    # patch — no `source` field for harnox, so Cargo expects the literal
+    # directory to exist rather than fetching it. eidolon's own flake.nix
+    # supplies that via a `harnox` input, but it names it `github:noah427/harnox`
+    # — Nix's native GitHub fetcher, which (unlike `git+https:`) does NOT go
+    # through git or its credential helper, and 404s on this private repo
+    # without a nix.conf access-token this flake deliberately avoids
+    # provisioning. So dxflake pins its own harnox-src instead, fetched the same
+    # credentialed way, and pkgs/eidolon-package.nix hands it in directly rather
+    # than consuming eidolon's flake outputs (which would re-introduce the
+    # unauthenticated github: fetch as a transitive input).
+    eidolon-src = {
+      url = "git+https://github.com/noah427/eidolon";
+      flake = false;
+    };
+    # Tracks harnox's default branch, always latest — NOT a tag pin. eidolon's
+    # own Cargo.toml pins harnox by tag and bumps it independently of this
+    # flake (caught live: harnox moved v0.3.5 -> v0.3.6 mid-write here), so
+    # chasing that tag by hand here just drifts stale between bumps. `[patch]`
+    # needs a version-compatible harnox for Cargo to accept the path
+    # substitution — a mismatched checkout falls back to a real network fetch
+    # instead of patching, which is silent and confusing — but eidolon's own
+    # dev workflow already runs the same way, sibling checkout against
+    # whatever tag Cargo.toml currently names, so tracking latest here mirrors
+    # that rather than fighting it.
+    harnox-src = {
+      url = "git+https://github.com/noah427/harnox";
+      flake = false;
+    };
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";
