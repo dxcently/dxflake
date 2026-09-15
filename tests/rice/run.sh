@@ -118,8 +118,8 @@ rule
 # The point of the rice is that look and wiring came apart. If the dendrite
 # grows a stylesheet again, or the rice starts deciding whether waybar runs,
 # the separation is back to being a comment.
-if grep -qE '^\s*(style|settings) =' "$root/modules/dendrites/hyprland/waybar.nix"; then
-  bad dendriteIsWiringOnly "modules/dendrites/hyprland/waybar.nix names style or settings again"
+if grep -qE '^\s*(style|settings) =' "$root/modules/dendrites/waybar.nix"; then
+  bad dendriteIsWiringOnly "modules/dendrites/waybar.nix names style or settings again"
 else
   ok dendriteIsWiringOnly
 fi

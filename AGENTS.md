@@ -258,7 +258,7 @@ this desktop has always had. `users.<u>.aggregation.shell.rice.provider` is
 where a host says otherwise.
 
 A **rice** is the palette and the stylesheets. A **dendrite** is whether the
-program runs. `modules/dendrites/hyprland/waybar.nix` is `enable` and a systemd
+program runs. `modules/dendrites/waybar.nix` is `enable` and a systemd
 decision; `songbook/transience/rice.nix` is the sheet and the bar's own
 composition. Swapping the rice must never mean re-deciding whether the bar
 exists, and `tests/rice` fails if either side grows back into the other.
@@ -279,16 +279,16 @@ the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
 make a Hyprland session RUN. Package, Wayland environment, monitors, and the
 guarded session handoff below. It installs nothing.
 
-Everything opinionated is a dendrite under `modules/dendrites/hyprland/` —
-`hyprland-keybinds`, `hyprland-decoration`, `hyprland-autostart`, `hyprglass`,
-plus the surfaces `waybar`/`rofi`/`satty`/`wlogout`. That folder is a plain
-directory with no `default.nix`: nothing walks it, and every file in it is
-reachable only through its own catalogue line. (`compositor/` and `gpu/` DO
-carry a `default.nix` — those are provider registries, a different thing.)
-
-The folder is not the membership. The first four are the `compositor` group's;
-the four surfaces are compositor-agnostic and belong to `shell`, which also
-installs the Wayland tool belt from its own `packages.nix`.
+Everything opinionated is a dendrite selected by name. `modules/dendrites/hyprland/`
+holds only what is written or compiled against Hyprland itself —
+`hyprland-keybinds`, `hyprland-decoration`, `hyprland-autostart`, `hyprglass` —
+and the `compositor` aggregation names exactly those four. The surfaces
+`waybar`/`rofi`/`satty`/`wlogout` are compositor-agnostic, so they sit at the
+dendrite root like every other single-file capability and belong to `shell`,
+which also installs the Wayland tool belt from its own `packages.nix`. The
+folder has no `default.nix` and nothing walks it; each file is reachable only
+through its own catalogue line. (`compositor/` and `gpu/` DO carry a
+`default.nix` — those are provider registries, a different thing.)
 
 `docs/HYPRLAND-SPLIT.md` maps every old block to the file that owns it now, and
 records which units are independently selectable versus private helpers.

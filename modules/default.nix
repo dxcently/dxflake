@@ -6,12 +6,17 @@
 # here or it cannot be selected, and a name with no line is unreachable, which
 # is what shelving means now.
 #
-# A dendrite with one implementation is one file exposing the lanes it
-# supports. A dendrite with several is a directory whose default.nix lists
-# provider paths and imports none of them.
+# A dendrite with one implementation is one file at the dendrite root exposing
+# the lanes it supports. A dendrite with several is a directory whose
+# default.nix lists provider paths and imports none of them. A directory is
+# otherwise reserved for a capability that needs more than one file
+# (fastfetch and its logo), plus one grouping exception: dendrites/hyprland/
+# holds exactly what is written against Hyprland itself. Grouping is the
+# aggregations' job, so the root stays flat and the catalogue name is the file
+# name.
 {
   catalogue = {
-    aagl = ./dendrites/gaming/aagl.nix;
+    aagl = ./dendrites/aagl.nix;
     aoide = ./dendrites/aoide.nix;
     autologin = ./dendrites/autologin.nix;
     autopsy = ./dendrites/autopsy.nix;
@@ -21,21 +26,21 @@
     caddy = ./dendrites/caddy.nix;
     claude-code = ./dendrites/claude-code.nix;
     cloudflared = ./dendrites/cloudflared.nix;
-    composekey = ./dendrites/desktop/composekey.nix;
+    composekey = ./dendrites/composekey.nix;
     compositor = ./dendrites/compositor;
-    desktop-hardware = ./dendrites/desktop/hardware.nix;
+    desktop-hardware = ./dendrites/desktop-hardware.nix;
     direnv = ./dendrites/direnv.nix;
-    displaymanager = ./dendrites/desktop/displaymanager.nix;
-    fastfetch = ./dendrites/desktop/fastfetch;
-    fcitx5 = ./dendrites/desktop/fcitx5.nix;
-    flatpak = ./dendrites/desktop/flatpak.nix;
-    floorp = ./dendrites/desktop/floorp.nix;
-    foliate = ./dendrites/desktop/foliate.nix;
-    fonts = ./dendrites/desktop/fonts.nix;
+    displaymanager = ./dendrites/displaymanager.nix;
+    fastfetch = ./dendrites/fastfetch;
+    fcitx5 = ./dendrites/fcitx5.nix;
+    flatpak = ./dendrites/flatpak.nix;
+    floorp = ./dendrites/floorp.nix;
+    foliate = ./dendrites/foliate.nix;
+    fonts = ./dendrites/fonts.nix;
     git = ./dendrites/git.nix;
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
-    gtk = ./dendrites/desktop/gtk.nix;
+    gtk = ./dendrites/gtk.nix;
     hyprglass = ./dendrites/hyprland/hyprglass.nix;
     hyprland-autostart = ./dendrites/hyprland/autostart.nix;
     hyprland-decoration = ./dendrites/hyprland/decoration.nix;
@@ -43,10 +48,10 @@
     hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;
     inference = ./dendrites/inference.nix;
-    jellyfin = ./dendrites/server/jellyfin.nix;
+    jellyfin = ./dendrites/jellyfin.nix;
     k3b = ./dendrites/k3b.nix;
     kimi-cli = ./dendrites/kimi-cli.nix;
-    kitty = ./dendrites/desktop/kitty.nix;
+    kitty = ./dendrites/kitty.nix;
     laptop = ./dendrites/laptop.nix;
     mcfly = ./dendrites/mcfly.nix;
     melete = ./dendrites/melete.nix;
@@ -57,26 +62,26 @@
     openai = ./dendrites/openai.nix;
     openrazer = ./dendrites/openrazer.nix;
     pi-coding-agent = ./dendrites/pi-coding-agent.nix;
-    pipewire = ./dendrites/desktop/pipewire.nix;
+    pipewire = ./dendrites/pipewire.nix;
     portmaster = ./dendrites/portmaster.nix;
-    printing = ./dendrites/desktop/printing.nix;
-    qt = ./dendrites/desktop/qt.nix;
+    printing = ./dendrites/printing.nix;
+    qt = ./dendrites/qt.nix;
     rice = ../songbook;
-    rofi = ./dendrites/hyprland/rofi.nix;
-    satty = ./dendrites/hyprland/satty.nix;
+    rofi = ./dendrites/rofi.nix;
+    satty = ./dendrites/satty.nix;
     slskd = ./dendrites/slskd.nix;
     starship = ./dendrites/starship.nix;
-    steam = ./dendrites/gaming/steam.nix;
+    steam = ./dendrites/steam.nix;
     stylix = ./dendrites/stylix.nix;
     syncthing = ./dendrites/syncthing.nix;
-    thunar = ./dendrites/desktop/thunar.nix;
+    thunar = ./dendrites/thunar.nix;
     transmission = ./dendrites/transmission.nix;
-    vesktop = ./dendrites/desktop/vesktop.nix;
-    virtmanager = ./dendrites/desktop/virtmanager.nix;
+    vesktop = ./dendrites/vesktop.nix;
+    virtmanager = ./dendrites/virtmanager.nix;
     virtualisation = ./dendrites/virtualisation.nix;
-    waybar = ./dendrites/hyprland/waybar.nix;
-    wlogout = ./dendrites/hyprland/wlogout.nix;
-    xserver = ./dendrites/desktop/xserver.nix;
+    waybar = ./dendrites/waybar.nix;
+    wlogout = ./dendrites/wlogout.nix;
+    xserver = ./dendrites/xserver.nix;
     yazi = ./dendrites/yazi.nix;
   };
 

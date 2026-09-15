@@ -10,8 +10,9 @@ now. Read it once; after that the file headers are the reference.
 environment, the systemd handoff. A host that selects it gets a working,
 navigable Hyprland and nothing opinionated.
 
-**Everything else is ecosystem**, lives under `modules/dendrites/hyprland/`,
-and is selected by name. Each one is independently selectable because each
+**Everything else is ecosystem** and is selected by name. What is written
+against Hyprland itself lives under `modules/dendrites/hyprland/`; the
+compositor-agnostic surfaces sit at the dendrite root. Each one is independently selectable because each
 answers a question a host can answer differently — chiyo answers all of them
 with Aoide's facets instead, selects neither `shell` nor `compositor`, and
 imports the single dendrite (`hyprlock`) it still wants.
@@ -51,7 +52,7 @@ by exactly one aggregation:
 | name                   | path                                 | lane        | named by     |
 | ---------------------- | ------------------------------------ | ----------- | ------------ |
 | `compositor`           | `dendrites/compositor` (provider)    | nixos       | `shell`      |
-| `rofi` `satty` `waybar` `wlogout` | `dendrites/hyprland/*.nix` | homeManager | `shell`      |
+| `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`         | homeManager | `shell`      |
 | `hyprland-autostart`   | `dendrites/hyprland/autostart.nix`   | homeManager | `compositor` |
 | `hyprland-decoration`  | `dendrites/hyprland/decoration.nix`  | homeManager | `compositor` |
 | `hyprland-keybinds`    | `dendrites/hyprland/keybinds.nix`    | homeManager | `compositor` |
@@ -65,15 +66,19 @@ them by relative path:
 | `dendrites/compositor/session-import.nix`      | `compositor/hyprland.nix`          |
 | `dendrites/compositor/hypr-session-import.sh`  | `compositor/session-import.nix`    |
 
-**The folder is not the membership.** `dendrites/hyprland/` is a **plain
-folder**, like `desktop/` and `gaming/`: it has no `default.nix` and nothing
-walks it, every file in it is reachable only through its own catalogue line,
-and four of the files in it (`rofi`, `satty`, `waybar`, `wlogout`, all
-compositor-agnostic surfaces that predate this split) belong to `shell`, not to
-`compositor`. What a host gets is decided by the aggregation that names a
-dendrite, never by the directory it sits in. Contrast `dendrites/compositor/`
-and `dendrites/gpu/`, which DO carry a `default.nix` — those are provider
-registries, a different thing, and they still import only the chosen provider.
+**The folder agrees with the membership, and only there.** The dendrite root is
+flat: one file per single-implementation capability, and grouping is the
+aggregations' job, never a directory's. A directory under `dendrites/` means
+one of two things. `compositor/`, `gpu/` and `fastfetch/` are capabilities that
+need several files — the first two carry a `default.nix` provider registry and
+import only the chosen provider. `hyprland/` is the one grouping folder kept,
+and it earns that by holding exactly what is written or compiled against
+Hyprland: the four members the `compositor` aggregation names, and nothing
+else. It has no `default.nix`, nothing walks it, and every file in it is
+reachable only through its own catalogue line. The surfaces (`rofi`, `satty`,
+`waybar`, `wlogout`) predate the split and are compositor-agnostic, which is
+why they sit at the root and belong to `shell`. What a host gets is still
+decided by the aggregation that names a dendrite, never by where it sits.
 
 ## Packages
 

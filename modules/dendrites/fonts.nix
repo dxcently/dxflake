@@ -20,8 +20,8 @@
             nerd-fonts.comic-shanns-mono
             nerd-fonts.shure-tech-mono
             nerd-fonts.lekton
-            (pkgs.callPackage ./../../../pkgs/azuki-font-b { })
-            (pkgs.callPackage ./../../../pkgs/azuki-font { })
+            (pkgs.callPackage ./../../pkgs/azuki-font-b { })
+            (pkgs.callPackage ./../../pkgs/azuki-font { })
           ];
         };
       };

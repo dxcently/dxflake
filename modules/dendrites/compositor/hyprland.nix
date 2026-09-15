@@ -6,10 +6,12 @@
 # environment to the systemd and D-Bus user managers. A host that selects it
 # gets a working, navigable desktop and no opinions.
 #
-# Everything opinionated is an ecosystem dendrite under
-# modules/dendrites/hyprland/, selected by name through the shell aggregation:
-# keybinds, decoration, autostart, hyprglass, and the surfaces (waybar, rofi,
-# satty, wlogout). docs/HYPRLAND-SPLIT.md maps every old block to its owner.
+# Everything opinionated is an ecosystem dendrite selected by name. What is
+# written against Hyprland itself — keybinds, decoration, autostart, hyprglass —
+# lives under modules/dendrites/hyprland/ and is named by the compositor
+# aggregation; the compositor-agnostic surfaces (waybar, rofi, satty, wlogout)
+# sit at the dendrite root and are named by shell. docs/HYPRLAND-SPLIT.md maps
+# every old block to its owner.
 #
 # Nothing here installs a package. Package membership is the shell
 # aggregation's, and each ecosystem dendrite carries only what it itself calls.
