@@ -16,7 +16,7 @@
 set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 root=$(cd ../.. && pwd)
-script=$root/modules/dendrites/compositor/hypr-session-import.sh
+script=$root/modules/dendrites/compositor/hyprland/hypr-session-import.sh
 
 half="${1:-all}"
 pass=0; fail=0
@@ -162,7 +162,7 @@ if [ "$half" = all ] || [ "$half" = source ]; then
   # The cases above exercise the .sh. This is what proves the binary the config
   # points at is that same file and not a copy that drifted.
   built=$(nix build --impure --no-link --print-out-paths --expr \
-    "let f = builtins.getFlake \"$root\"; in import $root/modules/dendrites/compositor/session-import.nix {
+    "let f = builtins.getFlake \"$root\"; in import $root/modules/dendrites/compositor/hyprland/session-import.nix {
        pkgs = f.inputs.nixpkgs.legacyPackages.\${builtins.currentSystem}; }" 2>/dev/null)
   if [ -z "$built" ]; then
     bad shippedBytesMatchSource "derivation did not build (shellcheck?)"

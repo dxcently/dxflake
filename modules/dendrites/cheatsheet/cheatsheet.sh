@@ -1,6 +1,6 @@
 #!/bin/sh
 # Keybindings cheatsheet for Hyprland, Neovim (nvf) and Yazi.
-# Hand-maintained; the dendrites it describes are hyprland/keybinds.nix, neovim.nix and yazi.nix.
+# Hand-maintained; the dendrites it describes are compositor/hyprland/keybinds.nix, neovim.nix and yazi.nix.
 
 # yad's --plug/--notebook uses X11 XEMBED, force XWayland under Hyprland.
 export GDK_BACKEND=x11

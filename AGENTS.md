@@ -73,7 +73,10 @@ are proved cold.
 - **Provider** — one implementation of a multi-implementation capability, and
   exclusive within a scope. `compositor` and `gpu` are the worked examples; the
   unchosen file is never imported. A single-implementation dendrite has no
-  provider option at all.
+  provider option at all. A registry may give each provider a folder of its own —
+  `compositor/hyprland/hyprland.nix` — holding that provider's entry file plus
+  every dendrite written or compiled against that implementation, so the folder
+  is as unreachable as the file was.
 - **Aggregation** — one group, one directory: `modules/aggregations/<group>/default.nix`.
   Its `default.nix` is plain data — no options, no `mkIf`, no arguments:
 
@@ -275,20 +278,23 @@ the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
 
 ## The Hyprland split
 
-`modules/dendrites/compositor/hyprland.nix` is the provider and does one job:
-make a Hyprland session RUN. Package, Wayland environment, monitors, and the
-guarded session handoff below. It installs nothing.
+`modules/dendrites/compositor/hyprland/hyprland.nix` is the provider and does one
+job: make a Hyprland session RUN. Package, Wayland environment, monitors, and
+the guarded session handoff below. It installs nothing.
 
-Everything opinionated is a dendrite selected by name. `modules/dendrites/hyprland/`
-holds only what is written or compiled against Hyprland itself —
-`hyprland-keybinds`, `hyprland-decoration`, `hyprland-autostart`, `hyprglass` —
-and the `compositor` aggregation names exactly those four. The surfaces
-`waybar`/`rofi`/`satty`/`wlogout` are compositor-agnostic, so they sit at the
-dendrite root like every other single-file capability and belong to `shell`,
-which also installs the Wayland tool belt from its own `packages.nix`. The
-folder has no `default.nix` and nothing walks it; each file is reachable only
-through its own catalogue line. (`compositor/` and `gpu/` DO carry a
-`default.nix` — those are provider registries, a different thing.)
+Everything opinionated is a dendrite selected by name.
+`modules/dendrites/compositor/hyprland/` holds only what is written or compiled
+against Hyprland itself — `hyprland-keybinds`, `hyprland-decoration`,
+`hyprland-autostart`, `hyprglass` — and the `compositor` aggregation names
+exactly those four. The surfaces `waybar`/`rofi`/`satty`/`wlogout` are
+compositor-agnostic, so they sit at the dendrite root like every other
+single-file capability and belong to `shell`, which also installs the Wayland
+tool belt from its own `packages.nix`. That folder is the hyprland provider's:
+one folder per provider under the `compositor` registry, holding the provider
+entry and everything written against that compositor. Nothing walks it; each
+file is reachable only through its own catalogue line. (`compositor/` and
+`gpu/` carry a `default.nix` — those are provider registries, the thing the
+folders sit inside.)
 
 `docs/HYPRLAND-SPLIT.md` maps every old block to the file that owns it now, and
 records which units are independently selectable versus private helpers.
@@ -301,8 +307,9 @@ rendered config.
 ## The session handoff
 
 `wayland.windowManager.hyprland.systemd.enable` is **off** in
-`modules/dendrites/compositor/hyprland.nix`, and the two lines it used to write
-are issued by `modules/dendrites/compositor/hypr-session-import.sh` instead,
+`modules/dendrites/compositor/hyprland/hyprland.nix`, and the two lines it used
+to write are issued by
+`modules/dendrites/compositor/hyprland/hypr-session-import.sh` instead,
 from `exec-once` and `exec-shutdown`. This is a guard, not a removal: the
 environment import, the target restart and the stop on exit all still happen,
 and `hyprland-session.target` is re-declared in the dendrite with home-manager's

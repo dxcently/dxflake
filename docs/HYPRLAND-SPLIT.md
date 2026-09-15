@@ -1,6 +1,6 @@
 # The Hyprland split — what moved where
 
-`modules/dendrites/compositor/hyprland.nix` was 543 lines carrying five
+`modules/dendrites/compositor/hyprland/hyprland.nix` was 543 lines carrying five
 unrelated jobs. This is the map from those blocks to the files that own them
 now. Read it once; after that the file headers are the reference.
 
@@ -11,74 +11,78 @@ environment, the systemd handoff. A host that selects it gets a working,
 navigable Hyprland and nothing opinionated.
 
 **Everything else is ecosystem** and is selected by name. What is written
-against Hyprland itself lives under `modules/dendrites/hyprland/`; the
-compositor-agnostic surfaces sit at the dendrite root. Each one is independently selectable because each
+against Hyprland itself lives in the provider's own folder —
+`modules/dendrites/compositor/hyprland/`, beside the provider entry it is
+written against; the compositor-agnostic surfaces sit at the dendrite root.
+Each one is independently selectable because each
 answers a question a host can answer differently — chiyo answers all of them
 with Aoide's facets instead, selects neither `shell` nor `compositor`, and
 imports the single dendrite (`hyprlock`) it still wants.
 
 ## Old block → new owner
 
-| old block (`compositor/hyprland.nix`)            | lines   | owner now                           |
+| old block (`compositor/hyprland/hyprland.nix`)            | lines   | owner now                           |
 | ------------------------------------------------ | ------- | ----------------------------------- |
-| `programs.hyprland` (enable, withUWSM)            | 56-59   | `compositor/hyprland.nix`           |
-| `home.sessionVariables.NIXOS_OZONE_WL`            | 81      | `compositor/hyprland.nix`           |
-| `hyprland.{enable,systemd.enable,xwayland}`       | 85-104  | `compositor/hyprland.nix`           |
-| session handoff + `hyprland-session.target`       | 70-72, 161-163, 184, 512-537 | `compositor/hyprland.nix` |
-| `monitor`                                         | 134-141 | `compositor/hyprland.nix`           |
-| `env`                                             | 143-148 | `compositor/hyprland.nix`           |
-| `exec-once` (user programs)                       | 164-183 | `hyprland/autostart.nix`            |
-| `hyprpolkitagent` package                         | 77      | `hyprland/autostart.nix`            |
-| `settings.extraConfig` windowrules 1-6            | 186-233 | `hyprland/keybinds.nix`             |
-| `workspace`                                       | 235-262 | `hyprland/keybinds.nix`             |
-| `bind`, `bindm`                                   | 264-344 | `hyprland/keybinds.nix`             |
-| `input`                                           | 346-358 | `hyprland/keybinds.nix`             |
-| `hyprshot`, `hyprpicker` packages                 | 78-79   | `hyprland/keybinds.nix`             |
-| `general` (incl. livery borders)                  | 360-368 | `hyprland/decoration.nix`           |
-| `decoration`                                      | 370-387 | `hyprland/decoration.nix`           |
-| `layerrule` (waybar)                              | 398-400 | `hyprland/decoration.nix`           |
-| `animations`                                      | 412-423 | `hyprland/decoration.nix`           |
-| `dwindle`/`master`/`scrolling`/`misc`/`ecosystem` | 425-447 | `hyprland/decoration.nix`           |
-| `plugins = [ hyprglass ]` + the ABI note          | 106-122 | `hyprland/hyprglass.nix`            |
-| `layerrule` (aoide-*)                             | 401-410 | `hyprland/hyprglass.nix`            |
-| `plugin:hyprglass { … }` config                   | 450-473 | `hyprland/hyprglass.nix`            |
-| kitty aero-glass windowrules                      | 486-510 | `hyprland/hyprglass.nix`            |
+| `programs.hyprland` (enable, withUWSM)            | 56-59   | `compositor/hyprland/hyprland.nix`           |
+| `home.sessionVariables.NIXOS_OZONE_WL`            | 81      | `compositor/hyprland/hyprland.nix`           |
+| `hyprland.{enable,systemd.enable,xwayland}`       | 85-104  | `compositor/hyprland/hyprland.nix`           |
+| session handoff + `hyprland-session.target`       | 70-72, 161-163, 184, 512-537 | `compositor/hyprland/hyprland.nix` |
+| `monitor`                                         | 134-141 | `compositor/hyprland/hyprland.nix`           |
+| `env`                                             | 143-148 | `compositor/hyprland/hyprland.nix`           |
+| `exec-once` (user programs)                       | 164-183 | `compositor/hyprland/autostart.nix`  |
+| `hyprpolkitagent` package                         | 77      | `compositor/hyprland/autostart.nix`  |
+| `settings.extraConfig` windowrules 1-6            | 186-233 | `compositor/hyprland/keybinds.nix`   |
+| `workspace`                                       | 235-262 | `compositor/hyprland/keybinds.nix`   |
+| `bind`, `bindm`                                   | 264-344 | `compositor/hyprland/keybinds.nix`   |
+| `input`                                           | 346-358 | `compositor/hyprland/keybinds.nix`   |
+| `hyprshot`, `hyprpicker` packages                 | 78-79   | `compositor/hyprland/keybinds.nix`   |
+| `general` (incl. livery borders)                  | 360-368 | `compositor/hyprland/decoration.nix` |
+| `decoration`                                      | 370-387 | `compositor/hyprland/decoration.nix` |
+| `layerrule` (waybar)                              | 398-400 | `compositor/hyprland/decoration.nix` |
+| `animations`                                      | 412-423 | `compositor/hyprland/decoration.nix` |
+| `dwindle`/`master`/`scrolling`/`misc`/`ecosystem` | 425-447 | `compositor/hyprland/decoration.nix` |
+| `plugins = [ hyprglass ]` + the ABI note          | 106-122 | `compositor/hyprland/hyprglass.nix`  |
+| `layerrule` (aoide-*)                             | 401-410 | `compositor/hyprland/hyprglass.nix`  |
+| `plugin:hyprglass { … }` config                   | 450-473 | `compositor/hyprland/hyprglass.nix`  |
+| kitty aero-glass windowrules                      | 486-510 | `compositor/hyprland/hyprglass.nix`  |
 
 ## Independently selectable, vs. private helper
 
 Selectable — each has a catalogue line, can be named on its own, and is named
 by exactly one aggregation:
 
-| name                   | path                                 | lane        | named by     |
-| ---------------------- | ------------------------------------ | ----------- | ------------ |
-| `compositor`           | `dendrites/compositor` (provider)    | nixos       | `shell`      |
-| `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`         | homeManager | `shell`      |
-| `hyprland-autostart`   | `dendrites/hyprland/autostart.nix`   | homeManager | `compositor` |
-| `hyprland-decoration`  | `dendrites/hyprland/decoration.nix`  | homeManager | `compositor` |
-| `hyprland-keybinds`    | `dendrites/hyprland/keybinds.nix`    | homeManager | `compositor` |
-| `hyprglass`            | `dendrites/hyprland/hyprglass.nix`   | homeManager | `compositor` |
+| name                   | path                                          | lane        | named by     |
+| ---------------------- | --------------------------------------------- | ----------- | ------------ |
+| `compositor`           | `dendrites/compositor` (provider)             | nixos       | `shell`      |
+| `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`             | homeManager | `shell`      |
+| `hyprland-autostart`   | `dendrites/compositor/hyprland/autostart.nix` | homeManager | `compositor` |
+| `hyprland-decoration`  | `dendrites/compositor/hyprland/decoration.nix`| homeManager | `compositor` |
+| `hyprland-keybinds`    | `dendrites/compositor/hyprland/keybinds.nix`  | homeManager | `compositor` |
+| `hyprglass`            | `dendrites/compositor/hyprland/hyprglass.nix` | homeManager | `compositor` |
 
 Private helpers — no catalogue line, reachable only from the file that imports
 them by relative path:
 
-| path                                          | imported by                        |
-| --------------------------------------------- | ---------------------------------- |
-| `dendrites/compositor/session-import.nix`      | `compositor/hyprland.nix`          |
-| `dendrites/compositor/hypr-session-import.sh`  | `compositor/session-import.nix`    |
+| path                                                    | imported by                              |
+| ------------------------------------------------------- | ---------------------------------------- |
+| `dendrites/compositor/hyprland/session-import.nix`      | `compositor/hyprland/hyprland.nix`       |
+| `dendrites/compositor/hyprland/hypr-session-import.sh`  | `compositor/hyprland/session-import.nix` |
 
 **The folder agrees with the membership, and only there.** The dendrite root is
 flat: one file per single-implementation capability, and grouping is the
 aggregations' job, never a directory's. A directory under `dendrites/` means
-one of two things. `compositor/`, `gpu/` and `fastfetch/` are capabilities that
-need several files — the first two carry a `default.nix` provider registry and
-import only the chosen provider. `hyprland/` is the one grouping folder kept,
-and it earns that by holding exactly what is written or compiled against
-Hyprland: the four members the `compositor` aggregation names, and nothing
-else. It has no `default.nix`, nothing walks it, and every file in it is
-reachable only through its own catalogue line. The surfaces (`rofi`, `satty`,
-`waybar`, `wlogout`) predate the split and are compositor-agnostic, which is
-why they sit at the root and belong to `shell`. What a host gets is still
-decided by the aggregation that names a dendrite, never by where it sits.
+one of three things. `fastfetch/` is a capability that needs several files.
+`compositor/` and `gpu/` carry a `default.nix` provider registry and import
+only the chosen provider. Inside such a registry, each implementation gets a
+folder of its own — `compositor/hyprland/` — holding the provider entry plus
+everything written or compiled against that compositor: the four members the
+`compositor` aggregation names, and nothing else. A host that answers with
+another provider never imports the folder, so none of it is evaluated. Nothing
+walks the folder, and every dendrite in it is reachable only through its own
+catalogue line. The surfaces (`rofi`, `satty`, `waybar`, `wlogout`) predate the
+split and are compositor-agnostic, which is why they sit at the root and belong
+to `shell`. What a host gets is still decided by the aggregation that names a
+dendrite, never by where it sits.
 
 ## Packages
 

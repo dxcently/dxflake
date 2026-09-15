@@ -92,8 +92,9 @@
       # ── Reverting to the plain flake rice ────────────────────────────────────
       # Flip `aoide.facets.quickshell.enable` back to false (and with it lyra and
       # dunst below, which have no purpose without the surface). That single flag
-      # is what the waybar/awww/rofi stand-down in modules/dendrites/compositor/
-      # hyprland.nix keys on, so waybar, both awww wallpapers and SUPER+SPACE→rofi
+      # is what the waybar/awww/rofi stand-down in
+      # modules/dendrites/compositor/hyprland/ keys on, so waybar, both awww
+      # wallpapers and SUPER+SPACE→rofi
       # all come back exactly as they were, and aoided drops back to anchoring on
       # default.target instead of graphical-session.target. Nothing else to undo.
       #

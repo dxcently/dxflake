@@ -1,10 +1,11 @@
 # hyprglass — the gloss on top of the glass.
 #
 # A Hyprland decoration PLUGIN: refraction, fresnel and adaptive brightness
-# layered OVER Hyprland's own gaussian blur. It lives here, under
-# dendrites/hyprland/, because a compositor plugin is compiled against one
-# compositor — see the ABI note below. A host that picks another compositor
-# must never select this, and never evaluates `pkgs.hyprglass` if it doesn't.
+# layered OVER Hyprland's own gaussian blur. It lives in the hyprland
+# provider's folder under dendrites/compositor/, because a compositor plugin is
+# compiled against one compositor — see the ABI note below. A host that picks
+# another compositor must never select this, and never evaluates
+# `pkgs.hyprglass` if it doesn't.
 #
 # It only ever paints TRANSLUCENT content, so it is inert on an opaque desktop.
 # That is why every part of it rides `aoideFace` rather than plain selection:

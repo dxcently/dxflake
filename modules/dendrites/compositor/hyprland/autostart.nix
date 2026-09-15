@@ -7,9 +7,9 @@
 #
 # The guarded session handoff is NOT here. It is an `exec-once` too, but it is
 # the compositor's own bootstrap and must run FIRST — see
-# modules/dendrites/compositor/hyprland.nix, which pins it with `lib.mkBefore`
-# ahead of everything in this list. tests/session-guard asserts that ordering
-# against the rendered config, so it cannot drift back.
+# modules/dendrites/compositor/hyprland/hyprland.nix, which pins it with
+# `lib.mkBefore` ahead of everything in this list. tests/session-guard asserts
+# that ordering against the rendered config, so it cannot drift back.
 {
   homeManager =
     {

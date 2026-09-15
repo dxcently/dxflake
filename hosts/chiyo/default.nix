@@ -135,7 +135,7 @@
       # via the desktop aggregation; only the exec-once trigger lived in the
       # shell aggregation's compositor dendrite), the env vars that session
       # used to set, and the brightness keys (a laptop-only bind AoideOS's own
-      # behaviour dendrite doesn't carry — see modules/dendrites/compositor/hyprland.nix's
+      # behaviour dendrite doesn't carry — see modules/dendrites/compositor/hyprland/hyprland.nix's
       # header: media/brightness XF86 keys are deliberately out of its scope).
       # `settings` is a separate option from the `extraConfig`/`lines` option
       # Aoide's own facets and dendrites write to, so this merges alongside them

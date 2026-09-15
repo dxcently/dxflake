@@ -10,10 +10,12 @@
 # the lanes it supports. A dendrite with several is a directory whose
 # default.nix lists provider paths and imports none of them. A directory is
 # otherwise reserved for a capability that needs more than one file
-# (fastfetch and its logo), plus one grouping exception: dendrites/hyprland/
-# holds exactly what is written against Hyprland itself. Grouping is the
-# aggregations' job, so the root stays flat and the catalogue name is the file
-# name.
+# (fastfetch and its logo), or for one provider's own folder: a
+# compositor-specific dendrite lives in its provider's folder under
+# compositor/ — beside the provider entry it is written against — and the
+# catalogue still names each one. There is no grouping exception at the root
+# any more. Grouping is the aggregations' job, so the root stays flat and the
+# catalogue name is the file name.
 {
   catalogue = {
     aagl = ./dendrites/aagl.nix;
@@ -42,10 +44,10 @@
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/gtk.nix;
-    hyprglass = ./dendrites/hyprland/hyprglass.nix;
-    hyprland-autostart = ./dendrites/hyprland/autostart.nix;
-    hyprland-decoration = ./dendrites/hyprland/decoration.nix;
-    hyprland-keybinds = ./dendrites/hyprland/keybinds.nix;
+    hyprglass = ./dendrites/compositor/hyprland/hyprglass.nix;
+    hyprland-autostart = ./dendrites/compositor/hyprland/autostart.nix;
+    hyprland-decoration = ./dendrites/compositor/hyprland/decoration.nix;
+    hyprland-keybinds = ./dendrites/compositor/hyprland/keybinds.nix;
     hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;
     inference = ./dendrites/inference.nix;

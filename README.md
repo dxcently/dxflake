@@ -23,7 +23,7 @@
   { description = …; system.members = [ … ]; home = { … }; }  # an aggregation: plain data
   ```
 
-  Grouping is the aggregations' job, so `modules/dendrites/` stays flat — one folder only when a capability needs several files (`fastfetch/`, `cheatsheet/`), or is a provider registry (`gpu/`, `compositor/`). `hyprland/` is the one grouping exception: files written against Hyprland itself.
+  Grouping is the aggregations' job, so `modules/dendrites/` stays flat — one folder only when a capability needs several files (`fastfetch/`, `cheatsheet/`), or is a provider registry (`gpu/`, `compositor/`). A provider registry gives each implementation its own folder: `compositor/hyprland/` holds the Hyprland provider entry plus every dendrite written against Hyprland itself, so another compositor never reads any of it.
 - `song/` mirrors Aoide's `song/` and the runtime `~/.aoide/song/` — `songbook/` the rices, `covers/` the shared art, `stage/` the gitignored hot layer — so a path that works in the repo works on the box.
 
 ### Tree
@@ -56,9 +56,9 @@ dxflake/
 │       ├── git.nix · btop.nix · yazi.nix …    #   { homeManager = …; }
 │       ├── bluetooth.nix · syncthing.nix …    #   { nixos = …; }
 │       ├── openai.nix                         #   { nixos = …; homeManager = …; }
-│       ├── compositor/ gpu/                   #   a provider registry each
+│       ├── compositor/ gpu/                   #   a provider registry each; compositor/hyprland/
+│       │                                      #     holds the Hyprland provider and its dendrites
 │       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
-│       ├── hyprland/                          #   the one grouping folder: written against Hyprland itself
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── song/                     # rices, shared cover art; mirrors ~/.aoide/song/
 │   ├── songbook/             #   the rices. one directory each, the look only
@@ -172,7 +172,7 @@ Plus one line in the catalogue:
 cheatsheet = ./dendrites/cheatsheet;
 ```
 
-It is reached by **name**: `modules/dendrites/hyprland/keybinds.nix` binds `"SUPER, B, exec, cheatsheet"`, so a host that does not select it just has an inert key. The `desktop` aggregation lists `"cheatsheet"` in its home members, which is how osaka gets it; a host without that group selects it alone with `users.khoa.dendrites.cheatsheet.enable = true;`.
+It is reached by **name**: `modules/dendrites/compositor/hyprland/keybinds.nix` binds `"SUPER, B, exec, cheatsheet"`, so a host that does not select it just has an inert key. The `desktop` aggregation lists `"cheatsheet"` in its home members, which is how osaka gets it; a host without that group selects it alone with `users.khoa.dendrites.cheatsheet.enable = true;`.
 
 **Swap a provider.** `modules/dendrites/gpu/default.nix`:
 
@@ -370,7 +370,7 @@ On hosts that keep dxflake Hyprland behavior but enable `aoide.facets.stylix.ena
 - `modules/dendrites/stylix.nix` still provides dxflake font/cursor/icons and
   fixed targets for non-color assets, but does not override colors or polarity
   when AOIDE Stylix is active.
-- `modules/dendrites/compositor/hyprland.nix` derives active/inactive borders
+- `modules/dendrites/compositor/hyprland/decoration.nix` derives active/inactive borders
   from the resolved livery under AOIDE ownership, otherwise keeps historical
   RGBA.
 

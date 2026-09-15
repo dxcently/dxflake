@@ -14,6 +14,10 @@
 # a structural answer, not a comment. tests/selection proves it against a
 # fixture whose Hyprland-only member throws on import.
 #
+# Each of the four lives in its provider's folder,
+# `modules/dendrites/compositor/hyprland/`, beside the provider entry it is
+# written against. A host on another compositor never imports that folder.
+#
 # Every member is a homeManager lane, so a host selects this on its user:
 #
 #   users.khoa.aggregation.compositor.enable = true;

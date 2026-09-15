@@ -36,7 +36,7 @@ t=$(mktemp -d) || exit 1
 trap 'rm -rf "$t"' EXIT
 T="$root/templates"
 
-mkdir -p "$t"/modules/{aggregations/base,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor,nucleus} \
+mkdir -p "$t"/modules/{aggregations/base,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor/hyprland,nucleus} \
          "$t"/hosts/{examplehost,exampleserver} "$t"/users "$t"/pkgs/example-tool
 
 cp "$T/example-default-registry.nix"          "$t/modules/default.nix"
@@ -61,9 +61,9 @@ cat > "$t/modules/dendrites/notifications/dunst.nix" <<'EOF'
 { homeManager = { ... }: { }; }
 EOF
 cat > "$t/modules/dendrites/compositor/default.nix" <<'EOF'
-{ providers = { hyprland = ./hyprland.nix; niri = ./niri.nix; landmine = ./landmine.nix; }; }
+{ providers = { hyprland = ./hyprland/hyprland.nix; niri = ./niri.nix; landmine = ./landmine.nix; }; }
 EOF
-cat > "$t/modules/dendrites/compositor/hyprland.nix" <<'EOF'
+cat > "$t/modules/dendrites/compositor/hyprland/hyprland.nix" <<'EOF'
 { nixos = { ... }: { }; }
 EOF
 cat > "$t/modules/dendrites/compositor/niri.nix" <<'EOF'

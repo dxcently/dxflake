@@ -51,7 +51,7 @@ rice whose brief was to preserve it.
 
 **the dock** — also nothing, for a different reason. dxflake ships no dock. The
 dock on screen is Aoide's Quickshell `aoide-dock` surface; dxflake only
-references its namespace, in `hyprland/hyprglass.nix`'s layerrules and in one
+references its namespace, in `compositor/hyprland/hyprglass.nix`'s layerrules and in one
 keybind. Preserving it means not substituting one and not drawing a second
 surface beside it. transience carries the same palette into it through the
 shared livery instead.
