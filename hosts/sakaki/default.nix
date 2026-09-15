@@ -27,6 +27,7 @@
     mounts."/mnt/dong".export = "/volume1/dong";
   };
   dx.mneme.enable = true;
+  dx.eidolon.enable = true;
   dx.immich.enable = true;
   dx.slskd.enable = true;
   dx.transmission.enable = true;
@@ -73,6 +74,9 @@
       # tunnel. The repo lives at ~/projects/fau-cyber-security-club-wiki and
       # `hugo` writes public/, which is copied to the /var/www root below.
       "fau-cyber-wiki-test.necoconeco.net"
+      # Scratch static hosting for one-off mockups/demos. Files land in
+      # /var/www/tmp by hand; nothing deploys here automatically.
+      "tmp.necoconeco.net"
     ];
   };
   dx.caddy = {
@@ -184,6 +188,17 @@
       # build output in a store path and turn every content edit into a full
       # nixos-rebuild. Served out of /var/www because /home/khoa is 0700 and
       # caddy (uid 239) cannot traverse it.
+      # Scratch mockups, hand-copied into /var/www/tmp. no-cache on HTML for
+      # the same reason as the wiki: edits must show on the next reload.
+      "tmp.necoconeco.net" = {
+        webRoot = "/var/www/tmp";
+        extraConfig = ''
+          encode zstd gzip
+          @html path *.html /
+          header @html Cache-Control "no-cache"
+        '';
+      };
+
       "fau-cyber-wiki-test.necoconeco.net" = {
         webRoot = "/var/www/fau-cyber-wiki-test";
         # HTML went out with no Cache-Control, so browsers heuristically cached
@@ -216,6 +231,7 @@
   # sudo, 0755 so caddy can read it.
   systemd.tmpfiles.rules = [
     "d /var/www                     0755 root root - -"
+    "d /var/www/tmp                 0755 khoa users - -"
     "d /var/www/fau-cyber-wiki-test 0755 khoa users - -"
     "d /var/lib/fau-cyber-wiki      0755 khoa users - -"
   ];

@@ -41,6 +41,15 @@
         dx = "cd /home/khoa/dxflake";
         dxrebuild = "nh os switch /home/khoa/dxflake/";
         dxupdate = "nh os switch /home/khoa/dxflake/ --update";
+        # Just the fast-moving first-party inputs, then switch. `dxupdate`
+        # re-locks EVERYTHING (nixpkgs, hyprland, stylix, ...), which is a
+        # world rebuild for what is usually a one-repo change. None of these
+        # inputs carries a `rev=` in its URL any more (see flake.nix), so
+        # this is the whole "a new commit landed" workflow -- no hand edit.
+        # A bad upstream commit fails the BUILD, not the box (nh builds
+        # before it activates); `git checkout flake.lock` puts the old revs
+        # back.
+        dxbump = "nix flake update --flake /home/khoa/dxflake melete-src mneme-src harnox-src eidolon aoide && nh os switch /home/khoa/dxflake/";
         dxboot = "nh os boot /home/khoa/dxflake/";
         dxtest = "nh os test /home/khoa/dxflake/";
         dxbuild = "nh os build /home/khoa/dxflake/";

@@ -7,9 +7,9 @@
   ...
 }:
 let
-  # Built from the ~/mneme dev checkout (the `mneme-src` flake input)
+  # Built from the `mneme-src` flake input (github.com/noah427/mneme master)
   # — version and contents follow that repo. See flake.nix for how to pick up
-  # a new commit or a dirty worktree.
+  # a new commit (`dxbump`) or build a dirty local worktree.
   #
   # This no longer depends on dx.melete.enable: the release fetch used to
   # borrow melete's GitHub token wiring, so mneme could only build alongside
@@ -23,7 +23,7 @@ in
 
   config = lib.mkIf config.dx.mneme.enable {
     # Dev-checkout baseline, mirrors melete.nix's meleteSeed. Nix builds from
-    # ~/mneme (pkgs/mneme-package.nix). Unlike melete, mneme has no
+    # the mneme-src input. Unlike melete, mneme has no
     # self-update of its own, so this is the ONLY thing that ever moves the
     # binary. The stamp holds the store path rather than the version, so a
     # source change reseeds even when Cargo.toml's version stands still.

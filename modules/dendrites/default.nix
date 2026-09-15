@@ -19,6 +19,7 @@
     ./desktop
     ./direnv.nix
     ./displaymanager.nix
+    ./eidolon.nix
     ./fastfetch
     ./fcitx5.nix
     ./flatpak.nix

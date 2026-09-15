@@ -4,15 +4,17 @@
   src,
 }:
 
-# Melete, built from the dev checkout wired in as the `melete-src` flake input
-# (~/melete). That repo is the source of truth now; this replaces the
+# Melete, built from the `melete-src` flake input — github.com/noah427/melete
+# master, re-locked by `nix flake update melete-src` (flake.nix carries the
+# why). A local ~/melete worktree is only ever built via an explicit
+# `--override-input melete-src path:/home/khoa/melete`. This replaces the
 # release-asset fetch that used to live in pkgs/melete-client-package.nix,
 # along with the whole NIX_GITHUB_RELEASE_TOKEN / impure-env apparatus it
 # needed to reach a private repo's assets (git history has both, if a
 # fetch-the-release build is ever wanted again).
 #
-# Version comes from the checkout's own Cargo.toml, so it tracks the dev repo
-# rather than a number pinned here that has to be bumped in lockstep.
+# Version comes from the fetched source's own Cargo.toml, so it tracks the
+# repo rather than a number pinned here that has to be bumped in lockstep.
 #
 # MELETE_RELEASE is deliberately NOT stamped: that env var is a *release*
 # identity (src/self_update/mod.rs), and a dev build is not a release. Unset,
@@ -34,7 +36,7 @@ rustPlatform.buildRustPackage {
   pname = "melete";
   version = cargoToml.package.version;
 
-  # `git+file:` already delivers a clean tree; the filter is what makes the
+  # `git+https:` already delivers a clean tree; the filter is what makes the
   # `path:` override (uncommitted edits — see flake.nix) usable, since that
   # fetcher copies the directory verbatim and .git/ churn alone would
   # otherwise force a full rebuild.
