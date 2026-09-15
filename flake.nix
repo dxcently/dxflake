@@ -121,10 +121,13 @@
     # dxflake consumes Aoide as a flake input and, on integrating hosts, runs
     # Aoide's module structure (nucleus/facets/song walked from the input) —
     # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
-    # (hosts, hardware, secrets). Pin the published Aoide commit so every host
-    # fetches the same source without a local Aoide checkout.
+    # (hosts, hardware, secrets). Every host fetches the same published Aoide
+    # source, locked in flake.lock, without needing a local Aoide checkout.
     aoide = {
-      url = "git+https://github.com/dxcently/Aoide.git?ref=main&rev=d5e2928a88a91b6a58b2d2e1cb1df233aca2b911";
+      # No `&rev=` — a rev in the URL is a pin `nix flake update aoide`
+      # cannot move, which is what made every Aoide bump a hand edit of this
+      # file. The rev lives in flake.lock now, so `dxbump` re-locks it.
+      url = "git+https://github.com/dxcently/Aoide.git?ref=main";
     };
     quickshell = {
       # Follows Aoide's own quickshell pin — the facet QML and the runtime

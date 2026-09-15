@@ -35,7 +35,6 @@
     "cheatsheet"
     "composekey"
     "fastfetch"
-    "floorp"
     "foliate"
     "gtk"
     "qt"

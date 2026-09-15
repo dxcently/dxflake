@@ -37,7 +37,6 @@
     fastfetch = ./dendrites/fastfetch;
     fcitx5 = ./dendrites/fcitx5.nix;
     flatpak = ./dendrites/flatpak.nix;
-    floorp = ./dendrites/floorp.nix;
     foliate = ./dendrites/foliate.nix;
     fonts = ./dendrites/fonts.nix;
     eidolon = ./dendrites/eidolon.nix;
