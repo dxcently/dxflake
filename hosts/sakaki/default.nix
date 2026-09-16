@@ -315,9 +315,9 @@
         };
       };
 
-      # hugo builds the wiki. Nothing else on this box uses it, so it stays
-      # host-local instead of joining the fleet-wide package set.
-      environment.systemPackages = [ pkgs.hugo ];
+      # hugo builds the wiki. Nothing else on this box uses it, and no other
+      # host switches it on, but the line itself lives in the shared list.
+      dx.packages.hugo.enable = true;
 
       # Aoide, headless: the CLI + aoided runtime and the A2A door, for
       # federation/doors testing against yomi-strix. No facets, no rice —

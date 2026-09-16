@@ -11,28 +11,29 @@
       "steam"
     ];
 
-    # The launchers that are nothing but a package. Launchers are the group's own
-    # install, so they are switched on by name right here rather than through the
-    # fleet-wide list in modules/dendrites/packages.nix — either way it is the
-    # aggregation's own installation membership, not a selectable capability.
+    # The launchers that are nothing but a package. Their lines live once, in
+    # modules/dendrites/packages.nix; this aggregation switches its own nine on
+    # by name. An install is not a selectable capability, so it gets no
+    # catalogue line.
     nixos =
-      { pkgs, lib, ... }:
+      { lib, ... }:
       {
-        # Ordered last into system.path, like the other aggregation lists.
-        environment.systemPackages = lib.mkAfter (
-          with pkgs;
-          [
-            osu-lazer-bin # osu! lazer rhythm game
-            lutris # open gaming platform
-            wine # run Windows applications on Linux
-            protonup-qt # GUI manager for Proton-GE/Wine-GE
-            bottles # manage Wine prefixes with a GTK4 UI
-            prismlauncher # Minecraft launcher
-            r2modman # mod manager
-            winetricks # helper for Wine prefixes
-            protontricks # winetricks for Proton/Steam
-          ]
-        );
+        dx.packages =
+          lib.genAttrs
+            [
+              "osu-lazer-bin"
+              "lutris"
+              "wine"
+              "protonup-qt"
+              "bottles"
+              "prismlauncher"
+              "r2modman"
+              "winetricks"
+              "protontricks"
+            ]
+            (_: {
+              enable = true;
+            });
       };
   };
 }

@@ -9,10 +9,9 @@
 # membership on by name; a host adds one with a single line.
 #
 # `mkOrder 1400` pins where these land in system.path: after the nucleus floor
-# (a plain definition, order 1000) and before an aggregation that still says its
-# own list inline (`mkAfter`, 1500). Collisions there resolve first-wins, so a
-# shared convenience package never shadows the floor, and an aggregation's
-# deliberate inline list still outranks this one.
+# and a host's own plain definitions (order 1000) and before anything that pins
+# itself last with `mkAfter` (1500). Collisions there resolve first-wins, so a
+# shared convenience package never shadows the floor or a host's own answer.
 {
   pkgs,
   lib,
@@ -62,6 +61,27 @@ let
     pkgs.gimp3-with-plugins # GNU Image Manipulation Program
     pkgs.webcamoid # webcam capture with effects
     pkgs.orca-slicer # G-code slicer for 3D printing
+
+    # ── gaming ── the launchers (aggregation `gaming`)
+    pkgs.osu-lazer-bin # osu! lazer rhythm game
+    pkgs.lutris # open gaming platform
+    pkgs.wine # run Windows applications on Linux
+    pkgs.protonup-qt # GUI manager for Proton-GE/Wine-GE
+    pkgs.bottles # manage Wine prefixes with a GTK4 UI
+    pkgs.prismlauncher # Minecraft launcher
+    pkgs.r2modman # mod manager
+    pkgs.winetricks # helper for Wine prefixes
+    pkgs.protontricks # winetricks for Proton/Steam
+
+    # ── one host switches these on today ── which is a fact about the fleet
+    # right now, not a property of the line. Any host may take any of them.
+    pkgs.soundconverter # audio format converter
+    pkgs.udiskie # automounter for removable media
+    pkgs.filezilla # FTP/SFTP client
+    pkgs.kdePackages.filelight # disk usage as a sunburst
+    pkgs.tor-browser # Tor Browser Bundle
+    pkgs.stremio-linux-shell # media streaming front end
+    pkgs.hugo # static site generator; builds the wiki
   ];
 
   # The switch is named by the package's own `lib.getName`, not by the

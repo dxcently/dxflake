@@ -116,17 +116,16 @@
       # no lockscreen anchor of its own yet (modules/dendrites/hyprlock.nix), so
       # the binary + PAM service are carved out and imported independently here.
       # Non-paint utilities the (unselected) shell aggregation used to carry.
-      # wl-clipboard/cliphist/satty/hyprshot are NOT re-added here: Aoide ships
-      # its own equivalents with matching systemd services and keybinds
+      # wl-clipboard/cliphist/satty/hyprshot stay OFF: Aoide ships its own
+      # equivalents with matching systemd services and keybinds
       # (aoide.clipboard.enable, aoide.screenshot.enable, both flipped below) —
-      # duplicating the packages here would just shadow those. brightnessctl and
-      # ydotool have no Aoide-side equivalent, so they're rescued directly.
+      # switching those packages on here would just shadow them. brightnessctl
+      # and ydotool have no Aoide-side equivalent, so this host takes those two
+      # out of the shared list by name.
       aoide.clipboard.enable = true;
       aoide.screenshot.enable = true;
-      environment.systemPackages = with pkgs; [
-        brightnessctl
-        ydotool
-      ];
+      dx.packages.brightnessctl.enable = true;
+      dx.packages.ydotool.enable = true;
       # upowerd on the system bus — the bar's battery gauge and the power stele
       # read Quickshell.Services.UPower, a client only; without the daemon every
       # battery renders as absent ("AC — no battery present").
