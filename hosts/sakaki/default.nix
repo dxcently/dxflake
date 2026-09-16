@@ -34,10 +34,28 @@
   nixos =
     { pkgs, ... }:
     {
-      imports = [
-        ./hardware.nix
-        ./syncthing.nix
-      ];
+      imports = [ ./hardware.nix ];
+
+      # sakaki is headless: the shared syncthing dendrite (devices + the Magi
+      # folder) is taken as-is, with the host making Nix authoritative and
+      # opening the GUI on the tailnet instead of localhost/LAN.
+      services.syncthing = {
+        guiAddress = "0.0.0.0:8384"; # binds on tailscale0; the firewall below gates reach
+        overrideDevices = true;
+        overrideFolders = true;
+        settings.gui.insecureSkipHostcheck = true; # reach the GUI via tailnet IP/MagicDNS name
+      };
+      # Syncthing GUI + sync + discovery, reachable only over the tailnet.
+      networking.firewall.interfaces."tailscale0" = {
+        allowedTCPPorts = [
+          8384
+          22000
+        ];
+        allowedUDPPorts = [
+          22000
+          21027
+        ];
+      };
       dx.nas-mounts = {
         mounts."/mnt/kaori-media" = {
           export = "/volume1/media";
