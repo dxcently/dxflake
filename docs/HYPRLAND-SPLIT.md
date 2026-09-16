@@ -99,12 +99,12 @@ that invokes them: `hyprpolkitagent` → `hyprland-autostart` (it runs
 **A package nothing in particular calls is the aggregation's own install**, and
 an install is not a capability — it answers no question a host could answer
 differently, so it gets no catalogue line. The Wayland tool belt (dunst, awww,
-wl-clipboard, satty, cliphist, brightnessctl, ydotool, yad, zenity) is now
-`modules/aggregations/shell/packages.nix`, imported by that aggregation's
-`system.nixos` and by nothing else. There is no `hyprland-packages` dendrite any
-more — nor `desktop-packages` or `gaming-packages`, which moved the same way.
-Nothing in the tool belt is Hyprland-specific, so it stays with the
-compositor-agnostic half.
+wl-clipboard, satty, cliphist, brightnessctl, ydotool, yad, zenity) is carried
+by the flat list in `modules/dendrites/packages.nix`, and the `shell`
+aggregation switches those nine on by name in its own `default.nix`. There is
+no `hyprland-packages` dendrite any more — nor `desktop-packages` or
+`gaming-packages`, which moved the same way. Nothing in the tool belt is
+Hyprland-specific, so it stays with the compositor-agnostic half.
 
 Those lists are `lib.mkAfter`. `system.path` resolves file collisions
 first-wins, and without a pin an aggregation's list sits wherever module order

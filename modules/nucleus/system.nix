@@ -4,7 +4,8 @@
   lib,
   inputs,
   ...
-}: {
+}:
+{
   environment.variables = {
     EDITOR = "nvim";
   };
@@ -24,6 +25,37 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
     };
+  };
+  # Configuration that used to live beside the floor's package list in
+  # modules/nucleus/packages.nix. Unconditional, like everything else here.
+  programs = {
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+    };
+    dconf.enable = true;
+  };
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [
+        # declare insecure packages here
+      ];
+    };
+    overlays = [
+      (final: prev: {
+        openldap = prev.openldap.overrideAttrs (_: {
+          doCheck = false;
+          python3 = prev.python3.override {
+            packageOverrides = pyFinal: pyPrev: {
+              python-gnupg = pyPrev.python-gnupg.overrideAttrs (oldAttrs: {
+                doCheck = false;
+              });
+            };
+          };
+        });
+      })
+    ];
   };
   time = {
     timeZone = "America/New_York";

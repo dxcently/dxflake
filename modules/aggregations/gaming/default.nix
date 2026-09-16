@@ -11,8 +11,9 @@
       "steam"
     ];
 
-    # The launchers that are nothing but a package. Short enough to say here
-    # rather than in a ./packages.nix of its own; either way it is the
+    # The launchers that are nothing but a package. Launchers are the group's own
+    # install, so they are switched on by name right here rather than through the
+    # fleet-wide list in modules/dendrites/packages.nix — either way it is the
     # aggregation's own installation membership, not a selectable capability.
     nixos =
       { pkgs, lib, ... }:

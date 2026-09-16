@@ -49,7 +49,7 @@ dxflake/
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
 │   │   └── base/ compositor/ desktop/ gaming/ shell/  # each default.nix is DATA,
-│   │                                                  #   beside an optional packages.nix
+│   │                                                  #   naming what it installs by switch
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability, exposing the lanes it supports
@@ -58,6 +58,7 @@ dxflake/
 │       ├── openai.nix                         #   { nixos = …; homeManager = …; }
 │       ├── compositor/ gpu/                   #   a provider registry each; compositor/hyprland/
 │       │                                      #     holds the Hyprland provider and its dendrites
+│       ├── packages.nix                       #   the flat list: one line = one switch
 │       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── song/                     # rices, shared cover art; mirrors ~/.aoide/song/
@@ -450,7 +451,9 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
   system = {
     providers.compositor = null;     # no default: every host that takes this must choose
-    nixos.imports = [ ./packages.nix ];   # what this aggregation installs; not a dendrite
+    nixos = { lib, ... }: {          # what this aggregation installs; not a dendrite
+      dx.packages = lib.genAttrs [ "dunst" "wl-clipboard" "satty" ] (_: { enable = true; });
+    };
   };
 
   home.members = [ "rofi" "satty" "waybar" "wlogout" ];
@@ -459,7 +462,16 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
 Discovery finds it by directory name; nothing imports it until a host or a user selects it. Members are catalogue names, so they stay where they live under `modules/dendrites/` rather than moving under the group. Each `providers` key becomes a `<name>.provider` option on this aggregation, in that scope — `null` demands a choice, a string is a default a host may override. A half that does not apply is left out; `gaming` has no `home` at all.
 
-What an aggregation **installs** goes in its own `nixos`/`homeManager` block, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. Long lists live in a `packages.nix` beside the `default.nix` that imports it — `desktop/` and `shell/` have one; `gaming` says its nine launchers inline, which is the same thing at a size that does not need a file.
+What an aggregation **installs** goes in its own `nixos`/`homeManager` block, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. The lines themselves live once, in `modules/dendrites/packages.nix` — one flat list of packages that need no configuration, where every line declares a `dx.packages.<name>.enable` switch of its own, all off. An aggregation switches its membership on by name in its own `default.nix`; `gaming` says its nine launchers inline instead, which is the same thing at a size that does not need the shared list. The nucleus floor stays a plain list in `modules/nucleus/packages.nix`, because a host does not get to answer it differently either.
+
+A host that wants one of those packages writes one line and never touches `environment.systemPackages`:
+
+```nix
+dx.packages.scrcpy.enable = true;                # one more than its aggregations give it
+dx.packages.chromium.enable = lib.mkForce false; # drop one an aggregation switched on
+```
+
+A package the flat list does not carry yet gets its own `pkgs.<name>` line there first; the switch appears by itself. `mkEnableOption` merges as bool-or, so `mkForce` is the honest way to say no to something a group already said yes to. The switch is named by the package's own `lib.getName`, not by the attribute it is written with — `pkgs.mpv` is `dx.packages.mpv-with-scripts`.
 
 **Two kinds of module, by what they need from a host:**
 - **Selected = active** — no `options.dx.<name>.enable` at all; the lane applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)

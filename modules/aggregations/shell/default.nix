@@ -16,8 +16,8 @@
 # ── Membership ────────────────────────────────────────────────────────────
 # The compositor provider makes a session RUN and installs nothing. Everything
 # this aggregation adds around it works on ANY wlroots compositor: waybar, rofi,
-# satty and wlogout draw surfaces through Wayland protocols, and ./packages.nix
-# is a tool belt with nothing Hyprland-specific in it despite where those tools
+# satty and wlogout draw surfaces through Wayland protocols, and the Wayland
+# tool belt below has nothing Hyprland-specific in it despite where those tools
 # are usually met.
 #
 # The Hyprland-ONLY pieces — keybinds, decoration, autostart, hyprglass — are
@@ -30,9 +30,34 @@
   system = {
     providers.compositor = null;
 
-    # The Wayland tool belt this aggregation installs. Its own membership, not a
-    # selectable capability — see ./packages.nix.
-    nixos.imports = [ ./packages.nix ];
+    # The Wayland tool belt this aggregation installs, switched on by name. The
+    # lines themselves live once, in modules/dendrites/packages.nix — an install
+    # is not a selectable capability, so it gets no catalogue line and no file
+    # of its own here.
+    #
+    # waybar is deliberately absent: `programs.waybar.enable` in the waybar
+    # dendrite already installs it, and switching it on here too would put two
+    # copies on every host.
+    nixos =
+      { lib, ... }:
+      {
+        dx.packages =
+          lib.genAttrs
+            [
+              "dunst"
+              "awww"
+              "wl-clipboard"
+              "satty"
+              "cliphist"
+              "brightnessctl"
+              "ydotool"
+              "yad"
+              "zenity"
+            ]
+            (_: {
+              enable = true;
+            });
+      };
   };
 
   home = {
