@@ -1,40 +1,14 @@
-{pkgs, ...}: {
-  programs = {
-    neovim = {
-      enable = true;
-      defaultEditor = true;
-    };
-    dconf.enable = true;
-  };
-
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [
-        # declare insecure packages here
-      ];
-    };
-    overlays = [
-      (final: prev: {
-        openldap = prev.openldap.overrideAttrs (_: {
-          doCheck = false;
-          python3 = prev.python3.override {
-            packageOverrides = pyFinal: pyPrev: {
-              python-gnupg = pyPrev.python-gnupg.overrideAttrs (oldAttrs: {
-                doCheck = false;
-              });
-            };
-          };
-        });
-        # soundconverter 4.0.6's test suite breaks under Python 3.14 (tests/test.py
-        # does args[1:] on a None argv); skip the install-check to unblock rebuilds.
-        soundconverter = prev.soundconverter.overrideAttrs (_: {
-          doInstallCheck = false;
-        });
-      })
-    ];
-  };
-
+# modules/nucleus/packages.nix — the floor: packages every host carries,
+# unconditionally.
+#
+# Packages and nothing else. The `programs` and `nixpkgs` settings that used to
+# sit beside this list live in modules/nucleus/system.nix with the rest of the
+# unconditional system configuration.
+#
+# Not a dendrite list and not switched: an unbootable shell prompt or a missing
+# archive tool is not something a host should be able to answer differently. What
+# IS switchable lives in modules/dendrites/packages.nix.
+{ pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     # ── Shell & Terminal ──
     bash # GNU Bourne Again shell

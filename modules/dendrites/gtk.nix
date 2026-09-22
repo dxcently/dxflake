@@ -1,10 +1,11 @@
-{username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
-    home-manager.users.${username} = {
+{
+  homeManager =
+    {
       pkgs,
       config,
       ...
-    }: {
+    }:
+    {
       gtk = {
         enable = true;
         gtk3.extraConfig = {
@@ -15,5 +16,4 @@
         };
       };
     };
-  };
 }

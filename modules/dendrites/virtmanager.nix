@@ -1,16 +1,16 @@
-{username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
-    home-manager.users.${username} = {
+{
+  homeManager =
+    {
       pkgs,
       config,
       ...
-    }: {
+    }:
+    {
       dconf.settings = {
         "org/virt-manager/virt-manager/connections" = {
-          autoconnect = ["qemu:///system"];
-          uris = ["qemu:///system"];
+          autoconnect = [ "qemu:///system" ];
+          uris = [ "qemu:///system" ];
         };
       };
     };
-  };
 }

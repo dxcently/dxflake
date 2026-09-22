@@ -67,7 +67,7 @@ rustPlatform.buildRustPackage {
   doCheck = false;
 
   meta = {
-    description = "Melete — Mneme's companion AI harness, built from the local dev checkout";
+    description = "Melete — Mneme's companion AI harness, built from upstream master";
     mainProgram = "melete";
   };
 }

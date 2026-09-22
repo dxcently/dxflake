@@ -1,11 +1,12 @@
-{username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.hyprland {
-    home-manager.users.${username} = {
+{
+  homeManager =
+    {
       pkgs,
       options,
       inputs,
       ...
-    }: {
+    }:
+    {
       programs.wlogout = {
         enable = true;
         layout = [
@@ -48,5 +49,4 @@
         ];
       };
     };
-  };
 }

@@ -1,10 +1,11 @@
-{username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
-    home-manager.users.${username} = {
+{
+  homeManager =
+    {
       pkgs,
       inputs,
       ...
-    }: {
+    }:
+    {
       home.file = {
         ".XCompose" = {
           text = ''
@@ -40,5 +41,4 @@
         };
       };
     };
-  };
 }

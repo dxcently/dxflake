@@ -1,0 +1,4 @@
+{
+  dendrites = [ "systemonly" ];
+  nixOS = _: { };
+}

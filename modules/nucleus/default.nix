@@ -3,6 +3,7 @@
 # plumbing, not a toggle — it lands here the same way, plus one line.
 {
   imports = [
+    ../dendrites/packages.nix
     ./avahi.nix
     ./boot.nix
     ./networking.nix
@@ -13,6 +14,5 @@
     ./sops.nix
     ./system.nix
     ./tailscale.nix
-    ./user.nix
   ];
 }

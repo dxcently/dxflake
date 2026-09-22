@@ -58,9 +58,10 @@
     # rebuild — `path:` re-hashes the directory as it is on disk:
     #   nh os switch -- --override-input melete-src path:/home/khoa/melete
     #
-    # Only sakaki enables these (dx.melete/dx.mneme/dx.eidolon are false
-    # elsewhere and module args are lazy), but the inputs are fetched at
-    # LOCK time on whatever host runs `nix flake update`, so run it as khoa.
+    # Only sakaki enables these (dendrites.melete / dendrites.mneme /
+    # dendrites.eidolon are false elsewhere and module args are lazy), but the
+    # inputs are fetched at LOCK time on whatever host runs `nix flake update`,
+    # so run it as khoa.
     melete-src = {
       url = "git+https://github.com/noah427/melete.git?ref=master";
       flake = false;
@@ -84,7 +85,7 @@
     # harnox VERSION, so if harnox master ever runs ahead of the tag Eidolon
     # pins, this build fails on a stale lock until Eidolon bumps its tag. They
     # are edited together by design (Eidolon's Cargo.toml says so), and today
-    # both sit on v0.3.4 — but that is the failure to expect, and the fix is
+    # both sit on v0.3.6 — but that is the failure to expect, and the fix is
     # `nix flake update eidolon` once upstream catches up.
     harnox-src = {
       url = "git+https://github.com/noah427/harnox.git?ref=master";
@@ -128,8 +129,8 @@
     # dxflake consumes Aoide as a flake input and, on integrating hosts, runs
     # Aoide's module structure (nucleus/facets/song walked from the input) —
     # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
-    # (hosts, hardware, secrets). Pin the published Aoide commit so every host
-    # fetches the same source without a local Aoide checkout.
+    # (hosts, hardware, secrets). Every host fetches the same published Aoide
+    # source, locked in flake.lock, without needing a local Aoide checkout.
     aoide = {
       # No `&rev=` — see the noah427 block above: a rev in the URL is a
       # pin `nix flake update aoide` cannot move, which is what made every
@@ -151,91 +152,77 @@
       ...
     }@inputs:
     let
+      inherit (nixpkgs) lib;
       system = "x86_64-linux";
       username = "khoa";
 
-      # Shared by dxflake's own walk and the Aoide walk: every .nix under a
-      # dir, shelved by a `_` prefix (dxflake/Aoide discipline, identical).
-      walk =
-        dir:
-        builtins.filter (
-          p:
-          let
-            s = toString p;
-          in
-          nixpkgs.lib.hasSuffix ".nix" s && !(nixpkgs.lib.hasInfix "/_" s)
-        ) (nixpkgs.lib.filesystem.listFilesRecursive dir);
+      composition = import ./lib/composition.nix { inherit lib; };
 
-      # Aoide's walked module tree + songbook and the package overlays its
-      # modules expect ride EVERY host now (dendritic discipline: the module
-      # is always in the tree, a flag decides whether it does anything —
-      # AGENTS.md, root, "Everything is a plugin"). This used to be gated
-      # behind a per-host `withAoide` bool on mkHost, which was the exact
-      # anti-pattern that discipline exists to avoid: it gated the MODULE
-      # SURFACE at the flake level instead of gating BEHAVIOUR at the host
-      # level. Dropped after confirming every Aoide module that does
-      # anything wraps its whole `config` in `lib.mkIf config.aoide.enable`
-      # (or a narrower flag under it) — nucleus/options.nix is the one
-      # exception, and it declares options + eval-clean defaults only, no
-      # behaviour (its own header says so). So a host that never flips
-      # `aoide.enable` gets the full option surface and zero behaviour
-      # change; proven by yomi-strix's toplevel derivation hashing
-      # byte-identical before and after this fold (it sets no aoide.* flags
-      # at all — it manages its OWN Aoide integration from a separate flake
-      # at ~/Aoide, see hosts/yomi-strix/default.nix).
-      mkHost =
+      # ── The Aoide seam ───────────────────────────────────────────────────
+      # Everything below reaches INTO the Aoide input's tree, because the Aoide
+      # flake exports packages, songbookManifest and aoideOptions but no
+      # nixosModules and no lib. Four minimal public exports would close every
+      # one of these paths: nixosModules.default, a songbook module,
+      # lib.livery.resolve, and overlays.default. Until they exist this is the
+      # honest shape of the dependency, named in one place rather than spread
+      # across hosts.
+      aoideTree = [
+        (inputs.aoide + "/modules/default.nix")
+        # The songs, named rather than walked. The walker pulled exactly these
+        # five rice.nix files (`_widgets/` is shelved by its prefix); each song
+        # self-gates on `aoide.song`, so naming them changes nothing but makes
+        # the set visible. It collapses to one import when Aoide exports a
+        # songbook module.
+        (inputs.aoide + "/song/songbook/etude/rice.nix")
+        (inputs.aoide + "/song/songbook/fugue/rice.nix")
+        (inputs.aoide + "/song/songbook/nocturne/rice.nix")
+        (inputs.aoide + "/song/songbook/quodlibet/rice.nix")
+        (inputs.aoide + "/song/songbook/sonata/rice.nix")
+        {
+          nixpkgs.overlays = [
+            (import (inputs.aoide + "/lib/pkgs.nix") { inherit lib; }).overlay
+            (_final: _prev: { aoide = inputs.aoide.packages.${system}.default; })
+          ];
+        }
+      ];
+
+      hostNames = [
+        "chiyo"
+        "osaka"
+        "sakaki"
+        "yomi-strix"
+      ];
+
+      hosts = lib.genAttrs hostNames (
         name:
-        nixpkgs.lib.nixosSystem {
+        composition.mkNixosHost {
+          inherit nixpkgs system;
+          hostName = name;
+          # Override records name the hosts they are confined to; the constructor
+          # checks those names against this list so a typo fails loudly instead
+          # of applying nowhere.
+          knownHosts = hostNames;
+          registry = import ./modules;
+          hostModules = [ ./hosts/${name} ];
+          nucleus = ./modules/nucleus;
+          homeManagerModule = inputs.home-manager.nixosModules.home-manager;
+          extraModules = aoideTree ++ [ inputs.disko.nixosModules.disko ];
           specialArgs = {
-            host = name;
-            inherit username system nixpkgs-stable;
-            resolveAoideLivery =
-              (import (inputs.aoide + "/lib/livery.nix") {
-                inherit (nixpkgs) lib;
-              }).resolve;
+            inherit username nixpkgs-stable;
+            resolveAoideLivery = (import (inputs.aoide + "/lib/livery.nix") { inherit lib; }).resolve;
             inputs = inputs // {
               aoide = inputs.aoide.inputs.aoide;
             };
           };
-          modules =
-            let
-              discovered = [ ./modules ];
-              aoideModules = [ (inputs.aoide + "/modules/default.nix") ];
-              aoideSongbook = walk (inputs.aoide + "/song/songbook");
-              # The Aoide seam: pkgs.aoide (the CLI core) + the packages
-              # walker overlay (hyprglass, …) — Aoide's own mkHost adds
-              # exactly these two.
-              aoideSeam = {
-                nixpkgs.overlays = [
-                  (import (inputs.aoide + "/lib/pkgs.nix") { inherit (nixpkgs) lib; }).overlay
-                  (_final: _prev: { aoide = inputs.aoide.packages.${system}.default; })
-                ];
-              };
-            in
-            discovered
-            ++ aoideModules
-            ++ aoideSongbook
-            ++ [
-              inputs.disko.nixosModules.disko
-              aoideSeam
-              ./hosts/${name}
-            ];
-        };
+        }
+      );
     in
     {
-      nixosConfigurations = {
-        # Every host now carries the Aoide option surface; which flags a host
-        # flips (aoide.enable, aoide.a2a.enable, aoide.facets.*, …) is a
-        # hosts/<name>/default.nix decision, not a flake-level one. chiyo,
-        # osaka and sakaki flip dx.aoide.enable (modules/dendrites/aoide.nix)
-        # for the shared core; chiyo additionally flips the paint facets
-        # directly (see its host file). yomi-strix sets no aoide.* flags here
-        # at all — it manages its own Aoide integration from ~/Aoide's own
-        # flake, kept byte-identical by this fold (see mkHost's comment).
-        chiyo = mkHost "chiyo";
-        osaka = mkHost "osaka";
-        sakaki = mkHost "sakaki";
-        yomi-strix = mkHost "yomi-strix";
-      };
+      nixosConfigurations = lib.mapAttrs (_: h: h.system) hosts;
+
+      # What each host actually resolved: dendrites, providers, users, lanes
+      # and the file each came from. Derived from selection, never maintained
+      # by hand — `nix eval --json .#inventory.osaka` is the review surface.
+      inventory = lib.mapAttrs (_: h: h.inventory) hosts;
     };
 }

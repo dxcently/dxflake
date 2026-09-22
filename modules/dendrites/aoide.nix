@@ -5,16 +5,15 @@
 # the Aoide input, walked into every host's tree by flake.nix): `aoide.enable`,
 # `aoide.a2a.*`, `aoide.secrets.*`, `aoide.facets.*`, `aoide.lyra.enable`, and
 # so on. This dendrite is not a second option surface over that contract — it
-# is one line (`dx.aoide.enable`) that turns on the CORE baseline every
-# fleet box wants, so hosts.wiring stops repeating the same three flags. Every
-# knob that genuinely varies per host (a2a.spawnAgent/spawnPath/
-# discoveryAdvertise/tokenFile, secrets.members, aoide.song, …) is set by the
-# host directly on the raw `aoide.*` namespace once this dendrite (or any
-# aoide-enabled host) has put it in scope — exactly how sakaki and osaka
-# already did before this dendrite existed. Wrapping those in a parallel
-# `dx.aoide.*` mirror would just rename Aoide's own documented options for no
-# reason; convention here follows the option contract that already exists
-# rather than inventing one.
+# is one import that turns on the CORE baseline every fleet box wants, so
+# hosts.wiring stops repeating the same three flags. Every knob that
+# genuinely varies per host (a2a.spawnAgent/spawnPath/discoveryAdvertise/
+# tokenFile, secrets.members, aoide.song, …) is set by the host directly on
+# the raw `aoide.*` namespace once this dendrite (or any aoide-carrying host)
+# has put it in scope — exactly how sakaki and osaka already did before this
+# dendrite existed. Wrapping those in a parallel `dx.aoide.*` mirror would
+# just rename Aoide's own documented options for no reason; convention here
+# follows the option contract that already exists rather than inventing one.
 #
 # ── What "core" means ────────────────────────────────────────────────────
 #   aoide.enable        — the aoide/aoided binaries + daemon (nucleus/aoided.nix)
@@ -29,27 +28,31 @@
 # surface: bar/dock/notifications/…) and `aoide.lyra.enable` (installs the
 # `lyra` binary; defaults to following the quickshell facet, independently
 # overridable). This dendrite never touches either, so they stay at their
-# off-by-default value on every host that only flips `dx.aoide.enable` — paint
+# off-by-default value on every host that only imports this baseline — paint
 # is a per-host opt-in laid on TOP of this baseline, in that host's own file,
 # never inferred here.
 #
 # osaka is the worked example of core-only (hosts/osaka/default.nix): it
 # enables this dendrite for the core baseline and sets nothing else under
-# `aoide.*` — dxflake's own Hyprland + Stylix dendrites
-# (dx.aggregations.hyprland/desktop) keep painting osaka's desktop, so with
+# `aoide.*` — dxflake's own compositor + stylix dendrites (selected by the
+# shell and base aggregations) keep painting osaka's desktop, so with
 # the quickshell facet left off, aoided anchors to default.target and the
 # door rides it (loopback only). A host in this shape must never ALSO flip
 # `aoide.facets.compositor` or `aoide.facets.stylix` beside dxflake's own
-# Hyprland/Stylix dendrites: both pairs write the same unique-merge leaf
-# options (`wayland.windowManager.hyprland.systemd.variables`,
-# `stylix.base16Scheme`), and because those options are list-concat/attrs-merge
-# rather than a single value, nix eval stays clean — the two writers silently
-# combine into a value neither author intended, and the failure shows up only
-# at runtime (systemd.variables concatenates dxflake's `["--all"]` with
-# Aoide's five named vars, and dbus rejects the mixed "--all + names" line at
-# session start; two `services.greetd`/`services.displayManager.ly`
-# definitions would similarly leave two login managers racing a tty rather
-# than erroring at eval).
+# Hyprland/Stylix dendrites. For stylix the two writers meet on
+# `stylix.base16Scheme`, an attrs-merge leaf: nix eval stays clean and the two
+# silently combine into a value neither author intended, so the failure shows
+# up only at runtime. Two `services.greetd`/`services.displayManager.ly`
+# definitions fail the same quiet way, leaving two login managers racing a tty
+# rather than erroring at eval.
+#
+# The compositor pair no longer merges quietly. dxflake's dendrite sets
+# `wayland.windowManager.hyprland.systemd.enable = false` and does the session
+# handoff itself, guarded (see AGENTS.md, "The session handoff"), so a host
+# that flipped both would now hit a plain conflicting-definition error on that
+# bool at eval instead of concatenating dxflake's `["--all"]` onto Aoide's five
+# named `systemd.variables` and having dbus reject the mixed line at session
+# start. Still do not flip both — but it now tells you.
 #
 # The Quickshell facet and shellbridge (nucleus/shellbridge.nix) have no such
 # collision: they only need graphical-session.target and a compositor that
@@ -58,18 +61,16 @@
 # facet can provide. chiyo (hosts/chiyo/default.nix) is the other shape: it
 # runs the full Aoide paint stack (`aoide.facets.compositor`,
 # `aoide.facets.stylix`, `aoide.facets.quickshell`, `aoide.hyprland.enable`)
-# and turns dxflake's own Hyprland/Stylix dendrites OFF
-# (`dx.aggregations.hyprland = false`, `dx.stylix.enable = false`) so only one
-# writer ever touches those leaf options — `dx.aggregations.desktop` stays on
-# for the pieces that don't collide (pipewire, fonts, fcitx5, portals, ly
-# login).
-{ lib, config, ... }:
+# and turns dxflake's own Hyprland/Stylix dendrites OFF (hyprland is not
+# selected, `dx.stylix.enable = false`) so only one writer ever touches those
+# leaf options — the desktop aggregation stays selected for the pieces that
+# don't collide (pipewire, fonts, fcitx5, portals, ly login).
 {
-  options.dx.aoide.enable = lib.mkEnableOption "core Aoide (binaries + aoided + A2A door + secrets broker), no paint";
-
-  config = lib.mkIf config.dx.aoide.enable {
-    aoide.enable = true;
-    aoide.a2a.enable = true;
-    aoide.secrets.enable = true;
+  nixos = {
+    config = {
+      aoide.enable = true;
+      aoide.a2a.enable = true;
+      aoide.secrets.enable = true;
+    };
   };
 }

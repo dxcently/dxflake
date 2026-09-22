@@ -1,5 +1,7 @@
-{config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
-    services.flatpak.enable = true;
+{
+  nixos = { ... }: {
+    config = {
+      services.flatpak.enable = true;
+    };
   };
 }

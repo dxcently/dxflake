@@ -1,10 +1,11 @@
-{username, config, lib, ...}: {
-  config = lib.mkIf config.dx.aggregations.desktop {
-    home-manager.users.${username} = {
+{
+  homeManager =
+    {
       pkgs,
       config,
       ...
-    }: {
+    }:
+    {
       programs.vesktop = {
         enable = true;
         package = pkgs.vesktop;
@@ -28,5 +29,4 @@
         };
       };
     };
-  };
 }

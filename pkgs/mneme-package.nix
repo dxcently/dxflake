@@ -48,7 +48,7 @@ rustPlatform.buildRustPackage {
   doCheck = false;
 
   meta = {
-    description = "Mneme vault MCP server, built from the local dev checkout";
+    description = "Mneme vault MCP server, built from upstream master";
     mainProgram = "mneme";
   };
 }
