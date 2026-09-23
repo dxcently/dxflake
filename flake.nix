@@ -33,69 +33,77 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Melete and Mneme come from their canonical GitHub repositories, pinned to
-    # the default branch (master). A checkout tip on whichever box happens to be
-    # rebuilding is not upstream, so the flake no longer treats it as one.
+    # ── The noah427 AI stack: Melete, Mneme, harnox, Eidolon ──────────────
+    # All four are PRIVATE repos under noah427 and are fetched straight from
+    # GitHub. No local checkout is load-bearing any more: ~/melete, ~/mneme,
+    # ~/harnox and ~/eidolon are dev worktrees, and what a host BUILDS is
+    # whatever master says, re-locked on demand.
     #
-    # Both repos are PRIVATE, so fetching them needs GitHub credentials at
-    # EVALUATION time. `git+https:` goes through git, which picks up the `gh`
-    # credential helper this user already has configured — so evaluate as that
-    # user (`nh os switch` does) rather than as root.
+    # `git+https:` and not `github:` — the tarball fetcher a `github:` URL
+    # uses can only authenticate from a nix.conf `access-tokens` entry (a
+    # secret in a world-readable file, and unset on every host here), while
+    # the git fetcher shells out to git and so picks up khoa's gh credential
+    # helper from ~/.config/git/config. Aoide below is fetched the same way
+    # for the same reason. Consequence: evaluate as khoa (`nh os switch`),
+    # never a bare `sudo nixos-rebuild` — root has no GitHub credentials.
     #
-    # `git+https:` locks to a commit and copies only tracked files (no .git, no
-    # target/, .gitignore honored). A source change is therefore picked up
-    # explicitly, not silently:
-    #   nix flake update melete-src   # or mneme-src
-    # To build a DIRTY worktree without committing, override for that one
+    # NO `rev=` IN ANY URL. A rev inside the URL is a pin `nix flake update`
+    # cannot move, so every upstream commit would mean hand-editing this
+    # file. With just `ref=master` the rev lives in flake.lock and one
+    # command picks up new commits for the whole stack:
+    #   nix flake update melete-src mneme-src harnox-src eidolon aoide
+    # `dxbump` (modules/dendrites/bash.nix) runs exactly that, then switches.
+    #
+    # To build a DIRTY local worktree without pushing, override for that one
     # rebuild — `path:` re-hashes the directory as it is on disk:
-    #   nixos-rebuild switch --flake .#sakaki \
-    #     --override-input melete-src path:/home/khoa/melete
+    #   nh os switch -- --override-input melete-src path:/home/khoa/melete
     #
-    # Only sakaki forces these (dx.melete/dx.mneme are false elsewhere, and
-    # module args are lazy), so no other host ever builds them.
+    # Only sakaki enables these (dendrites.melete / dendrites.mneme /
+    # dendrites.eidolon are false elsewhere and module args are lazy), but the
+    # inputs are fetched at LOCK time on whatever host runs `nix flake update`,
+    # so run it as khoa.
     melete-src = {
-      url = "git+https://github.com/noah427/melete";
+      url = "git+https://github.com/noah427/melete.git?ref=master";
       flake = false;
     };
     mneme-src = {
-      url = "git+https://github.com/noah427/mneme";
+      url = "git+https://github.com/noah427/mneme.git?ref=master";
       flake = false;
     };
-    # Eidolon — same PRIVATE-repo, git+https, default-branch deal as melete/mneme
-    # above. Bump with `nix flake update eidolon-src`, or override for a dirty
-    # worktree the same way.
+    # The shared Rust+LLM foundation under Melete/Mneme/Eidolon. No flake, no
+    # binary — Melete and Mneme resolve it by exact rev from their own
+    # Cargo.lock (builtins.fetchGit, see pkgs/melete-package.nix), so the one
+    # thing this input is FOR is Eidolon: its flake declares harnox as
+    # `github:noah427/harnox`, and that tarball fetcher 404s on a private repo
+    # (it authenticates only from a nix.conf `access-tokens` entry, which no
+    # host here sets). The `follows` on the eidolon input below swaps that
+    # dead node for this one, which the git fetcher CAN authenticate. Verified
+    # the hard way: `builtins.fetchTree { type = "github"; ... }` on this exact
+    # rev returns HTTP 404 while the git+https fetch of it succeeds.
     #
-    # It carries one more wrinkle: its own workspace patches `harnox` to a
-    # sibling `../harnox` checkout (eidolon's Cargo.toml, and nix/eidolon.nix's
-    # own comment), and eidolon's committed Cargo.lock was generated under that
-    # patch — no `source` field for harnox, so Cargo expects the literal
-    # directory to exist rather than fetching it. eidolon's own flake.nix
-    # supplies that via a `harnox` input, but it names it `github:noah427/harnox`
-    # — Nix's native GitHub fetcher, which (unlike `git+https:`) does NOT go
-    # through git or its credential helper, and 404s on this private repo
-    # without a nix.conf access-token this flake deliberately avoids
-    # provisioning. So dxflake pins its own harnox-src instead, fetched the same
-    # credentialed way, and pkgs/eidolon-package.nix hands it in directly rather
-    # than consuming eidolon's flake outputs (which would re-introduce the
-    # unauthenticated github: fetch as a transitive input).
-    eidolon-src = {
-      url = "git+https://github.com/noah427/eidolon";
-      flake = false;
-    };
-    # Tracks harnox's default branch, always latest — NOT a tag pin. eidolon's
-    # own Cargo.toml pins harnox by tag and bumps it independently of this
-    # flake (caught live: harnox moved v0.3.5 -> v0.3.6 mid-write here), so
-    # chasing that tag by hand here just drifts stale between bumps. `[patch]`
-    # needs a version-compatible harnox for Cargo to accept the path
-    # substitution — a mismatched checkout falls back to a real network fetch
-    # instead of patching, which is silent and confusing — but eidolon's own
-    # dev workflow already runs the same way, sibling checkout against
-    # whatever tag Cargo.toml currently names, so tracking latest here mirrors
-    # that rather than fighting it.
+    # Caveat that comes with the follows: Eidolon's Cargo.lock names an exact
+    # harnox VERSION, so if harnox master ever runs ahead of the tag Eidolon
+    # pins, this build fails on a stale lock until Eidolon bumps its tag. They
+    # are edited together by design (Eidolon's Cargo.toml says so), and today
+    # both sit on v0.3.6 — but that is the failure to expect, and the fix is
+    # `nix flake update eidolon` once upstream catches up.
     harnox-src = {
-      url = "git+https://github.com/noah427/harnox";
+      url = "git+https://github.com/noah427/harnox.git?ref=master";
       flake = false;
     };
+    # Eidolon, unlike the other three, ships a real flake whose package
+    # already does the awkward part (it reassembles the `../harnox` sibling
+    # layout Cargo's `[patch]` table expects — nix/eidolon.nix in that repo).
+    # So it rides as a FLAKE input and dxflake writes no packaging of its
+    # own; modules/dendrites/eidolon.nix just installs
+    # inputs.eidolon.packages.<system>.default.
+    eidolon = {
+      url = "git+https://github.com/noah427/eidolon.git?ref=master";
+      inputs.nixpkgs.follows = "nixpkgs";
+      # Its own `github:noah427/harnox` cannot authenticate — see harnox-src.
+      inputs.harnox.follows = "harnox-src";
+    };
+
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.
     pyproject-nix = {
       url = "github:pyproject-nix/pyproject.nix";
@@ -124,9 +132,9 @@
     # (hosts, hardware, secrets). Every host fetches the same published Aoide
     # source, locked in flake.lock, without needing a local Aoide checkout.
     aoide = {
-      # No `&rev=` — a rev in the URL is a pin `nix flake update aoide`
-      # cannot move, which is what made every Aoide bump a hand edit of this
-      # file. The rev lives in flake.lock now, so `dxbump` re-locks it.
+      # No `&rev=` — see the noah427 block above: a rev in the URL is a
+      # pin `nix flake update aoide` cannot move, which is what made every
+      # Aoide bump a hand edit of this file. The rev lives in flake.lock now.
       url = "git+https://github.com/dxcently/Aoide.git?ref=main";
     };
     quickshell = {

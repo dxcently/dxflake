@@ -8,9 +8,9 @@
       ...
     }:
     let
-      # Built from github.com/noah427/mneme's default branch (the `mneme-src`
-      # flake input) — version and contents follow upstream. See flake.nix for
-      # how to pick up a new commit or build a dirty local worktree.
+      # Built from the `mneme-src` flake input (github.com/noah427/mneme master)
+      # — version and contents follow that repo. See flake.nix for how to pick up
+      # a new commit (`dxbump`) or build a dirty local worktree.
       #
       # This no longer depends on the melete dendrite: the release fetch used to
       # borrow melete's GitHub token wiring, so mneme could only build alongside
@@ -24,7 +24,7 @@
     {
       config = {
         # Pinned-upstream baseline, mirrors melete.nix's meleteSeed. Nix builds from
-        # the pinned mneme-src (pkgs/mneme-package.nix). Unlike melete, mneme has no
+        # the mneme-src input. Unlike melete, mneme has no
         # self-update of its own, so this is the ONLY thing that ever moves the
         # binary. The stamp holds the store path rather than the version, so a
         # source change reseeds even when Cargo.toml's version stands still.

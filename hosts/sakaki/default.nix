@@ -113,6 +113,9 @@
           # tunnel. The repo lives at ~/projects/fau-cyber-security-club-wiki and
           # `hugo` writes public/, which is copied to the /var/www root below.
           "fau-cyber-wiki-test.necoconeco.net"
+          # Scratch static hosting for one-off mockups/demos. Files land in
+          # /var/www/tmp by hand; nothing deploys here automatically.
+          "tmp.necoconeco.net"
         ];
       };
       dx.caddy = {
@@ -217,6 +220,17 @@
             '';
           };
 
+          # Scratch mockups, hand-copied into /var/www/tmp. no-cache on HTML for
+          # the same reason as the wiki: edits must show on the next reload.
+          "tmp.necoconeco.net" = {
+            webRoot = "/var/www/tmp";
+            extraConfig = ''
+              encode zstd gzip
+              @html path *.html /
+              header @html Cache-Control "no-cache"
+            '';
+          };
+
           # file_server, not a proxy: 90 prerendered pages, no runtime behind
           # them. webRoot is a quoted STRING rather than a path literal -- a
           # literal is copied into the nix store at eval, which would put 7.6M of
@@ -255,6 +269,7 @@
       # sudo, 0755 so caddy can read it.
       systemd.tmpfiles.rules = [
         "d /var/www                     0755 root root - -"
+        "d /var/www/tmp                 0755 khoa users - -"
         "d /var/www/fau-cyber-wiki-test 0755 khoa users - -"
         "d /var/lib/fau-cyber-wiki      0755 khoa users - -"
       ];

@@ -4,9 +4,9 @@
   src,
 }:
 
-# Mneme, built from the `mneme-src` flake input — github.com/noah427/mneme,
-# pinned to that repo's default branch. Same move as pkgs/melete-package.nix,
-# which carries the fuller notes on why the release-asset fetch is gone.
+# Mneme, built from the `mneme-src` flake input — github.com/noah427/mneme
+# master, same move as pkgs/melete-package.nix, which carries the fuller
+# notes on why the release-asset fetch is gone.
 #
 # Note the repo has a flake.nix of its own, but its outputs are the same
 # hash-pinned fetch-a-published-artifact helpers we're replacing (lib.mkMneme)

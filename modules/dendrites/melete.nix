@@ -7,9 +7,9 @@
       ...
     }:
     let
-      # Built from github.com/noah427/melete's default branch (the `melete-src`
-      # flake input) — version and contents follow upstream. See flake.nix for
-      # how to pick up a new commit or build a dirty local worktree.
+      # Built from the `melete-src` flake input (github.com/noah427/melete
+      # master) — version and contents follow that repo. See flake.nix for how to
+      # pick up a new commit (`dxbump`) or build a dirty local worktree.
       meletePkg = pkgs.callPackage ../../pkgs/melete-package.nix {
         src = inputs.melete-src;
       };
@@ -17,7 +17,7 @@
     {
       config = {
         # --- Pinned-upstream baseline, self-update floats above it ---------------
-        # Nix builds the binary from the pinned melete-src (pkgs/melete-package.nix).
+        # Nix builds the binary from the fetched source (pkgs/melete-package.nix).
         # We seed ~/.local/bin/melete from that store binary ONLY when the build
         # changes (tracked by a stamp file). Between builds the running binary is
         # left untouched, so anything that swapped it in place — melete's own

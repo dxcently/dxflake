@@ -292,20 +292,28 @@
         "type": "github"
       }
     },
-    "eidolon-src": {
-      "flake": false,
+    "eidolon": {
+      "inputs": {
+        "harnox": [
+          "harnox-src"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
         "lastModified": 1790043143,
         "narHash": "sha256-sEC2N8AtNJueioBTxK8d0jiJt7hU225LfQKMBDHss/o=",
-        "ref": "refs/heads/master",
+        "ref": "master",
         "rev": "a618ef1f70f57097ecc8fd4141cbd5b80ca1e126",
         "revCount": 206,
         "type": "git",
-        "url": "https://github.com/noah427/eidolon"
+        "url": "https://github.com/noah427/eidolon.git"
       },
       "original": {
+        "ref": "master",
         "type": "git",
-        "url": "https://github.com/noah427/eidolon"
+        "url": "https://github.com/noah427/eidolon.git"
       }
     },
     "firefox-gnome-theme": {
@@ -538,15 +546,16 @@
       "locked": {
         "lastModified": 1789375339,
         "narHash": "sha256-fuOEwmQpuczhyksWN+7tswKp8gPE7G2Rpwwti3UlGik=",
-        "ref": "refs/heads/master",
+        "ref": "master",
         "rev": "858f5975694f97708f9c34cff6ff9e960a913661",
         "revCount": 40,
         "type": "git",
-        "url": "https://github.com/noah427/harnox"
+        "url": "https://github.com/noah427/harnox.git"
       },
       "original": {
+        "ref": "master",
         "type": "git",
-        "url": "https://github.com/noah427/harnox"
+        "url": "https://github.com/noah427/harnox.git"
       }
     },
     "home-manager": {
@@ -1296,15 +1305,16 @@
       "locked": {
         "lastModified": 1789380770,
         "narHash": "sha256-DWD4RbY7TJo84tokkFxFPgh4IEk8a/+YQzTCvM4CAJ8=",
-        "ref": "refs/heads/master",
+        "ref": "master",
         "rev": "e4063c42b30533ec6fea0cc66941b7cafcabed3a",
         "revCount": 643,
         "type": "git",
-        "url": "https://github.com/noah427/melete"
+        "url": "https://github.com/noah427/melete.git"
       },
       "original": {
+        "ref": "master",
         "type": "git",
-        "url": "https://github.com/noah427/melete"
+        "url": "https://github.com/noah427/melete.git"
       }
     },
     "mneme-src": {
@@ -1312,15 +1322,16 @@
       "locked": {
         "lastModified": 1789624135,
         "narHash": "sha256-iNlrx3V3rJPGGwYy5ZcBGpWCrEzU/6pda/4dPoErNfc=",
-        "ref": "refs/heads/master",
+        "ref": "master",
         "rev": "0b96db57cc406b5d32516dbc0ff6ebee19d843e5",
         "revCount": 187,
         "type": "git",
-        "url": "https://github.com/noah427/mneme"
+        "url": "https://github.com/noah427/mneme.git"
       },
       "original": {
+        "ref": "master",
         "type": "git",
-        "url": "https://github.com/noah427/mneme"
+        "url": "https://github.com/noah427/mneme.git"
       }
     },
     "mnw": {
@@ -1647,7 +1658,7 @@
         "aagl": "aagl",
         "aoide": "aoide",
         "disko": "disko",
-        "eidolon-src": "eidolon-src",
+        "eidolon": "eidolon",
         "harnox-src": "harnox-src",
         "home-manager": "home-manager_2",
         "hyprland": "hyprland_2",
