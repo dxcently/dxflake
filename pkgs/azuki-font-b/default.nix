@@ -3,7 +3,12 @@ stdenv.mkDerivation {
   name = "azukifontB";
 
   src = fetchzip {
-    url = "http://azukifont.com/font/azukifontB120.zip";
+    # azukifont.com stopped resolving (2026-09); the Wayback copy is the same
+    # zip, so the fixed-output hash — and the font — are unchanged.
+    urls = [
+      "http://azukifont.com/font/azukifontB120.zip"
+      "https://web.archive.org/web/20211021012306id_/http://azukifont.com/font/azukifontB120.zip"
+    ];
     sha256 = "sha256-pqlsqVuKcI1K/TowEd1qxNH/P5QoLrhvJNrUDHuX5ms=";
   };
 
