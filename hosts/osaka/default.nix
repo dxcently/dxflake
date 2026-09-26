@@ -74,6 +74,11 @@
         discoveryAdvertise = true;
         pairingPopup = true;
       };
+      # Secrets broker (Aoide workstream #58; the aoide dendrite enables it):
+      # own uid behind a socket-only door, TOTP-gated. The operator joins the
+      # access group; enrollment is a separate, User-initiated act — never part
+      # of the switch.
+      aoide.secrets.members = [ "khoa" ];
 
       # ── Aoide's face, laid over dxflake's own paint ───────────────────────────
       # osaka takes ONE facet, not chiyo's three. The Quickshell facet is the
