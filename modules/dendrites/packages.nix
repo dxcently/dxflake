@@ -82,6 +82,7 @@ let
     pkgs.tor-browser # Tor Browser Bundle
     pkgs.stremio-linux-shell # media streaming front end
     pkgs.hugo # static site generator; builds the wiki
+    pkgs.cloudflared # `cloudflared access ssh` — the ProxyCommand for a tunnel-borne sshHostnames entry
   ];
 
   # The switch is named by the package's own `lib.getName`, not by the

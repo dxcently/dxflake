@@ -117,6 +117,10 @@
           # /var/www/tmp by hand; nothing deploys here automatically.
           "tmp.necoconeco.net"
         ];
+        # ssh to this box from anywhere, for a node that leaves the LAN (yomi-strix
+        # rides it as its Aoide `via`). Straight to sshd, no Caddy; key-only by
+        # the nucleus rule for loopback-borne logins (modules/nucleus/openssh.nix).
+        sshHostnames = [ "sakaki-ssh.necoconeco.net" ];
       };
       dx.caddy = {
         sites = {

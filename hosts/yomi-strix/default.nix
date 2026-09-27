@@ -71,5 +71,10 @@
       # 32 GB is modest for loading models while the iGPU also eats RAM — zram gives
       # a compressed in-RAM swap cushion (no disk partition, no hibernate baggage).
       zramSwap.enable = true;
+
+      # Reaches sakaki off the home LAN: ssh rides sakaki's Cloudflare tunnel
+      # (`sakaki-ssh.necoconeco.net`) via a ProxyCommand in ~/.ssh/config, which
+      # dxflake does not manage (modules/dendrites/cloudflared.nix, step 7).
+      dx.packages.cloudflared.enable = true;
     };
 }
