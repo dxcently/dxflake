@@ -272,6 +272,26 @@
         "type": "github"
       }
     },
+    "claude-desktop-nix-flake": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790632875,
+        "narHash": "sha256-ovY0ssXI4mfcLMa/bS5azndpke3qa0QOOxJgmj7sAXw=",
+        "owner": "poeck",
+        "repo": "claude-desktop-nix-flake",
+        "rev": "55ba585546fe222bf18f391a98c1ee60f79684d2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "poeck",
+        "repo": "claude-desktop-nix-flake",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -1657,6 +1677,7 @@
       "inputs": {
         "aagl": "aagl",
         "aoide": "aoide",
+        "claude-desktop-nix-flake": "claude-desktop-nix-flake",
         "disko": "disko",
         "eidolon": "eidolon",
         "harnox-src": "harnox-src",

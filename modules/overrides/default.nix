@@ -7,7 +7,7 @@
 # its work: `overlay` and the lane modules are functions, and nothing calls
 # them. See lib/composition.nix for the boundary stated exactly.
 #
-# Empty is a real answer. This tree ships no live record.
+# Empty is a real answer when no records are present.
 let
   entries = builtins.readDir ./.;
 

@@ -7,7 +7,6 @@
 
   system = {
     members = [
-      "aagl"
       "steam"
     ];
 

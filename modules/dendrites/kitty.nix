@@ -101,6 +101,7 @@
                   confirm_os_window_close = 0;
                   window_padding_width = 5;
                   window_border_width = 1.5;
+                  remember_window_size = "no";
                   background_opacity = 1;
                   background_blur = 1;
                   enable_audio_bell = false;

@@ -14,7 +14,9 @@
   dendrites = {
     aoide.enable = true;
     autopsy.enable = true;
+    bonsai.enable = true;
     claude-code.enable = true;
+    claude-desktop.enable = true;
     eidolon.enable = true;
     # Radeon. The intel provider is never imported on this box.
     gpu = {
@@ -56,6 +58,7 @@
     {
       pkgs,
       lib,
+      config,
       username,
       ...
     }:
@@ -140,7 +143,8 @@
         fg = "#e0def4";
         accent = "#ebbcba";
         urgent = "#eb6f92";
-        hot = "#31748f";
+        # Bright enough for status text on the dark background; also recolours base0B.
+        hot = "#6eafc7";
         base16 = {
           base01 = "#1f1d2e";
           base02 = "#26233a";
@@ -152,11 +156,27 @@
           base0C = "#9ccfd8";
           base0D = "#c4a7e7";
           base0E = "#f6c177";
-          base0F = "#524f67";
+          # Workspace 1 and other base0F text need an accent, not a surface shade.
+          base0F = "#b6a3cf";
         };
         window.borderInactive = "#9ccfd8";
       };
       stylix.polarity = "dark";
+      # Keep the serif look, with a fixed-width face for terminals and code.
+      stylix.fonts = {
+        monospace = lib.mkForce {
+          package = pkgs.cm_unicode;
+          name = "CMU Typewriter Text";
+        };
+        serif = lib.mkForce {
+          package = pkgs.libertine;
+          name = "Linux Libertine O";
+        };
+        sansSerif = lib.mkForce {
+          package = pkgs.libertine;
+          name = "Linux Libertine O";
+        };
+      };
 
       # ── The wallpaper picker's library ───────────────────────────────────────
       # SUPER+W summons AoideWallpaperPicker, which enumerates its grid by shelling
@@ -170,7 +190,14 @@
       # The baked cover above stays the DEFAULT ground that survives a rebuild;
       # this is the live override seam on top of it. Path tracks `aoide.root`'s
       # default of ~/.aoide — retarget both together if that option ever moves.
-      home-manager.users.${username}.home.file.".aoide/song/covers".source = ../../song/covers;
+      home-manager.users.${username} = {
+        home.file.".aoide/song/covers".source = ../../song/covers;
+        # ANSI bright black is secondary text (e.g. nom's elapsed-time labels).
+        # Override the template's base02 surface shade with muted ink, after its include.
+        programs.kitty.extraConfig = lib.mkAfter ''
+          color8 #${config.lib.stylix.colors.base04}
+        '';
+      };
       aoide.facets.quickshell.enable = true;
       aoide.facets.stylix.enable = true;
       # Installs the `lyra` binary and enables shellbridge (nucleus/shellbridge.nix
@@ -184,24 +211,27 @@
       # dunst feeds `lyra herald push` and Quickshell draws.
       aoide.dunst.enable = true;
       dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
-      # Two upstream test suites that do not survive this nixpkgs pin. Osaka is
+      # Two upstream package fixes for this nixpkgs pin. Osaka is
       # the only consumer of either package, so the overlay lives here rather
       # than the nucleus (moved from modules/nucleus/packages.nix).
       #
       # soundconverter 4.0.6 breaks under Python 3.14 (tests/test.py does
       # args[1:] on a None argv); skip the install-check.
       #
-      # udiskie 2.7.0 fails TestPasswordCache::test_is_valid in the sandbox —
-      # it reads the kernel keyring and gets a payload whose length is not a
-      # multiple of 4 ("bytes length not a multiple of item size"). The rest of
-      # the suite passes; skip the one test rather than all checking.
+      # udiskie 2.7.0 reads binary kernel-keyring payloads through
+      # ctypes' NUL-terminated `buffer.value`, which truncates key IDs at an
+      # embedded NUL and makes the array parser fail intermittently. Keep the
+      # full test suite and return exactly the bytes reported by keyctl.
       nixpkgs.overlays = [
         (final: prev: {
           soundconverter = prev.soundconverter.overrideAttrs (_: {
             doInstallCheck = false;
           });
           udiskie = prev.udiskie.overridePythonAttrs (old: {
-            disabledTests = (old.disabledTests or [ ]) ++ [ "test_is_valid" ];
+            postPatch = (old.postPatch or "") + ''
+              substituteInPlace udiskie/keyutils.py \
+                --replace-fail 'return buffer.value' 'return buffer.raw[:ret]'
+            '';
           });
         })
       ];

@@ -13,6 +13,7 @@
     autopsy.enable = true;
     bluetooth.enable = true;
     claude-code.enable = true;
+    claude-desktop.enable = true;
     cloudflared.enable = true;
     eidolon.enable = true;
     gpu = {

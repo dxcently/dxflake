@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-29",
+  "gpu": "RX 7600 gfx1102",
+  "runtime_revision": "9a9394a895b96003ca842a6041cb28ac49a108f7",
+  "candidate": "packed-v2",
+  "candidate_store_path": "/nix/store/bka95a8xjk66pdjxcqav1vspidsm8xvb-bonsai-llama-cpp-prism-b10709-9a9394a-hip-ptq1-packed-v2",
+  "settings": {
+    "tokens": 256,
+    "rounds": 2,
+    "threads": 8,
+    "batch": 256,
+    "ubatch": 128,
+    "flash_attention": true
+  },
+  "models": {
+    "stock": [
+      {
+        "round": 1,
+        "runtime": "baseline",
+        "tokens_per_second": 14.092304
+      },
+      {
+        "round": 1,
+        "runtime": "candidate",
+        "tokens_per_second": 26.065741
+      },
+      {
+        "round": 2,
+        "runtime": "candidate",
+        "tokens_per_second": 26.049756
+      },
+      {
+        "round": 2,
+        "runtime": "baseline",
+        "tokens_per_second": 14.06224
+      }
+    ],
+    "abliterated": [
+      {
+        "round": 1,
+        "runtime": "baseline",
+        "tokens_per_second": 14.049076
+      },
+      {
+        "round": 1,
+        "runtime": "candidate",
+        "tokens_per_second": 26.110151
+      },
+      {
+        "round": 2,
+        "runtime": "candidate",
+        "tokens_per_second": 25.928484
+      },
+      {
+        "round": 2,
+        "runtime": "baseline",
+        "tokens_per_second": 14.107482
+      }
+    ]
+  }
+}

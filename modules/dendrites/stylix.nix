@@ -54,17 +54,24 @@
               name = "Maple";
             };
             fonts = {
+              # ucs-fonts: Markus Kuhn's X11 misc set, the Unicode-extended
+              # sibling of the `font-misc-misc` faces the xserver closure
+              # already puts on a desktop host. Every face is a pixel bitmap
+              # (.pcf.gz / .otb, 4x6 … 18x18ja/ko), so a point size snaps to
+              # the nearest authored pixel size rather than scaling, and the
+              # family is declared once: all faces answer to `Fixed` — 12x13ja
+              # for the bare family, 7x13 for `Fixed:style=Regular`.
               monospace = {
-                package = pkgs.nerd-fonts.lekton;
-                name = "Lekton Nerd Font Mono";
+                package = pkgs.ucs-fonts;
+                name = "Fixed";
               };
               sansSerif = {
-                package = pkgs.nerd-fonts.lekton;
-                name = "Lekton Nerd Font Mono";
+                package = pkgs.ucs-fonts;
+                name = "Fixed";
               };
               serif = {
-                package = pkgs.nerd-fonts.lekton;
-                name = "Lekton Nerd Font Mono";
+                package = pkgs.ucs-fonts;
+                name = "Fixed";
               };
               sizes = {
                 applications = 14;

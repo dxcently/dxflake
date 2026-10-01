@@ -1,0 +1,98 @@
+--- a/ggml/src/ggml-cuda/vecdotq.cuh
++++ b/ggml/src/ggml-cuda/vecdotq.cuh
+@@ -897,46 +897,62 @@
+                                                             const int & kbx,
+                                                             const int & iqs) {
+ #if defined(GGML_USE_HIP)
+-    const block_ptq1_0 * bq      = (const block_ptq1_0 *) vbq + kbx;
+-    int                  sumi[4] = { 0, 0, 0, 0 };
+-
++    const block_ptq1_0 * bq = (const block_ptq1_0 *) vbq + kbx;
++    int sumi[4] = { 0, 0, 0, 0 };
++
++    // Widen even and odd byte states into separate 16-bit lanes. Each high
++    // byte of the product is a trit in {0,1,2}. AMD byte-permute performs
++    // both the gather and an exact {-1,0,1} lookup without cross-byte borrows.
+ #    pragma unroll
+-    for (int m = 0; m < 16; ++m) {
+-        uint32_t v = bq->qs[m];
++    for (int g = 0; g < 4; ++g) {
++        const uint32_t packed = (uint32_t) get_int_b4(bq->qs, g);
++        uint32_t lo = packed & 0x00ff00ffu;
++        uint32_t hi = (packed >> 8) & 0x00ff00ffu;
++#        pragma unroll
++        for (int t = 0; t < 5; ++t) {
++            const uint32_t wlo = lo * 3u;
++            const uint32_t whi = hi * 3u;
++            lo = wlo & 0x00ff00ffu;
++            hi = whi & 0x00ff00ffu;
++            const uint32_t trits = __builtin_amdgcn_perm(whi, wlo, 0x07030501u);
++            const int q = (int) __builtin_amdgcn_perm(0u, 0x000100ffu, trits);
++            const int e = t * 16 + 4 * g;
++            sumi[e >> 5] = ggml_cuda_dp4a(q,
++                get_int_b4(bq8_1[iqs + (e >> 5)].qs, (e & 31) >> 2), sumi[e >> 5]);
++        }
++    }
++
+ #    pragma unroll
++    for (int g = 0; g < 2; ++g) {
++        const uint32_t packed = (uint32_t) get_int_b4(bq->qs + 16, g);
++        uint32_t lo = packed & 0x00ff00ffu;
++        uint32_t hi = (packed >> 8) & 0x00ff00ffu;
++#        pragma unroll
+         for (int t = 0; t < 5; ++t) {
+-            const uint32_t w = v * 3;
+-            const int      q = (int) (w >> 8) - 1;
+-            v                = w & 0xFF;
+-            const int e      = t * 16 + m;
+-            sumi[e >> 5] += q * (int) bq8_1[iqs + (e >> 5)].qs[e & 31];
++            const uint32_t wlo = lo * 3u;
++            const uint32_t whi = hi * 3u;
++            lo = wlo & 0x00ff00ffu;
++            hi = whi & 0x00ff00ffu;
++            const uint32_t trits = __builtin_amdgcn_perm(whi, wlo, 0x07030501u);
++            const int q = (int) __builtin_amdgcn_perm(0u, 0x000100ffu, trits);
++            const int e = 80 + t * 8 + 4 * g;
++            sumi[e >> 5] = ggml_cuda_dp4a(q,
++                get_int_b4(bq8_1[iqs + (e >> 5)].qs, (e & 31) >> 2), sumi[e >> 5]);
+         }
+     }
+ 
++    // Tail order is h0[t], h1[t], h0[t+1], h1[t+1].
++    uint32_t v = (uint32_t) bq->qh[0] | ((uint32_t) bq->qh[1] << 16);
+ #    pragma unroll
+-    for (int m = 0; m < 8; ++m) {
+-        uint32_t v = bq->qs[16 + m];
+-#    pragma unroll
+-        for (int t = 0; t < 5; ++t) {
+-            const uint32_t w = v * 3;
+-            const int      q = (int) (w >> 8) - 1;
+-            v                = w & 0xFF;
+-            const int e      = 80 + t * 8 + m;
+-            sumi[e >> 5] += q * (int) bq8_1[iqs + (e >> 5)].qs[e & 31];
+-        }
+-    }
+-
+-#    pragma unroll
+-    for (int h = 0; h < 2; ++h) {
+-        uint32_t v = bq->qh[h];
+-#    pragma unroll
+-        for (int t = 0; t < 4; ++t) {
+-            const uint32_t w = v * 3;
+-            const int      q = (int) (w >> 8) - 1;
+-            v                = w & 0xFF;
+-            const int e      = 120 + t * 2 + h;
+-            sumi[e >> 5] += q * (int) bq8_1[iqs + (e >> 5)].qs[e & 31];
+-        }
++    for (int t = 0; t < 4; t += 2) {
++        const uint32_t w0 = v * 3u;
++        v = w0 & 0x00ff00ffu;
++        const uint32_t w1 = v * 3u;
++        v = w1 & 0x00ff00ffu;
++        const uint32_t trits = __builtin_amdgcn_perm(w1, w0, 0x07050301u);
++        const int q = (int) __builtin_amdgcn_perm(0u, 0x000100ffu, trits);
++        sumi[3] = ggml_cuda_dp4a(q,
++            get_int_b4(bq8_1[iqs + 3].qs, 6 + t / 2), sumi[3]);
+     }
+ 
+     float acc = 0.0f;

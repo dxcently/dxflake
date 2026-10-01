@@ -1,0 +1,63 @@
+{
+  "bonsai-ab-two-waves": {
+    "runs": [
+      {
+        "round": 1,
+        "runtime": "baseline",
+        "tokens_per_second": 26.001859
+      },
+      {
+        "round": 1,
+        "runtime": "candidate",
+        "tokens_per_second": 26.201414
+      },
+      {
+        "round": 2,
+        "runtime": "candidate",
+        "tokens_per_second": 26.529867
+      },
+      {
+        "round": 2,
+        "runtime": "baseline",
+        "tokens_per_second": 24.936608
+      }
+    ],
+    "means": {
+      "baseline": 25.4692335,
+      "candidate": 26.365640499999998
+    },
+    "gain_percent": 3.519568030973508
+  },
+  "bonsai-ab-two-waves-512": {
+    "runs": [
+      {
+        "round": 1,
+        "runtime": "baseline",
+        "tokens_per_second": 25.333376
+      },
+      {
+        "round": 1,
+        "runtime": "candidate",
+        "tokens_per_second": 26.331389
+      },
+      {
+        "round": 2,
+        "runtime": "candidate",
+        "tokens_per_second": 26.191169
+      },
+      {
+        "round": 2,
+        "runtime": "baseline",
+        "tokens_per_second": 25.944369
+      }
+    ],
+    "means": {
+      "baseline": 25.638872499999998,
+      "candidate": 26.261279000000002
+    },
+    "gain_percent": 2.4275892007341815
+  },
+  "baseline_store": "/nix/store/bka95a8xjk66pdjxcqav1vspidsm8xvb-bonsai-llama-cpp-prism-b10709-9a9394a-hip-ptq1-packed-v2",
+  "candidate_store": "/nix/store/ngh6ix47zmfdl7iq9vzyzndssh6xg54r-bonsai-llama-cpp-prism-b10709-9a9394a-hip-ptq1-packed-v2-two-waves",
+  "scope": "Two repetitions per binary at each length, alternating order; modest gain, not a statistical ceiling or general speed guarantee."
+}

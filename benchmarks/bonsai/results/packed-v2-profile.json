@@ -1,0 +1,27 @@
+{
+  "model": "Override-6/Ternary-Bonsai-2-27B-abliterated-gguf",
+  "runtime": "packed-v2",
+  "gpu": "RX 7600 gfx1102",
+  "profiler": "rocprofiler-sdk 7.2.3 rocprofv3 --kernel-trace true",
+  "bench_args": [
+    "-ngl",
+    "99",
+    "-p",
+    "0",
+    "-n",
+    "64",
+    "-b",
+    "256",
+    "-ub",
+    "128",
+    "-t",
+    "8",
+    "-fa",
+    "on",
+    "-r",
+    "1"
+  ],
+  "ptq1_kernel_duration_percent": 78.81811594627605,
+  "summed_kernel_duration_ns": 2039603134,
+  "scope": "Summed traced GPU kernel duration including startup/warmup; not end-to-end time or an uninstrumented speed result."
+}

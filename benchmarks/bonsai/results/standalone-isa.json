@@ -1,0 +1,27 @@
+{
+  "scope": "Standalone extracted dot-product test kernel, not whole-model kernel occupancy",
+  "architecture": "gfx1102",
+  "compiler": "ROCm 7.2.3 HIP clang -O3",
+  "results": {
+    "baseline": {
+      "instructions": {},
+      "vgprs": 117,
+      "scratch_bytes": 0
+    },
+    "v1": {
+      "instructions": {
+        "v_dot4_i32_iu8": 32
+      },
+      "vgprs": 58,
+      "scratch_bytes": 0
+    },
+    "v2": {
+      "instructions": {
+        "v_perm_b32": 65,
+        "v_dot4_i32_iu8": 32
+      },
+      "vgprs": 60,
+      "scratch_bytes": 0
+    }
+  }
+}

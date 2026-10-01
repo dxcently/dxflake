@@ -24,10 +24,12 @@
     autopsy = ./dendrites/autopsy.nix;
     bash = ./dendrites/bash.nix;
     bluetooth = ./dendrites/bluetooth.nix;
+    bonsai = ./dendrites/bonsai.nix;
     btop = ./dendrites/btop.nix;
     caddy = ./dendrites/caddy.nix;
     cheatsheet = ./dendrites/cheatsheet;
     claude-code = ./dendrites/claude-code.nix;
+    claude-desktop = ./dendrites/claude-desktop.nix;
     cloudflared = ./dendrites/cloudflared.nix;
     composekey = ./dendrites/composekey.nix;
     compositor = ./dendrites/compositor;
