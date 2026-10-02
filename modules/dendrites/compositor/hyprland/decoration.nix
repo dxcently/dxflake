@@ -2,11 +2,11 @@
 #
 # Gaps, borders, blur, shadows, animations, layout defaults. Split out because
 # look is the axis most likely to be answered by something else: chiyo hands it
-# to Aoide's compositor facet wholesale, and a host that wants dxflake's
+# to Aoide's compositor lane wholesale, and a host that wants dxflake's
 # keybinds with someone else's paint says so by not selecting this.
 #
 # Border colour is the one place look reaches outside itself. When Aoide's
-# stylix facet owns the palette the borders follow the resolved livery;
+# stylix lane owns the palette the borders follow the resolved livery;
 # otherwise they fall back to the flake's own plain white/black pair. Both
 # branches were here before the split and neither changed.
 {

@@ -26,21 +26,21 @@
 # ── Paint is NOT this dendrite's business ──────────────────────────────────
 # Lyra (the rice/paint binary) and the Quickshell render surface are gated by
 # Aoide's own flags — `aoide.quickshell.enable` (the actual shell
-# surface: bar/dock/notifications/…) and `aoide.lyra.enable` (installs the
-# `lyra` binary; defaults to following the quickshell fact, independently
-# overridable). This dendrite never touches either, so they stay at their
-# off-by-default value on every host that only imports this baseline — paint
-# is a per-host opt-in laid on TOP of this baseline, in that host's own file,
-# never inferred here.
+# surface: bar/dock/notifications/…, a fact the quickshell lane sets) and
+# `aoide.lyra.enable` (installs the `lyra` binary; false by default, set
+# `mkDefault true` by the painting lane). This dendrite never touches either,
+# so they stay at their off-by-default value on every host that only imports
+# this baseline — paint is a per-host opt-in laid on TOP of this baseline, by
+# selecting Aoide's lanes in that host's own file, never inferred here.
 #
-# osaka is the worked example of core-only (hosts/osaka/default.nix): it
-# enables this dendrite for the core baseline and sets nothing else under
-# `aoide.*` — dxflake's own compositor + stylix dendrites (selected by the
-# shell and base aggregations) keep painting osaka's desktop, so with
-# the quickshell fact left off, aoided anchors to default.target and the
-# door rides it (loopback only). A host in this shape must never ALSO set
-# `aoide.compositor.enable` or `aoide.stylix.enable` beside dxflake's own
-# Hyprland/Stylix dendrites. For stylix the two writers meet on
+# A core-only host keeps dxflake's own compositor + stylix dendrites (selected
+# by the shell and base aggregations) painting its desktop; with the
+# quickshell fact left off, aoided anchors to default.target and the door
+# rides it (loopback only). Such a host must never ALSO select Aoide's
+# compositor or stylix lane beside dxflake's own Hyprland/Stylix dendrites.
+# Setting `aoide.compositor.enable` or `aoide.stylix.enable` by hand is no
+# substitute and paints nothing: facts are set by the lane that owns the
+# thing. For stylix the two writers meet on
 # `stylix.base16Scheme`, an attrs-merge leaf: nix eval stays clean and the two
 # silently combine into a value neither author intended, so the failure shows
 # up only at runtime. Two `services.greetd`/`services.displayManager.ly`
@@ -50,22 +50,20 @@
 # The compositor pair no longer merges quietly. dxflake's dendrite sets
 # `wayland.windowManager.hyprland.systemd.enable = false` and does the session
 # handoff itself, guarded (see AGENTS.md, "The session handoff"), so a host
-# that flipped both would now hit a plain conflicting-definition error on that
+# that selected both would now hit a plain conflicting-definition error on that
 # bool at eval instead of concatenating dxflake's `["--all"]` onto Aoide's five
 # named `systemd.variables` and having dbus reject the mixed line at session
-# start. Still do not flip both — but it now tells you.
+# start. Still do not select both — but it now tells you.
 #
-# The Quickshell lane and shellbridge (nucleus/shellbridge.nix) have no such
+# The Quickshell lane and shellbridge (the lyra lane's
+# `modules/dendrites/lyra/shellbridge.nix` in the Aoide input) have no such
 # collision: they only need graphical-session.target and a compositor that
 # imports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE into the user session,
 # which either dxflake's own Hyprland dendrite OR Aoide's own compositor
-# lane can provide. chiyo (hosts/chiyo/default.nix) is the other shape: it
-# runs the full Aoide paint stack (`aoide.compositor.enable`,
-# `aoide.stylix.enable`, `aoide.quickshell.enable`, `aoide.hyprland.enable`)
-# and turns dxflake's own Hyprland/Stylix dendrites OFF (hyprland is not
-# selected, `dx.stylix.enable = false`) so only one writer ever touches those
-# leaf options — the desktop aggregation stays selected for the pieces that
-# don't collide (pipewire, fonts, fcitx5, portals, ly login).
+# lane can provide. A host that takes Aoide's paint lanes instead leaves
+# dxflake's Hyprland/Stylix dendrites unselected, so only one writer ever
+# touches those leaf options; the rest of the desktop aggregation (pipewire,
+# fonts, fcitx5, portals, ly login) does not collide and stays selected.
 {
   nixos = {
     config = {

@@ -18,7 +18,7 @@
       ...
     }:
     let
-      aoideFace = osConfig.aoide.quickshell.enable;
+      aoideQuickshell = osConfig.aoide.quickshell.enable;
     in
     {
       # Its own dependencies, not free-floating membership: the screenshot and
@@ -50,21 +50,21 @@
           # global-shortcuts-v1 from inside the running Quickshell process, so
           # `global, aoide:<name>` is the ONLY way to reach them (the old
           # `aoide shell launcher`/`dock` commands are unimplemented stubs).
-          # Without these three binds the facet would draw a bar and nothing the
+          # Without these three binds the shell would draw a bar and nothing the
           # keyboard could summon.
           #
           # SUPER+SPACE is the swap: it is Aoide's own launcher key (see the
-          # Aoide hyprland dendrite) and it is rofi's here, so the facet takes
+          # Aoide hyprland dendrite) and it is rofi's here, so the shell takes
           # it over and hands it straight back when switched off. SUPER+G and
           # SUPER+W are additive — both are unbound in this dendrite otherwise.
           # SUPER+C is NOT swapped to `aoide:clipboard`: that chapter is fed by
-          # the facet's own cliphist provider, but dxflake's rofi picker below
+          # the shell's own cliphist provider, but dxflake's rofi picker below
           # already works and stays the clipboard seam on these hosts.
           bind = [
             "SUPER, RETURN, exec, kitty"
           ]
           ++ (
-            if aoideFace then
+            if aoideQuickshell then
               [
                 "SUPER, SPACE, global, aoide:launcher"
                 "SUPER, G, global, aoide:dock"

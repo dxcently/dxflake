@@ -9,20 +9,20 @@
     let
       # Conduct-by-default is CORE Aoide behaviour, not paint — a conducted shell is
       # a tracked, typeable-into session whether or not anything draws it, so this
-      # keys on `aoide.enable` rather than on the Quickshell facet. The facet only
+      # keys on `aoide.enable` rather than on `aoide.quickshell.enable`. The shell only
       # decides whether the dock's terminals gadget VISUALISES the graph. Concretely
       # that lands it on osaka and chiyo, skips sakaki (headless — this whole
       # dendrite is off there), and skips yomi-strix, which runs aoide.enable =
       # false and drives its own Aoide from a separate flake.
       conductShell = config.aoide.enable;
 
-      # The aero glass keys on the FACET, not on aoide.enable: it is a look, and it
+      # The aero glass keys on `aoide.quickshell.enable`, not on aoide.enable: it is a look, and it
       # only pays off where something glosses it. hyprglass loads under the same
       # flag (modules/dendrites/compositor/hyprland/hyprglass.nix), and Hyprland's own blur pass
-      # is what shows through an unfocused terminal. On a facet-off host this would
+      # is what shows through an unfocused terminal. On a host without the Quickshell shell this would
       # just make terminals see-through with nothing behind them, so yomi-strix
       # keeps its opaque kitty untouched.
-      aoideFace = config.aoide.quickshell.enable;
+      aoideQuickshell = config.aoide.quickshell.enable;
     in
     {
       config = {
@@ -108,7 +108,7 @@
                   tab_bar_style = "powerline";
                   tab_powerline_style = "slanted";
                 }
-                // lib.optionalAttrs aoideFace {
+                // lib.optionalAttrs aoideQuickshell {
                   # Aero-glass terminal, ported from Aoide's kitty dendrite — but the
                   # translucency is the COMPOSITOR's job here, not kitty's. Aoide sets
                   # background_opacity 0.86; dxflake deliberately leaves the opaque 1

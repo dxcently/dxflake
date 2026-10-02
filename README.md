@@ -31,7 +31,7 @@
 ```
 dxflake/
 ├── flake.nix                 # inputs, the Aoide seam, one line per host
-├── lib/composition.nix       # the constructor: gate, select, then import what survived
+├── lib/composition.nix       # a local copy of the constructor, exercised only by tests/selection and tests/templates
 ├── hosts/
 │   ├── chiyo/                # laptop · Intel iGPU
 │   ├── osaka/                # workstation · AMD GPU
@@ -85,7 +85,7 @@ dxflake/
 | **Catalogue** | `modules/default.nix` | one `name = ./path;` line per capability, by hand | walk the dendrite tree — a capability with no line is unreachable |
 | **Provider registry** | `modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix` | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
 | **Aggregation** | `modules/aggregations/<group>/default.nix`, by directory name | its `members` by catalogue name, the `providers` a host may choose, its own deferred preference | declare options, carry `mkIf`, or take a `scope` argument — it is plain data |
-| **Selection** | the host's `default.nix`, resolved by `lib/composition.nix` | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
+| **Selection** | the host's `default.nix`, resolved by `inputs.aoide.lib.composition` (`tests/selection/cases.nix` and `tests/templates/run.sh` still exercise the local `lib/composition.nix`) | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
 
 ### Flow
 

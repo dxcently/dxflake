@@ -8,9 +8,9 @@
 # `pkgs.hyprglass` if it doesn't.
 #
 # It only ever paints TRANSLUCENT content, so it is inert on an opaque desktop.
-# That is why every part of it rides `aoideFace` rather than plain selection:
+# That is why every part of it rides `aoideQuickshell` rather than plain selection:
 # the surfaces it is aimed at (aoide-dock, -launcher, -powermenu) exist only
-# when Aoide's Quickshell facet draws them. Selected with the facet off, this
+# when Aoide's Quickshell shell draws them. Selected without that shell, this
 # dendrite is a no-op by construction — which is what lets the shell
 # aggregation name it unconditionally.
 #
@@ -34,27 +34,27 @@
       ...
     }:
     let
-      aoideFace = osConfig.aoide.quickshell.enable;
+      aoideQuickshell = osConfig.aoide.quickshell.enable;
       stylixPolarity =
         if (config ? stylix && config.stylix ? polarity) then config.stylix.polarity else "dark";
       hyprglassTheme = if stylixPolarity == "light" then "light" else "dark";
     in
     {
       wayland.windowManager.hyprland = {
-        plugins = lib.optionals aoideFace [ pkgs.hyprglass ];
+        plugins = lib.optionals aoideQuickshell [ pkgs.hyprglass ];
 
         # hyprglass glosses; it does not blur. Hyprland's own `layerrule = blur
         # on` is what these surfaces sit on, and the plugin refracts over the
         # result — without this pair the plugin loads and shows nothing, which is
         # the usual "hyprglass isn't working" report. Ported verbatim from
-        # Aoide's compositor facet, including its two deliberate exclusions:
+        # Aoide's compositor lane, including its two deliberate exclusions:
         # aoide-bar takes `blur_popups` only (the strip's popouts frost, the
         # strip itself is the song's own ground), and aoide-calendar is pinned
         # blur OFF so its cut-out day grid shows the desktop crisply.
         #
         # The waybar rule is NOT here — it belongs to the desktop this flake
-        # draws with the facet off, so hyprland-decoration owns it.
-        settings.layerrule = lib.optionals aoideFace [
+        # draws without the Quickshell shell, so hyprland-decoration owns it.
+        settings.layerrule = lib.optionals aoideQuickshell [
           "blur on, match:namespace aoide-dock"
           "blur on, match:namespace aoide-launcher"
           "blur on, match:namespace aoide-powermenu"
@@ -82,13 +82,13 @@
         # other opaque window.
         #
         # The namespace list is the three surfaces Aoide glasses. It is static
-        # here on purpose: Aoide's facet appends song-declared widget surfaces
+        # here on purpose: Aoide's compositor lane appends song-declared widget surfaces
         # too, but only `kind = "surface"` widgets ever get a layer surface of
         # their own, and nocturne's sole widget (`vigil`) is `kind = "dock"` —
         # it mounts as an Item inside aoide-dock and is already covered by the
         # dock's own entry. A song declaring a real surface widget would want
         # its namespace added here by hand.
-        extraConfig = lib.optionalString aoideFace ''
+        extraConfig = lib.optionalString aoideQuickshell ''
           plugin:hyprglass {
               manage_window_blur = 1
               default_theme = ${hyprglassTheme}

@@ -19,15 +19,16 @@
       ...
     }:
     let
-      # Aoide's Quickshell facet is a SURFACE owner: once it is on it draws the
+      # Aoide's Quickshell shell is a SURFACE owner: once it runs it draws the
       # bar, the wallpaper, the launcher, the OSD and the notification herald
       # itself. dxflake's own waybar + awww draw the same surfaces, so on a host
-      # that flips the facet they must stand down or both stacks paint at once —
-      # two bars layered, two wallpapers racing the same output.
+      # that selects the quickshell lane they must stand down or both stacks
+      # paint at once — two bars layered, two wallpapers racing the same output.
       #
-      # Keyed on the facet flag, never on a host name. Read through `osConfig`
-      # because the flag is a NixOS option and this is a home lane.
-      aoideFace = osConfig.aoide.quickshell.enable;
+      # Keyed on the `aoide.quickshell.enable` fact, never on a host name. Read
+      # through `osConfig` because the fact is a NixOS option and this is a home
+      # lane.
+      aoideQuickshell = osConfig.aoide.quickshell.enable;
     in
     {
       # This dendrite's own dependency, not free-floating membership: the
@@ -36,8 +37,8 @@
       home.packages = [ pkgs.hyprpolkitagent ];
 
       # The wallpaper + bar block is spliced in place (not appended) so that
-      # with `aoideFace` off the list is character-for-character what it was
-      # before the facet seam existed — order included. awww-daemon leaves with
+      # with `aoideQuickshell` off the list is character-for-character what it
+      # was before the Quickshell seam existed — order included. awww-daemon leaves with
       # its two `img` calls: nothing else drives it, and a daemon with no image
       # to hold is just a process sitting on the Quickshell wallpaper surface's
       # output.
@@ -47,7 +48,7 @@
         "systemd"
         "hypridle"
       ]
-      ++ lib.optionals (!aoideFace) [
+      ++ lib.optionals (!aoideQuickshell) [
         "awww-daemon"
         "awww img -o DP-1 ~/dxflake/song/covers/hero.webp"
         "awww img -o HDMI-A-1 ~/dxflake/song/covers/yuki-standing.png"

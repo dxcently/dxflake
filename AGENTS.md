@@ -14,7 +14,8 @@ Selection is resolved **before** any platform module graph exists.
 
 `mkDefault` sets definition priority and cannot decide imports; `mkIf` cannot keep
 an imported module's declarations out of the graph that imported them. So
-`lib/composition.nix` resolves the whole selection first, with an ordinary
+the constructor (`inputs.aoide.lib.composition`, applied in `flake.nix`)
+resolves the whole selection first, with an ordinary
 `lib.evalModules` pass that knows nothing about NixOS, and only then assembles
 the import list:
 
@@ -344,7 +345,7 @@ condition ahead of the part that does the damage. `--all` stays, because
 narrowing the variable set here would change what a normal login exports.
 
 **chiyo is not covered.** Its `hyprland.conf` comes from Aoide's compositor
-facet, which carries the same defect and belongs to Fable; the durable fix is
+lane, which carries the same defect and belongs to Fable; the durable fix is
 upstream (in home-manager, ultimately) and reaches dxflake by pin bump. Patching
 it from here would put a second writer on the very leaf options
 `modules/dendrites/aoide.nix` documents as a silent-merge trap.

@@ -35,7 +35,7 @@
             }
           )
           // {
-            # Aoide's stylix facet pins polarity and owns the full resolved scheme
+            # Aoide's stylix lane pins polarity and owns the full resolved scheme
             # when active; only fixed-theme hosts keep the Rosé Pine dark contract.
             opacity.terminal = 1.0;
             icons = {

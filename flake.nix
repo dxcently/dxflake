@@ -142,8 +142,7 @@
       url = "git+https://github.com/dxcently/Aoide.git?ref=main";
     };
     quickshell = {
-      # Follows Aoide's own quickshell pin — the shell QML and the runtime
-      # must never drift apart.
+      # Follows Aoide's own quickshell pin.
       follows = "aoide/quickshell";
     };
   };
@@ -162,9 +161,8 @@
 
       composition = inputs.aoide.lib.composition { inherit lib; };
 
-      # The songs, named rather than walked. Aoide exports no handle on its own
-      # songbook directory, so these five stay path reach-ins; each song
-      # self-gates on `aoide.song`.
+      # Five of Aoide's songs, by path; Aoide exports no handle on its songbook
+      # directory. Each song self-gates on `aoide.song`.
       aoideSongs = [
         (inputs.aoide + "/song/songbook/etude/rice.nix")
         (inputs.aoide + "/song/songbook/fugue/rice.nix")
