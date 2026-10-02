@@ -3,28 +3,24 @@
     {
       pkgs,
       config,
-      inputs,
       username,
       lib,
       ...
     }:
     let
-      aoideStylix = config.aoide.facets.stylix.enable;
+      aoideStylix = config.aoide.stylix.enable;
       # dxflake ships one rice today, so the floor's fixed scheme is that
       # rice's palette. When a second rice lands this moves behind the `rice`
       # provider (song/songbook/default.nix).
       transiencePalette = import ../../song/songbook/transience/palette.nix;
     in
     {
-      imports = [ inputs.stylix.nixosModules.stylix ];
-
-      # The stylix option TREE stays imported unconditionally above (Aoide's own
-      # stylix facet probes for its presence via `options ? stylix`, so the module
-      # must always ride every host — this is the one dendrite that stays in the
-      # floor). Whether THIS dendrite's dxflake scheme actually applies is a
-      # separate question, gated on dx.stylix.enable, off by default: a host
-      # names it explicitly. When Aoide's stylix facet is active, dx.stylix keeps
-      # only personal defaults and stays out of color ownership for
+      # The stylix option TREE comes from Aoide's nucleus on every host; a
+      # second import here would be a second copy that does not deduplicate.
+      # Whether THIS dendrite's dxflake scheme actually applies is gated on
+      # dx.stylix.enable, off by default: a host names it explicitly. When
+      # Aoide's stylix lane is active, dx.stylix keeps only personal defaults
+      # and stays out of color ownership for
       # `stylix.base16Scheme`/`stylix.polarity`.
       options.dx.stylix.enable = lib.mkEnableOption "dxflake's own Stylix theme (Rosé Pine)";
       config = lib.mkIf config.dx.stylix.enable {

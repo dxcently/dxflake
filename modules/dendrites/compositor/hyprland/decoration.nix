@@ -18,7 +18,7 @@
       ...
     }:
     let
-      ownsAoideStylix = osConfig.aoide.facets.stylix.enable;
+      ownsAoideStylix = osConfig.aoide.stylix.enable;
       resolvedLivery = resolveAoideLivery osConfig.aoide.livery;
       liveryActiveBorder =
         if resolvedLivery.window.border != null then

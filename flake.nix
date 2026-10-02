@@ -130,11 +130,11 @@
     };
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
-    # dxflake consumes Aoide as a flake input and, on integrating hosts, runs
-    # Aoide's module structure (nucleus/facets/song walked from the input) —
-    # the structure a host RUNS is Aoide's; dxflake's own tree stays the venue
-    # (hosts, hardware, secrets). Every host fetches the same published Aoide
-    # source, locked in flake.lock, without needing a local Aoide checkout.
+    # dxflake consumes Aoide as a flake input through its exports (composition,
+    # nucleus module, overlay, livery). The structure a host RUNS is Aoide's;
+    # dxflake's own tree stays the venue (hosts, hardware, secrets). Every host
+    # fetches the same published Aoide source, locked in flake.lock, without
+    # needing a local Aoide checkout.
     aoide = {
       # No `&rev=` — see the noah427 block above: a rev in the URL is a
       # pin `nix flake update aoide` cannot move, which is what made every
@@ -142,7 +142,7 @@
       url = "git+https://github.com/dxcently/Aoide.git?ref=main";
     };
     quickshell = {
-      # Follows Aoide's own quickshell pin — the facet QML and the runtime
+      # Follows Aoide's own quickshell pin — the shell QML and the runtime
       # must never drift apart.
       follows = "aoide/quickshell";
     };
@@ -160,34 +160,17 @@
       system = "x86_64-linux";
       username = "khoa";
 
-      composition = import ./lib/composition.nix { inherit lib; };
+      composition = inputs.aoide.lib.composition { inherit lib; };
 
-      # ── The Aoide seam ───────────────────────────────────────────────────
-      # Everything below reaches INTO the Aoide input's tree, because the Aoide
-      # flake exports packages, songbookManifest and aoideOptions but no
-      # nixosModules and no lib. Four minimal public exports would close every
-      # one of these paths: nixosModules.default, a songbook module,
-      # lib.livery.resolve, and overlays.default. Until they exist this is the
-      # honest shape of the dependency, named in one place rather than spread
-      # across hosts.
-      aoideTree = [
-        (inputs.aoide + "/modules/default.nix")
-        # The songs, named rather than walked. The walker pulled exactly these
-        # five rice.nix files (`_widgets/` is shelved by its prefix); each song
-        # self-gates on `aoide.song`, so naming them changes nothing but makes
-        # the set visible. It collapses to one import when Aoide exports a
-        # songbook module.
+      # The songs, named rather than walked. Aoide exports no handle on its own
+      # songbook directory, so these five stay path reach-ins; each song
+      # self-gates on `aoide.song`.
+      aoideSongs = [
         (inputs.aoide + "/song/songbook/etude/rice.nix")
         (inputs.aoide + "/song/songbook/fugue/rice.nix")
         (inputs.aoide + "/song/songbook/nocturne/rice.nix")
         (inputs.aoide + "/song/songbook/quodlibet/rice.nix")
         (inputs.aoide + "/song/songbook/sonata/rice.nix")
-        {
-          nixpkgs.overlays = [
-            (import (inputs.aoide + "/lib/pkgs.nix") { inherit lib; }).overlay
-            (_final: _prev: { aoide = inputs.aoide.packages.${system}.default; })
-          ];
-        }
       ];
 
       hostNames = [
@@ -208,15 +191,18 @@
           knownHosts = hostNames;
           registry = import ./modules;
           hostModules = [ ./hosts/${name} ];
-          nucleus = ./modules/nucleus;
+          nucleus = {
+            imports = [
+              inputs.aoide.nixosModules.nucleus
+              ./modules/nucleus
+            ];
+          };
+          overlays = [ inputs.aoide.overlays.default ];
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
-          extraModules = aoideTree ++ [ inputs.disko.nixosModules.disko ];
+          extraModules = aoideSongs ++ [ inputs.disko.nixosModules.disko ];
           specialArgs = {
-            inherit username nixpkgs-stable;
-            resolveAoideLivery = (import (inputs.aoide + "/lib/livery.nix") { inherit lib; }).resolve;
-            inputs = inputs // {
-              aoide = inputs.aoide.inputs.aoide;
-            };
+            inherit username nixpkgs-stable inputs;
+            resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
           };
         }
       );

@@ -18,7 +18,7 @@
       ...
     }:
     let
-      aoideFace = osConfig.aoide.facets.quickshell.enable;
+      aoideFace = osConfig.aoide.quickshell.enable;
     in
     {
       # Its own dependencies, not free-floating membership: the screenshot and

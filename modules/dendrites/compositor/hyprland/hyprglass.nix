@@ -34,7 +34,7 @@
       ...
     }:
     let
-      aoideFace = osConfig.aoide.facets.quickshell.enable;
+      aoideFace = osConfig.aoide.quickshell.enable;
       stylixPolarity =
         if (config ? stylix && config.stylix ? polarity) then config.stylix.polarity else "dark";
       hyprglassTheme = if stylixPolarity == "light" then "light" else "dark";

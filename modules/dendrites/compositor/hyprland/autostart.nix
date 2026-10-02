@@ -27,7 +27,7 @@
       #
       # Keyed on the facet flag, never on a host name. Read through `osConfig`
       # because the flag is a NixOS option and this is a home lane.
-      aoideFace = osConfig.aoide.facets.quickshell.enable;
+      aoideFace = osConfig.aoide.quickshell.enable;
     in
     {
       # This dendrite's own dependency, not free-floating membership: the

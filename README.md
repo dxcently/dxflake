@@ -341,9 +341,10 @@ lock             # hyprlock
 
 ## Aoide directional trust (runtime)
 
-Aoide runtime is wired from the pinned Aoide input by binding the core subflake as
-`inputs.aoide = inputs.aoide.inputs.aoide`, then importing the upstream module
-aggregate once via `modules/default.nix`.
+Aoide runtime is wired from the pinned Aoide input through its exports:
+`flake.nix` composes every host with `inputs.aoide.lib.composition`, adds
+`inputs.aoide.nixosModules.nucleus` to the nucleus and `inputs.aoide.overlays.default`
+to the overlays.
 
 Osaka and yomi-strix enable the upstream `aoide.openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
 
@@ -366,10 +367,10 @@ Those grants are not applied from this flake.
 
 ## Livery -> theme flow and ownership
 
-On hosts that keep dxflake Hyprland behavior but enable `aoide.facets.stylix.enable`
-(for example Osaka), AOIDE owns baked theme ownership:
+On hosts that keep dxflake Hyprland behavior but run Aoide's stylix lane, which
+sets `aoide.stylix.enable` (for example Osaka), AOIDE owns baked theme ownership:
 
-- AOIDE resolves `aoide.livery` into a full scheme through upstream `lib/livery.nix`.
+- AOIDE resolves `aoide.livery` into a full scheme through `inputs.aoide.lib.livery`.
 - `stylix.base16Scheme` and `stylix.polarity` stay owned by AOIDE in that mode.
 - `modules/dendrites/stylix.nix` still provides dxflake font/cursor/icons and
   fixed targets for non-color assets, but does not override colors or polarity

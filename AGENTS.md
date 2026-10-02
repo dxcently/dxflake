@@ -353,13 +353,14 @@ exemption stops being true.
 
 ## The Aoide seam
 
-`flake.nix` still reaches into the Aoide input's tree — `modules/default.nix`,
-`lib/livery.nix`, `lib/pkgs.nix` and the five `song/songbook/*/rice.nix` files —
-because the Aoide flake exports `packages`, `songbookManifest` and
-`aoideOptions` but no `nixosModules` and no `lib`. Those paths are named in one
-place in `flake.nix` and collapse to public imports once upstream exports
-`nixosModules.default`, a songbook module, `lib.livery.resolve` and
-`overlays.default`. Do not add new private-tree paths elsewhere.
+`flake.nix` builds hosts through the Aoide input's exports: `lib.composition`
+(the constructor), `nixosModules.nucleus`, `overlays.default` and
+`lib.livery`. The nucleus carries Aoide's option contract and the Stylix module,
+so no dendrite imports the Stylix module itself. Cross-lane questions are read
+from Aoide's enable facts (`aoide.quickshell.enable`, `aoide.stylix.enable`),
+never from a lane's own option. The one remaining path into the Aoide tree is
+the five `song/songbook/*/rice.nix` files, because Aoide exports no handle on
+its songbook directory. Do not add new private-tree paths elsewhere.
 
 Melete and Mneme (`modules/dendrites/{melete,mneme}.nix`) are sakaki-only. Both
 build from their canonical **private** GitHub repos — `noah427/melete`,

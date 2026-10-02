@@ -22,7 +22,7 @@
       # is what shows through an unfocused terminal. On a facet-off host this would
       # just make terminals see-through with nothing behind them, so yomi-strix
       # keeps its opaque kitty untouched.
-      aoideFace = config.aoide.facets.quickshell.enable;
+      aoideFace = config.aoide.quickshell.enable;
     in
     {
       config = {

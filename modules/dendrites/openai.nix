@@ -7,11 +7,8 @@
 #
 # `pkgs.codex` starts in nixpkgs; a scoped override supplies the current release.
 # `pkgs.chatgpt-linux` has no nixpkgs definition and
-# arrives through the Aoide packages overlay every host already carries — the
-# same package `aoide.openai.enable` installed, so membership is unchanged.
-# Aoide exports it publicly too (`packages.<system>.chatgpt-linux`); reaching
-# that export needs a public overlay/module seam upstream, tracked with the
-# rest of the private-path consumption in flake.nix.
+# arrives through Aoide's `overlays.default`, which every host already carries —
+# the same package `aoide.openai.enable` installed, so membership is unchanged.
 {
   nixos =
     { pkgs, ... }:
