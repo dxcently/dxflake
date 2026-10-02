@@ -11,7 +11,7 @@ root=$(cd ../.. && pwd)
 
 rev=$(jq -r '.nodes.nixpkgs.locked.rev' "$root/flake.lock")
 lib="(builtins.getFlake \"github:nixos/nixpkgs/$rev\").lib"
-habitRev=$(jq -r '.nodes.habit.locked.rev // "v1"' "$root/flake.lock")
+habitRev=$(jq -r '.nodes[.nodes.root.inputs.habit // "habit"].locked.rev // "v1"' "$root/flake.lock")
 habit="(builtins.getFlake \"github:dxcently/habit/$habitRev\")"
 
 pass=0; fail=0

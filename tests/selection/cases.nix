@@ -24,14 +24,15 @@ in
 
   # Every nixos lane file the selection kept imports.
   realRegistryLanesImport =
-    builtins.length (
-      composition.lanesFor {
+    let
+      lanes = composition.lanesFor {
         inherit (sakaki) catalogue;
         selected = sakaki.dendrites;
         lane = "nixos";
         scope = "for the system";
-      }
-    ) > 0;
+      };
+    in
+    lanes != [ ] && builtins.all (m: builtins.isAttrs m || builtins.isFunction m || builtins.isPath m) lanes;
 
   # The groups the host reports.
   realRegistryInventory = builtins.concatStringsSep "," (
