@@ -1,6 +1,10 @@
 # osaka — the workstation. Selection first, then this host's own platform
 # settings; the shared user is attached, not copied.
 {
+  # The song carries the livery (palette + component tiers) and nothing else —
+  # host-agnostic by contract, so this one line is the whole rice swap.
+  song.declared = "sonata";
+
   aggregation = {
     base.enable = true;
     desktop.enable = true;
@@ -13,6 +17,16 @@
 
   dendrites = {
     aoide.enable = true;
+    # Aoide's lanes over dxflake's own paint: the Quickshell surface (bar, dock,
+    # launcher, OSD, wallpaper, herald), the lyra binary with its shellbridge,
+    # the dunst daemon behind the herald (the shell aggregation ships only the
+    # package, so no second daemon), and Aoide's stylix lane for colours
+    # (dx.stylix keeps fonts, cursors, icons). Aoide's compositor lane stays
+    # unselected so dxflake's Hyprland is the only compositor writer.
+    quickshell.enable = true;
+    lyra.enable = true;
+    dunst.enable = true;
+    aoide-stylix.enable = true;
     autopsy.enable = true;
     bonsai.enable = true;
     claude-code.enable = true;
@@ -70,7 +84,7 @@
       # terminal for someone to go looking. The unit's gate is
       # `a2a.enable && pairingPopup` — a graphical session and a dialog binary,
       # not Aoide's shell — so it fires here on the zenity path regardless of
-      # the quickshell facet below.
+      # the quickshell lane.
       aoide.a2a = {
         spawnAgent = "claude";
         spawnPath = [ pkgs.claude-code ];
@@ -84,42 +98,25 @@
       aoide.secrets.members = [ "khoa" ];
 
       # ── Aoide's face, laid over dxflake's own paint ───────────────────────────
-      # osaka takes ONE facet, not chiyo's three. The Quickshell facet is the
-      # visible surface — bar, dock, launcher, OSD, wallpaper, notification
-      # herald — and it is the only facet that composes with dxflake's own
-      # Hyprland + Stylix dendrites: it needs nothing but graphical-session.target
-      # and a compositor that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE,
-      # which the compositor dendrite already provides.
+      # The quickshell lane composes with dxflake's own Hyprland + Stylix
+      # dendrites: it needs nothing but graphical-session.target and a compositor
+      # that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE, which the
+      # compositor dendrite already provides. Colours follow the livery through
+      # Aoide's stylix lane while dx.stylix keeps fonts/cursors/icons.
       #
-      # The compositor facet stays OFF so dxflake's Hyprland behavior stays intact.
-      # Stylix ownership is delegated to the AOIDE stylix facet so colors follow
-      # livery while dx.stylix keeps fonts/cursors/icons and non-style targets.
-      # This is load-bearing for Osaka specifically: chiyo does not select the shell aggregation
-      # (`dx.stylix.enable = false`) and can run all AOIDE facets because it no
-      # longer overlaps this side of the theme stack.
+      # Deselecting the quickshell lane (and lyra and dunst, which have no purpose
+      # without the surface) is the whole revert: the waybar/awww/rofi stand-down
+      # in modules/dendrites/compositor/hyprland/ keys on `aoide.quickshell.enable`,
+      # so waybar, both awww wallpapers and SUPER+SPACE→rofi come back, and aoided
+      # anchors on default.target again.
       #
-      # ── Reverting to the plain flake rice ────────────────────────────────────
-      # Flip `aoide.facets.quickshell.enable` back to false (and with it lyra and
-      # dunst below, which have no purpose without the surface). That single flag
-      # is what the waybar/awww/rofi stand-down in
-      # modules/dendrites/compositor/hyprland/ keys on, so waybar, both awww
-      # wallpapers and SUPER+SPACE→rofi
-      # all come back exactly as they were, and aoided drops back to anchoring on
-      # default.target instead of graphical-session.target. Nothing else to undo.
-      #
-      # Consequence of that anchoring worth knowing: with the facet ON, aoided and
-      # the A2A door become `partOf` graphical-session.target — the door lives and
-      # dies with the desktop session rather than with the boot.
-      # The song carries the livery (palette + component tiers) and nothing else —
-      # host-agnostic by contract, so this one line is the whole rice swap. Its own
-      # rice.nix self-gates on `aoide.song == "sonata"`; every other song in the
-      # songbook stays inert. Osaka keeps the shipped standard explicit by naming
-      # "sonata" here.
-      aoide.song = "sonata";
+      # With the lane on, aoided and the A2A door are `partOf`
+      # graphical-session.target — the door lives and dies with the desktop
+      # session rather than with the boot.
 
       # ── Cover art: the venue's own ground ────────────────────────────────────
       # Both nocturne and sonata leave the cover note null on purpose ("no cover"
-      # → the facet paints a deterministic solid from palette.bg), and with
+      # → the lane paints a deterministic solid from palette.bg), and with
       # dxflake's awww calls now stood down there is nothing else drawing a
       # desktop image — that is why the wallpaper read as broken rather than as a
       # chosen flat ground. This bakes osaka's own image as an immutable store
@@ -182,7 +179,7 @@
       # SUPER+W summons AoideWallpaperPicker, which enumerates its grid by shelling
       # `ls -1 $AOIDE_ROOT/song/covers` and, on a pick, stages the chosen path into
       # song/stage/cover.json — which AoideWallpaper watches and hot-swaps to. But
-      # nothing in Aoide ever CREATES that directory (the quickshell facet deploys
+      # nothing in Aoide ever CREATES that directory (the quickshell lane deploys
       # only run/qml/), so on osaka it did not exist and the picker opened onto an
       # empty grid. Pointing it at dxflake's own wallpaper collection makes the
       # switcher useful immediately, and keeps the venue's images in the venue.
@@ -198,18 +195,6 @@
           color8 #${config.lib.stylix.colors.base04}
         '';
       };
-      aoide.facets.quickshell.enable = true;
-      aoide.facets.stylix.enable = true;
-      # Installs the `lyra` binary and enables shellbridge (nucleus/shellbridge.nix
-      # is gated on lyra AND the facet). Defaults to following the facet; named
-      # explicitly the way chiyo and yomi-strix name it.
-      aoide.lyra.enable = true;
-      # The notification DAEMON behind the herald surface. dxflake ships the dunst
-      # PACKAGE from the shell aggregation but never starts a service, so there is
-      # no second daemon to collide with — this is what actually puts
-      # org.freedesktop.Notifications on the bus here. Every rule is skip_display;
-      # dunst feeds `lyra herald push` and Quickshell draws.
-      aoide.dunst.enable = true;
       dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
       # Two upstream package fixes for this nixpkgs pin. Osaka is
       # the only consumer of either package, so the overlay lives here rather
