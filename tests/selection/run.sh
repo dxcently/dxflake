@@ -12,7 +12,7 @@ root=$(cd ../.. && pwd)
 
 # lib and habit come from the flake's own lock, so the cases run against the lib
 # every host evaluates with and the habit every host is built by.
-rev=$(jq -r '.nodes.nixpkgs.locked.rev' "$root/flake.lock")
+rev=$(jq -r '.nodes[.nodes.root.inputs.nixpkgs].locked.rev' "$root/flake.lock")
 lib="(builtins.getFlake \"github:nixos/nixpkgs/$rev\").lib"
 habitRev=$(jq -r '.nodes[.nodes.root.inputs.habit // "habit"].locked.rev // "v1"' "$root/flake.lock")
 habit="(builtins.getFlake \"github:dxcently/habit/$habitRev\")"

@@ -9,7 +9,7 @@ set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 root=$(cd ../.. && pwd)
 
-rev=$(jq -r '.nodes.nixpkgs.locked.rev' "$root/flake.lock")
+rev=$(jq -r '.nodes[.nodes.root.inputs.nixpkgs].locked.rev' "$root/flake.lock")
 lib="(builtins.getFlake \"github:nixos/nixpkgs/$rev\").lib"
 habitRev=$(jq -r '.nodes[.nodes.root.inputs.habit // "habit"].locked.rev // "v1"' "$root/flake.lock")
 habit="(builtins.getFlake \"github:dxcently/habit/$habitRev\")"

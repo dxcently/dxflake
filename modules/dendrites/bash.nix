@@ -36,7 +36,7 @@
           dxrebuild = "nh os switch /home/khoa/dxflake/";
           dxupdate = "nh os switch /home/khoa/dxflake/ --update";
           # Just the fast-moving first-party inputs, then switch. `dxupdate`
-          # re-locks EVERYTHING (nixpkgs, hyprland, stylix, ...), a world rebuild
+          # re-locks EVERYTHING (nixpkgs, home-manager, Aoide's own inputs, ...), a world rebuild
           # for what is usually a one-repo change. None of these inputs carries a
           # `rev=` in its URL (see flake.nix), so this is the whole "a new commit
           # landed" workflow. A bad upstream commit fails the BUILD, not the box;
