@@ -9,10 +9,11 @@
 # is one import that turns on the CORE baseline every fleet box wants, so
 # hosts.wiring stops repeating the same three flags. Every knob that
 # genuinely varies per host (a2a.spawnAgent/spawnPath/discoveryAdvertise/
-# tokenFile, secrets.members, aoide.song, …) is set by the host directly on
-# the raw `aoide.*` namespace once this dendrite (or any aoide-carrying host)
-# has put it in scope — exactly how sakaki and osaka already did before this
-# dendrite existed. Wrapping those in a parallel `dx.aoide.*` mirror would
+# tokenFile, secrets.members, …) is set by the host directly on the raw
+# `aoide.*` namespace once this dendrite (or any aoide-carrying host) has put
+# it in scope. The song is the exception: a host names it as `song.declared`
+# on its record, and the songs hook sets `aoide.song` from that, so a host
+# never writes `aoide.song` itself. Wrapping those in a parallel `dx.aoide.*` mirror would
 # just rename Aoide's own documented options for no reason; convention here
 # follows the option contract that already exists rather than inventing one.
 #
@@ -38,7 +39,8 @@
 # by the shell and base aggregations) painting its desktop; with the
 # quickshell fact left off, aoided anchors to default.target and the door
 # rides it (loopback only). Such a host must never ALSO select Aoide's
-# compositor or stylix lane beside dxflake's own Hyprland/Stylix dendrites.
+# compositor or stylix lane (catalogued here as `aoide-compositor` and
+# `aoide-stylix`) beside dxflake's own Hyprland/Stylix dendrites.
 # Setting `aoide.compositor.enable` or `aoide.stylix.enable` by hand is no
 # substitute and paints nothing: facts are set by the lane that owns the
 # thing. For stylix the two writers meet on

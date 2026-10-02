@@ -135,8 +135,9 @@
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
     # dxflake consumes Aoide as a flake input through its exports (nucleus
-    # module, overlay, livery, catalogue, songbook). Hosts are composed by habit, which
-    # Aoide builds on too: its habit follows ours so one copy is in the graph.
+    # module, overlay, livery, catalogue, songbook). Hosts are composed by
+    # habit, which Aoide builds on too: its habit follows ours so one copy is in
+    # the graph.
     # The structure a host RUNS is Aoide's; dxflake's own tree stays the venue
     # (hosts, hardware, secrets). Every host fetches the same published Aoide
     # source, locked in flake.lock, without needing a local Aoide checkout.
