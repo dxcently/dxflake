@@ -135,7 +135,7 @@
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
     # dxflake consumes Aoide as a flake input through its exports (nucleus
-    # module, overlay, livery, catalogue). Hosts are composed by habit, which
+    # module, overlay, livery, catalogue, songbook). Hosts are composed by habit, which
     # Aoide builds on too: its habit follows ours so one copy is in the graph.
     # The structure a host RUNS is Aoide's; dxflake's own tree stays the venue
     # (hosts, hardware, secrets). Every host fetches the same published Aoide
@@ -185,15 +185,11 @@
         }
       ];
 
-      # Five of Aoide's songs, by path; Aoide exports no handle on its songbook
-      # directory. Each song self-gates on `aoide.song`.
-      aoideSongs = [
-        (inputs.aoide + "/song/songbook/etude/rice.nix")
-        (inputs.aoide + "/song/songbook/fugue/rice.nix")
-        (inputs.aoide + "/song/songbook/nocturne/rice.nix")
-        (inputs.aoide + "/song/songbook/quodlibet/rice.nix")
-        (inputs.aoide + "/song/songbook/sonata/rice.nix")
-      ];
+      songbookDir = inputs.aoide.songbookRoot;
+      songbook = inputs.aoide.lib.songbook {
+        inherit lib;
+        songbook = songbookDir;
+      };
 
       hostNames = [
         "chiyo"
@@ -221,7 +217,27 @@
           };
           overlays = [ inputs.aoide.overlays.default ];
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
-          extraModules = aoideSongs ++ [ inputs.disko.nixosModules.disko ];
+          extraModules = [ inputs.disko.nixosModules.disko ];
+          selectionModules = [ songbook.selectionModule ];
+          extraModulesFor =
+            sel:
+            let
+              song = songbook.check {
+                inherit (sel) song;
+                lyra = sel.dendrites.lyra.enable;
+              };
+            in
+            songbook.songModules song
+            ++ [
+              {
+                _module.args = {
+                  inherit (songbook) song borrow;
+                  songbook = songbookDir;
+                };
+                aoide.song = song.declared;
+                aoide.songbook.builtIn = songbook.builtIn song;
+              }
+            ];
           specialArgs = {
             inherit username nixpkgs-stable inputs;
             resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
