@@ -1,15 +1,32 @@
 # chiyo — the laptop, and the full AoideOS paint carrier.
 {
+  song.declared = "sonata";
+
   aggregation = {
     base.enable = true;
     # desktop stays: it carries pipewire, fonts, fcitx5, portals and ly login —
     # none of those collide with Aoide's paint. The shell aggregation is NOT
-    # selected here, once the paint facets are on.
+    # selected here: Aoide's lanes paint instead.
     desktop.enable = true;
   };
 
   dendrites = {
     aoide.enable = true;
+    # Aoide's paint carrier: the Quickshell surface, lyra, the dunst daemon
+    # behind the herald, Aoide's own clipboard and screenshot services, the
+    # hyprland behaviour lane (keybinds, input, tiling), and the stylix and
+    # compositor lanes (catalogued as aoide-stylix and aoide-compositor).
+    quickshell.enable = true;
+    lyra.enable = true;
+    dunst.enable = true;
+    clipboard.enable = true;
+    screenshot.enable = true;
+    hyprland.enable = true;
+    aoide-stylix.enable = true;
+    aoide-compositor = {
+      enable = true;
+      provider = "hyprland";
+    };
     autopsy.enable = true;
     bluetooth.enable = true;
     claude-code.enable = true;
@@ -41,7 +58,6 @@
   nixos =
     {
       pkgs,
-      lib,
       username,
       ...
     }:
@@ -56,25 +72,16 @@
         spawnAgent = "claude";
         spawnPath = [ pkgs.claude-code ];
       };
-      # chiyo is the full AoideOS carrier (L-C4, task #107): the complete Aoide
-      # paint stack owns the session — compositor (Hyprland wiring + livery),
-      # stylix (base16 fan-out), and quickshell (bar/dock/launcher/theming) —
-      # replacing dxflake's own Hyprland + Stylix dendrites, which are turned off
-      # above (hyprland is not imported, `dx.stylix.enable = false`) so only one
-      # writer ever touches the leaf options the two stacks share (see
-      # modules/dendrites/aoide.nix's header for the full collision reasoning).
-      # aoide.hyprland.enable is the separate BEHAVIOUR dendrite (keybinds, input,
-      # tiling layout) that pairs with the compositor facet's LOOK — without it
+      # chiyo is the full AoideOS carrier: the complete Aoide paint stack owns the
+      # session — compositor (Hyprland wiring + livery), stylix (base16 fan-out),
+      # and quickshell (bar/dock/launcher/theming) — replacing dxflake's own
+      # Hyprland + Stylix dendrites, which stay unselected here (`dx.stylix.enable
+      # = false`) so only one writer ever touches the leaf options the two stacks
+      # share (see modules/dendrites/aoide.nix's header for the collision
+      # reasoning). The hyprland lane is the BEHAVIOUR half (keybinds, input,
+      # tiling layout) that pairs with the compositor lane's LOOK — without it
       # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
-      # no window movement). aoide.song stays named explicitly for the same
-      # reason yomi-strix's own flake names it: "sonata" is already the default,
-      # but naming your song is good practice, not a sign it's a non-default pick.
-      aoide.song = "sonata";
-      aoide.facets.quickshell.enable = true;
-      aoide.facets.compositor.enable = true;
-      aoide.facets.stylix.enable = true;
-      aoide.hyprland.enable = true;
-      aoide.lyra.enable = true;
+      # no window movement).
       # Same Rosé Pine override as osaka's (hosts/osaka/default.nix).
       aoide.livery.override = {
         bg = "#191724";
@@ -98,33 +105,20 @@
         window.borderInactive = "#9ccfd8";
       };
       stylix.polarity = "dark";
-      # dunst is the notification DAEMON (org.freedesktop.Notifications, history,
-      # pause levels) behind the quickshell herald, which only ever draws what
-      # dunst feeds it — no dunst, no notifications reach the bar/dock at all.
-      # Off by default (like every dendrite); named explicitly here, same as
-      # yomi-strix's own line. Requires aoide.lyra.enable (already on above): the
-      # herald-feed rule hands every notification to `lyra herald push`.
-      aoide.dunst.enable = true;
-      # Login stays dxflake's own ly (the desktop import above), not the
-      # compositor facet's greetd stub — two session managers must never race the
-      # same tty. The facet assigns `services.greetd.enable` plainly (true), so
-      # only an mkForce wins here.
-      services.greetd.enable = lib.mkForce false;
+      # Login stays dxflake's own ly (the desktop import above); the greeter lane
+      # is not selected, so nothing else claims `services.greetd`.
       # Lock screen: chiyo does not select the shell aggregation, so it takes
       # dxflake's hyprlock dendrite on its own (imported above). Aoide's own
-      # hyprland dendrite binds SUPER+ESCAPE to hyprlock directly and
+      # hyprland lane binds SUPER+ESCAPE to hyprlock directly and
       # shellbridge's powermenu Lock action shells the same binary — Aoide ships
       # no lockscreen anchor of its own yet (modules/dendrites/hyprlock.nix), so
       # the binary + PAM service are carved out and imported independently here.
       # Non-paint utilities the (unselected) shell aggregation used to carry.
-      # wl-clipboard/cliphist/satty/hyprshot stay OFF: Aoide ships its own
-      # equivalents with matching systemd services and keybinds
-      # (aoide.clipboard.enable, aoide.screenshot.enable, both flipped below) —
-      # switching those packages on here would just shadow them. brightnessctl
-      # and ydotool have no Aoide-side equivalent, so this host takes those two
-      # out of the shared list by name.
-      aoide.clipboard.enable = true;
-      aoide.screenshot.enable = true;
+      # wl-clipboard/cliphist/satty/hyprshot stay OFF: Aoide's clipboard and
+      # screenshot lanes ship their own equivalents with matching systemd
+      # services and keybinds — switching those packages on here would just
+      # shadow them. brightnessctl and ydotool have no Aoide-side equivalent,
+      # so this host takes those two out of the shared list by name.
       dx.packages.brightnessctl.enable = true;
       dx.packages.ydotool.enable = true;
       # upowerd on the system bus — the bar's battery gauge and the power stele
@@ -139,11 +133,11 @@
       # behaviour dendrite doesn't carry — see modules/dendrites/compositor/hyprland/hyprland.nix's
       # header: media/brightness XF86 keys are deliberately out of its scope).
       # `settings` is a separate option from the `extraConfig`/`lines` option
-      # Aoide's own facets and dendrites write to, so this merges alongside them
+      # Aoide's own lanes write to, so this merges alongside them
       # rather than colliding. Only chiyo's own entries are carried — the AOC/
       # Samsung monitor block in the compositor dendrite belongs to
       # osaka, not chiyo. Keybinds/decoration/animations are otherwise NOT
-      # carried: AoideOS owns those (aoide.hyprland.enable above).
+      # carried: AoideOS owns those (the hyprland lane above).
       home-manager.users.${username} = {
         wayland.windowManager.hyprland.settings = {
           monitor = [

@@ -16,7 +16,7 @@ against Hyprland itself lives in the provider's own folder —
 written against; the compositor-agnostic surfaces sit at the dendrite root.
 Each one is independently selectable because each
 answers a question a host can answer differently — chiyo answers all of them
-with Aoide's facets instead, selects neither `shell` nor `compositor`, and
+with Aoide's lanes instead, selects neither `shell` nor `compositor`, and
 imports the single dendrite (`hyprlock`) it still wants.
 
 ## Old block → new owner
