@@ -136,8 +136,8 @@ imports, fetches and package computation inside those functions.
 
 ## Pending: songs and palettes
 
-There is no template for a Lyra song or palette yet. This flake consumes Aoide's
-`lib.composition`, `lib.livery`, `nixosModules.nucleus` and `overlays.default`,
+There is no template for a Lyra song or palette yet. This flake consumes habit's
+`lib.composition` and Aoide's `lib.livery`, `nixosModules.nucleus` and `overlays.default`,
 and not yet `lib.songbook`, Aoide's contract for songs that live in the
 consumer's own tree (Aoide's `docs/architecture/PACKAGE-LAYOUT.md` § Songs,
 from a consumer's side; the palette note schema is its CONTRACTS §1). Aoide

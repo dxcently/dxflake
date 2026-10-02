@@ -85,7 +85,7 @@ dxflake/
 | **Catalogue** | `modules/default.nix` | one `name = ./path;` line per capability, by hand | walk the dendrite tree — a capability with no line is unreachable |
 | **Provider registry** | `modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix` | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
 | **Aggregation** | `modules/aggregations/<group>/default.nix`, by directory name | its `members` by catalogue name, the `providers` a host may choose, its own deferred preference | declare options, carry `mkIf`, or take a `scope` argument — it is plain data |
-| **Selection** | the host's `default.nix`, resolved by `inputs.aoide.lib.composition` (`tests/selection/cases.nix` and `tests/templates/run.sh` still exercise the local `lib/composition.nix`) | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
+| **Selection** | the host's `default.nix`, resolved by `inputs.habit.lib.composition` (`tests/selection/cases.nix` and `tests/templates/run.sh` still exercise the local `lib/composition.nix`) | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
 
 ### Flow
 
@@ -342,9 +342,10 @@ lock             # hyprlock
 ## Aoide directional trust (runtime)
 
 Aoide runtime is wired from the pinned Aoide input through its exports:
-`flake.nix` composes every host with `inputs.aoide.lib.composition`, adds
+`flake.nix` composes every host with `inputs.habit.lib.composition`, adds
 `inputs.aoide.nixosModules.nucleus` to the nucleus and `inputs.aoide.overlays.default`
-to the overlays.
+to the overlays. The registry merges dxflake's catalogue with the Aoide lanes
+named in `aoideLanes`; a name both define fails evaluation.
 
 Osaka and yomi-strix enable the upstream `aoide.openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
 

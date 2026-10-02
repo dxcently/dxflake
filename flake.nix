@@ -9,6 +9,10 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    habit = {
+      url = "github:dxcently/habit/v1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -130,16 +134,18 @@
     };
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
-    # dxflake consumes Aoide as a flake input through its exports (composition,
-    # nucleus module, overlay, livery). The structure a host RUNS is Aoide's;
-    # dxflake's own tree stays the venue (hosts, hardware, secrets). Every host
-    # fetches the same published Aoide source, locked in flake.lock, without
-    # needing a local Aoide checkout.
+    # dxflake consumes Aoide as a flake input through its exports (nucleus
+    # module, overlay, livery, catalogue). Hosts are composed by habit, which
+    # Aoide builds on too: its habit follows ours so one copy is in the graph.
+    # The structure a host RUNS is Aoide's; dxflake's own tree stays the venue
+    # (hosts, hardware, secrets). Every host fetches the same published Aoide
+    # source, locked in flake.lock, without needing a local Aoide checkout.
     aoide = {
       # No `&rev=` — see the noah427 block above: a rev in the URL is a
       # pin `nix flake update aoide` cannot move, which is what made every
       # Aoide bump a hand edit of this file. The rev lives in flake.lock now.
       url = "git+https://github.com/dxcently/Aoide.git?ref=main";
+      inputs.habit.follows = "habit";
     };
     quickshell = {
       follows = "aoide/quickshell";
@@ -158,7 +164,26 @@
       system = "x86_64-linux";
       username = "khoa";
 
-      composition = inputs.aoide.lib.composition { inherit lib; };
+      composition = inputs.habit.lib.composition { inherit lib; };
+
+      aoideLanes = {
+        quickshell = inputs.aoide.nixosModules.quickshell;
+        lyra = inputs.aoide.nixosModules.lyra;
+        dunst = inputs.aoide.nixosModules.dunst;
+        clipboard = inputs.aoide.nixosModules.clipboard;
+        screenshot = inputs.aoide.nixosModules.screenshot;
+        hyprland = inputs.aoide.nixosModules.hyprland;
+        aoide-stylix = inputs.aoide.nixosModules.stylix;
+        aoide-compositor = inputs.aoide.nixosModules.compositor;
+      };
+
+      registry = (inputs.habit.lib.catalogues { inherit lib; }).mergeRegistries [
+        (import ./modules // { name = "dx"; })
+        {
+          name = "aoide";
+          catalogue = aoideLanes;
+        }
+      ];
 
       # Five of Aoide's songs, by path; Aoide exports no handle on its songbook
       # directory. Each song self-gates on `aoide.song`.
@@ -186,7 +211,7 @@
           # checks those names against this list so a typo fails loudly instead
           # of applying nowhere.
           knownHosts = hostNames;
-          registry = import ./modules;
+          inherit registry;
           hostModules = [ ./hosts/${name} ];
           nucleus = {
             imports = [

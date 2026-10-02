@@ -14,7 +14,7 @@ Selection is resolved **before** any platform module graph exists.
 
 `mkDefault` sets definition priority and cannot decide imports; `mkIf` cannot keep
 an imported module's declarations out of the graph that imported them. So
-the constructor (`inputs.aoide.lib.composition`, applied in `flake.nix`)
+the constructor (`inputs.habit.lib.composition`, applied in `flake.nix`)
 resolves the whole selection first, with an ordinary
 `lib.evalModules` pass that knows nothing about NixOS, and only then assembles
 the import list:
@@ -354,9 +354,14 @@ exemption stops being true.
 
 ## The Aoide seam
 
-`flake.nix` builds hosts through the Aoide input's exports: `lib.composition`
-(the constructor), `nixosModules.nucleus`, `overlays.default` and
-`lib.livery`. The nucleus carries Aoide's option contract and the Stylix module,
+`flake.nix` composes hosts with habit (`inputs.habit.lib.composition`; Aoide's
+own habit input follows ours) and builds them through the Aoide input's
+exports: `nixosModules.nucleus`, `overlays.default`, `lib.livery` and the lanes
+named in `aoideLanes`. The registry is dxflake's own and those lanes merged by
+habit's `mergeRegistries`, so a name both define is an error, never a silent
+winner. Aoide's `stylix` and `compositor` clash with dxflake's dendrites of the
+same names and are selected as `aoide-stylix` and `aoide-compositor`. The
+nucleus carries Aoide's option contract and the Stylix module,
 so no dendrite imports the Stylix module itself. Cross-lane questions are read
 from Aoide's enable facts (`aoide.quickshell.enable`, `aoide.stylix.enable`),
 never from a lane's own option. The one remaining path into the Aoide tree is
