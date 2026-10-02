@@ -345,6 +345,9 @@ Aoide runtime is wired from the pinned Aoide input through its exports:
 `inputs.aoide.nixosModules.nucleus` to the nucleus and `inputs.aoide.overlays.default`
 to the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
+Aoide's `habit` and `nixpkgs` inputs follow dxflake's. dxflake declares no
+`stylix`, `hyprland` or `quickshell` input: those are Aoide's, and reach the
+hosts through its exports.
 
 Osaka and yomi-strix enable dxflake's own `openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; neither sets an upstream Aoide flag for it. Osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
 

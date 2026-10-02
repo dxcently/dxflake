@@ -4,11 +4,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
-    };
     habit = {
       url = "github:dxcently/habit/v1";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,10 +14,6 @@
     };
     nvf = {
       url = "github:notashelf/nvf";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    stylix = {
-      url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     aagl = {
@@ -137,7 +128,9 @@
     # dxflake consumes Aoide as a flake input through its exports (nucleus
     # module, overlay, livery, catalogue, songbook). Hosts are composed by
     # habit, which Aoide builds on too: its habit follows ours so one copy is in
-    # the graph.
+    # the graph. Its nixpkgs follows ours as well, so Aoide's packages build
+    # against the pin the hosts run. Stylix, Hyprland and Quickshell are Aoide's
+    # inputs and reach the hosts through its exports; dxflake declares none.
     # The structure a host RUNS is Aoide's; dxflake's own tree stays the venue
     # (hosts, hardware, secrets). Every host fetches the same published Aoide
     # source, locked in flake.lock, without needing a local Aoide checkout.
@@ -147,9 +140,7 @@
       # Aoide bump a hand edit of this file. The rev lives in flake.lock now.
       url = "git+https://github.com/dxcently/Aoide.git?ref=main";
       inputs.habit.follows = "habit";
-    };
-    quickshell = {
-      follows = "aoide/quickshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs =
