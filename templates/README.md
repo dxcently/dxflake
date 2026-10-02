@@ -137,10 +137,11 @@ imports, fetches and package computation inside those functions.
 ## Pending: songs and palettes
 
 There is no template for a Lyra song or palette yet. This flake consumes Aoide's
-`lib.composition`, `lib.livery`, `nixosModules.nucleus` and `overlays.default`;
-none of them is an authoring contract for songs or palettes, and Aoide exports
-no handle on its songbook directory, so a template here would be invented
-rather than supported. The real examples live in Aoide's own
-`song/songbook/<name>/rice.nix`, and the design is
-`~/Aoide/docs/architecture/NIX-COMPOSITION.md` § Lyra and songbook.
-This gets a template when that contract is public.
+`lib.composition`, `lib.livery`, `nixosModules.nucleus` and `overlays.default`,
+and not yet `lib.songbook`, Aoide's contract for songs that live in the
+consumer's own tree (Aoide's `docs/architecture/PACKAGE-LAYOUT.md` § Songs,
+from a consumer's side; the palette note schema is its CONTRACTS §1). Aoide
+exports no handle on its own songbook directory. The real examples live in
+Aoide's `song/songbook/<name>/rice.nix`, and the design is its
+`docs/architecture/NIX-COMPOSITION.md` § Lyra and songbook. This gets a
+template once this flake consumes `lib.songbook`.

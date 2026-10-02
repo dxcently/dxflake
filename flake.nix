@@ -142,7 +142,6 @@
       url = "git+https://github.com/dxcently/Aoide.git?ref=main";
     };
     quickshell = {
-      # Follows Aoide's own quickshell pin.
       follows = "aoide/quickshell";
     };
   };

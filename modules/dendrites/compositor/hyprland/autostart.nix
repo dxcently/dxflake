@@ -19,7 +19,7 @@
       ...
     }:
     let
-      # Aoide's Quickshell shell is a SURFACE owner: once it runs it draws the
+      # Aoide's Quickshell is a SURFACE owner: once it runs it draws the
       # bar, the wallpaper, the launcher, the OSD and the notification herald
       # itself. dxflake's own waybar + awww draw the same surfaces, so on a host
       # that selects the quickshell lane they must stand down or both stacks

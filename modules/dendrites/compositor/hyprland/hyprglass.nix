@@ -10,7 +10,7 @@
 # It only ever paints TRANSLUCENT content, so it is inert on an opaque desktop.
 # That is why every part of it rides `aoideQuickshell` rather than plain selection:
 # the surfaces it is aimed at (aoide-dock, -launcher, -powermenu) exist only
-# when Aoide's Quickshell shell draws them. Selected without that shell, this
+# when Aoide's Quickshell draws them. Selected without that shell, this
 # dendrite is a no-op by construction — which is what lets the shell
 # aggregation name it unconditionally.
 #
@@ -53,7 +53,7 @@
         # blur OFF so its cut-out day grid shows the desktop crisply.
         #
         # The waybar rule is NOT here — it belongs to the desktop this flake
-        # draws without the Quickshell shell, so hyprland-decoration owns it.
+        # draws without Aoide's Quickshell, so hyprland-decoration owns it.
         settings.layerrule = lib.optionals aoideQuickshell [
           "blur on, match:namespace aoide-dock"
           "blur on, match:namespace aoide-launcher"

@@ -24,9 +24,10 @@
 #                          it yet — a host adds itself explicitly)
 #
 # ── Paint is NOT this dendrite's business ──────────────────────────────────
-# Lyra (the rice/paint binary) and the Quickshell render surface are gated by
-# Aoide's own flags — `aoide.quickshell.enable` (the actual shell
-# surface: bar/dock/notifications/…, a fact the quickshell lane sets) and
+# Lyra (the rice/paint binary) and the Quickshell render surface come from
+# selecting Aoide's lanes, which report themselves through two facts —
+# `aoide.quickshell.enable` (the actual shell surface:
+# bar/dock/notifications/…, set by the quickshell lane) and
 # `aoide.lyra.enable` (installs the `lyra` binary; false by default, set
 # `mkDefault true` by the painting lane). This dendrite never touches either,
 # so they stay at their off-by-default value on every host that only imports

@@ -58,7 +58,7 @@
           # it over and hands it straight back when switched off. SUPER+G and
           # SUPER+W are additive — both are unbound in this dendrite otherwise.
           # SUPER+C is NOT swapped to `aoide:clipboard`: that chapter is fed by
-          # the shell's own cliphist provider, but dxflake's rofi picker below
+          # the cliphist provider in Aoide's clipboard lane, but dxflake's rofi picker below
           # already works and stays the clipboard seam on these hosts.
           bind = [
             "SUPER, RETURN, exec, kitty"
