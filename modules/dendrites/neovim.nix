@@ -23,7 +23,7 @@
       # colliding silently). Every host runs this dendrite unconditionally, so
       # the protection lives here rather than per-host: dxflake's own neovim
       # theme is never Stylix's to touch, on any host, regardless of which
-      # Stylix (dxflake's own or Aoide's facet) happens to be active.
+      # Stylix (dxflake's own or Aoide's stylix lane) happens to be active.
       # Guarded on `options ? stylix`: a headless host (sakaki) carries no
       # Stylix HM module at all, so the option doesn't exist there and a plain
       # definition would error at eval rather than simply being inert.

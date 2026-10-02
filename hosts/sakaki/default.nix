@@ -1,4 +1,4 @@
-# sakaki — the server. Headless: Aoide runs here with no facets and nothing
+# sakaki — the server. Headless: Aoide runs here with no paint lanes and nothing
 # paints, so no desktop or shell aggregation and no graphical dendrite.
 {
   aggregation.base.enable = true;
@@ -339,7 +339,7 @@
       dx.packages.hugo.enable = true;
 
       # Aoide, headless: the CLI + aoided runtime and the A2A door, for
-      # federation/doors testing against yomi-strix. No facets, no rice —
+      # federation/doors testing against yomi-strix. No paint lanes, no rice —
       # nothing paints on this box. The core baseline (aoide.enable, the A2A
       # door, the secrets broker) comes from the shared dendrite
       # (modules/dendrites/aoide.nix), chiyo and osaka's same one; everything

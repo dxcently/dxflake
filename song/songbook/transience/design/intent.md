@@ -41,7 +41,7 @@ carries the bar's own composition: which modules sit left, centre and right,
 and how each one reads. The sheet is a template with `{{base16.baseXX}}`
 placeholders, Lyra's own syntax, filled at build time from the live Stylix
 palette — which is exactly what the sheet read before it was a file, so a host
-whose colours are repainted by Aoide's stylix facet is still repainted.
+whose colours are repainted by Aoide's stylix lane is still repainted.
 
 **rofi** and **wlogout** — nothing bespoke, and that is a finding rather than
 an omission. Neither ever had a stylesheet of its own; both take the base16

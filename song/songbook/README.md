@@ -40,7 +40,7 @@ users.khoa.aggregation.shell.rice.provider = "transience";
 
 The registry imports nothing, so an unselected rice is never read — same
 guarantee as `modules/dendrites/compositor/` and proved by the same fixture in
-`tests/selection`.
+habit's composition suite.
 
 ## Why the layout mirrors Aoide's `song/songbook/`
 

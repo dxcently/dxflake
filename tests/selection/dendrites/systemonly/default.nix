@@ -1,3 +1,0 @@
-{
-  nixos = { ... }: { fixture.systemonly = true; };
-}

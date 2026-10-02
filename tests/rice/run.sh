@@ -46,7 +46,7 @@ fi
 # livery.json is transience's generated record; modules/dendrites/stylix.nix
 # reads the same palette.nix for the scheme it actually paints with. This
 # proves the chain lands on a real host, not just that the two files agree on
-# paper — and catches Aoide's own stylix facet quietly overriding it.
+# paper — and catches Aoide's own stylix lane quietly overriding it.
 authored=$(jq -r '.base16 | to_entries | sort_by(.key) | .[] | "\(.key)=\(.value|ascii_downcase|ltrimstr("#"))"' "$song/livery.json")
 # The --apply expression is Nix source and must reach nix verbatim.
 # shellcheck disable=SC2016

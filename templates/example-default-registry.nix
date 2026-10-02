@@ -6,7 +6,7 @@
 #           aggregation all reach a dendrite by NAME.
 # Replace:  the catalogue entries.
 #
-# This is NOT a module. It is plain data, read by lib/composition.nix before any
+# This is NOT a module. It is plain data, read by habit's composition before any
 # module graph exists. Nothing walks the dendrite tree: a capability exists here
 # or it cannot be selected, and a name with no line is unreachable — which is
 # how a capability is shelved without deleting its file.

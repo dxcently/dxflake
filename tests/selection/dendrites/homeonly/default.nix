@@ -1,3 +1,0 @@
-{
-  homeManager = { ... }: { fixture.homeonly = true; };
-}

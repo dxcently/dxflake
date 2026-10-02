@@ -134,16 +134,10 @@ selection happens one level up:
 2. every Hyprland-only dendrite is named by `modules/aggregations/compositor/`,
    which a non-Hyprland host simply does not select.
 
-`tests/selection` proves both against `tests/selection/aggregations/backend/`,
-whose only member throws on import:
-
-| case                            | asserts                                                     |
-| ------------------------------- | ----------------------------------------------------------- |
-| `backendAggregationIsInert`     | selecting the provider-bearing sibling and forcing the whole resolution never reaches the landmine |
-| `backendAggregationIsReachable` | the landmine is real — selecting `backend` does throw        |
-
-The second case is what keeps the first honest: without it, a fixture that had
-quietly stopped being imported at all would still pass.
+habit's suite proves both against a backend aggregation whose only member
+throws on import: selecting the provider-bearing sibling and forcing the whole
+resolution never reaches it, and selecting `backend` does throw, which keeps
+the first honest.
 
 ## Generated-config fix that came with the move
 

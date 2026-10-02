@@ -54,7 +54,7 @@
     # select both. `modules/aggregations/compositor/` is the worked example: it
     # holds what only Hyprland can run, `shell` holds what any wlroots
     # compositor can, and a host on another compositor selects `shell` alone.
-    # tests/selection's `backendAggregationIsInert` proves the separation
+    # habit's suite proves the separation
     # against a member that throws on import.
 
     # ── What the group INSTALLS ─────────────────────────────────────────────

@@ -32,7 +32,7 @@
 # own `livery emit file` syntax, so the identical file renders either way and
 # the two cannot drift into different sheets. At build time the values come
 # from `config.lib.stylix.colors`, which is what the sheet read before it was a
-# file, so a host whose palette is repainted by Aoide's stylix facet is still
+# file, so a host whose palette is repainted by Aoide's stylix lane is still
 # repainted. Both `livery.json` and `modules/dendrites/stylix.nix` read
 # `palette.nix`, the one source, and tests/rice asserts the chain still lands.
 {

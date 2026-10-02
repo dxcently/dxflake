@@ -1,3 +1,0 @@
-{
-  dendrites = [ "systemonly" ];
-}

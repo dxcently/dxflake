@@ -10,9 +10,9 @@ record goes live when it sits in `modules/overrides/` *and* a host selected one
 of the capabilities it targets.
 
 Read `../AGENTS.md` for where things live and `~/Aoide/docs/architecture/NIX-COMPOSITION.md`
-for why. Verify a copy with `../tests/selection/run.sh`; verify the templates
+for why. Verify the templates
 themselves with `../tests/templates/run.sh`, which assembles a whole tree out of
-this directory, resolves two hosts against the real constructor, and checks that
+this directory, resolves two hosts against habit's composition, and checks that
 files nobody selected stayed unread.
 
 ## The map

@@ -2,9 +2,9 @@
 #
 # Every immediate child directory that holds a `default.nix` is an aggregation,
 # named by its directory. This file produces `name = path`; it NEVER imports a
-# body. `lib/composition.nix` imports only the bodies the host, or one of its
+# body. habit's composition imports only the bodies the host, or one of its
 # users, selected — so an aggregation nobody selects is never read, and a body
-# that throws on import proves it (tests/selection/aggregations/landmine).
+# that throws on import proves it (habit's suite).
 #
 # Discovery is one level deep on purpose. Dendrites are named by
 # `modules/default.nix` because an implementation must never become reachable

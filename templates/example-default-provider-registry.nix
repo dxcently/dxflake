@@ -10,7 +10,7 @@
 # This file names paths and imports NONE of them. The chosen provider is the
 # only file ever read, so an implementation the host did not pick costs nothing
 # and cannot break its evaluation. That is enforced, not hoped for:
-# tests/selection keeps a provider that throws on import and proves it stays
+# habit's suite keeps a provider that throws on import and proves it stays
 # unread.
 #
 # A capability with one implementation needs no registry and no provider option

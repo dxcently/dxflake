@@ -219,7 +219,7 @@ Generated from selection, never maintained by hand.
 
 ```sh
 nixfmt <file>.nix                          # format (repo style)
-./tests/selection/run.sh                   # the constructor's executable schema
+./tests/selection/run.sh                   # dxflake's real registry and a real host, composed through habit
 ./tests/templates/run.sh                   # templates/ still copyable and correct
 ./tests/session-guard/run.sh               # nested Hyprland cannot take the desktop
 ./tests/rice/run.sh                        # the rice and the palette have not drifted
@@ -227,13 +227,13 @@ nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
 sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
 
-`tests/selection/` is the schema, not a description of one: its fixtures throw
-on import, so "an unselected file is never evaluated" is proved rather than
-asserted — for an unselected provider, for an unselected aggregation body, and
-for an unmatched override record whose overlay and module both throw — and the
-runner greps real stderr, so a vague diagnostic fails.
+`tests/selection/` runs dxflake's real registry and the sakaki host through
+habit's composition: the selection resolves, its lane files import, and the
+inventory reports the groups. Composition's own schema, with its
+fixtures that throw on import, is habit's suite.
+
 `tests/templates/` assembles a whole tree out of `templates/`, resolves two
-hosts against the real constructor, and checks the same non-evaluation there. It
+hosts against habit's composition, and checks the same non-evaluation there. It
 also runs the override template's `nixos` half through the real NixOS module
 system, so "real options" is checked rather than claimed.
 

@@ -31,7 +31,6 @@
 ```
 dxflake/
 ├── flake.nix                 # inputs, the Aoide seam, one line per host
-├── lib/composition.nix       # a local copy of the constructor, exercised only by tests/selection and tests/templates
 ├── hosts/
 │   ├── chiyo/                # laptop · Intel iGPU
 │   ├── osaka/                # workstation · AMD GPU
@@ -69,7 +68,7 @@ dxflake/
 │   └── stage/                #   gitignored; lyra's hot layer, same path as ~/.aoide/song/stage
 ├── templates/                # copyable example-*.nix, one per authoring role
 ├── tests/rice/               # the look has not drifted from the palette
-├── tests/selection/          # the constructor's executable schema
+├── tests/selection/          # dxflake's real registry and a real host, composed through habit
 ├── tests/templates/          # proves templates/ still assembles into a real tree
 ├── tests/session-guard/      # a nested Hyprland must not walk off with the desktop
 ├── docs/HYPRLAND-SPLIT.md    # which file owns which old compositor block
@@ -85,7 +84,7 @@ dxflake/
 | **Catalogue** | `modules/default.nix` | one `name = ./path;` line per capability, by hand | walk the dendrite tree — a capability with no line is unreachable |
 | **Provider registry** | `modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix` | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
 | **Aggregation** | `modules/aggregations/<group>/default.nix`, by directory name | its `members` by catalogue name, the `providers` a host may choose, its own deferred preference | declare options, carry `mkIf`, or take a `scope` argument — it is plain data |
-| **Selection** | the host's `default.nix`, resolved by `inputs.habit.lib.composition` (`tests/selection/cases.nix` and `tests/templates/run.sh` still exercise the local `lib/composition.nix`) | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
+| **Selection** | the host's `default.nix`, resolved by `inputs.habit.lib.composition` | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
 
 ### Flow
 
@@ -347,7 +346,7 @@ Aoide runtime is wired from the pinned Aoide input through its exports:
 to the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
 
-Osaka and yomi-strix enable the upstream `aoide.openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
+Osaka and yomi-strix enable dxflake's own `openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; neither sets an upstream Aoide flag for it. Osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
 
 Aoide node grants (`read`/`message`/`spawn`) are runtime-owned in this repo.
 Each receiving host grants only the other two peers:
@@ -399,7 +398,7 @@ Host-only tests are still done as eval-only overrides (no file changes): use an
 
 Write the file under `modules/dendrites/`, add one line to the catalogue in `modules/default.nix`, and select it. The whole job: **write the file → catalogue it → select it.** You never edit `flake.nix`.
 
-`templates/` holds one copyable `example-*.nix` per authoring role — dendrite, provider registry, provider, aggregation, host, user, nucleus file, package — with a table in `templates/README.md` saying where each copy goes and what the one follow-up line is. `./tests/templates/run.sh` assembles a whole tree out of that directory and resolves it against the real constructor, so the examples stay true.
+`templates/` holds one copyable `example-*.nix` per authoring role — dendrite, provider registry, provider, aggregation, host, user, nucleus file, package — with a table in `templates/README.md` saying where each copy goes and what the one follow-up line is. `./tests/templates/run.sh` assembles a whole tree out of that directory and resolves it against habit's composition, so the examples stay true.
 
 A dendrite is an attrset of **lanes**, one per evaluator. A **system** capability:
 
@@ -504,7 +503,7 @@ Discovery finds it; there is no catalogue line and no collector. A record never 
 
 ```sh
 nix eval --json .#inventory.<host> | jq   # what this host resolved, and from where
-./tests/selection/run.sh                  # the constructor's executable schema
+./tests/selection/run.sh                  # dxflake's real registry and a real host, composed through habit
 ./tests/templates/run.sh                  # templates/ still assembles into a real tree
 ```
 

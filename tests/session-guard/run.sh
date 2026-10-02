@@ -114,7 +114,7 @@ fi
 # modules/dendrites/aoide.nix's header for why that is worse than the bug).
 # The exemption is not a mute: a host listed here that comes back CLEAN is a
 # FAIL, because it means the upstream fix landed and this line should be gone.
-exempt_chiyo="Aoide's compositor facet, not dxflake's dendrite — fix is Fable's, arrives by pin bump"
+exempt_chiyo="Aoide's compositor lane, not dxflake's dendrite — fix is Fable's, arrives by pin bump"
 
 if [ "$half" = all ] || [ "$half" = source ]; then
   printf '%-34s %s\n' "SOURCE" "RESULT"; rule

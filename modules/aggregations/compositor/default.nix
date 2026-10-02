@@ -11,7 +11,7 @@
 # So a host that answers `compositor.provider` with something other than
 # "hyprland" selects `shell` and simply does not select this. That is what keeps
 # `pkgs.hyprglass` from being evaluated on a machine that could never load it —
-# a structural answer, not a comment. tests/selection proves it against a
+# a structural answer, not a comment. habit's suite proves it against a
 # fixture whose Hyprland-only member throws on import.
 #
 # Each of the four lives in its provider's folder,
