@@ -826,6 +826,28 @@
         "url": "https://github.com/noah427/melete.git"
       }
     },
+    "microvm": {
+      "inputs": {
+        "nixpkgs": [
+          "snowglobe",
+          "nixpkgs"
+        ],
+        "spectrum": "spectrum"
+      },
+      "locked": {
+        "lastModified": 1790890970,
+        "narHash": "sha256-MV/BNWl8docJMxrNtkZ2/iw0FYMesyB69HKkLWk0r5s=",
+        "owner": "microvm-nix",
+        "repo": "microvm.nix",
+        "rev": "3f1540f254fe73ac907281b7de7d396bb3d54850",
+        "type": "github"
+      },
+      "original": {
+        "owner": "microvm-nix",
+        "repo": "microvm.nix",
+        "type": "github"
+      }
+    },
     "mneme-src": {
       "flake": false,
       "locked": {
@@ -1122,6 +1144,7 @@
         "nvf": "nvf_2",
         "pyproject-build-systems": "pyproject-build-systems",
         "pyproject-nix": "pyproject-nix",
+        "snowglobe": "snowglobe",
         "sops-nix": "sops-nix",
         "uv2nix": "uv2nix",
         "zen-browser": "zen-browser"
@@ -1167,6 +1190,30 @@
         "type": "github"
       }
     },
+    "snowglobe": {
+      "inputs": {
+        "home-manager": [
+          "home-manager"
+        ],
+        "microvm": "microvm",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791012209,
+        "narHash": "sha256-GKjR6QadiC7sC1xjDgGxSS63y5WiwVVU4iokHyAPiwE=",
+        "ref": "refs/heads/main",
+        "rev": "f857d871e01b9386b137d39a4690070a0d095a52",
+        "revCount": 1,
+        "type": "git",
+        "url": "file:///home/khoa/snowglobe"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/khoa/snowglobe"
+      }
+    },
     "sops-nix": {
       "inputs": {
         "nixpkgs": [
@@ -1185,6 +1232,22 @@
         "owner": "Mic92",
         "repo": "sops-nix",
         "type": "github"
+      }
+    },
+    "spectrum": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786032750,
+        "narHash": "sha256-+Ba/kIn5BjvV7PN8bWOo7RoqgTY/Yv2M7qeMf3wS2Ag=",
+        "ref": "refs/heads/main",
+        "rev": "77d2389874bb092b8dbf05ecc5b1030372e80e98",
+        "revCount": 1417,
+        "type": "git",
+        "url": "https://spectrum-os.org/git/spectrum"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://spectrum-os.org/git/spectrum"
       }
     },
     "stylix": {

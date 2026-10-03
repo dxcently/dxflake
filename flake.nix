@@ -135,6 +135,13 @@
     # The structure a host RUNS is Aoide's; dxflake's own tree stays the venue
     # (hosts, hardware, secrets). Every host fetches the same published Aoide
     # source, locked in flake.lock, without needing a local Aoide checkout.
+    # snowglobe: disposable NixOS microVMs for agents. A local repo for now (no
+    # remote), so only hosts built from osaka can resolve it until it is pushed.
+    snowglobe = {
+      url = "git+file:///home/khoa/snowglobe";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
     aoide = {
       # No `&rev=` — see the noah427 block above: a rev in the URL is a
       # pin `nix flake update aoide` cannot move, which is what made every
@@ -245,5 +252,9 @@
       # and the file each came from. Derived from selection, never maintained
       # by hand — `nix eval --json .#inventory.osaka` is the review surface.
       inventory = lib.mapAttrs (_: h: h.inventory) hosts;
+
+      # The merged catalogue hosts are composed from, so other flakes (snowglobe
+      # templates) can compose guests from the same dendrites instead of a copy.
+      inherit registry;
     };
 }

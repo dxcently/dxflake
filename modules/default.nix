@@ -75,6 +75,7 @@
     rofi = ./dendrites/rofi.nix;
     satty = ./dendrites/satty.nix;
     slskd = ./dendrites/slskd.nix;
+    snowglobe = ./dendrites/snowglobe.nix;
     starship = ./dendrites/starship.nix;
     steam = ./dendrites/steam.nix;
     stylix = ./dendrites/stylix.nix;

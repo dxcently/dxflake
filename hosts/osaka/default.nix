@@ -49,6 +49,7 @@
     openai.enable = true;
     openrazer.enable = true;
     syncthing.enable = true;
+    snowglobe.enable = true;
     virtualisation.enable = true;
   };
 
@@ -194,6 +195,15 @@
         programs.kitty.extraConfig = lib.mkAfter ''
           color8 #${config.lib.stylix.colors.base04}
         '';
+        # snowglobe on the local disk for now; storage.mode = "partition" plus
+        # snowglobe.host.storage.device once the WD partition exists.
+        snowglobe = {
+          enable = true;
+          budget = {
+            mem = 40960;
+            cpus = 24;
+          };
+        };
       };
       dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
       # Two upstream package fixes for this nixpkgs pin. Osaka is
