@@ -199,10 +199,7 @@
         # snowglobe.host.storage.device once the WD partition exists.
         snowglobe = {
           enable = true;
-          budget = {
-            mem = 40960;
-            cpus = 24;
-          };
+          budget.mem = 40960;
         };
       };
       dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
