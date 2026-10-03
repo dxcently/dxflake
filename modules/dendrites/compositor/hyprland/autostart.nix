@@ -46,7 +46,6 @@
         "systemctl --user start hyprpolkitagent"
         "nm-applet --indicator"
         "systemd"
-        "hypridle"
       ]
       ++ lib.optionals (!aoideQuickshell) [
         "awww-daemon"
