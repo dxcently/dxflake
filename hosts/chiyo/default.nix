@@ -40,7 +40,6 @@
     hyprlock.enable = true;
     kimi-cli.enable = true;
     laptop.enable = true;
-    portmaster.enable = true;
     syncthing.enable = true;
   };
 
@@ -105,6 +104,9 @@
         window.borderInactive = "#9ccfd8";
       };
       stylix.polarity = "dark";
+      # The palette is baked into gtksourceview, so every livery change rebuilt
+      # it (and virt-manager above it) here, where its 30 s test timeout fails.
+      stylix.targets.gtksourceview.enable = false;
       # Login stays dxflake's own ly (the desktop import above); the greeter lane
       # is not selected, so nothing else claims `services.greetd`.
       # Lock screen: chiyo does not select the shell aggregation, so it takes
