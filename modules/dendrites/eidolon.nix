@@ -20,7 +20,15 @@
       # Not a service: Eidolon is an interactive terminal harness, so this is a
       # package on PATH, not a systemd unit like melete.nix/mneme.nix. The dev
       # worktree at ~/eidolon is for editing it, and never what this installs.
-      eidolonPkg = inputs.eidolon.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      #
+      # The features carry the backend `[claude_cli]` below names; upstream
+      # gates it default-off and its flake exposes no build with it on. Drop
+      # them once it does. buildRustPackage copies `buildFeatures` into these at
+      # call time, so overriding `buildFeatures` would not reach cargo.
+      eidolonPkg = inputs.eidolon.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs {
+        cargoBuildFeatures = [ "eidolon-cli/claude-cli" ];
+        cargoCheckFeatures = [ "eidolon-cli/claude-cli" ];
+      };
     in
     {
       config = {
