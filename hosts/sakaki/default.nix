@@ -120,7 +120,7 @@
           # reaches the mail adapter here (aoide-mail-adapter, 127.0.0.1:8712).
           # Cloudflare owns TLS; the adapter signs and verifies each request
           # itself, so Caddy adds nothing. It fronts the adapter, never the A2A
-          # door (the door is off below).
+          # door (8710, bearer-gated below).
           "aoide.necoconeco.net"
         ];
         # ssh to this box from anywhere, for a node that leaves the LAN (yomi-strix
@@ -347,18 +347,29 @@
       # host switches it on, but the line itself lives in the shared list.
       dx.packages.hugo.enable = true;
 
-      # Aoide, headless: the CLI + aoided runtime and the mesh's HTTPS relay. No
-      # paint lanes, no rice -- nothing paints on this box. The core baseline
-      # (aoide.enable, the secrets broker) comes from the shared dendrite
-      # (modules/dendrites/aoide.nix), chiyo and osaka's same one.
+      # Aoide, headless: the CLI + aoided runtime, the A2A door and the mesh's
+      # HTTPS relay. No paint lanes, no rice -- nothing paints on this box. The
+      # core baseline (aoide.enable, the A2A door, the secrets broker) comes from
+      # the shared dendrite (modules/dendrites/aoide.nix), chiyo and osaka's
+      # same one; everything below is what varies on THIS box. The door binds
+      # loopback:8710; osaka delivers mail into it over an ssh tunnel (a signed
+      # request, which the bearer does not gate). spawnAgent is claude, with
+      # spawnPath carrying its package onto the unit's PATH so the door can
+      # actually exec it.
       #
-      # The A2A door is OFF here. aoide.necoconeco.net is public ingress, and a
-      # caller behind cloudflared reaches loopback services as loopback, which
-      # the door trusts (CONTRACTS.md §6, the bearer-token amendment). Nothing
-      # on sakaki needs it: mesh transport is ssh and the relay speaks through
-      # the mail adapter. To bring the door back, set aoide.a2a.tokenFile (or
-      # bearerSecret) in the same change.
-      aoide.a2a.enable = false;
+      # aoide.necoconeco.net is public ingress, and a caller behind cloudflared
+      # reaches loopback services as loopback. bearerSecret names a broker
+      # secret the door resolves per connection; once set, loopback stops being
+      # a trust signal for unsigned callers and a failed resolve refuses them
+      # all (CONTRACTS.md §6, the bearer-token amendment). The secret's value is
+      # created on the box (`aoide secrets add a2a-door --consumers a2a-door`, then
+      # `secrets put`), never in this repo; khoa is a broker member just below.
+      aoide.a2a = {
+        spawnAgent = "claude";
+        spawnPath = [ pkgs.claude-code ];
+        discoveryAdvertise = true;
+        bearerSecret = "a2a-door";
+      };
       aoide.mail.adapter.enable = true;
       # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
       # socket-only door, TOTP-gated. The operator joins the access group;
