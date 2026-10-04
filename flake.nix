@@ -80,14 +80,15 @@
     # the hard way: `builtins.fetchTree { type = "github"; ... }` on this exact
     # rev returns HTTP 404 while the git+https fetch of it succeeds.
     #
-    # Caveat that comes with the follows: Eidolon's Cargo.lock names an exact
-    # harnox VERSION, so if harnox master ever runs ahead of the tag Eidolon
-    # pins, this build fails on a stale lock until Eidolon bumps its tag. They
-    # are edited together by design (Eidolon's Cargo.toml says so), and today
-    # both sit on v0.3.6 — but that is the failure to expect, and the fix is
-    # `nix flake update eidolon` once upstream catches up.
+    # Pinned to the TAG upstream Eidolon pins, never to master. Eidolon's
+    # Cargo.lock names an exact harnox version, and a `../harnox` of any other
+    # version makes Cargo skip the `[patch]` and reach for the git source,
+    # which the offline build cannot do. Tracking master broke exactly that way
+    # the first time harnox released ahead of Eidolon (0.3.13 vs v0.3.12).
+    # When Eidolon moves its tag (the `harnox` url in its flake.nix), move
+    # this one to match.
     harnox-src = {
-      url = "git+https://github.com/noah427/harnox.git?ref=master";
+      url = "git+https://github.com/noah427/harnox.git?ref=refs/tags/v0.3.12";
       flake = false;
     };
     # Eidolon, unlike the other three, ships a real flake whose package
