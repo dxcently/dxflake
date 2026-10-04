@@ -116,6 +116,12 @@
           # Scratch static hosting for one-off mockups/demos. Files land in
           # /var/www/tmp by hand; nothing deploys here automatically.
           "tmp.necoconeco.net"
+          # The HTTPS relay of Aoide's mesh: a node with no route home but 443
+          # reaches the mail adapter here (aoide-mail-adapter, 127.0.0.1:8712).
+          # Cloudflare owns TLS; the adapter signs and verifies each request
+          # itself, so Caddy adds nothing. It fronts the adapter, never the A2A
+          # door (the door is off below).
+          "aoide.necoconeco.net"
         ];
         # ssh to this box from anywhere, for a node that leaves the LAN (yomi-strix
         # rides it as its Aoide `via`). Straight to sshd, no Caddy; key-only by
@@ -152,6 +158,9 @@
           # Mneme's MCP server — same reasoning, same bare-proxy shape (mneme
           # also does its own OAuth, issuer derived from the request host).
           "mneme.necoconeco.net".proxy = "http://127.0.0.1:8000";
+
+          # Aoide's mail adapter, bare proxy: requests carry their own signature.
+          "aoide.necoconeco.net".proxy = "http://127.0.0.1:8712";
 
           "status.necoconeco.net".extraConfig = ''
             redir https://melete.necoconeco.net/sakaki-panel{uri} 302
@@ -338,22 +347,19 @@
       # host switches it on, but the line itself lives in the shared list.
       dx.packages.hugo.enable = true;
 
-      # Aoide, headless: the CLI + aoided runtime and the A2A door, for
-      # federation/doors testing against yomi-strix. No paint lanes, no rice —
-      # nothing paints on this box. The core baseline (aoide.enable, the A2A
-      # door, the secrets broker) comes from the shared dendrite
-      # (modules/dendrites/aoide.nix), chiyo and osaka's same one; everything
-      # below is what varies on THIS box. The door binds loopback:8710; a remote
-      # peer reaches it over an ssh tunnel or the tailnet, never a raw
-      # interface. Set aoide.a2a.tokenFile at rebuild time to require a
-      # bearer token (which also stops loopback being an implicit trust
-      # signal); spawnAgent is claude, with spawnPath carrying its package
-      # onto the unit's PATH so the door can actually exec it.
-      aoide.a2a = {
-        spawnAgent = "claude";
-        spawnPath = [ pkgs.claude-code ];
-        discoveryAdvertise = true;
-      };
+      # Aoide, headless: the CLI + aoided runtime and the mesh's HTTPS relay. No
+      # paint lanes, no rice -- nothing paints on this box. The core baseline
+      # (aoide.enable, the secrets broker) comes from the shared dendrite
+      # (modules/dendrites/aoide.nix), chiyo and osaka's same one.
+      #
+      # The A2A door is OFF here. aoide.necoconeco.net is public ingress, and a
+      # caller behind cloudflared reaches loopback services as loopback, which
+      # the door trusts (CONTRACTS.md §6, the bearer-token amendment). Nothing
+      # on sakaki needs it: mesh transport is ssh and the relay speaks through
+      # the mail adapter. To bring the door back, set aoide.a2a.tokenFile (or
+      # bearerSecret) in the same change.
+      aoide.a2a.enable = false;
+      aoide.mail.adapter.enable = true;
       # Secrets broker (Aoide workstream #58, deployed P-V4): own uid behind a
       # socket-only door, TOTP-gated. The operator joins the access group;
       # enrollment is a separate, User-initiated act — never part of the switch.

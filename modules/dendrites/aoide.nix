@@ -19,7 +19,9 @@
 #
 # ── What "core" means ────────────────────────────────────────────────────
 #   aoide.enable        — the aoide/aoided binaries + daemon (nucleus/aoided.nix)
-#   aoide.a2a.enable     — the A2A (Agent2Agent) door, loopback by default
+#   aoide.a2a.enable     — the A2A (Agent2Agent) door, loopback by default;
+#                          a default, so a host that fronts a public relay
+#                          (sakaki) turns the door off with a plain `false`
 #   aoide.secrets.enable — the secrets broker (its own uid, group-gated socket;
 #                          empty aoide.secrets.members means nobody can reach
 #                          it yet — a host adds itself explicitly)
@@ -68,11 +70,13 @@
 # touches those leaf options; the rest of the desktop aggregation (pipewire,
 # fonts, fcitx5, portals, ly login) does not collide and stays selected.
 {
-  nixos = {
-    config = {
-      aoide.enable = true;
-      aoide.a2a.enable = true;
-      aoide.secrets.enable = true;
+  nixos =
+    { lib, ... }:
+    {
+      config = {
+        aoide.enable = true;
+        aoide.a2a.enable = lib.mkDefault true;
+        aoide.secrets.enable = true;
+      };
     };
-  };
 }
