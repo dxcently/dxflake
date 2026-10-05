@@ -10,11 +10,47 @@
     # `programs.hyprlock` also enables NixOS's `services.hypridle`, which ships
     # the unit but no config; the home half below writes the config, and its
     # user unit of the same name replaces the system one.
+    #
+    # hyprlock without a config has no input field, and on 0.9.6 that refuses a
+    # correct password; the field also shows one dot per key, the keyboard
+    # layout, and Caps/Num Lock, so a failing unlock says why.
     config = {
       programs.hyprlock.enable = true;
       security.pam.services.hyprlock = { };
       home-manager.users.${username} = {
-        programs.hyprlock.enable = true;
+        programs.hyprlock = {
+          enable = true;
+          settings = {
+            general.hide_cursor = false;
+            background = [ { color = "rgba(20, 20, 30, 1.0)"; } ];
+            input-field = [
+              {
+                size = "400, 60";
+                position = "0, 0";
+                halign = "center";
+                valign = "center";
+                outline_thickness = 3;
+                dots_size = 0.25;
+                dots_spacing = 0.3;
+                dots_center = true;
+                fade_on_empty = false;
+                placeholder_text = "password";
+                fail_text = "failed ($ATTEMPTS)";
+                capslock_color = "rgb(220, 120, 60)";
+                numlock_color = "rgb(60, 160, 220)";
+              }
+            ];
+            label = [
+              {
+                text = "$LAYOUT";
+                position = "0, -80";
+                halign = "center";
+                valign = "center";
+                font_size = 16;
+              }
+            ];
+          };
+        };
         services.hypridle = {
           enable = true;
           settings = {
