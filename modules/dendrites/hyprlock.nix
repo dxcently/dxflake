@@ -1,5 +1,5 @@
 {
-  nixos = { username, ... }: {
+  nixos = { username, lib, ... }: {
     # A host-selected single, not tied to the shell aggregation: chiyo wants
     # the lock binary + PAM service without hyprland (Aoide's own hyprland
     # dendrite binds SUPER+ESCAPE to hyprlock and shellbridge's powermenu Lock
@@ -11,9 +11,9 @@
     # the unit but no config; the home half below writes the config, and its
     # user unit of the same name replaces the system one.
     #
-    # hyprlock without a config has no input field, and on 0.9.6 that refuses a
-    # correct password; the field also shows one dot per key, the keyboard
-    # layout, and Caps/Num Lock, so a failing unlock says why.
+    # The lock shows one dot per key, the keyboard layout, and Caps/Num Lock, so
+    # a failing unlock says why. Blocks are attribute sets and colours defaults,
+    # so a host whose stylix themes hyprlock merges over them.
     config = {
       programs.hyprlock.enable = true;
       security.pam.services.hyprlock = { };
@@ -22,33 +22,29 @@
           enable = true;
           settings = {
             general.hide_cursor = false;
-            background = [ { color = "rgba(20, 20, 30, 1.0)"; } ];
-            input-field = [
-              {
-                size = "400, 60";
-                position = "0, 0";
-                halign = "center";
-                valign = "center";
-                outline_thickness = 3;
-                dots_size = 0.25;
-                dots_spacing = 0.3;
-                dots_center = true;
-                fade_on_empty = false;
-                placeholder_text = "password";
-                fail_text = "failed ($ATTEMPTS)";
-                capslock_color = "rgb(220, 120, 60)";
-                numlock_color = "rgb(60, 160, 220)";
-              }
-            ];
-            label = [
-              {
-                text = "$LAYOUT";
-                position = "0, -80";
-                halign = "center";
-                valign = "center";
-                font_size = 16;
-              }
-            ];
+            background.color = lib.mkDefault "rgba(20, 20, 30, 1.0)";
+            input-field = {
+              size = "400, 60";
+              position = "0, 0";
+              halign = "center";
+              valign = "center";
+              outline_thickness = 3;
+              dots_size = 0.25;
+              dots_spacing = 0.3;
+              dots_center = true;
+              fade_on_empty = false;
+              placeholder_text = "password";
+              fail_text = "failed ($ATTEMPTS)";
+              capslock_color = lib.mkDefault "rgb(220, 120, 60)";
+              numlock_color = lib.mkDefault "rgb(60, 160, 220)";
+            };
+            label = {
+              text = "$LAYOUT";
+              position = "0, -80";
+              halign = "center";
+              valign = "center";
+              font_size = 16;
+            };
           };
         };
         services.hypridle = {
