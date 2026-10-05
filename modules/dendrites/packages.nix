@@ -52,6 +52,7 @@ let
     pkgs.scrcpy # display and control Android devices
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     pkgs.chromium # open source web browser from Google
+    pkgs.libreoffice # Writer, Calc, Impress, Draw, Base and Math
     pkgs.qbittorrent # open-source BitTorrent client
     pkgs.nicotine-plus # Soulseek peer-to-peer client
     pkgs.zoom-us # video conferencing

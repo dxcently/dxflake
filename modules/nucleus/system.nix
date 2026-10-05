@@ -42,20 +42,6 @@
         # declare insecure packages here
       ];
     };
-    overlays = [
-      (final: prev: {
-        openldap = prev.openldap.overrideAttrs (_: {
-          doCheck = false;
-          python3 = prev.python3.override {
-            packageOverrides = pyFinal: pyPrev: {
-              python-gnupg = pyPrev.python-gnupg.overrideAttrs (oldAttrs: {
-                doCheck = false;
-              });
-            };
-          };
-        });
-      })
-    ];
   };
   time = {
     timeZone = "America/New_York";

@@ -64,6 +64,7 @@
               "scrcpy"
               "zen-browser"
               "chromium"
+              "libreoffice"
               "qbittorrent"
               "nicotine-plus"
               "zoom"
