@@ -82,6 +82,8 @@
       # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
       # no window movement).
       # Same Rosé Pine override as osaka's (hosts/osaka/default.nix).
+      # Blur re-renders behind every moving window; the UHD 620 can't afford it.
+      aoide.livery.geometry.blurEnabled = false;
       aoide.livery.override = {
         bg = "#191724";
         fg = "#e0def4";
@@ -138,13 +140,18 @@
       # Aoide's own lanes write to, so this merges alongside them
       # rather than colliding. Only chiyo's own entries are carried — the AOC/
       # Samsung monitor block in the compositor dendrite belongs to
-      # osaka, not chiyo. Keybinds/decoration/animations are otherwise NOT
-      # carried: AoideOS owns those (the hyprland lane above).
+      # osaka, not chiyo. Keybinds/decoration are otherwise NOT carried:
+      # AoideOS owns those (the hyprland lane above). Animations are carried:
+      # Aoide writes none, and Hyprland's built-in global is 800 ms.
       home-manager.users.${username} = {
         wayland.windowManager.hyprland.settings = {
           monitor = [
             ", preferred, auto, 1"
-            "eDP-1, 1920x1080@60, auto, 1.25"
+            "eDP-1, 1920x1080@60, auto, 1"
+          ];
+          animation = [
+            "global, 1, 3, default"
+            "fade, 1, 2, default"
           ];
           "exec-once" = [ "fcitx5" ];
           env = [
