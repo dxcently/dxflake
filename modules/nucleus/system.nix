@@ -15,6 +15,8 @@
         "nix-command"
         "flakes"
       ];
+      # Lets osaka push unsigned closures with `--target-host`, so slow hosts never compile.
+      trusted-users = [ "@wheel" ];
       auto-optimise-store = true;
       substituters = [
         "https://hyprland.cachix.org"
