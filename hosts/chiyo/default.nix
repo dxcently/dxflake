@@ -40,6 +40,7 @@
     hyprlock.enable = true;
     kimi-cli.enable = true;
     laptop.enable = true;
+    ros.enable = true;
     syncthing.enable = true;
   };
 

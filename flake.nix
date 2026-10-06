@@ -102,6 +102,10 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # ROS 2 for modules/dendrites/ros.nix. No `follows` on purpose: ros.cachix
+    # builds against the overlay's OWN nixpkgs pin, so following ours would turn
+    # every ROS package into a local compile.
+    nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
     # dxflake consumes Aoide as a flake input through its exports (nucleus

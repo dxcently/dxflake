@@ -73,6 +73,7 @@
     qt = ./dendrites/qt.nix;
     rice = ../song/songbook;
     rofi = ./dendrites/rofi.nix;
+    ros = ./dendrites/ros.nix;
     satty = ./dendrites/satty.nix;
     slskd = ./dendrites/slskd.nix;
     snowglobe = ./dendrites/snowglobe.nix;
