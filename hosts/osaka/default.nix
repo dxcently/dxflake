@@ -79,6 +79,18 @@
     }:
     {
       imports = [ ./hardware.nix ];
+      # Build machine for chiyo (its nix.buildMachines). chiyo's nix-daemon
+      # signs in with chiyo's own SSH host key, so no new secret exists.
+      users.users.nixremote = {
+        isSystemUser = true;
+        group = "nixremote";
+        shell = pkgs.bashInteractive;
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA+D5ugzZE3y6ex8tMVNWvGcBruvb619tbNnwyIp/FSJ chiyo"
+        ];
+      };
+      users.groups.nixremote = { };
+      nix.settings.trusted-users = [ "nixremote" ];
       dx.stylix.enable = true;
       # The pairing popup (Aoide task #135). Raises the typed-code dialog the
       # moment an inbound pairing request parks, instead of it waiting in a

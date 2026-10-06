@@ -62,6 +62,32 @@
     }:
     {
       imports = [ ./hardware.nix ];
+      # osaka builds for chiyo; local builds only when osaka is unreachable.
+      nix = {
+        distributedBuilds = true;
+        settings.builders-use-substitutes = true;
+        buildMachines = [
+          {
+            hostName = "100.102.235.52"; # osaka's tailscale address: reachable off the LAN too
+            sshUser = "nixremote";
+            sshKey = "/etc/ssh/ssh_host_ed25519_key";
+            protocol = "ssh-ng";
+            system = "x86_64-linux";
+            maxJobs = 8;
+            speedFactor = 10;
+            supportedFeatures = [
+              "big-parallel"
+              "kvm"
+              "nixos-test"
+              "benchmark"
+            ];
+          }
+        ];
+      };
+      programs.ssh.knownHosts.osaka = {
+        hostNames = [ "100.102.235.52" ];
+        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqMuS6SKujGuBlEaJNOeyJPqN3uXUbiyi8BbHpVgkNS";
+      };
       dx.stylix.enable = false;
       # The door can exec an agent for peer-summoned sessions (`peer spawn
       # chiyo`), the same wiring sakaki carries — without it the door refuses
