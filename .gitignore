@@ -28,3 +28,6 @@ secrets/*.dec.*
 
 # runtime state written by lyra/aoide, mirrors ~/.aoide/song/stage, never committed
 song/stage/
+
+# Local experiment notebooks and results — never config
+benchmarks/
