@@ -227,11 +227,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790849364,
-        "narHash": "sha256-iFzW15S9qbtWxru9ePhyhqqsSqP8CzIrJ1t3CBW/DOQ=",
+        "lastModified": 1791260933,
+        "narHash": "sha256-Z4JF5fLOxvG2t+xAB0m0Zv9ypJr0QrxBaWdUxsFUCtY=",
         "ref": "master",
-        "rev": "24d6bdac2644d6b9a9bdf09d2d9bfadc5e5ebce2",
-        "revCount": 352,
+        "rev": "c003197c79bb0f1128624d18b5739b6b1f683f58",
+        "revCount": 364,
         "type": "git",
         "url": "https://github.com/noah427/eidolon.git"
       },
@@ -402,16 +402,16 @@
     "harnox-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790656926,
-        "narHash": "sha256-/hy/jHmcPXUFQZE+eiX9X27EDwVn5lPo5/bJLjbpxv0=",
-        "ref": "refs/tags/v0.3.12",
-        "rev": "daf3ffe598983033126b4665a0621c21964e21aa",
-        "revCount": 51,
+        "lastModified": 1791247085,
+        "narHash": "sha256-lXYlXfw42DUmhlKLCmWfvD+lQAOyEdR0d0XZEVLmYcU=",
+        "ref": "refs/tags/v0.3.14",
+        "rev": "99cada6df5b4c59e2940e0f70cdf66b6de83a3f7",
+        "revCount": 57,
         "type": "git",
         "url": "https://github.com/noah427/harnox.git"
       },
       "original": {
-        "ref": "refs/tags/v0.3.12",
+        "ref": "refs/tags/v0.3.14",
         "type": "git",
         "url": "https://github.com/noah427/harnox.git"
       }

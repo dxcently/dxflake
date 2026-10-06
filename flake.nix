@@ -88,7 +88,7 @@
     # When Eidolon moves its tag (the `harnox` url in its flake.nix), move
     # this one to match.
     harnox-src = {
-      url = "git+https://github.com/noah427/harnox.git?ref=refs/tags/v0.3.12";
+      url = "git+https://github.com/noah427/harnox.git?ref=refs/tags/v0.3.14";
       flake = false;
     };
     # Eidolon, unlike the other three, ships a real flake whose package
