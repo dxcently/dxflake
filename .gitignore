@@ -31,3 +31,7 @@ song/stage/
 
 # Local experiment notebooks and results — never config
 benchmarks/
+
+# CSC Argo token: kept local, out of the flake
+modules/dendrites/csc-token.nix
+secrets/csc-token.yaml
