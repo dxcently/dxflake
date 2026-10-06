@@ -17,6 +17,11 @@
         bashrcExtra = ''
           command -v mcfly >/dev/null && eval "$(mcfly init bash)"
 
+          # Eidolon's harnox input is `github:`, whose fetcher only authenticates
+          # through nix's access-tokens; hand it the same gh login git uses.
+          t=$(gh auth token 2>/dev/null) && export NIX_CONFIG="access-tokens = github.com=$t"
+          unset t
+
           function y() {
           local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
           yazi "$@" --cwd-file="$tmp"
@@ -41,7 +46,7 @@
           # `rev=` in its URL (see flake.nix), so this is the whole "a new commit
           # landed" workflow. A bad upstream commit fails the BUILD, not the box;
           # `git checkout flake.lock` puts the old revs back.
-          dxbump = "nix flake update --flake /home/khoa/dxflake melete-src mneme-src harnox-src eidolon aoide && nh os switch /home/khoa/dxflake/";
+          dxbump = "nix flake update --flake /home/khoa/dxflake melete-src mneme-src eidolon aoide && nh os switch /home/khoa/dxflake/";
           dxboot = "nh os boot /home/khoa/dxflake/";
           dxtest = "nh os test /home/khoa/dxflake/";
           dxbuild = "nh os build /home/khoa/dxflake/";

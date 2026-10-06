@@ -50,7 +50,7 @@
     # cannot move, so every upstream commit would mean hand-editing this
     # file. With just `ref=master` the rev lives in flake.lock and one
     # command picks up new commits for the whole stack:
-    #   nix flake update melete-src mneme-src harnox-src eidolon aoide
+    #   nix flake update melete-src mneme-src eidolon aoide
     # `dxbump` (modules/dendrites/bash.nix) runs exactly that, then switches.
     #
     # To build a DIRTY local worktree without pushing, override for that one
@@ -69,28 +69,6 @@
       url = "git+https://github.com/noah427/mneme.git?ref=master";
       flake = false;
     };
-    # The shared Rust+LLM foundation under Melete/Mneme/Eidolon. No flake, no
-    # binary — Melete and Mneme resolve it by exact rev from their own
-    # Cargo.lock (builtins.fetchGit, see pkgs/melete-package.nix), so the one
-    # thing this input is FOR is Eidolon: its flake declares harnox as
-    # `github:noah427/harnox`, and that tarball fetcher 404s on a private repo
-    # (it authenticates only from a nix.conf `access-tokens` entry, which no
-    # host here sets). The `follows` on the eidolon input below swaps that
-    # dead node for this one, which the git fetcher CAN authenticate. Verified
-    # the hard way: `builtins.fetchTree { type = "github"; ... }` on this exact
-    # rev returns HTTP 404 while the git+https fetch of it succeeds.
-    #
-    # Pinned to the TAG upstream Eidolon pins, never to master. Eidolon's
-    # Cargo.lock names an exact harnox version, and a `../harnox` of any other
-    # version makes Cargo skip the `[patch]` and reach for the git source,
-    # which the offline build cannot do. Tracking master broke exactly that way
-    # the first time harnox released ahead of Eidolon (0.3.13 vs v0.3.12).
-    # When Eidolon moves its tag (the `harnox` url in its flake.nix), move
-    # this one to match.
-    harnox-src = {
-      url = "git+https://github.com/noah427/harnox.git?ref=refs/tags/v0.3.14";
-      flake = false;
-    };
     # Eidolon, unlike the other three, ships a real flake whose package
     # already does the awkward part (it reassembles the `../harnox` sibling
     # layout Cargo's `[patch]` table expects — nix/eidolon.nix in that repo).
@@ -100,8 +78,8 @@
     eidolon = {
       url = "git+https://github.com/noah427/eidolon.git?ref=master";
       inputs.nixpkgs.follows = "nixpkgs";
-      # Its own `github:noah427/harnox` cannot authenticate — see harnox-src.
-      inputs.harnox.follows = "harnox-src";
+      # Its harnox input is `github:` (private, tarball fetcher): it reads
+      # the token bash.nix exports into NIX_CONFIG from khoa's gh login.
     };
 
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.

@@ -219,9 +219,7 @@
     },
     "eidolon": {
       "inputs": {
-        "harnox": [
-          "harnox-src"
-        ],
+        "harnox": "harnox",
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -399,21 +397,21 @@
         "type": "github"
       }
     },
-    "harnox-src": {
+    "harnox": {
       "flake": false,
       "locked": {
         "lastModified": 1791247085,
         "narHash": "sha256-lXYlXfw42DUmhlKLCmWfvD+lQAOyEdR0d0XZEVLmYcU=",
-        "ref": "refs/tags/v0.3.14",
+        "owner": "noah427",
+        "repo": "harnox",
         "rev": "99cada6df5b4c59e2940e0f70cdf66b6de83a3f7",
-        "revCount": 57,
-        "type": "git",
-        "url": "https://github.com/noah427/harnox.git"
+        "type": "github"
       },
       "original": {
-        "ref": "refs/tags/v0.3.14",
-        "type": "git",
-        "url": "https://github.com/noah427/harnox.git"
+        "owner": "noah427",
+        "ref": "v0.3.14",
+        "repo": "harnox",
+        "type": "github"
       }
     },
     "home-manager": {
@@ -1135,7 +1133,6 @@
         "disko": "disko",
         "eidolon": "eidolon",
         "habit": "habit",
-        "harnox-src": "harnox-src",
         "home-manager": "home-manager_2",
         "melete-src": "melete-src",
         "mneme-src": "mneme-src",
