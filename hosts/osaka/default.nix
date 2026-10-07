@@ -203,8 +203,10 @@
       home-manager.users.${username} = {
         home.file.".aoide/song/covers".source = ../../song/covers;
         # ANSI bright black is secondary text (e.g. nom's elapsed-time labels).
-        # Override the template's base02 surface shade with muted ink, after its include.
-        programs.kitty.extraConfig = lib.mkAfter ''
+        # Override the template's base02 surface shade with muted ink. Ordered
+        # past the kitty dendrite's mkAfter (1500) too: the staged colours it
+        # includes always carry that same base02 line, and this one must win.
+        programs.kitty.extraConfig = lib.mkOrder 1600 ''
           color8 #${config.lib.stylix.colors.base04}
         '';
         # snowglobe on the local disk for now; storage.mode = "partition" plus
