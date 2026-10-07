@@ -39,11 +39,11 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1791269415,
-        "narHash": "sha256-HtVkMBgt0lpuC1+YPxADwRiGUADoQU6pveg7K1sNm5w=",
+        "lastModified": 1791358651,
+        "narHash": "sha256-K1gfE7u7S+8bWaXAc56C9YiMx3eo+0NOGLY1i8GTDlo=",
         "ref": "main",
-        "rev": "84b22ad62b50097f9a7bd94faf57638036127f58",
-        "revCount": 1774,
+        "rev": "ae7831c5bc4a6add5aa20c0884b7aa133046c812",
+        "revCount": 1808,
         "type": "git",
         "url": "https://github.com/dxcently/Aoide.git"
       },
