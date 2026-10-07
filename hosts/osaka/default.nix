@@ -185,8 +185,11 @@
       # answers "no opinion" with its own 0.86 on every `rice stage`, so the venue
       # states one. Scoped to sonata: a song with an opinion of its own (cadenza's
       # 0.7) owns it, and this then defines nothing for it to collide with.
-      # Aoide's seed publishes the value as song/declared/terminal-opacity.conf;
-      # the activation entry below publishes it where `rice stage` reads it.
+      # Aoide's seed publishes the value as song/declared/terminal-opacity.conf,
+      # which covers a box that has never staged. A re-stage of sonata reads the
+      # declared twin (song/declared/livery.json), which carries no geometry yet,
+      # so it honours this only once Aoide carries geometry into that twin. Until
+      # then a re-stage of sonata writes Aoide's 0.86.
       aoide.livery.geometry.terminalOpacity = lib.mkIf (config.aoide.song == "sonata") 1.0;
       stylix.polarity = "dark";
       # Keep the serif look, with a fixed-width face for terminals and code.
@@ -218,36 +221,6 @@
       # this is the live override seam on top of it. Path tracks `aoide.root`'s
       # default of ~/.aoide — retarget both together if that option ever moves.
       home-manager.users.${username} = {
-        # `rice stage` of the declared song reads its notes from the declared twin
-        # (song/declared/livery.json), and the venue patch Aoide's seed applies to
-        # it recolours only: a venue terminalOpacity never arrives, so the stage
-        # file would carry 0.86. This puts it in the twin after the seed wrote it.
-        # Delete this import once the seed carries aoide.livery.geometry into the
-        # twin.
-        imports = [
-          (
-            { lib, ... }:
-            let
-              opacity = config.aoide.livery.geometry.terminalOpacity;
-              publish = pkgs.writeShellScript "osaka-declared-twin-opacity" ''
-                set -euo pipefail
-                declared="${config.aoide.root}/song/declared"
-                [ -f "$declared/livery.json" ] || exit 0
-                tmp=$(mktemp "$declared/.livery.json.XXXXXX")
-                ${pkgs.jq}/bin/jq -S --argjson o "$(printf '%g' ${toString opacity})" \
-                  '.geometry.terminalOpacity = $o' "$declared/livery.json" > "$tmp"
-                mv -f "$tmp" "$declared/livery.json"
-              '';
-            in
-            {
-              home.activation.declaredTwinTerminalOpacity = lib.mkIf (opacity != null) (
-                lib.hm.dag.entryAfter [ "aoideSeedStage" ] ''
-                  run ${publish}
-                ''
-              );
-            }
-          )
-        ];
         home.file.".aoide/song/covers".source = ../../song/covers;
         # ANSI bright black is secondary text (e.g. nom's elapsed-time labels).
         # Override the template's base02 surface shade with muted ink. Ordered
