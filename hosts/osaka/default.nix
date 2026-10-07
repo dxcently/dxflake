@@ -110,6 +110,11 @@
       # of the switch.
       aoide.secrets.members = [ "khoa" ];
 
+      # The dev checkout is ~/aoide here; the option's default is ~/Aoide, which
+      # does not exist on this box. It becomes AOIDE_FLAKE_ROOT on aoided and the
+      # shellbridge, and `lyra preview` and `lyra rice declare` refuse a missing one.
+      aoide.checkout = "/home/${username}/aoide";
+
       # ── Aoide's face, laid over dxflake's own paint ───────────────────────────
       # The quickshell lane composes with dxflake's own Hyprland + Stylix
       # dendrites: it needs nothing but graphical-session.target and a compositor

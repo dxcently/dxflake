@@ -371,9 +371,11 @@ never from a lane's own option. Songs come through `lib.songbook` over Aoide's
 `songbookRoot` export, wired by the `selectionModules` and `extraModulesFor`
 hooks in `flake.nix`: a host performs one of Aoide's songs by writing
 `song.declared` on its record. No path into the Aoide tree is named anywhere;
-do not add one. `song/songbook/` here is the `shell` aggregation's provider
-registry of rices, a different thing from the songbook directory `lib.songbook`
-reads, and the two are not unioned.
+do not add one. The one path a host does name is the dev checkout on the box,
+`aoide.checkout`, where it is not the option's `~/Aoide` default (osaka's is
+`~/aoide`); that is a runtime path, not a path into the input. `song/songbook/`
+here is the `shell` aggregation's provider registry of rices, a different thing
+from the songbook directory `lib.songbook` reads, and the two are not unioned.
 
 Melete and Mneme (`modules/dendrites/{melete,mneme}.nix`) are sakaki-only. Both
 build from their canonical **private** GitHub repos — `noah427/melete`,
