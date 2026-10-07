@@ -4,6 +4,10 @@
   # The song carries the livery (palette + component tiers) and nothing else —
   # host-agnostic by contract, so this one line is the whole rice swap.
   song.declared = "sonata";
+  # Built in, so `lyra rice stage cadenza` works from boot without a rebuild; not
+  # performed, so its livery is not the active one and the overrides below
+  # still recolour sonata alone.
+  song.available = [ "cadenza" ];
 
   aggregation = {
     base.enable = true;
