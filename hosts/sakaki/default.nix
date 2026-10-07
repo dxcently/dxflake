@@ -362,8 +362,9 @@
       # secret the door resolves per connection; once set, loopback stops being
       # a trust signal for unsigned callers and a failed resolve refuses them
       # all (CONTRACTS.md §6, the bearer-token amendment). The secret's value is
-      # created on the box (`aoide secrets add a2a-door --consumers a2a-door`, then
-      # `secrets put`), never in this repo; khoa is a broker member just below.
+      # created on the box as the broker user (`sudo -u aoide-secrets aoide secrets
+      # add a2a-door --consumers a2a-door`, then `… secrets put a2a-door`), never in
+      # this repo; broker membership (khoa, just below) reads secrets, never writes them.
       aoide.a2a = {
         spawnAgent = "claude";
         spawnPath = [ pkgs.claude-code ];
