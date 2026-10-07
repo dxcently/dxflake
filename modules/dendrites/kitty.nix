@@ -16,12 +16,12 @@
       # false and drives its own Aoide from a separate flake.
       conductShell = config.aoide.enable;
 
-      # The aero glass keys on `aoide.quickshell.enable`, not on aoide.enable: it is a look, and it
-      # only pays off where something glosses it. hyprglass loads under the same
-      # flag (modules/dendrites/compositor/hyprland/hyprglass.nix), and Hyprland's own blur pass
-      # is what shows through an unfocused terminal. On a host without the Quickshell shell this would
-      # just make terminals see-through with nothing behind them, so yomi-strix
-      # keeps its opaque kitty untouched.
+      # `aoide.quickshell.enable` gates one thing here: zeroing kitty's own
+      # background_blur, where the compositor does the blurring (hyprglass loads
+      # under the same flag, modules/dendrites/compositor/hyprland/hyprglass.nix).
+      # It does not gate translucency. Whether a terminal is translucent is the
+      # song's call, and it reaches kitty through the stage files `followsStage`
+      # includes.
       aoideQuickshell = config.aoide.quickshell.enable;
 
       # The terminals follow a stage. `rice stage` is the lyra lane's and the only
@@ -126,10 +126,13 @@
                     # and the staged terminal files below, the staged one last and always
                     # carrying a `background_opacity`, and the control socket with
                     # `dynamic_background_opacity` lets `rice stage` move the open windows
-                    # to it. Hyprland carries no opacity rule for terminals
-                    # (compositor/hyprland/hyprglass.nix), so the song's value is the
-                    # whole say, focused or not. Without lyra the opaque base above
-                    # stands.
+                    # to it. Where hyprland.conf comes from dxflake's own Hyprland lane,
+                    # terminals carry no opacity rule (compositor/hyprland/hyprglass.nix),
+                    # so the song's value is the whole say, focused or not. Where it comes
+                    # from Aoide's compositor lane, that lane's
+                    # `windowrule = opacity 1.0 0.80, match:class kitty` still multiplies
+                    # the song's value by 0.80 when the window is unfocused, glyphs
+                    # included. Without lyra the opaque base above stands.
                     background_blur = 0;
                   }
                   // lib.optionalAttrs followsStage {

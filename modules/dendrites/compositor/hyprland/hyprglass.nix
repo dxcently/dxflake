@@ -114,10 +114,9 @@
           # sets `inactive_opacity`, and media and browser windows carry
           # arbitrary content that must never be faded.
           #
-          # One-line `windowrule =` form, matching Aoide's own. The `settings`
-          # block above uses hyprland 0.56's other spelling (`windowrule { … }`)
-          # — both are current; this file now carries both because each was
-          # copied from where it was proven.
+          # One-line `windowrule =` form, matching Aoide's own. It is the only
+          # windowrule in hyprglass.nix; hyprland 0.56's named-block spelling
+          # (`windowrule { … }`) lives in keybinds.nix.
           # Global decoration rounding is already 0; this pins kitty to match so
           # nothing rounds only the terminal.
           windowrule = rounding 0, match:class kitty
