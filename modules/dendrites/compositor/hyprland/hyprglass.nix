@@ -77,9 +77,9 @@
         # manage_window_blur is a GLOBAL toggle in v0.7.0 — there is no
         # per-class targeting (confirmed against the built plugin's key table).
         # It stays on because the shader only paints visible translucent
-        # fragments: an unfocused kitty gains refraction as it fades, while a
-        # focused (hovered) one is fully opaque and untouched, as is every
-        # other opaque window.
+        # fragments: a kitty whose song gives it a translucent background gains
+        # refraction, while an opaque terminal is untouched, as is every other
+        # opaque window.
         #
         # The namespace list is the three surfaces Aoide glasses. It is static
         # here on purpose: Aoide's compositor lane appends song-declared widget surfaces
@@ -102,27 +102,22 @@
               }
           }
 
-          # ── Aero-glass terminal (pairs with the kitty dendrite) ────────────
-          # This rule multiplies kitty's own opacity, which is the song's (see the
-          # kitty dendrite), so 1.0 here keeps the song's value rather than making
-          # the terminal opaque. `follow_mouse = 1` above makes focused == hovered,
-          # so the crisp state is the hovered one; an unfocused terminal fades to
-          # 0.80 of that and visibly recedes, still blurred because
-          # `decoration.blur.ignore_opacity` blurs behind opacity-faded windows.
-          # Terminals only, deliberately — this is not a global
-          # inactive_opacity, because media and browser windows carry arbitrary
-          # content that must never be faded.
-          #
-          # 0.80 is Aoide's documented legibility FLOOR-plus: it keeps unfocused
-          # terminal text near 3.7:1, and their note marks 0.75 as the hard
-          # floor with 0.70 breaking readability outright. Raise toward 0.85 if
-          # it reads badly against nocturne's navy — never drop below 0.75.
+          # ── Terminal window rule (pairs with the kitty dendrite) ───────────
+          # Terminals carry no opacity rule: the song's terminal opacity is the
+          # whole say for kitty, focused or not. It reaches kitty as its own
+          # `background_opacity` (declared fragment, then the stage), which
+          # makes the default background translucent and leaves glyphs opaque;
+          # a Hyprland `opacity` rule would multiply it and dim the glyphs too.
+          # Behind a translucent terminal the compositor still blurs
+          # (`decoration.blur.ignore_opacity`) and hyprglass refracts, so an
+          # opaque song shows neither. No window is faded here either: nothing
+          # sets `inactive_opacity`, and media and browser windows carry
+          # arbitrary content that must never be faded.
           #
           # One-line `windowrule =` form, matching Aoide's own. The `settings`
           # block above uses hyprland 0.56's other spelling (`windowrule { … }`)
           # — both are current; this file now carries both because each was
           # copied from where it was proven.
-          windowrule = opacity 1.0 0.80, match:class kitty
           # Global decoration rounding is already 0; this pins kitty to match so
           # nothing rounds only the terminal.
           windowrule = rounding 0, match:class kitty

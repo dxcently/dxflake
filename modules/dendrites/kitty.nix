@@ -126,10 +126,10 @@
                     # and the staged terminal files below, the staged one last and always
                     # carrying a `background_opacity`, and the control socket with
                     # `dynamic_background_opacity` lets `rice stage` move the open windows
-                    # to it. Hyprland's terminal rule (compositor/hyprland/hyprglass.nix)
-                    # multiplies on top: a focused terminal shows the song's value, an
-                    # unfocused one 0.80 of it, glyphs included. Without lyra the opaque
-                    # base above stands.
+                    # to it. Hyprland carries no opacity rule for terminals
+                    # (compositor/hyprland/hyprglass.nix), so the song's value is the
+                    # whole say, focused or not. Without lyra the opaque base above
+                    # stands.
                     background_blur = 0;
                   }
                   // lib.optionalAttrs followsStage {
