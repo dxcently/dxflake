@@ -24,9 +24,10 @@
       # includes.
       aoideQuickshell = config.aoide.quickshell.enable;
 
-      # The terminals follow a stage. `rice stage` is the lyra lane's and the only
-      # writer of the two files included below, so a host without lyra opens no
-      # control socket and includes nothing. Read here, not in the home-manager
+      # The terminals follow a stage. The lyra lane is the only writer of the two
+      # files included below (its seed the declared fragment, `rice stage` the
+      # staged colours), so a host without lyra opens no control socket and
+      # includes nothing. Read here, not in the home-manager
       # lane, which shadows `config` with its own.
       followsStage = config.aoide.lyra.enable;
       aoideRoot = config.aoide.root;
