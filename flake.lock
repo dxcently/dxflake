@@ -39,11 +39,11 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1791263968,
-        "narHash": "sha256-AgeGSPBUBZryG+dATirDB1zRhWHRHswjTMw+nOCNQWA=",
+        "lastModified": 1791269415,
+        "narHash": "sha256-HtVkMBgt0lpuC1+YPxADwRiGUADoQU6pveg7K1sNm5w=",
         "ref": "main",
-        "rev": "568b8698784b581915e1ecda914ebe4240a3fbad",
-        "revCount": 1769,
+        "rev": "84b22ad62b50097f9a7bd94faf57638036127f58",
+        "revCount": 1774,
         "type": "git",
         "url": "https://github.com/dxcently/Aoide.git"
       },
@@ -225,11 +225,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791260933,
-        "narHash": "sha256-Z4JF5fLOxvG2t+xAB0m0Zv9ypJr0QrxBaWdUxsFUCtY=",
+        "lastModified": 1791277785,
+        "narHash": "sha256-Gemab6kdfzlHwNnAJdxsDlSsLJw+1P4DffFboWYqubQ=",
         "ref": "master",
-        "rev": "c003197c79bb0f1128624d18b5739b6b1f683f58",
-        "revCount": 364,
+        "rev": "2148d66516d620b67762bf1ea44c0a52b3b1a86b",
+        "revCount": 369,
         "type": "git",
         "url": "https://github.com/noah427/eidolon.git"
       },
