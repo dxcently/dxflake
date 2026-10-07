@@ -30,11 +30,6 @@
       # lane, which shadows `config` with its own.
       followsStage = config.aoide.lyra.enable;
       aoideRoot = config.aoide.root;
-
-      # Kitty stays opaque and the compositor owns the translucency (the aero-glass
-      # block below), so the `background_opacity` line each staged file carries is
-      # overruled after its include.
-      baseOpacity = 1;
     in
     {
       config = {
@@ -115,45 +110,35 @@
                     window_padding_width = 5;
                     window_border_width = 1.5;
                     remember_window_size = "no";
-                    background_opacity = baseOpacity;
+                    background_opacity = 1;
                     background_blur = 1;
                     enable_audio_bell = false;
                     tab_bar_style = "powerline";
                     tab_powerline_style = "slanted";
                   }
                   // lib.optionalAttrs aoideQuickshell {
-                    # Aero-glass terminal, ported from Aoide's kitty dendrite — but the
-                    # translucency is the COMPOSITOR's job here, not kitty's. Aoide sets
-                    # background_opacity 0.86; dxflake deliberately leaves the opaque 1
-                    # from the block above standing, because kitty bakes that alpha into
-                    # its own buffer and Hyprland's `opacity` rule can only ever subtract
-                    # from it. With 0.86 baked in, a HOVERED terminal maxed out at 0.86 —
-                    # the windowrule's 1.0 had nothing to restore. Opaque kitty + the
-                    # rule's 1.0/0.80 pair (compositor/hyprland/hyprglass.nix) gives the intended
-                    # split: focused is 100% opaque, unfocused fades to 0.80 and still
-                    # frosts, since `decoration.blur.ignore_opacity` blurs behind windows
-                    # faded by an opacity rule. Under `follow_mouse = 1` focused ==
-                    # hovered, so hover is the crisp state.
+                    # Aero-glass terminal, ported from Aoide's kitty dendrite. The blur is
+                    # the compositor's: kitty's own background_blur is a macOS/KDE path,
+                    # inert under Hyprland, so it is off on purpose and not left at the
+                    # 1 above, which would imply a second blurrer that never runs.
                     #
-                    # Trade-off, taken knowingly: the rule fades the whole window rather
-                    # than only the cell background, so unfocused GLYPHS fade too. Net
-                    # legibility still improves — the old stack multiplied to 0.86 × 0.80
-                    # = 0.69 behind the text, this is a flat 0.80.
-                    #
-                    # OFF on purpose, not an oversight: kitty's own background_blur is a
-                    # macOS/KDE path and is inert under Hyprland. The compositor owns the
-                    # blur pass, so leaving this at dxflake's 1 would imply a second
-                    # blurrer that never runs.
+                    # The opacity is the song's. A host with lyra includes the declared
+                    # and the staged terminal files below, the staged one last and always
+                    # carrying a `background_opacity`, and the control socket with
+                    # `dynamic_background_opacity` lets `rice stage` move the open windows
+                    # to it. Hyprland's terminal rule (compositor/hyprland/hyprglass.nix)
+                    # multiplies on top: a focused terminal shows the song's value, an
+                    # unfocused one 0.80 of it, glyphs included. Without lyra the opaque
+                    # base above stands.
                     background_blur = 0;
                   }
                   // lib.optionalAttrs followsStage {
                     # One control socket per instance: `rice stage` finds `kitty-<pid>`
                     # in the runtime dir and recolours the windows already open.
-                    # socket-only keeps remote control off every pty. No
-                    # `dynamic_background_opacity`, so the live opacity push is refused
-                    # on purpose; the compositor owns it.
+                    # socket-only keeps remote control off every pty.
                     allow_remote_control = "socket-only";
                     listen_on = "unix:\${XDG_RUNTIME_DIR}/kitty-{kitty_pid}";
+                    dynamic_background_opacity = true;
                   };
                 keybindings = {
                   "alt+j" = "next_window";
@@ -165,55 +150,17 @@
                   "alt+q" = "close_window";
                   "ctrl+shift+U" = "none"; # for vim's page up
                 };
-                /*
-                  extraConfig = ''
-                    enabled_layouts fat:bias=80;full_size=1
-                    adjust_column_width -10
-                    foreground #${config.lib.stylix.colors.base01}
-                    background #${config.lib.stylix.colors.base00}
-                    color0  #${config.lib.stylix.colors.base00}
-                    color1  #${config.lib.stylix.colors.base01}
-                    color2  #${config.lib.stylix.colors.base02}
-                    color3  #${config.lib.stylix.colors.base03}
-                    color4  #${config.lib.stylix.colors.base04}
-                    color5  #${config.lib.stylix.colors.base05}
-                    color6  #${config.lib.stylix.colors.base06}
-                    color7  #${config.lib.stylix.colors.base07}
-                    color8  #${config.lib.stylix.colors.base08}
-                    color9  #${config.lib.stylix.colors.base09}
-                    color10 #${config.lib.stylix.colors.base0A}
-                    color11 #${config.lib.stylix.colors.base0B}
-                    color12 #${config.lib.stylix.colors.base0C}
-                    color13 #${config.lib.stylix.colors.base0D}
-                    color14 #${config.lib.stylix.colors.base0E}
-                    color15 #${config.lib.stylix.colors.base0F}
-                    cursor  #${config.lib.stylix.colors.base05}
-                    cursor_text_color #${config.lib.stylix.colors.base00}
-                    selection_foreground #${config.lib.stylix.colors.base01}
-                    selection_background #${config.lib.stylix.colors.base0D}
-                    url_color #${config.lib.stylix.colors.base0C}
-                    active_border_color #${config.lib.stylix.colors.base0A}
-                    inactive_border_color #${config.lib.stylix.colors.base09}
-                    bell_border_color #${config.lib.stylix.colors.base0A}
-                    active_tab_foreground   #${config.lib.stylix.colors.base01}
-                    active_tab_background   #${config.lib.stylix.colors.base00}
-                    inactive_tab_foreground #${config.lib.stylix.colors.base05}
-                    inactive_tab_background #${config.lib.stylix.colors.base04}
-                  '';
-                */
               })
               # Outside the `mkForce`, which would drop Stylix's include. kitty takes the
               # LAST value of a repeated key, so the order is the contract: the declared
-              # opacity fragment, then the staged colours, so a live stage wins. kitty
-              # skips a missing include with one log line, so a host that has never
-              # staged keeps its baked colours. Both files carry a `background_opacity`;
-              # the pin after them keeps the compositor's focused-opaque rule from being
-              # capped. Delete the pin to hand terminal opacity to the song.
+              # opacity fragment, then the staged colours, so a live stage wins. A staged
+              # file carries every colour slot, so a host orders its own kitty overrides
+              # after this block, never before it. kitty skips a missing include with one
+              # log line, so a host that has never staged keeps its baked colours.
               (lib.mkIf followsStage {
                 extraConfig = lib.mkAfter ''
                   include ${aoideRoot}/song/declared/terminal-opacity.conf
                   include ${aoideRoot}/song/stage/terminal-colors.conf
-                  background_opacity ${toString baseOpacity}
                 '';
               })
             ];

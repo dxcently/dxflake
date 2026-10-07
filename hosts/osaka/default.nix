@@ -4,9 +4,10 @@
   # The song carries the livery (palette + component tiers) and nothing else —
   # host-agnostic by contract, so this one line is the whole rice swap.
   song.declared = "sonata";
-  # Built in, so `lyra rice stage cadenza` works from boot without a rebuild; not
-  # performed, so its livery is not the active one and the overrides below
-  # still recolour sonata alone.
+  # Built in, not performed. The cadenza copy is seeded into the runtime songbook
+  # once, when absent; staging it is `lyra rice mode stage cadenza`. aoide.song
+  # stays sonata, so cadenza adds no livery and the overrides below still
+  # recolour sonata alone.
   song.available = [ "cadenza" ];
 
   aggregation = {
@@ -213,8 +214,10 @@
         home.file.".aoide/song/covers".source = ../../song/covers;
         # ANSI bright black is secondary text (e.g. nom's elapsed-time labels).
         # Override the template's base02 surface shade with muted ink. Ordered
-        # past the kitty dendrite's mkAfter (1500) too: the staged colours it
-        # includes always carry that same base02 line, and this one must win.
+        # after the kitty dendrite's include block, whose staged file carries that
+        # same base02 line. That holds for a NEW kitty instance only: a live stage
+        # pushes the staged colours to the windows already open and resets slot 8
+        # there.
         programs.kitty.extraConfig = lib.mkOrder 1600 ''
           color8 #${config.lib.stylix.colors.base04}
         '';

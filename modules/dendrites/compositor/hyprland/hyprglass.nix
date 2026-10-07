@@ -103,12 +103,11 @@
           }
 
           # ── Aero-glass terminal (pairs with the kitty dendrite) ────────────
-          # This rule is the ONLY source of terminal translucency: kitty runs
-          # background_opacity 1 (see the kitty dendrite for why), so 1.0 here
-          # really is 100% opaque rather than a ceiling over kitty's own baked
-          # alpha. `follow_mouse = 1` above makes focused == hovered, so the
-          # crisp state is the hovered one; an unfocused terminal fades to 0.80
-          # and visibly recedes, still blurred because
+          # This rule multiplies kitty's own opacity, which is the song's (see the
+          # kitty dendrite), so 1.0 here keeps the song's value rather than making
+          # the terminal opaque. `follow_mouse = 1` above makes focused == hovered,
+          # so the crisp state is the hovered one; an unfocused terminal fades to
+          # 0.80 of that and visibly recedes, still blurred because
           # `decoration.blur.ignore_opacity` blurs behind opacity-faded windows.
           # Terminals only, deliberately — this is not a global
           # inactive_opacity, because media and browser windows carry arbitrary
