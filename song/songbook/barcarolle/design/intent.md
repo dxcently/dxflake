@@ -94,19 +94,23 @@ contact sheet `agent-icons.png`. One family: a 48×48 glass tile (the
 fallback is an orb), a vertical body gradient in the kind's hue, a bottom
 bounce glow, a curved hard-edged gloss over the top half, a white inner rim
 and a dark outer rim. The mark sits above the gloss with a 1.2px dark drop so
-it holds at 16px. Every mark is original; the hue and the idea hint at the
-agent, no vendor logo is drawn or traced.
+it holds at 16px. eidolon wears its own brand: the user's project, so its
+real mark is used. Every other mark is original; the hue and the idea hint at
+the agent, no vendor logo is drawn or traced.
 
 | kind | mark | body (top → bottom) | mark colour |
 |---|---|---|---|
 | claude | a quill | amber `#f5ad66` → terracotta `#a9461f` | white, terracotta spine |
-| eidolon | a phantom with its fainter image behind it | lilac `#b9a6ff` → violet `#47308f` | white, violet eyes |
-| kimi | a crescent moon | sky `#3f78dc` → night `#0d1c58` | pale gold `#fff8d6` → `#f2c14a` |
+| eidolon | eidolon's helmet figure, a Corinthian helmet front-on: crest, crown, brow, eye slit split by the nasal, two cheek guards; hard pixel blocks on a 6-unit grid (2px at 16) | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
+| kimi | a crescent moon | indigo `#5560d6` → night `#170f52` | pale gold `#fff8d6` → `#f2c14a` |
 | codex | an open bound book | mint `#53d394` → green `#12603d` | white pages, green cover |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
-An unknown kind takes `agent`. Gradient ids are prefixed with the kind, so
+`eidolon-smooth.svg` is the other eidolon candidate: the same helmet drawn
+smooth, as Aero bronze with a dome highlight, on the same tile. kimi sits on
+indigo so its tile never reads as eidolon's blue at 16px. An unknown kind
+takes `agent`. Gradient ids are prefixed with the kind, so
 the six inline together without collision.
 
 ## Palette tokens used
