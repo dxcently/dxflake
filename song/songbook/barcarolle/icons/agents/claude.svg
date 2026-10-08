@@ -1,17 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
 <defs>
-<linearGradient id="claude-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5ad66"/><stop offset="1" stop-color="#a9461f"/></linearGradient>
-<radialGradient id="claude-glow" cx=".5" cy="1" r=".62"><stop offset="0" stop-color="#ffd38a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd38a" stop-opacity="0"/></radialGradient>
+<linearGradient id="claude-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf2"/><stop offset="1" stop-color="#ecd3bd"/></linearGradient>
+<radialGradient id="claude-glow" cx=".5" cy="1" r=".62"><stop offset="0" stop-color="#ffffff" stop-opacity=".9"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
 <linearGradient id="claude-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
 </defs>
 <rect x="2" y="2" width="44" height="44" rx="10" fill="url(#claude-body)"/>
 <rect x="2" y="2" width="44" height="44" rx="10" fill="url(#claude-glow)"/>
 <path d="M3 12a9 9 0 0 1 9-9h24a9 9 0 0 1 9 9v9c-6.5 3-14 4.2-21 4.2S9.5 24 3 21z" fill="url(#claude-gloss)"/>
-<g fill="#081a24" fill-opacity=".35" transform="translate(0 1.2)"><path d="M39.5 7C28 7.5 17.5 13.5 14.5 30l-1 5 5.5-3.5c7-1.5 14-4.5 18-10h-6l7.5-5.5c1.8-2.8 2.7-5.8 3-9z"/></g>
-<g fill="#fff"><path d="M39.5 7C28 7.5 17.5 13.5 14.5 30l-1 5 5.5-3.5c7-1.5 14-4.5 18-10h-6l7.5-5.5c1.8-2.8 2.7-5.8 3-9z"/></g>
-<path d="M15.6 31.5L10 40.5" stroke="#081a24" stroke-opacity=".35" stroke-width="3.4" stroke-linecap="round" transform="translate(0 1.2)"/>
-<path d="M15.6 31.5L10 40.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
-<path d="M37 10Q25 17.5 17 30" fill="none" stroke="#b4532a" stroke-opacity=".6" stroke-width="1.5" stroke-linecap="round"/>
+<g fill="#081a24" fill-opacity=".22" transform="translate(0 1.2)"><circle cx="24" cy="24.5" r="5.2"/><path d="M26.90 22.00 L25.50 6.50 L22.50 6.50 L21.10 22.00Z"/><circle cx="24.00" cy="6.50" r="1.5"/><path d="M27.43 23.64 L32.50 13.27 L29.92 11.73 L23.14 21.07Z"/><circle cx="31.21" cy="12.50" r="1.5"/><path d="M27.47 26.28 L40.69 19.04 L39.52 16.28 L25.13 20.76Z"/><circle cx="40.11" cy="17.66" r="1.5"/><path d="M25.85 27.43 L36.25 29.10 L36.98 26.19 L27.01 22.78Z"/><circle cx="36.61" cy="27.64" r="1.5"/><path d="M23.46 28.21 L33.78 38.49 L36.08 36.56 L27.75 24.62Z"/><circle cx="34.93" cy="37.52" r="1.5"/><path d="M21.53 27.13 L23.29 39.56 L26.28 39.40 L26.73 26.86Z"/><circle cx="24.79" cy="39.48" r="1.5"/><path d="M20.13 25.03 L13.19 38.97 L15.73 40.56 L25.22 28.21Z"/><circle cx="14.46" cy="39.76" r="1.5"/><path d="M20.81 23.16 L10.86 27.94 L11.93 30.74 L22.53 27.64Z"/><circle cx="11.40" cy="29.34" r="1.5"/><path d="M22.25 21.18 L7.87 18.93 L7.14 21.84 L20.90 26.61Z"/><circle cx="7.50" cy="20.39" r="1.5"/><path d="M24.43 20.99 L16.25 12.15 L13.89 14.00 L20.49 24.07Z"/><circle cx="15.07" cy="13.07" r="1.5"/></g>
+<g fill="#d97757"><circle cx="24" cy="24.5" r="5.2"/><path d="M26.90 22.00 L25.50 6.50 L22.50 6.50 L21.10 22.00Z"/><circle cx="24.00" cy="6.50" r="1.5"/><path d="M27.43 23.64 L32.50 13.27 L29.92 11.73 L23.14 21.07Z"/><circle cx="31.21" cy="12.50" r="1.5"/><path d="M27.47 26.28 L40.69 19.04 L39.52 16.28 L25.13 20.76Z"/><circle cx="40.11" cy="17.66" r="1.5"/><path d="M25.85 27.43 L36.25 29.10 L36.98 26.19 L27.01 22.78Z"/><circle cx="36.61" cy="27.64" r="1.5"/><path d="M23.46 28.21 L33.78 38.49 L36.08 36.56 L27.75 24.62Z"/><circle cx="34.93" cy="37.52" r="1.5"/><path d="M21.53 27.13 L23.29 39.56 L26.28 39.40 L26.73 26.86Z"/><circle cx="24.79" cy="39.48" r="1.5"/><path d="M20.13 25.03 L13.19 38.97 L15.73 40.56 L25.22 28.21Z"/><circle cx="14.46" cy="39.76" r="1.5"/><path d="M20.81 23.16 L10.86 27.94 L11.93 30.74 L22.53 27.64Z"/><circle cx="11.40" cy="29.34" r="1.5"/><path d="M22.25 21.18 L7.87 18.93 L7.14 21.84 L20.90 26.61Z"/><circle cx="7.50" cy="20.39" r="1.5"/><path d="M24.43 20.99 L16.25 12.15 L13.89 14.00 L20.49 24.07Z"/><circle cx="15.07" cy="13.07" r="1.5"/></g>
 <rect x="3" y="3" width="42" height="42" rx="9" fill="none" stroke="#fff" stroke-opacity=".5"/>
 <rect x="1.5" y="1.5" width="45" height="45" rx="10.5" fill="none" stroke="#081a24" stroke-opacity=".8"/>
 </svg>

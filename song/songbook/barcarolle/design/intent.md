@@ -94,24 +94,30 @@ contact sheet `agent-icons.png`. One family: a 48×48 glass tile (the
 fallback is an orb), a vertical body gradient in the kind's hue, a bottom
 bounce glow, a curved hard-edged gloss over the top half, a white inner rim
 and a dark outer rim. The mark sits above the gloss with a 1.2px dark drop so
-it holds at 16px. eidolon wears its own brand: the user's project, so its
-real mark is used. Every other mark is original; the hue and the idea hint at
-the agent, no vendor logo is drawn or traced.
+it holds at 16px. Two kinds wear their own marks, drawn here: claude after
+Anthropic's Claude spark (a trademark, used on the user's own desktop by the
+user's ruling) and eidolon after its own helmet figure (the user's project).
+kimi, codex, shell and agent are original; the hue and the idea hint at the
+agent, no vendor logo is drawn or traced.
 
 | kind | mark | body (top → bottom) | mark colour |
 |---|---|---|---|
-| claude | a quill | amber `#f5ad66` → terracotta `#a9461f` | white, terracotta spine |
-| eidolon | eidolon's helmet figure as a front-on Corinthian helmet in Aero bronze: an arched crest fin sweeping back off the crown (it rises past the tile's top rim), domed crown with a highlight, brow ridge, dark T opening with the nasal, long tapered cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffd25a` → `#ffc23a` → amber `#ffa43a` → orange `#e8701c`, the crest washed orange `#ff8a2a`, interior `#1a1a28` |
+| claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre | cream `#fffaf2` → `#ecd3bd` | coral `#d97757` |
+| eidolon | eidolon's helmet figure, a Corinthian helmet front-on in hard pixel blocks on a 6-unit grid (2px at 16): crest, crown, brow, eye slit split by the nasal, two cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
 | kimi | a crescent moon | indigo `#5560d6` → night `#170f52` | pale gold `#fff8d6` → `#f2c14a` |
 | codex | an open bound book | mint `#53d394` → green `#12603d` | white pages, green cover |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
-`eidolon-pixel.svg` is the other eidolon candidate: the same helmet as hard
-pixel blocks on a 6-unit grid (2px at 16), closer to the brand's pixel art,
-on the same tile. kimi sits on indigo so its tile never reads as eidolon's
-blue at 16px. An unknown kind takes `agent`. Gradient ids are prefixed with
-the kind (the candidate with `eidolon-pixel`), so all of them inline together
+claude's spark sits in coral on a cream tile rather than white on amber:
+at 16px the white rays blur into a blob, the coral ones hold. eidolon has
+two candidates on the same tile in `design/`: `eidolon-crest.svg`, the pixel
+helmet with a stepped crest arching back over the crown (it rises past the
+tile's top rim), and `eidolon-smooth.svg`, the same helmet in Aero bronze
+with a swept crest fin and a dome highlight. kimi sits on indigo so its tile
+never reads as eidolon's blue at 16px. An unknown kind takes `agent`.
+Gradient ids are prefixed with the kind (the candidates with
+`eidolon-crest` and `eidolon-smooth`), so all of them inline together
 without collision.
 
 ## Palette tokens used

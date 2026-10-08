@@ -15,11 +15,16 @@
   each differs from its closest original by RMSE ≈ 0.11, so expect a re-grade
   or re-crop. The source match is by image comparison against the zip's
   contents; each matched its listed original more closely than any other.
-- `../icons/agents/*.svg` (claude, kimi, codex, shell, agent) are original
-  drawings made here for this song; no vendor logo is reproduced, traced or
-  imitated. `../icons/agents/eidolon.svg` and its pixel candidate
-  `eidolon-pixel.svg` are drawn here after eidolon's own mark (the helmet
+- `../icons/agents/{kimi,codex,shell,agent}.svg` are original drawings made
+  here for this song; no vendor logo is reproduced, traced or imitated.
+- `../icons/agents/claude.svg` is drawn here, from memory as plain vector
+  geometry, after Anthropic's Claude spark mark. The mark is Anthropic's
+  trademark; it is used on the user's own desktop by the user's ruling.
+- `../icons/agents/eidolon.svg` and its candidates `eidolon-crest.svg` and
+  `eidolon-smooth.svg` are drawn here after eidolon's own mark (the helmet
   figure and the wordmark's colours); eidolon is the user's own project.
-  `agent-icons.png` is their contact sheet, a headless Chromium render.
+- `agent-icons.png` is the agent icons' contact sheet, a headless Chromium
+  render.
 - `mock.png` is a headless Chromium render of `mock.html`; every glyph, icon
-  and the orb mark in it are original drawings, no Microsoft artwork.
+  and the orb mark in it are drawn here, no Microsoft artwork. Its agent
+  icons are the ones above.
