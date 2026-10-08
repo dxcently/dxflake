@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<linearGradient id="kimi-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f78dc"/><stop offset="1" stop-color="#0d1c58"/></linearGradient>
+<radialGradient id="kimi-glow" cx=".5" cy="1" r=".62"><stop offset="0" stop-color="#7fb6ff" stop-opacity=".75"/><stop offset="1" stop-color="#7fb6ff" stop-opacity="0"/></radialGradient>
+<linearGradient id="kimi-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+<mask id="kimi-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48"><rect width="48" height="48" fill="#fff"/><circle cx="30.5" cy="18.5" r="11" fill="#000"/></mask>
+<linearGradient id="kimi-moon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d6"/><stop offset="1" stop-color="#f2c14a"/></linearGradient>
+</defs>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#kimi-body)"/>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#kimi-glow)"/>
+<path d="M3 12a9 9 0 0 1 9-9h24a9 9 0 0 1 9 9v9c-6.5 3-14 4.2-21 4.2S9.5 24 3 21z" fill="url(#kimi-gloss)"/>
+<circle cx="23" cy="26" r="13.5" fill="#081a24" fill-opacity=".35" mask="url(#kimi-cut)" transform="translate(0 1.2)"/>
+<circle cx="23" cy="26" r="13.5" fill="url(#kimi-moon)" mask="url(#kimi-cut)"/>
+<rect x="3" y="3" width="42" height="42" rx="9" fill="none" stroke="#fff" stroke-opacity=".5"/>
+<rect x="1.5" y="1.5" width="45" height="45" rx="10.5" fill="none" stroke="#081a24" stroke-opacity=".8"/>
+</svg>

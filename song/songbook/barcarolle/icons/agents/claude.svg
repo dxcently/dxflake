@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<linearGradient id="claude-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5ad66"/><stop offset="1" stop-color="#a9461f"/></linearGradient>
+<radialGradient id="claude-glow" cx=".5" cy="1" r=".62"><stop offset="0" stop-color="#ffd38a" stop-opacity=".9"/><stop offset="1" stop-color="#ffd38a" stop-opacity="0"/></radialGradient>
+<linearGradient id="claude-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+</defs>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#claude-body)"/>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#claude-glow)"/>
+<path d="M3 12a9 9 0 0 1 9-9h24a9 9 0 0 1 9 9v9c-6.5 3-14 4.2-21 4.2S9.5 24 3 21z" fill="url(#claude-gloss)"/>
+<g fill="#081a24" fill-opacity=".35" transform="translate(0 1.2)"><path d="M39.5 7C28 7.5 17.5 13.5 14.5 30l-1 5 5.5-3.5c7-1.5 14-4.5 18-10h-6l7.5-5.5c1.8-2.8 2.7-5.8 3-9z"/></g>
+<g fill="#fff"><path d="M39.5 7C28 7.5 17.5 13.5 14.5 30l-1 5 5.5-3.5c7-1.5 14-4.5 18-10h-6l7.5-5.5c1.8-2.8 2.7-5.8 3-9z"/></g>
+<path d="M15.6 31.5L10 40.5" stroke="#081a24" stroke-opacity=".35" stroke-width="3.4" stroke-linecap="round" transform="translate(0 1.2)"/>
+<path d="M15.6 31.5L10 40.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M37 10Q25 17.5 17 30" fill="none" stroke="#b4532a" stroke-opacity=".6" stroke-width="1.5" stroke-linecap="round"/>
+<rect x="3" y="3" width="42" height="42" rx="9" fill="none" stroke="#fff" stroke-opacity=".5"/>
+<rect x="1.5" y="1.5" width="45" height="45" rx="10.5" fill="none" stroke="#081a24" stroke-opacity=".8"/>
+</svg>

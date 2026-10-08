@@ -195,10 +195,12 @@ svg.i { display: block; }
 .mws .n { position: absolute; left: 2px; top: 3px; width: 11px; height: 14px; border-radius: 2px; background: rgba(12,33,48,.9); color: #fff; font: 600 9px/14px var(--ui); text-align: center; }
 .mws.w-working { background: linear-gradient(0deg, rgba(59,220,172,.35), rgba(59,220,172,.35)), linear-gradient(180deg, #2b5468, #0c2130); }
 .mws.w-awaiting { background: linear-gradient(0deg, rgba(232,207,106,.40), rgba(232,207,106,.40)), linear-gradient(180deg, #2b5468, #0c2130); }
-.sess { height: 40px; display: grid; grid-template-columns: 12px 1fr 48px; gap: 2px 10px; align-items: center; padding: 3px 10px 3px 18px; border: 1px solid transparent; border-radius: 2px; margin: 0 4px; cursor: pointer; }
+.sess { height: 40px; display: grid; grid-template-columns: 28px 1fr 48px; gap: 2px 8px; align-items: center; padding: 3px 8px 3px 6px; border: 1px solid transparent; border-radius: 2px; margin: 0 4px; cursor: pointer; }
 .sess:hover { background: rgba(37,187,207,.10); border-color: var(--ink-3); }
-.sess.sub { padding-left: 34px; }
-.sess .st { grid-row: 1 / 3; }
+.sess.sub { padding-left: 22px; }
+.sess .ico { grid-row: 1 / 3; position: relative; width: 28px; height: 28px; }
+.sess .ico img { display: block; }
+.sess .ico .st { position: absolute; right: -2px; bottom: -3px; box-shadow: 0 0 0 1.5px #fff, 0 0 0 2.5px var(--ink-3); }
 .sess .l1 { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sess .l2 { grid-column: 2; font-size: 11px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sess .l2 code { font: 11px var(--mono); color: var(--ink-2); }
@@ -533,17 +535,22 @@ const groups = [
     ["awaiting", "claude · flake check", "asking · Bash", "~/dxflake", 72, false, "y"] ] },
   { ws: 1, wash: "", apps: ["term", "web"], label: "Workspace 1", mon: "DP-1", rows: [
     ["idle", "kimi · notes sweep", "idle 12m", "~/Magi", 18],
-    ["stopped", "claude · harnox bump", "stopped · exit 0", "~/harnox", 40] ] },
+    ["stopped", "eidolon · harnox bump", "stopped · exit 0", "~/harnox", 40] ] },
 ];
+const kinds = ["claude", "eidolon", "kimi", "codex", "shell"];
+const agentIcon = (name, state, dim) => {
+  const k = name.split(" · ")[0];
+  return `<span class="ico"${dim ? ' style="opacity:.6"' : ""}><img src="../icons/agents/${kinds.includes(k) ? k : "agent"}.svg" width="28" height="28" alt="${k}"><span class="st s-${state}"></span></span>`;
+};
 const stateWord = { working: "working", awaiting: "awaiting", idle: "idle", stopped: "stopped", done: "done" };
 document.getElementById("sessions").innerHTML = groups.map(g => `
   <div class="grp"><div class="mws ${g.wash ? "w-" + g.wash : ""}"><span class="n">${g.ws}</span>${g.apps.map(a => icon(a, 9)).join("")}</div><b>${g.label}</b><span class="sub">${g.mon}</span></div>
-  ${g.rows.map(r => `<div class="sess${r[5] ? " sub" : ""}"><span class="st s-${r[0]}"></span>
+  ${g.rows.map(r => `<div class="sess${r[5] ? " sub" : ""}">${agentIcon(r[1], r[0])}
     <span class="l1">${r[1]}<span class="st-word">${stateWord[r[0]]}</span></span>
     <div class="meter"><i class="${r[6] || ""}" style="width:${r[4]}%"></i></div>
     <span class="l2">${r[2]} · <code>${r[3]}</code></span></div>`).join("")}
 `).join("") + `<div class="grp elsewhere" style="cursor:default"><b>Elsewhere</b><span>· remote, no window</span></div>
-  <div class="sess elsewhere" style="cursor:default"><span class="st s-idle" style="opacity:.6"></span><span class="l1">claude · yomi backup</span><div></div><span class="l2">idle · <code>yomi:~/aoide</code></span></div>
+  <div class="sess elsewhere" style="cursor:default">${agentIcon("shell · yomi backup", "idle", true)}<span class="l1">shell · yomi backup</span><div></div><span class="l2">idle · <code>yomi:~/aoide</code></span></div>
   <div class="newterm">+ New terminal</div>`;
 
 document.getElementById("legend").innerHTML = Object.keys(stateWord).map(s => `<span><i class="st s-${s}"></i>${s}</span>`).join("");

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<linearGradient id="codex-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#53d394"/><stop offset="1" stop-color="#12603d"/></linearGradient>
+<radialGradient id="codex-glow" cx=".5" cy="1" r=".62"><stop offset="0" stop-color="#b6ffd6" stop-opacity=".7"/><stop offset="1" stop-color="#b6ffd6" stop-opacity="0"/></radialGradient>
+<linearGradient id="codex-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+</defs>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#codex-body)"/>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#codex-glow)"/>
+<path d="M3 12a9 9 0 0 1 9-9h24a9 9 0 0 1 9 9v9c-6.5 3-14 4.2-21 4.2S9.5 24 3 21z" fill="url(#codex-gloss)"/>
+<g transform="translate(0 1.2)" opacity=".35"><path d="M6.5 15.5V37.5c6-1.6 12.5-1.4 17.5 1.5 5-2.9 11.5-3.1 17.5-1.5V15.5z" fill="#081a24"/></g>
+<path d="M6.5 15.5V37.5c6-1.6 12.5-1.4 17.5 1.5 5-2.9 11.5-3.1 17.5-1.5V15.5z" fill="#0a4429"/>
+<path d="M24 14.5c-5-3-11-3.2-15-1.8V34.2c4-1.4 10-1.2 15 1.8z" fill="#fff"/><path d="M24 14.5c5-3 11-3.2 15-1.8V34.2c-4-1.4-10-1.2-15 1.8z" fill="#dff2e7"/>
+<path d="M12.5 19.5c2.8-.6 5.6-.3 8 .8M12.5 25c2.8-.6 5.6-.3 8 .8M27.5 20.3c2.4-1.1 5.2-1.4 8-.8M27.5 25.8c2.4-1.1 5.2-1.4 8-.8" fill="none" stroke="#2f9d6a" stroke-opacity=".7" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M24 14.5V36" stroke="#1f7a50" stroke-width="1.6"/>
+<rect x="3" y="3" width="42" height="42" rx="9" fill="none" stroke="#fff" stroke-opacity=".5"/>
+<rect x="1.5" y="1.5" width="45" height="45" rx="10.5" fill="none" stroke="#081a24" stroke-opacity=".8"/>
+</svg>

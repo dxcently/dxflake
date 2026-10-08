@@ -61,8 +61,8 @@ Glass is a frame, content is a plate, light comes from above.
   Restart / Shut down.
 - **Sidebar dock** (right, 352px, summoned): header chip with counts, one
   gadget card grouping sessions by workspace (mini workspace button + label;
-  click jumps), rows with a state orb, agent · title, tool and cwd tail, and
-  a context meter. Subagents indent. "Elsewhere" holds sessions with no
+  click jumps), rows with the agent's icon (28px) wearing its state orb as an
+  overlay, agent · title, tool and cwd tail, and a context meter. Subagents indent. "Elsewhere" holds sessions with no
   window. `+ New terminal` at the foot.
 - **RICE cell + menu**: the cell shows the mode glyph and word (`Stage`) with
   a chevron. The menu: header `Rice · <song> · <mode>`, songs with the
@@ -86,6 +86,28 @@ The canonical five from `sessions.json`: `working` (base0B green) ·
 `awaiting` (base0A yellow, pause bars — the one that is *asking*) · `idle`
 (base04 grey) · `stopped` (white orb with an ink stop square) · `done`
 (accent with a check).
+
+## Agent icons
+
+`icons/agents/<kind>.svg`, one per session kind `aoide session` reports;
+contact sheet `agent-icons.png`. One family: a 48×48 glass tile (the
+fallback is an orb), a vertical body gradient in the kind's hue, a bottom
+bounce glow, a curved hard-edged gloss over the top half, a white inner rim
+and a dark outer rim. The mark sits above the gloss with a 1.2px dark drop so
+it holds at 16px. Every mark is original; the hue and the idea hint at the
+agent, no vendor logo is drawn or traced.
+
+| kind | mark | body (top → bottom) | mark colour |
+|---|---|---|---|
+| claude | a quill | amber `#f5ad66` → terracotta `#a9461f` | white, terracotta spine |
+| eidolon | a phantom with its fainter image behind it | lilac `#b9a6ff` → violet `#47308f` | white, violet eyes |
+| kimi | a crescent moon | sky `#3f78dc` → night `#0d1c58` | pale gold `#fff8d6` → `#f2c14a` |
+| codex | an open bound book | mint `#53d394` → green `#12603d` | white pages, green cover |
+| shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
+| agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
+
+An unknown kind takes `agent`. Gradient ids are prefixed with the kind, so
+the six inline together without collision.
 
 ## Palette tokens used
 

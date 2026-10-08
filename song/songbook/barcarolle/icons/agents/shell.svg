@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<linearGradient id="shell-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4e5f6b"/><stop offset="1" stop-color="#0b1419"/></linearGradient>
+<radialGradient id="shell-glow" cx=".5" cy="1" r=".62"><stop offset="0" stop-color="#3bdcac" stop-opacity=".28"/><stop offset="1" stop-color="#3bdcac" stop-opacity="0"/></radialGradient>
+<linearGradient id="shell-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+</defs>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#shell-body)"/>
+<rect x="2" y="2" width="44" height="44" rx="10" fill="url(#shell-glow)"/>
+<path d="M3 12a9 9 0 0 1 9-9h24a9 9 0 0 1 9 9v9c-6.5 3-14 4.2-21 4.2S9.5 24 3 21z" fill="url(#shell-gloss)"/>
+<path d="M11.5 16.5L21 24l-9.5 7.5" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 1.2)"/><path d="M25 33.5h11.5" stroke="#000" stroke-opacity=".45" stroke-width="4.6" stroke-linecap="round" transform="translate(0 1.2)"/>
+<path d="M11.5 16.5L21 24l-9.5 7.5" fill="none" stroke="#3bdcac" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M25 33.5h11.5" stroke="#eaf6f6" stroke-width="4.6" stroke-linecap="round"/>
+<rect x="3" y="3" width="42" height="42" rx="9" fill="none" stroke="#fff" stroke-opacity=".5"/>
+<rect x="1.5" y="1.5" width="45" height="45" rx="10.5" fill="none" stroke="#081a24" stroke-opacity=".8"/>
+</svg>
