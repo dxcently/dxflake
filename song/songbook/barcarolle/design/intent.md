@@ -1,9 +1,9 @@
 # barcarolle — intent
 
 Windows 7 Aero, rebuilt as an AoideOS rice: a glass superbar along the bottom,
-the Start orb and its two-column menu, white-plate flyouts and balloons, a
-Vista-lineage sidebar, and a CPU-meter gadget, all over a teal Frutiger Aero
-wallpaper. The one structural change from Windows 7: the grouped taskbar
+the Start orb and its two-column menu, white-plate flyouts and balloons
+(the agent sessions among them), and a CPU-meter gadget, all over a teal
+Frutiger Aero wallpaper. The one structural change from Windows 7: the grouped taskbar
 buttons are **Hyprland workspaces**, not applications.
 
 The board is `mock.html` (rendered to `mock.png`). It holds every summoned
@@ -16,7 +16,7 @@ Glass is a frame, content is a plate, light comes from above.
 
 - **Deep glass** (`bar.bg`) is the only glass that carries text, always white.
 - **Colorization** (`window.border`) tints every frame — Start rim, flyout
-  rims, peek frame, sidebar column, active window border — and never carries
+  rims, peek frame, active window border — and never carries
   text.
 - **Plates** (`notif.bg` at 0.97, 1px ink-0.55 border) carry every list,
   grid, paragraph and field; ink text on them.
@@ -28,17 +28,17 @@ Glass is a frame, content is a plate, light comes from above.
 ## Layout (DP-1, 1920×1080)
 
 ```
-┌───────────────────────────────────────────────────────────────┬──────────────┐
-│                                           [CPU/RAM gadget]    │ Sidebar      │
-│                                                               │  Sessions    │
-│                                                               │  by workspace│
-│ ┌Start──────────┐                                             │  + New term  │
-│ │ pinned │ name  │      ┌Peek ws7┐            ┌RICE menu┐ ┌balloon────────┐ │
-│ │ recent │ places│      │ rows   │            │ songs   │ │ approve/deny  │ │
-│ │ All ▸  │       │      └────────┘            │ drafts  │ └──────┬────────┘ │
-│ │ search │ Lock ▸│                            │         │  ┊  ┌vol┐         │
-├─┴───────┴───────┴──────────────────────────────────────────────────────────────┤
-│◉ [1][2][3][4][5][6][7][8] ┆ mag scr +              Stage▾ ^ ⧉ ⚑ ▭ ◁)) 3:42 ▐│
+┌────────────────────────────────────────────────────────────────────────────────┐
+│                                                         [CPU/RAM gadget]       │
+│                                                                                │
+│                                                         ┌balloon────────────┐  │
+│ ┌Start──────────┐                                       │ approve/deny      │  │
+│ │ pinned │ name  │                                      └──────┬────────────┘  │
+│ │ recent │ places│                  ┌vol┐ ┌RICE menu┐ ┌Agents──┊────────────┐  │
+│ │ All ▸  │       │   ┌Peek ws7┐     │   │ │ songs   │ │ sessions by ws      │  │
+│ │ search │ Lock ▸│   │ rows   │     │   │ │ drafts  │ │ + New terminal      │  │
+├─┴───────┴───────┴──────────────────────────────────────────────┊───────────────┤
+│◉ [1][2][3][4][5][6][7][8] ┆ mag scr +                 Stage▾ ^ ⧉ ⚑ ▭ ◁)) 3:42 ▐│
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -59,11 +59,14 @@ Glass is a frame, content is a plate, light comes from above.
   protruding above the frame, the name, places, Terminal, Settings; the power
   split is **Lock** with a ▸ for Switch user / Log off / Sleep / Hibernate /
   Restart / Shut down.
-- **Sidebar dock** (right, 352px, summoned): header chip with counts, one
-  gadget card grouping sessions by workspace (mini workspace button + label;
-  click jumps), rows with the agent's icon (28px) wearing its state orb as an
-  overlay, agent · title, tool and cwd tail, and a context meter. Subagents indent. "Elsewhere" holds sessions with no
-  window. `+ New terminal` at the foot.
+- **Agent flyout** (352px, from the agents tray button `⧉`, whose badge
+  counts the awaiting sessions): a Win7 notification-area flyout anchored
+  above its button at the bottom right, one flyout open at a time like the
+  rest. Rim + deep header with the counts and a recheck, then one plate of
+  sessions grouped by workspace (mini workspace button + label; click jumps),
+  rows with the agent's icon (28px) wearing its state orb as an overlay,
+  agent · title, tool and cwd tail, and a context meter. Subagents indent.
+  "Elsewhere" holds sessions with no window. `+ New terminal` at the foot.
 - **RICE cell + menu**: the cell shows the mode glyph and word (`Stage`) with
   a chevron. The menu: header `Rice · <song> · <mode>`, songs with the
   current one ticked (staged / declared tags), `Back to declarative ·
@@ -71,10 +74,12 @@ Glass is a frame, content is a plate, light comes from above.
   draft`.
 - **Tray flyout**: the Win7 narrow volume flyout (device, slider, percent,
   mute, `Mixer` footer).
-- **Balloon**: white plate with a tail on the flag; a summons shows Approve /
-  Deny pills.
+- **Balloon**: white plate whose tail points at the tray icon it belongs
+  to; an agent summons points at the agents button and shows Approve / Deny
+  pills.
 - **Gadget**: CPU (110px) and RAM (70px) dials, chrome bezels, white needles,
-  readouts on dark chips.
+  readouts on dark chips; sits free on the desktop, Win7-style (top right on
+  the board).
 - **Lock** (panel in the board, 0.45 scale): the logon picture with its baked
   person tile, the `$USER` label at −21% and the 400×60 hyprlock field at
   −26% below centre. Nothing else; the song supplies only the picture and
@@ -94,26 +99,29 @@ contact sheet `agent-icons.png`. One family: a 48×48 glass tile (the
 fallback is an orb), a vertical body gradient in the kind's hue, a bottom
 bounce glow, a curved hard-edged gloss over the top half, a white inner rim
 and a dark outer rim. The mark sits above the gloss with a 1.2px dark drop so
-it holds at 16px. Two kinds wear their own marks, drawn here: claude after
-Anthropic's Claude spark (a trademark, used on the user's own desktop by the
-user's ruling) and eidolon after its own helmet figure (the user's project).
-kimi, codex, shell and agent are original; the hue and the idea hint at the
-agent, no vendor logo is drawn or traced.
+it holds at 16px. Three kinds wear their own marks, drawn here from memory
+as plain geometry: claude after Anthropic's Claude spark and codex after the
+OpenAI blossom (trademarks, used on the user's own desktop by the user's
+ruling), and eidolon after its own helmet figure (the user's project). kimi
+keeps an original crescent as a stand-in for Moonshot's mark. shell, hermes
+and agent are original.
 
 | kind | mark | body (top → bottom) | mark colour |
 |---|---|---|---|
 | claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre, as polished glass: a terracotta rim, a hard-stop bevel over the top half, a warm glow behind the centre | cream `#fffaf2` → `#ecd3bd` | golden amber `#ffd877` → `#ffc35e` → coral `#e8875a` → terracotta `#c2593a`, rim `#9a3d1e`, glow `#ffd27a` |
 | eidolon | eidolon's helmet figure, a Corinthian helmet front-on in hard pixel blocks on a 6-unit grid (2px at 16): crest, crown, brow, eye slit split by the nasal, two cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
-| kimi | a crescent moon | indigo `#5560d6` → night `#170f52` | pale gold `#fff8d6` → `#f2c14a` |
-| codex | an open bound book | mint `#53d394` → green `#12603d` | white pages, green cover |
+| kimi | a crescent moon (stand-in for Moonshot's mark) in a sparse starfield: three 4-point twinkles and a scatter of dots of uneven size and brightness | indigo `#5560d6` → night `#170f52` | moon pale gold `#fff8d6` → `#f2c14a`; stars pale gold `#fff3c4` and white |
+| codex | the OpenAI blossom, six rounded links around a hexagonal eye, in glossy glass; runes drift up off it in an arc, shrinking and fading as they rise (enchanting-table particles: blocky strokes in the manner of the Standard Galactic Alphabet, drawn as paths) | green `#2fae72` → `#0c4a2e` | blossom white → `#f0fff6`, hard stop, `#cdf5df` → `#93dcb6`, rim `#0a4429`; runes `#f2fff6` with a pale-green halo `#d4ffe4` and a dark-green backing stroke |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
+| hermes | an original 90s-anime messenger, a cel-shaded bust: spiky blue hair over the brow, big glossy cyan eyes with two highlights, small white wings at the temples, a bold dark outline and two-tone flat shading | sunset magenta `#ff4fa0` → orange `#ff9a3c` | hair `#3346b8` / `#7b92ff`, skin `#ffe3cc` / `#f5b996`, outline `#1a1030`, wings white |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
 claude's golden spark sits on a cream tile: on a gold tile the rays sink
 into the ground at 16px, on cream they hold. kimi sits on indigo so its tile
-never reads as eidolon's blue at 16px. An unknown kind takes `agent`.
-Gradient ids are prefixed with the kind, so the six inline together without
-collision.
+never reads as eidolon's blue at 16px. At 16px only the brightest kimi
+stars survive and the codex runes thin to specks; the crescent and the
+blossom carry the read. An unknown kind takes `agent`. Gradient ids are
+prefixed with the kind, so all seven inline together without collision.
 
 ## Palette tokens used
 
@@ -141,34 +149,30 @@ Consolas → Noto Sans Mono.
 - **Glass**: CSS `backdrop-filter` blur + a streak layer stands in for
   Hyprland blur and hyprglass refraction. The real strip is planned as a
   baked frost (no compositor rule); popups get `blur_popups`; Start and the
-  dock get hyprglass.
-- **Icons**: all drawn here, original; the real bar resolves app icons from
-  the icon theme.
+  agent flyout get hyprglass.
+- **Icons**: all drawn here; the real bar resolves app icons from the icon
+  theme. Agent icons: see above.
 - **Data**: workspaces, sessions, songs and drafts are hard-coded sample
   data. Nothing reads `desktop.json`, `sessions.json` or `mode.json`.
-- **Board-only placement**: every surface is open at once. The peek is
-  shifted right to clear the open Start menu; the balloon is lifted above
-  the open flyouts with a dashed leader down to the flag it belongs to; the
-  gadget sits left of the open sidebar instead of under it.
+- **Board-only placement**: every surface is open at once, though only one
+  flyout opens at a time. The peek is shifted right to clear the open Start
+  menu; the agent flyout sits over its button, so the RICE menu and the
+  volume flyout are shifted left of it; the balloon is lifted above the open
+  agent flyout with a dashed leader down to the agents button.
 - Not shown: the HDMI-A-1 compact bar, jump lists, chevron overflow grid,
   network and calendar flyouts, Action Center, power screen, window frames
   and terminals.
 
 ## Open questions
 
-1. **Sidebar vs flyouts**: the dock is full height on the right, so every
-   tray flyout and the balloon land on top of it. Hide the dock when a tray
-   flyout opens (current spec), or end the dock above the tray area?
-2. **Gadget home**: desktop at top-right (collides with the open dock), or
-   docked into the sidebar column like Vista when the sidebar is shown?
-3. **"awaiting" vs "asking"**: display the canonical word, or map it to
+1. **"awaiting" vs "asking"**: display the canonical word, or map it to
    "asking" in the UI only?
-4. **Start search**: the placeholder says "programs and files", but only a
+2. **Start search**: the placeholder says "programs and files", but only a
    programs search is planned. Rename it, or order a file-search bridge?
-5. **Orb size**: kept inside the 40px bar (Ø36). Win7's orb overhangs the
+3. **Orb size**: kept inside the 40px bar (Ø36). Win7's orb overhangs the
    taskbar; overhang needs a taller surface than the exclusive zone.
-6. **Power split**: Lock as the default with Shut down in the ▸ menu — keep
+4. **Power split**: Lock as the default with Shut down in the ▸ menu — keep
    Restart/Shut down armed (second click) as specced?
-7. **Lock name legibility**: the bare `$USER` label sits on bright art just
+5. **Lock name legibility**: the bare `$USER` label sits on bright art just
    under the tile; hyprlock's variables-only dress cannot add a plate, so any
    name band must be baked into the picture.

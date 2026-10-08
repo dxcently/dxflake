@@ -177,17 +177,11 @@ svg.i { display: block; }
 .s-done::after { content: ""; position: absolute; left: 4px; top: 2px; width: 3px; height: 6px; border: solid var(--ink); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .s-awaiting::after { content: ""; position: absolute; left: 3.5px; top: 3px; width: 1.5px; height: 6px; background: var(--ink); box-shadow: 3px 0 0 var(--ink); }
 
-/* ---------- sidebar dock ---------- */
-.dock { left: 1568px; top: 0; width: 352px; height: 1040px;
-  background: var(--streaks), linear-gradient(90deg, rgba(42,163,184,.30), rgba(12,33,48,.50));
-  -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3);
-  box-shadow: inset 1px 0 0 rgba(255,255,255,.35), -1px 0 0 rgba(12,33,48,.6); }
-.dock .hdr { left: 12px; top: 12px; width: 328px; height: 34px; border-radius: 4px; background: rgba(12,33,48,.86); display: flex; align-items: center; padding: 0 10px; font: 600 13px var(--ui); gap: 8px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 0 0 1px rgba(12,33,48,.85); }
-.dock .hdr .act { margin-left: auto; display: flex; gap: 10px; opacity: .9; font-weight: 400; }
-.card { left: 12px; top: 56px; width: 328px; border-radius: 6px; overflow: hidden; box-shadow: 0 0 0 1px rgba(12,33,48,.6), 0 1px 3px rgba(0,0,0,.04); }
-.card .band { height: 20px; background: linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0) 60%), var(--frame); color: #fff; font: 600 11px/20px var(--ui); padding: 0 10px; text-shadow: 0 1px 1px rgba(0,0,0,.45); }
-.card .plate { border: 0; border-radius: 0; padding: 4px 0 6px; }
+/* ---------- agent flyout ---------- */
+.agentfly { left: 1564px; bottom: 46px; width: 352px; }
+.agentfly .hd { height: 26px; padding: 0 8px; display: flex; align-items: center; gap: 6px; font-weight: 600; border-radius: 2px 2px 0 0; }
+.agentfly .hd .act { margin-left: auto; display: flex; gap: 10px; opacity: .9; font-weight: 400; }
+.agentfly .plate { border-radius: 0 0 2px 2px; padding: 2px 0 4px; }
 .grp { height: 26px; display: flex; align-items: center; gap: 8px; padding: 0 8px; margin-top: 2px; cursor: pointer; }
 .grp:hover { background: rgba(37,187,207,.10); }
 .grp b { font-weight: 600; }
@@ -214,13 +208,13 @@ svg.i { display: block; }
 .legend span { display: inline-flex; align-items: center; gap: 5px; }
 
 /* ---------- flyouts ---------- */
-.ricemenu { left: 1455px; bottom: 46px; width: 248px; }
+.ricemenu { left: 1303px; bottom: 46px; width: 248px; }
 .ricemenu .hd { height: 26px; padding: 0 8px; display: flex; align-items: center; font-weight: 600; border-radius: 2px 2px 0 0; }
 .ricemenu .plate { border-radius: 0 0 2px 2px; padding: 2px 0 0; }
 .ricemenu .check { width: 12px; text-align: center; color: var(--ink); font-weight: 700; }
 .ricemenu .foot { margin-top: 4px; padding: 5px 8px; background: rgba(37,187,207,.10); font-size: 11px; color: var(--ink-2); border-top: 1px solid rgba(12,33,48,.15); }
 .ricemenu .tag { margin-left: auto; font-size: 10px; color: var(--ink-2); }
-.vol { left: 1771px; bottom: 46px; width: 84px; }
+.vol { left: 1207px; bottom: 46px; width: 84px; }
 .vol .plate { height: 288px; display: flex; flex-direction: column; align-items: center; padding-top: 8px; }
 .vol .dev { font-size: 11px; color: var(--ink); width: 70px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-bottom: 1px solid rgba(12,33,48,.15); padding-bottom: 6px; }
 .vol .slider { position: relative; width: 6px; height: 150px; margin: 14px 0 8px; border-radius: 3px; background: rgba(12,33,48,.20); box-shadow: inset 0 0 0 1px rgba(12,33,48,.25); }
@@ -233,20 +227,20 @@ svg.i { display: block; }
 .vol .foot a:hover { text-decoration: underline; }
 
 /* ---------- balloon ---------- */
-.balloon { left: 1572px; top: 528px; width: 340px; padding: 10px 12px 12px; border-radius: 6px; color: var(--ink);
+.balloon { left: 1571px; top: 404px; width: 340px; padding: 10px 12px 12px; border-radius: 6px; color: var(--ink);
   background: linear-gradient(180deg, #f5fbfb, #e5f5f7); border: 1px solid var(--ink-3);
   box-shadow: 0 1px 2px rgba(0,0,0,.10), 0 3px 8px rgba(0,0,0,.06), 0 8px 18px rgba(0,0,0,.03); }
-.balloon .tail { position: absolute; left: 185px; bottom: -10px; width: 16px; height: 10px; }
+.balloon .tail { position: absolute; left: 162px; bottom: -10px; width: 16px; height: 10px; }
 .balloon .t { display: flex; align-items: center; gap: 8px; font: 600 13px var(--ui); }
 .balloon .x { margin-left: auto; width: 16px; height: 16px; display: grid; place-items: center; color: var(--ink-2); font-size: 13px; cursor: pointer; }
 .balloon .m { font-size: 11px; color: var(--ink-2); margin: 1px 0 6px 24px; }
 .balloon .b { font-size: 12px; margin-left: 24px; }
 .balloon .b code { font: 11px var(--mono); background: rgba(12,33,48,.06); padding: 0 3px; border-radius: 2px; }
 .balloon .acts { margin: 10px 0 0 24px; display: flex; gap: 8px; }
-.leader { left: 1765px; top: 650px; width: 0; height: 392px; border-left: 1px dashed rgba(255,255,255,.55); }
+.leader { left: 1741px; top: 520px; width: 0; height: 522px; border-left: 1px dashed rgba(255,255,255,.55); }
 
 /* ---------- gadget ---------- */
-.gadget { left: 1350px; top: 24px; width: 196px; height: 150px; }
+.gadget { left: 1700px; top: 24px; width: 196px; height: 150px; }
 
 /* ---------- lock panel + notes ---------- */
 .lockcard { left: 462px; top: 40px; width: 864px; }
@@ -338,19 +332,6 @@ svg.i { display: block; }
     </g>
   </svg>
 
-  <!-- sidebar: terminal / agent dock -->
-  <div class="abs dock" id="dock">
-    <div class="abs hdr">
-      <svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="4.5" width="10" height="9" rx="1.5" fill="none" stroke="#fff" stroke-opacity=".7"/><rect x="4.5" y="1.5" width="10" height="9" rx="1.5" fill="#0c2130" stroke="#fff"/><path d="M6.5 4.5l2 1.5-2 1.5" fill="none" stroke="#3bdcac" stroke-width="1.3"/></svg>
-      Sessions · 2 working · 1 awaiting
-      <span class="act"><span title="recheck">↻</span><span title="close">×</span></span>
-    </div>
-    <div class="abs card">
-      <div class="band">Agents by workspace</div>
-      <div class="plate" id="sessions"></div>
-    </div>
-  </div>
-
   <!-- Start menu -->
   <div class="abs start rim" id="start">
     <div class="abs tile"><div>
@@ -420,6 +401,16 @@ svg.i { display: block; }
 
   <!-- balloon -->
   <div class="abs leader"></div>
+
+  <!-- agent flyout, over the agents tray button -->
+  <div class="abs agentfly rim" id="dock">
+    <div class="hd deep">
+      <svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="4.5" width="10" height="9" rx="1.5" fill="none" stroke="#fff" stroke-opacity=".7"/><rect x="4.5" y="1.5" width="10" height="9" rx="1.5" fill="#0c2130" stroke="#fff"/><path d="M6.5 4.5l2 1.5-2 1.5" fill="none" stroke="#3bdcac" stroke-width="1.3"/></svg>
+      Sessions · 2 working · 1 awaiting
+      <span class="act"><span title="recheck">↻</span></span>
+    </div>
+    <div class="plate" id="sessions"></div>
+  </div>
   <div class="abs balloon" id="balloon">
     <svg class="tail" viewBox="0 0 16 10"><path d="M0 0h16L8 10z" fill="#e5f5f7"/><path d="M0 0L8 10 16 0" fill="none" stroke="rgba(12,33,48,.55)"/></svg>
     <div class="t">
@@ -528,8 +519,8 @@ document.getElementById("programs").innerHTML = programs.map((p, i) => p === nul
 
 const groups = [
   { ws: 3, wash: "working", apps: ["code", "term", "files"], label: "Workspace 3", mon: "DP-1", rows: [
-    ["working", "claude · barcarolle board", "Edit · mock.html", "~/worktrees/dxflake-barcarolle", 54],
-    ["working", "claude · subagent: contrast pass", "Bash · pillow", "~/aoide", 22, true],
+    ["working", "hermes · barcarolle board", "Edit · mock.html", "~/worktrees/dxflake-barcarolle", 54],
+    ["working", "hermes · subagent: contrast pass", "Bash · pillow", "~/aoide", 22, true],
     ["done", "codex · livery lint", "finished 4m ago", "~/aoide", 31] ] },
   { ws: 7, wash: "awaiting", apps: ["term", "web"], label: "Workspace 7", mon: "DP-1", rows: [
     ["awaiting", "claude · flake check", "asking · Bash", "~/dxflake", 72, false, "y"] ] },
@@ -537,7 +528,7 @@ const groups = [
     ["idle", "kimi · notes sweep", "idle 12m", "~/Magi", 18],
     ["stopped", "eidolon · harnox bump", "stopped · exit 0", "~/harnox", 40] ] },
 ];
-const kinds = ["claude", "eidolon", "kimi", "codex", "shell"];
+const kinds = ["claude", "eidolon", "kimi", "codex", "shell", "hermes"];
 const agentIcon = (name, state, dim) => {
   const k = name.split(" · ")[0];
   return `<span class="ico"${dim ? ' style="opacity:.6"' : ""}><img src="../icons/agents/${kinds.includes(k) ? k : "agent"}.svg" width="28" height="28" alt="${k}"><span class="st s-${state}"></span></span>`;

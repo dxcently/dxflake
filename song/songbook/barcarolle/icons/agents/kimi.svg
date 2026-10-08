@@ -9,6 +9,7 @@
 <rect x="2" y="2" width="44" height="44" rx="10" fill="url(#kimi-body)"/>
 <rect x="2" y="2" width="44" height="44" rx="10" fill="url(#kimi-glow)"/>
 <path d="M3 12a9 9 0 0 1 9-9h24a9 9 0 0 1 9 9v9c-6.5 3-14 4.2-21 4.2S9.5 24 3 21z" fill="url(#kimi-gloss)"/>
+<path d="M35.5 8.9Q36.512 12.488 40.1 13.5Q36.512 14.512 35.5 18.1Q34.488 14.512 30.9 13.5Q34.488 12.488 35.5 8.9Z" fill="#fff3c4" fill-opacity="1"/><path d="M10.5 7.7Q11.116 9.884 13.3 10.5Q11.116 11.116 10.5 13.3Q9.884 11.116 7.7 10.5Q9.884 9.884 10.5 7.7Z" fill="#ffffff" fill-opacity=".85"/><path d="M40 28.8Q40.484 30.516 42.2 31Q40.484 31.484 40 33.2Q39.516 31.484 37.8 31Q39.516 30.516 40 28.8Z" fill="#fff3c4" fill-opacity=".7"/><circle cx="27.5" cy="9" r="1.3" fill="#fff" fill-opacity=".9"/><circle cx="41" cy="20.5" r=".9" fill="#fff3c4" fill-opacity=".75"/><circle cx="6.8" cy="17" r="1" fill="#fff" fill-opacity=".6"/><circle cx="19" cy="7" r=".7" fill="#fff" fill-opacity=".55"/><circle cx="35" cy="40" r=".8" fill="#fff" fill-opacity=".5"/><circle cx="31" cy="25" r=".7" fill="#fff3c4" fill-opacity=".6"/>
 <circle cx="23" cy="26" r="13.5" fill="#081a24" fill-opacity=".35" mask="url(#kimi-cut)" transform="translate(0 1.2)"/>
 <circle cx="23" cy="26" r="13.5" fill="url(#kimi-moon)" mask="url(#kimi-cut)"/>
 <rect x="3" y="3" width="42" height="42" rx="9" fill="none" stroke="#fff" stroke-opacity=".5"/>
