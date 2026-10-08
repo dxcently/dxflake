@@ -4,11 +4,12 @@
   # The song carries the livery (palette + component tiers) and nothing else —
   # host-agnostic by contract, so this one line is the whole rice swap.
   song.declared = "sonata";
-  # Built in, not performed. The cadenza copy is seeded into the runtime songbook
-  # once, when absent; staging it is `lyra rice mode stage cadenza`. aoide.song
-  # stays sonata, so cadenza adds no livery and the overrides below still
-  # recolour sonata alone.
-  song.available = [ "cadenza" ];
+  # Built in, not performed. Each switch refreshes these songs' copies in the
+  # runtime songbook (`lyra rice refresh`: repo changes reach the files the
+  # machine never edited); staging one is a row in the bar's RICE menu or
+  # `lyra rice mode stage <song>`. aoide.song stays sonata, so they add no
+  # livery and the overrides below still recolour sonata alone.
+  song.available = [ "cadenza" "fugue" ];
 
   aggregation = {
     base.enable = true;
