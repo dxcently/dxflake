@@ -15,16 +15,16 @@
   each differs from its closest original by RMSE ≈ 0.11, so expect a re-grade
   or re-crop. The source match is by image comparison against the zip's
   contents; each matched its listed original more closely than any other.
-- `../icons/agents/{kimi,shell,hermes,agent}.svg` are original drawings
-  made here for this song; no vendor logo is reproduced, traced or imitated.
-  kimi's crescent is a stand-in, not Moonshot's mark. hermes is an original
-  character, not any existing anime character.
+- `../icons/agents/{kimi,shell,agent}.svg` are original drawings made here
+  for this song; no vendor logo is reproduced, traced or imitated. kimi's
+  crescent is a stand-in, not Moonshot's mark.
+- `../icons/agents/hermes.svg` is drawn here after Hermes Agent's mascot
+  (Nous Research), from a reference image the user supplied; it is used on
+  the user's own desktop.
 - `../icons/agents/claude.svg` and `../icons/agents/codex.svg` are drawn
   here, from memory as plain vector geometry, after Anthropic's Claude spark
   and the OpenAI blossom. Both marks are their owners' trademarks; they are
-  used on the user's own desktop by the user's ruling. The codex runes are
-  stroke paths drawn here in the manner of the Standard Galactic Alphabet;
-  no font is used.
+  used on the user's own desktop by the user's ruling.
 - `../icons/agents/eidolon.svg` is drawn here after eidolon's own mark (the
   helmet figure and the wordmark's colours); eidolon is the user's own
   project.
