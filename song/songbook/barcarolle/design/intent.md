@@ -101,17 +101,18 @@ the agent, no vendor logo is drawn or traced.
 | kind | mark | body (top → bottom) | mark colour |
 |---|---|---|---|
 | claude | a quill | amber `#f5ad66` → terracotta `#a9461f` | white, terracotta spine |
-| eidolon | eidolon's helmet figure, a Corinthian helmet front-on: crest, crown, brow, eye slit split by the nasal, two cheek guards; hard pixel blocks on a 6-unit grid (2px at 16) | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
+| eidolon | eidolon's helmet figure as a front-on Corinthian helmet in Aero bronze: an arched crest fin sweeping back off the crown (it rises past the tile's top rim), domed crown with a highlight, brow ridge, dark T opening with the nasal, long tapered cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffd25a` → `#ffc23a` → amber `#ffa43a` → orange `#e8701c`, the crest washed orange `#ff8a2a`, interior `#1a1a28` |
 | kimi | a crescent moon | indigo `#5560d6` → night `#170f52` | pale gold `#fff8d6` → `#f2c14a` |
 | codex | an open bound book | mint `#53d394` → green `#12603d` | white pages, green cover |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
-`eidolon-smooth.svg` is the other eidolon candidate: the same helmet drawn
-smooth, as Aero bronze with a dome highlight, on the same tile. kimi sits on
-indigo so its tile never reads as eidolon's blue at 16px. An unknown kind
-takes `agent`. Gradient ids are prefixed with the kind, so
-the six inline together without collision.
+`eidolon-pixel.svg` is the other eidolon candidate: the same helmet as hard
+pixel blocks on a 6-unit grid (2px at 16), closer to the brand's pixel art,
+on the same tile. kimi sits on indigo so its tile never reads as eidolon's
+blue at 16px. An unknown kind takes `agent`. Gradient ids are prefixed with
+the kind (the candidate with `eidolon-pixel`), so all of them inline together
+without collision.
 
 ## Palette tokens used
 

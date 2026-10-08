@@ -17,8 +17,8 @@
   contents; each matched its listed original more closely than any other.
 - `../icons/agents/*.svg` (claude, kimi, codex, shell, agent) are original
   drawings made here for this song; no vendor logo is reproduced, traced or
-  imitated. `../icons/agents/eidolon.svg` and its smooth candidate
-  `eidolon-smooth.svg` are drawn here after eidolon's own mark (the helmet
+  imitated. `../icons/agents/eidolon.svg` and its pixel candidate
+  `eidolon-pixel.svg` are drawn here after eidolon's own mark (the helmet
   figure and the wordmark's colours); eidolon is the user's own project.
   `agent-icons.png` is their contact sheet, a headless Chromium render.
 - `mock.png` is a headless Chromium render of `mock.html`; every glyph, icon
