@@ -102,23 +102,18 @@ agent, no vendor logo is drawn or traced.
 
 | kind | mark | body (top → bottom) | mark colour |
 |---|---|---|---|
-| claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre | cream `#fffaf2` → `#ecd3bd` | coral `#d97757` |
+| claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre, as polished glass: a terracotta rim, a hard-stop bevel over the top half, a warm glow behind the centre | cream `#fffaf2` → `#ecd3bd` | golden amber `#ffd877` → `#ffc35e` → coral `#e8875a` → terracotta `#c2593a`, rim `#9a3d1e`, glow `#ffd27a` |
 | eidolon | eidolon's helmet figure, a Corinthian helmet front-on in hard pixel blocks on a 6-unit grid (2px at 16): crest, crown, brow, eye slit split by the nasal, two cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
 | kimi | a crescent moon | indigo `#5560d6` → night `#170f52` | pale gold `#fff8d6` → `#f2c14a` |
 | codex | an open bound book | mint `#53d394` → green `#12603d` | white pages, green cover |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
-claude's spark sits in coral on a cream tile rather than white on amber:
-at 16px the white rays blur into a blob, the coral ones hold. eidolon has
-two candidates on the same tile in `design/`: `eidolon-crest.svg`, the pixel
-helmet with a stepped crest arching back over the crown (it rises past the
-tile's top rim), and `eidolon-smooth.svg`, the same helmet in Aero bronze
-with a swept crest fin and a dome highlight. kimi sits on indigo so its tile
+claude's golden spark sits on a cream tile: on a gold tile the rays sink
+into the ground at 16px, on cream they hold. kimi sits on indigo so its tile
 never reads as eidolon's blue at 16px. An unknown kind takes `agent`.
-Gradient ids are prefixed with the kind (the candidates with
-`eidolon-crest` and `eidolon-smooth`), so all of them inline together
-without collision.
+Gradient ids are prefixed with the kind, so the six inline together without
+collision.
 
 ## Palette tokens used
 

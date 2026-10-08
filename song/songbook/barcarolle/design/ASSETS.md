@@ -20,9 +20,9 @@
 - `../icons/agents/claude.svg` is drawn here, from memory as plain vector
   geometry, after Anthropic's Claude spark mark. The mark is Anthropic's
   trademark; it is used on the user's own desktop by the user's ruling.
-- `../icons/agents/eidolon.svg` and its candidates `eidolon-crest.svg` and
-  `eidolon-smooth.svg` are drawn here after eidolon's own mark (the helmet
-  figure and the wordmark's colours); eidolon is the user's own project.
+- `../icons/agents/eidolon.svg` is drawn here after eidolon's own mark (the
+  helmet figure and the wordmark's colours); eidolon is the user's own
+  project.
 - `agent-icons.png` is the agent icons' contact sheet, a headless Chromium
   render.
 - `mock.png` is a headless Chromium render of `mock.html`; every glyph, icon
