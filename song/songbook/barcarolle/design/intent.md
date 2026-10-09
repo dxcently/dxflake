@@ -111,7 +111,7 @@ and agent are original.
 |---|---|---|---|
 | claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre, as smooth warm metal with no shine stripe: a thin terracotta rim, a warm glow behind the centre | cream `#fffaf2` → `#ecd3bd` | golden amber `#ffd877` → `#ffc35e` → coral `#e8875a` → terracotta `#c2593a`, rim `#9a3d1e`, glow `#ffd27a` |
 | eidolon | eidolon's helmet figure, a Corinthian helmet front-on in hard pixel blocks on a 6-unit grid (2px at 16): crest, crown, brow, eye slit split by the nasal, two cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
-| kimi | Moonshot AI's mark: a glossy sphere sliced by four diagonal bands that enter from the right at staggered lengths, the left of the disc solid; the bands are cut through, so the night tile shows in them; a sparse starfield around: three 4-point twinkles and a scatter of dots of uneven size and brightness | indigo `#5560d6` → night `#170f52` | sphere white → `#eef0f8` → `#b9bfd6` with a highlight; stars pale gold `#fff3c4` and white |
+| kimi | Moonshot AI's mark, a moon that resembles a piano and its keys: a solid glossy disc on the left whose right side breaks into five white key strips, tilted 12° to rise to the right, that run past the disc's edge to square ends at staggered lengths; the four gaps between them (the black-key rhythm) are cut through, so the night tile shows in them; a sparse starfield around: three 4-point twinkles and a scatter of dots of uneven size and brightness | indigo `#5560d6` → night `#170f52` | sphere white → `#eef0f8` → `#b9bfd6` with a highlight; stars pale gold `#fff3c4` and white |
 | codex | the OpenAI blossom, six rounded links around a hexagonal eye, in glossy glass | green `#2fae72` → `#0c4a2e` | white → `#f0fff6`, hard stop, `#cdf5df` → `#93dcb6`, rim `#0a4429` |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
 | hermes | Hermes Agent's CLI emblem: a staff with spread wings and a knob at the top and two serpents coiling down it, heads meeting under the wings; a few dots on the wings hint at the CLI's braille texture; a warm glow behind | near-black `#2a2a22` → `#0b0b08` | gold `#fff6a8` → `#ffe14a` → `#f0b400`, shading and dots `#a07800` |
@@ -119,8 +119,8 @@ and agent are original.
 
 claude's golden spark sits on a cream tile: on a gold tile the rays sink
 into the ground at 16px, on cream they hold. kimi sits on indigo so its tile
-never reads as eidolon's blue at 16px; at 16px the sliced disc keeps two or
-three bands and only the brightest star survives. At 16px hermes reads as a
+never reads as eidolon's blue at 16px; at 16px the disc keeps two or three
+protruding keys and only the brightest star survives. At 16px hermes reads as a
 gold winged staff and the coils simplify to bumps; its dark tile keeps the
 gold apart from claude's spark on cream. An unknown kind takes `agent`.
 Gradient ids are prefixed with the kind, so all seven inline together
