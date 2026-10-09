@@ -13,9 +13,8 @@ body{font:12px/1.35 var(--ui);color:#fff}
 .glass{background:rgba(12,33,48,.64);backdrop-filter:blur(14px) saturate(1.35)}
 .glass::before{content:"";position:absolute;inset:0;background:var(--gloss),var(--streaks);pointer-events:none}
 .bar{left:0;bottom:0;width:1920px;height:40px;box-shadow:inset 0 1px 0 rgba(12,33,48,.85),inset 0 2px 0 rgba(255,255,255,.30)}
-.orb{left:0;top:0;width:54px;height:40px;cursor:pointer}
+.orb{left:0;top:0;width:54px;height:40px}
 .orb svg{position:absolute;left:7px;top:0;filter:drop-shadow(0 0 4px rgba(119,255,252,.45))}
-.orb.open svg{filter:drop-shadow(0 0 6px rgba(119,255,252,.75)) brightness(.86);transform:translateY(1px)}
 .ws{position:absolute;top:2px;width:56px;height:36px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.20),0 0 0 1px rgba(12,33,48,.60);background:linear-gradient(180deg,rgba(255,255,255,.10) 0,rgba(255,255,255,.03) 50%,rgba(255,255,255,0) 50%)}
 .ws.empty{width:38px;background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .ws svg{position:absolute;left:14px;top:4px}
@@ -27,33 +26,18 @@ body{font:12px/1.35 var(--ui);color:#fff}
 .panel code{font:11px "Consolas","Noto Sans Mono",monospace;color:var(--bar-accent)}
 .panel li{margin-left:16px}
 
-/* the G3: every layer shares the 700x480 viewBox */
+/* the G3: every layer shares the 760x480 viewBox */
 .g3{position:absolute;width:760px;height:480px}
 .g3>img,.g3>.content{position:absolute;left:0;top:0}
 .g3 .scr,.g3 .note,.g3 .beam{transform-origin:252px 214px}
-/* the launcher content: the screen rect 62,72 380x284 */
-.content{left:62px!important;top:72px!important;width:380px;height:284px;color:var(--ink)}
-.content .pl{position:absolute;left:0;top:0;width:228px;height:250px;padding:4px;border-radius:4px;background:rgba(245,251,251,.93);border:1px solid var(--ink-3);box-shadow:0 1px 6px rgba(2,18,25,.25)}
-.content .row{height:26px;display:flex;align-items:center;gap:8px;padding:0 6px;border-radius:2px;border:1px solid transparent}
-.content .row.sel{background:rgba(37,187,207,.22);border-color:var(--ink-3)}
-.content .row .jl{margin-left:auto;opacity:.5;font-size:9px}
-.content .rule{height:1px;background:rgba(12,33,48,.20);margin:4px 6px}
-.content .allp{position:absolute;left:4px;right:4px;bottom:4px;font-weight:600}
-.content .search{position:absolute;left:0;top:256px;width:228px;height:28px;background:#fff;border:1px solid var(--ink-3);border-radius:2px;color:var(--ink-2);font-style:italic;display:flex;align-items:center;padding:0 8px;box-shadow:inset 0 1px 2px rgba(12,33,48,.15)}
-.content .search svg{margin-left:auto}
-.content .rp{position:absolute;left:236px;top:0;width:144px;height:250px;border-radius:4px;background:linear-gradient(180deg,rgba(255,255,255,.14) 0,rgba(255,255,255,.04) 50%,rgba(255,255,255,0) 50%),rgba(12,33,48,.70);border:1px solid rgba(12,33,48,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);color:#fff;padding:6px 4px}
-.content .uname{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;padding:2px 6px 6px;border-bottom:1px solid rgba(255,255,255,.18);margin-bottom:4px}
-.content .link{height:22px;display:flex;align-items:center;padding:0 8px;border:1px solid transparent;border-radius:2px}
-.content .link.hot{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.40)}
-.content .rrule{height:1px;margin:4px 8px;background:rgba(255,255,255,.18)}
-.content .lock{position:absolute;left:236px;top:256px;height:28px;display:flex;border-radius:3px;overflow:hidden;box-shadow:0 0 0 1px rgba(12,33,48,.85),inset 0 0 0 1px rgba(255,255,255,.35)}
-.content .lock>div{height:28px;display:flex;align-items:center;justify-content:center;gap:6px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.5);background:linear-gradient(180deg,rgba(255,255,255,.22) 0,rgba(255,255,255,.06) 50%,rgba(255,255,255,0) 50%),rgba(12,33,48,.80)}
-.content .lock .main{width:116px;border-right:1px solid rgba(12,33,48,.85)}
-.content .lock .more{width:28px}
-.content .scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(2,18,25,.06) 0 1px,rgba(2,18,25,0) 1px 3px)}
+/* the screen rect 62,72 380x284: the Finder's top level, cut from launcher-finder.png (its tile 1 screen sits at 78,143).
+   That render already carries the glare and scanlines, so here it sits above g3-glare; in the QML the content sits under it. */
+.content{left:62px!important;top:72px!important;width:380px;height:284px;border-radius:10px;overflow:hidden;background:url(launcher-finder.png) no-repeat -78px -143px}
 .cell{position:relative;width:124px;height:100px;overflow:hidden;border-radius:3px;background:rgba(2,18,25,.25)}
-.cell .mbar{position:absolute;left:0;bottom:0;width:100%;height:8px;background:rgba(12,33,48,.8);border-top:1px solid rgba(255,255,255,.25)}
-.cell .morb{position:absolute;left:2px;bottom:0;width:8px;height:8px;border-radius:50%;background:radial-gradient(#2aa3b8,#081e2b);box-shadow:0 0 3px rgba(119,255,252,.7)}
+.strip{flex-wrap:wrap;row-gap:8px}
+.key{left:810px;top:786px;width:300px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:600;text-shadow:0 1px 1px rgba(0,0,0,.5);border:1px solid rgba(12,33,48,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.key:hover{background-color:rgba(42,163,184,.55)}
+.key kbd{font:600 11px var(--ui);padding:1px 6px;border-radius:3px;background:rgba(245,251,251,.92);color:var(--ink);box-shadow:0 1px 0 rgba(12,33,48,.6)}
 .lab{font-size:11px;text-align:center;margin-top:3px;color:rgba(255,255,255,.85)}
 .strip{display:flex;gap:10px;margin-top:4px}
 </style></head><body>
@@ -84,21 +68,24 @@ body{font:12px/1.35 var(--ui);color:#fff}
 </svg>
 <div class="frame" id="frame">
   <div class="abs glass panel" style="left:24px;top:24px;width:700px">
-    <h1>barcarolle · the Start menu is an iMac G3</h1>
+    <h1>barcarolle · the SUPER+Space launcher is an iMac G3</h1>
     <ul>
-      <li>Click the ♪ orb: the G3 rises out of it, its CRT powers on, the ♪ shows, then the Start content fades in on the screen. Click again to power off.</li>
-      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [content] · beam · glare · led</code>. Front-facing: the drawing fills <code>x 0–504, y 24–480</code>; the rest of the viewBox is transparent.</li>
-      <li>Screen rect for the content: <code>x 62, y 72, 380×284</code> in G3 units; the G3 sits at <code>x 6, y 560</code> on DP-1, so its foot meets the bar.</li>
+      <li>SUPER+Space (or the key below): the G3 pops in at the centre of the focused monitor, its CRT powers on, a Happy Mac with a ♪ face shows, then the Finder fades in on the screen. Again to power off. The ♪ orb opens the Win7 Start menu instead (not shown).</li>
+      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [Finder] · beam · glare · led</code>. Front-facing: the drawing fills <code>x 0–504, y 24–480</code>, the window's crop box, centred on the output; the G3 pops about its own centre <code>(252, 252)</code>.</li>
+      <li>Screen rect for the Finder: <code>x 62, y 72, 380×284</code> in G3 units. Shown here at its top level, cut from <code>launcher-finder.png</code>, which has every state.</li>
       <li>Original drawing, inspired by the iMac G3; no Apple logo.</li>
     </ul>
   </div>
-  <div class="abs glass panel" style="left:800px;top:690px;width:1096px;height:330px">
-    <h2>pop-up + power-on, 460 ms (t in ms)</h2><div class="strip" id="sOpen"></div>
-    <h2 style="margin-top:14px">close, 320 ms</h2><div class="strip" id="sClose"></div>
+  <div class="abs glass panel" style="left:24px;top:440px;width:584px;height:300px">
+    <h2>pop-in + power-on, 460 ms (t in ms)</h2><div class="strip" id="sOpen"></div>
   </div>
-  <div class="g3" id="g3" style="left:6px;top:560px"></div>
+  <div class="abs glass panel" style="left:1312px;top:440px;width:584px;height:300px">
+    <h2>close, 320 ms</h2><div class="strip" id="sClose"></div>
+  </div>
+  <div class="abs glass key" id="key" title="Replay"><kbd>SUPER</kbd>+<kbd>Space</kbd> replay</div>
+  <div class="g3" id="g3" style="left:708px;top:288px"></div>
   <div class="abs bar glass" id="bar">
-    <div class="abs orb open" id="orb" title="Start">
+    <div class="abs orb" id="orb" title="Start">
       <svg width="40" height="40" viewBox="0 0 40 40">
         <circle cx="20" cy="20" r="18" fill="url(#orbBody)"/>
         <ellipse cx="20" cy="33" rx="11" ry="4" fill="url(#orbBounce)"/>
@@ -146,24 +133,14 @@ function at(tracks, t, from) {
   for (const [p, t0, v0, t1, v1, e] of tracks) { if (t < t0) continue; const k = t1 > t0 ? Math.min(1, (t - t0) / (t1 - t0)) : 1; s[p] = v0 + (v1 - v0) * E[e](k); }
   return s;
 }
-const programs = [["term", "Terminal", 1], ["web", "Firefox"], null, ["code", "VSCodium"], ["notes", "Obsidian"], ["chat", "Vesktop"], ["files", "Files"], ["music", "Pear Desktop"]];
-const content = `<div class="pl">${programs.map(p => p === null ? '<div class="rule"></div>' :
-  `<div class="row${p[2] ? " sel" : ""}"><svg width="20" height="20"><use href="#i-${p[0]}"/></svg>${p[1]}<span class="jl">▶</span></div>`).join("")}
-  <div class="row allp">All Programs<span style="margin-left:auto">▸</span></div></div>
-  <div class="search">Search programs<svg width="14" height="14" style="color:var(--ink-2)"><use href="#g-mag"/></svg></div>
-  <div class="rp"><div class="uname"><svg width="22" height="22" viewBox="0 0 44 44"><circle cx="22" cy="15" r="9" fill="#a99cf6"/><path d="M6 42c0-11 7-17 16-17s16 6 16 17z" fill="#25bbcf"/></svg>khoa</div>
-  ${["Home", "Documents", "Pictures", "Music", "Downloads"].map((n, i) => `<div class="link${i === 1 ? " hot" : ""}">${n}</div>`).join("")}
-  <div class="rrule"></div><div class="link">Terminal</div><div class="link">Settings</div></div>
-  <div class="lock"><div class="main"><svg width="12" height="14" viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="7" rx="1.5" fill="#fff"/><path d="M3 6V4a3 3 0 016 0v2" fill="none" stroke="#fff" stroke-width="1.6"/></svg>Lock</div><div class="more"><svg width="8" height="10" viewBox="0 0 8 10"><path d="M1 1l5 4-5 4z" fill="#fff"/></svg></div></div>
-  <div class="scan"></div>`;
 function build(el) {
   el.innerHTML = `<img src="${L}g3-body.svg"><img class="scr" src="${L}g3-screen.svg"><img class="note" src="${L}g3-note.svg">
-    <div class="content">${content}</div><img class="beam" src="${L}g3-beam.svg"><img src="${L}g3-glare.svg"><img class="led" src="${L}g3-led.svg">`;
+    <img class="beam" src="${L}g3-beam.svg"><img src="${L}g3-glare.svg"><div class="content"></div><img class="led" src="${L}g3-led.svg">`;
 }
-// the pop-up grows out of the orb centre, (27,1060) on DP-1 = (21,500) in G3 units
-function paint(el, s, base) {
-  el.style.transformOrigin = "21px 500px";
-  el.style.transform = (base || "") + ` scale(${s["g3.scale"]})`;
+// the G3 pops in about its own centre, (252,252) in G3 units
+function paint(el, s, k = 1) {
+  el.style.transformOrigin = "252px 252px";
+  el.style.transform = `scale(${k * s["g3.scale"]})`;
   el.style.opacity = s["g3.opacity"];
   const q = c => el.querySelector(c);
   const sy = `scale(1,${s["screen.yScale"]})`, br = `brightness(${1 + s["screen.brightness"]})`;
@@ -179,13 +156,10 @@ function strip(id, tracks, from, times) {
   for (const t of times) {
     const wrap = document.createElement("div");
     const cell = document.createElement("div"); cell.className = "cell";
-    cell.innerHTML = '<div class="mbar"></div><div class="morb"></div>';
     const g = document.createElement("div"); g.className = "g3"; build(g);
-    // shrunk about the foot so it stands on the mini bar
-    g.style.left = "14px"; g.style.top = (100 - 8 - 480) + "px";
-    paint(g, at(tracks, t, from));
-    g.style.transform = `scale(${.19 * at(tracks, t, from)["g3.scale"]})`;
-    g.style.transformOrigin = "0 480px";
+    // the G3 centre (252,252) on the cell centre (62,50), at 0.19
+    g.style.left = "-190px"; g.style.top = "-202px";
+    paint(g, at(tracks, t, from), .19);
     cell.appendChild(g); wrap.appendChild(cell);
     const l = document.createElement("div"); l.className = "lab"; l.textContent = "t " + t; wrap.appendChild(l);
     host.appendChild(wrap);
@@ -193,14 +167,16 @@ function strip(id, tracks, from, times) {
 }
 strip("sOpen", OPEN, SHUT, [40, 120, 200, 235, 270, 310, 380, 460]);
 strip("sClose", CLOSE, OPENED, [0, 50, 100, 150, 200, 250, 290, 320]);
-// click the orb to replay
+// SUPER+Space (Space here, or the key) replays
 let open = true, t0 = 0, run = null;
-document.getElementById("orb").onclick = () => {
-  open = !open; document.getElementById("orb").classList.toggle("open", open);
+function toggle() {
+  open = !open;
   const tracks = open ? OPEN : CLOSE, from = open ? SHUT : OPENED, total = open ? 460 : 320;
   t0 = performance.now(); cancelAnimationFrame(run);
   const step = now => { const t = now - t0; paint(big, at(tracks, Math.min(t, total), from)); if (t < total) run = requestAnimationFrame(step); };
   run = requestAnimationFrame(step);
-};
+}
+document.getElementById("key").onclick = toggle;
+document.addEventListener("keydown", ev => { if (ev.code === "Space") { ev.preventDefault(); toggle(); } });
 </script>
 </body></html>
