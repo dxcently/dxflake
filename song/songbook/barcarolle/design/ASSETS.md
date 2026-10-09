@@ -2,8 +2,8 @@
 
 | file | derived from | author | licence |
 |---|---|---|---|
-| `wallpaper/barcarolle-desktop.jpg` (3840×2160) | `frutigerAero_Wallpaper_Green_NoPerson_4k.jpg` | KnightAnNi | CC0 1.0 Universal |
-| `wallpaper/barcarolle-logon.jpg` (3840×2160) | `frutigerAero_Wallpaper_Green_Person_4k.jpg` | KnightAnNi | CC0 1.0 Universal |
+| `../cover/barcarolle-desktop.jpg` (3840×2160) | `frutigerAero_Wallpaper_Green_NoPerson_4k.jpg` | KnightAnNi | CC0 1.0 Universal |
+| `../cover/barcarolle-logon.jpg` (3840×2160) | `frutigerAero_Wallpaper_Green_Person_4k.jpg` | KnightAnNi | CC0 1.0 Universal |
 
 - Source: "Frutiger Aero Wallpapers" by KnightAnNi,
   <https://knightanni.itch.io/frutiger-aero-wallpapers>, archive
