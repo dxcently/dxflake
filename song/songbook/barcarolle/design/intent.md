@@ -99,31 +99,32 @@ contact sheet `agent-icons.png`. One family: a 48×48 glass tile (the
 fallback is an orb), a vertical body gradient in the kind's hue, a bottom
 bounce glow, a curved hard-edged gloss over the top half, a white inner rim
 and a dark outer rim. The mark sits above the gloss with a 1.2px dark drop so
-it holds at 16px. Three kinds wear their own marks, drawn here from memory
-as plain geometry: claude after Anthropic's Claude spark and codex after the
-OpenAI blossom (trademarks, used on the user's own desktop by the user's
-ruling), eidolon after its own helmet figure (the user's project), and
-hermes after Hermes Agent's mascot from the user's reference. kimi keeps an
-original crescent as a stand-in for Moonshot's mark. shell and agent are
-original.
+it holds at 16px. Five kinds wear their owners' marks, drawn here as plain
+geometry: claude after Anthropic's Claude spark and codex after the OpenAI
+blossom, both from memory, and kimi after Moonshot AI's mark from the user's
+reference (trademarks, used on the user's own desktop by the user's ruling);
+eidolon after its own helmet figure (the user's project); hermes after
+Hermes Agent's CLI emblem (Nous Research), from the user's screenshot. shell
+and agent are original.
 
 | kind | mark | body (top → bottom) | mark colour |
 |---|---|---|---|
-| claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre, as polished glass: a terracotta rim, a hard-stop bevel over the top half, a warm glow behind the centre | cream `#fffaf2` → `#ecd3bd` | golden amber `#ffd877` → `#ffc35e` → coral `#e8875a` → terracotta `#c2593a`, rim `#9a3d1e`, glow `#ffd27a` |
+| claude | Claude's spark: ten tapered rays of uneven length and width with rounded tips around a small centre, as smooth warm metal with no shine stripe: a thin terracotta rim, a warm glow behind the centre | cream `#fffaf2` → `#ecd3bd` | golden amber `#ffd877` → `#ffc35e` → coral `#e8875a` → terracotta `#c2593a`, rim `#9a3d1e`, glow `#ffd27a` |
 | eidolon | eidolon's helmet figure, a Corinthian helmet front-on in hard pixel blocks on a 6-unit grid (2px at 16): crest, crown, brow, eye slit split by the nasal, two cheek guards | the wordmark's blue `#2f7fd8` → cyan `#2ecfcf` | yellow `#ffc23a` → amber `#ffa43a` → orange `#ff8a2a`, interior `#1a1a28` |
-| kimi | a crescent moon (stand-in for Moonshot's mark) in a sparse starfield: three 4-point twinkles and a scatter of dots of uneven size and brightness | indigo `#5560d6` → night `#170f52` | moon pale gold `#fff8d6` → `#f2c14a`; stars pale gold `#fff3c4` and white |
+| kimi | Moonshot AI's mark: a glossy sphere sliced by four diagonal bands that enter from the right at staggered lengths, the left of the disc solid; the bands are cut through, so the night tile shows in them; a sparse starfield around: three 4-point twinkles and a scatter of dots of uneven size and brightness | indigo `#5560d6` → night `#170f52` | sphere white → `#eef0f8` → `#b9bfd6` with a highlight; stars pale gold `#fff3c4` and white |
 | codex | the OpenAI blossom, six rounded links around a hexagonal eye, in glossy glass | green `#2fae72` → `#0c4a2e` | white → `#f0fff6`, hard stop, `#cdf5df` → `#93dcb6`, rim `#0a4429` |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
-| hermes | Hermes Agent's mascot as black-and-white ink, head and shoulders in three-quarter view: a black bob with a blunt fringe and white specular streaks, a white headband with an earpiece, one large dark eye with a highlight and lashes, small lips | pearl `#ffffff` → `#c9d1d8` | ink `#0b0b10`, white |
+| hermes | Hermes Agent's CLI emblem: a staff with spread wings and a knob at the top and two serpents coiling down it, heads meeting under the wings; a few dots on the wings hint at the CLI's braille texture; a warm glow behind | near-black `#2a2a22` → `#0b0b08` | gold `#fff6a8` → `#ffe14a` → `#f0b400`, shading and dots `#a07800` |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
 claude's golden spark sits on a cream tile: on a gold tile the rays sink
 into the ground at 16px, on cream they hold. kimi sits on indigo so its tile
-never reads as eidolon's blue at 16px. At 16px only the brightest kimi
-stars survive; the crescent carries the read. hermes sits on pearl, like
-the reference's white ground: it is the only monochrome icon, so it stays
-distinct at 16px, where the black bob and the white headband carry it. An unknown kind takes `agent`. Gradient ids are
-prefixed with the kind, so all seven inline together without collision.
+never reads as eidolon's blue at 16px; at 16px the sliced disc keeps two or
+three bands and only the brightest star survives. At 16px hermes reads as a
+gold winged staff and the coils simplify to bumps; its dark tile keeps the
+gold apart from claude's spark on cream. An unknown kind takes `agent`.
+Gradient ids are prefixed with the kind, so all seven inline together
+without collision.
 
 ## Palette tokens used
 
