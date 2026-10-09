@@ -114,14 +114,14 @@ and agent are original.
 | kimi | Moonshot AI's mark, traced with potrace from the user's reference (it resembles a piano and its keys): a round disc cut by four thin parallel gaps that fall gently to the right; on the right half each gap widens into a dark notch, a black key, whose left end steps in at a staggered point (the top step slanted, the lower ones near-vertical), so the white bands read as keys; the outline stays round all the way, the keys end at the circle's edge; the gaps are cut through to the tile; a sparse starfield around: three 4-point twinkles and a scatter of dots of uneven size and brightness | indigo `#5560d6` → night `#170f52` | white → `#eef0f8` → `#b9bfd6` with a soft highlight; stars pale gold `#fff3c4` and white |
 | codex | the OpenAI blossom, six rounded links around a hexagonal eye, in glossy glass | green `#2fae72` → `#0c4a2e` | white → `#f0fff6`, hard stop, `#cdf5df` → `#93dcb6`, rim `#0a4429` |
 | shell | the `>_` prompt | graphite `#4e5f6b` → `#0b1419` | base0B `>`, plate-white `_` |
-| hermes | Hermes Agent's CLI emblem, a caduceus: a staff with a small round finial; two long tapering wings attached below the top, sweeping up and out in a shallow V above the finial, each fanning four pointed primary feathers at the tip with clear notches and two quill lines; two serpents coiling down the staff, their small heads facing each other just under the wings; a warm glow behind | near-black `#2a2a22` → `#0b0b08` | gold `#fff6a8` → `#ffe14a` → `#f0b400`, outline and quill lines `#a07800` |
+| hermes | Hermes Agent's CLI emblem, a caduceus: a staff with a small pointed tip; two heraldic bird wings spreading mostly level and lifting slightly at the tips, each with an arched leading edge over three overlapping rows of rounded-pointed feathers (coverts, secondaries, then the longest primaries at the outer end), a darker gold line between rows; two headless serpents braided down the staff, tapering into it under the wings and at the foot; a warm glow behind | near-black `#2a2a22` → `#0b0b08` | gold `#fff6a8` → `#ffe14a` → `#f0b400`, outline and row lines `#a07800` |
 | agent | a glass orb holding a node and three satellites | base0C `#4fd8e6` → `#0a3242` | white |
 
 claude's golden spark sits on a cream tile: on a gold tile the rays sink
 into the ground at 16px, on cream they hold. kimi sits on indigo so its tile
 never reads as eidolon's blue at 16px; at 16px the disc keeps two or three
 of its black-key notches and only the brightest star survives. At 16px hermes reads as a
-gold winged staff and the coils simplify to bumps; its dark tile keeps the
+gold winged staff and the braid simplifies to a ribbed column; its dark tile keeps the
 gold apart from claude's spark on cream. An unknown kind takes `agent`.
 Gradient ids are prefixed with the kind, so all seven inline together
 without collision.
