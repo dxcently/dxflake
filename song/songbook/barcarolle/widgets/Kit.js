@@ -15,6 +15,10 @@ var working = "#3bdcac"
 var awaiting = "#e8cf6a"
 var urgent = "#f2a65e"
 
+var tray = { clock: 53, vol: 107, net: 131, flag: 155, agents: 179 }
+
+function helper(name) { return Qt.resolvedUrl(name + ".qml") }
+
 function bodyFont(px)  { return Qt.font({ family: family, pixelSize: px }) }
 function boldFont(px)  { return Qt.font({ family: family, pixelSize: px, weight: 600 }) }
 function heavyFont(px) { return Qt.font({ family: family, pixelSize: px, weight: 700 }) }
@@ -23,6 +27,9 @@ function lightFont(px) { return Qt.font({ family: family, pixelSize: px, weight:
 function withA(c, a) { var q = Qt.color(c); return Qt.rgba(q.r, q.g, q.b, a) }
 function white(a) { return Qt.rgba(1, 1, 1, a) }
 function dark(a) { return Qt.rgba(12 / 255, 33 / 255, 48 / 255, a) }
+function accent(a) { return Qt.rgba(37 / 255, 187 / 255, 207 / 255, a) }
+function plate() { return Qt.rgba(245 / 255, 251 / 255, 251 / 255, 0.97) }
+function rimTint() { return Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.58) }
 
 function className(w) { return (w && w.lastIpcObject && w.lastIpcObject["class"]) || "" }
 
@@ -48,8 +55,10 @@ function ell(cx, cy, rx, ry, deg) {
 }
 
 function streaks(w, h) {
-    var d = ""
-    for (var x = 63.8 - 4 * 340.5; x < w + 40; x += 340.5)
-        d += "M" + x + " 0 L" + (x + 63.9) + " 0 L" + (x + 63.9 - 14.6) + " " + h + " L" + (x - 14.6) + " " + h + " Z "
+    var d = "", lean = 14.6 * h / 40
+    for (var x = 63.8 - 4 * 340.5; x < w + 40 + lean; x += 340.5)
+        d += "M" + x + " 0 L" + (x + 63.9) + " 0 L" + (x + 63.9 - lean) + " " + h + " L" + (x - lean) + " " + h + " Z "
     return d
 }
+
+var hub = {}

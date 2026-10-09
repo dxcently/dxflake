@@ -5,6 +5,8 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Hyprland
+import Quickshell.Networking
+import Quickshell.Services.Pipewire
 import "../.."
 import "Kit.js" as Kit
 
@@ -68,6 +70,19 @@ Item {
         onLoaded: root.parseStage()
         onFileChanged: reload()
     }
+    property int heraldCount: 0
+    FileView {
+        path: (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/state/stage/herald.json"
+        watchChanges: true
+        blockLoading: false
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: {
+            try { root.heraldCount = (JSON.parse(text()).notifications || []).length } catch (e) {}
+        }
+        onLoadFailed: root.heraldCount = 0
+    }
+
     function bare(addr) { return ("" + (addr || "")).toLowerCase().replace(/^0x/, "") }
 
     function parseStage() {
@@ -173,6 +188,110 @@ Item {
         running: true
         repeat: true
         onTriggered: root.now = new Date()
+    }
+
+    property string flyout: ""
+    property string flyoutGone: ""
+    property real flyoutGoneAt: 0
+
+    function toggleFlyout(name) {
+        if (root.flyout === name) { root.flyout = ""; return }
+        if (root.flyoutGone === name && Date.now() - root.flyoutGoneAt <= 250) return
+        var was = root.flyout
+        root.flyout = ""
+        if (was === "") root.flyout = name
+        else Qt.callLater(function () { root.flyout = name })
+    }
+    onFlyoutChanged: {
+        if (root.flyout === "") return
+        win.hotId = -1
+        win.hotBtn = null
+        if (start.open) start.toggle()
+        if (root.dock && typeof root.dock.hide === "function") root.dock.hide()
+        var menu = riceSlot._item
+        if (menu && menu.open) menu.open = false
+    }
+    readonly property bool flyoutOpen: root.flyout !== "" || (!!root.dock && !!root.dock.shown)
+    onFlyoutOpenChanged: {
+        if (!win.screen) return
+        Kit.hub.open = Kit.hub.open || {}
+        Kit.hub.open[win.screen.name] = root.flyoutOpen
+    }
+    Connections {
+        target: start
+        function onOpenChanged() { if (start.open) root.flyout = "" }
+    }
+    Connections {
+        target: root.dock
+        ignoreUnknownSignals: true
+        function onShownChanged() { if (root.dock && root.dock.shown) root.flyout = "" }
+    }
+    Connections {
+        target: riceSlot._item
+        ignoreUnknownSignals: true
+        function onOpenChanged() { var menu = riceSlot._item; if (menu && menu.open) root.flyout = "" }
+    }
+
+    readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
+    PwObjectTracker { objects: root.sink ? [root.sink] : [] }
+    readonly property var sinkAudio: root.sink && root.sink.audio ? root.sink.audio : null
+    readonly property real volLevel: root.sinkAudio ? root.sinkAudio.volume : 0
+    readonly property bool volMuted: root.sinkAudio ? root.sinkAudio.muted : false
+    readonly property bool volSilent: !root.sinkAudio || root.volMuted || root.volLevel <= 0
+    function setVolume(v) {
+        if (!root.sinkAudio) return
+        root.sinkAudio.volume = Math.max(0, Math.min(1, v))
+        if (v > 0 && root.sinkAudio.muted) root.sinkAudio.muted = false
+    }
+    function nudgeVolume(delta) { root.setVolume(root.volLevel + delta) }
+    function runDetached(name) { Quickshell.execDetached(["systemd-run", "--user", "--scope", name]) }
+
+    property bool netUp: false
+    property string netName: ""
+    property string netKind: "wired"
+    property string netAccess: ""
+    property bool netViaRoute: false
+    FileView { id: routeFile; path: "/proc/net/route"; blockLoading: true; printErrors: false }
+    function netScan() {
+        var devs = Networking.devices && Networking.devices.values ? Networking.devices.values : []
+        var up = false, name = "", kind = "wired", route = devs.length === 0
+        for (var i = 0; i < devs.length && !up; i++) {
+            if (!devs[i].connected) continue
+            up = true
+            name = devs[i].name
+            kind = devs[i].type === DeviceType.Wifi ? "wifi" : "wired"
+            var nets = kind === "wifi" && devs[i].networks ? devs[i].networks.values : []
+            for (var k = 0; k < nets.length; k++) if (nets[k].connected) { name = nets[k].name; break }
+        }
+        if (route) {
+            routeFile.reload()
+            var lines = ("" + routeFile.text()).split("\n")
+            for (var j = 1; j < lines.length && !up; j++) {
+                var f = lines[j].trim().split(/\s+/)
+                if (f.length > 1 && f[1] === "00000000") { up = true; name = f[0]; kind = /^wl/.test(f[0]) ? "wifi" : "wired" }
+            }
+        }
+        var access = "No network access"
+        if (up) {
+            var c = Networking.connectivity
+            access = route ? "Network access"
+                   : c === NetworkConnectivity.Full ? "Internet access"
+                   : c === NetworkConnectivity.Limited ? "Limited access"
+                   : c === NetworkConnectivity.Portal ? "Sign-in required"
+                   : c === NetworkConnectivity.None ? "No Internet access" : "Network access"
+        }
+        root.netUp = up
+        root.netName = name
+        root.netKind = kind
+        root.netAccess = access
+        root.netViaRoute = route
+    }
+    Timer {
+        interval: 1500
+        repeat: true
+        running: root.flyout === "network"
+        triggeredOnStart: true
+        onTriggered: root.netScan()
     }
 
     component Svg: Shape {
@@ -462,8 +581,9 @@ Item {
 
     component Cell: Item {
         id: cell
-        property alias hovered: cma.containsMouse
+        property bool lit: false
         signal clicked()
+        signal wheeled(real dy)
         width: 24
         height: Kit.barHeight
         Rectangle {
@@ -472,14 +592,14 @@ Item {
             color: "transparent"
             border.width: 1
             border.color: Kit.white(0.32)
-            visible: cma.containsMouse
+            visible: hover.hovered || cell.lit
         }
+        HoverHandler { id: hover }
         MouseArea {
-            id: cma
             anchors.fill: parent
-            hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: cell.clicked()
+            onWheel: function (w) { cell.wheeled(w.angleDelta.y) }
         }
     }
 
@@ -567,6 +687,119 @@ Item {
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: pr.activated()
+        }
+    }
+
+    component Rim: Rectangle {
+        id: rm
+        radius: 3
+        color: Kit.rimTint()
+        border.width: 1
+        border.color: Kit.dark(0.85)
+        Item {
+            anchors.fill: parent
+            anchors.margins: 1
+            clip: true
+            Svg { d: Kit.streaks(rm.width - 2, rm.height - 2); fill: Kit.white(0.035) }
+        }
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 1
+            radius: 2
+            color: "transparent"
+            border.width: 1
+            border.color: Kit.white(0.35)
+        }
+        Rectangle {
+            x: 1; y: 1; width: parent.width - 2; height: 24
+            radius: 2
+            gradient: Gradient {
+                GradientStop { position: 0; color: Kit.white(0.22) }
+                GradientStop { position: 1; color: Kit.white(0.06) }
+            }
+        }
+    }
+
+    component Plate: Rectangle {
+        radius: 2
+        color: Kit.plate()
+        border.width: 1
+        border.color: Kit.dark(0.55)
+    }
+
+    component Flyout: PopupWindow {
+        id: fy
+        required property string name
+        required property Item cell
+        property bool gate: true
+        property bool flushRight: false
+        visible: root.flyout === fy.name && fy.gate
+        color: "transparent"
+        anchor.item: fy.cell
+        anchor.edges: fy.flushRight ? Edges.Top | Edges.Right : Edges.Top
+        anchor.gravity: fy.flushRight ? Edges.Top | Edges.Left : Edges.Top
+        anchor.adjustment: PopupAdjustment.Slide
+        grabFocus: true
+        onVisibleChanged: {
+            if (fy.visible || root.flyout !== fy.name) return
+            root.flyoutGone = fy.name
+            root.flyoutGoneAt = Date.now()
+            root.flyout = ""
+        }
+        Shortcut { sequence: "Escape"; enabled: fy.visible; onActivated: root.flyout = "" }
+    }
+
+    component NetGlyph: Item {
+        id: ng
+        property string kind: "wired"
+        width: 18
+        height: 16
+        Svg { visible: ng.kind === "wired"; d: "M3.5 1.5 H14.5 a1 1 0 0 1 1 1 V9.5 a1 1 0 0 1 -1 1 H3.5 a1 1 0 0 1 -1 -1 V2.5 a1 1 0 0 1 1 -1 Z"; stroke: Kit.ink; fill: Kit.dark(1) }
+        Svg { visible: ng.kind === "wired"; d: "M4 3 H14 V9 H4 Z"; fill: Kit.withA("#2aa3b8", 0.8) }
+        Svg { visible: ng.kind === "wired"; d: "M9 10.5 v2.5 M5 14.5 h8"; stroke: Kit.ink; sw: 1.4 }
+        Svg { visible: ng.kind === "wifi"; d: "M1.5 6 a10 10 0 0 1 15 0 M4 8.8 a6.5 6.5 0 0 1 10 0 M6.6 11.4 a3 3 0 0 1 4.8 0"; stroke: Kit.ink; sw: 1.5; cap: ShapePath.RoundCap }
+        Svg { visible: ng.kind === "wifi"; d: "M9 13.2 m-1.4 0 a1.4 1.4 0 1 0 2.8 0 a1.4 1.4 0 1 0 -2.8 0"; fill: Kit.ink }
+    }
+
+    component NetRow: Item {
+        id: nr
+        property string kind: "wired"
+        property string name: ""
+        property string tag: ""
+        width: parent ? parent.width : 286
+        height: 26
+        NetGlyph { x: 8; y: 5; kind: nr.kind }
+        Text {
+            x: 34
+            width: parent.width - 34 - nrTag.width - 16
+            anchors.verticalCenter: parent.verticalCenter
+            text: nr.name
+            elide: Text.ElideRight
+            color: Kit.ink
+            font: Kit.bodyFont(12)
+            textFormat: Text.PlainText
+        }
+        Text {
+            id: nrTag
+            anchors { right: parent.right; rightMargin: 8; verticalCenter: parent.verticalCenter }
+            text: nr.tag
+            color: Kit.dark(0.72)
+            font: Kit.bodyFont(10)
+            textFormat: Text.PlainText
+        }
+    }
+
+    Item {
+        id: gadgets
+        function make(c) {
+            if (c.status === Component.Error) console.warn("[barcarolle] DesktopGadgets:", c.errorString())
+            else if (c.status === Component.Ready)
+                c.createObject(gadgets, { livery: root.livery, bridge: root.bridge, stagingEngine: root.stagingEngine, bar: win })
+        }
+        Component.onCompleted: {
+            var c = Qt.createComponent(Kit.helper("DesktopGadgets"))
+            if (c.status === Component.Loading) c.statusChanged.connect(function () { gadgets.make(c) })
+            else gadgets.make(c)
         }
     }
 
@@ -784,7 +1017,7 @@ Item {
 
         PopupWindow {
             id: peek
-            visible: win.peekBtn !== null && win.peekList.length > 0
+            visible: win.peekBtn !== null && win.peekList.length > 0 && root.flyout === ""
             color: "transparent"
             anchor.item: win.peekBtn
             anchor.edges: Edges.Top | Edges.Left
@@ -994,35 +1227,35 @@ Item {
             MouseArea { id: sliverMa; anchors.fill: parent; hoverEnabled: true }
         }
 
-        Item {
+        Cell {
             id: clock
-            anchors { right: sliver.left; top: parent.top; bottom: parent.bottom }
+            anchors.right: sliver.left
             width: 76
-            Rectangle {
-                anchors.fill: parent
-                radius: 2
-                color: "transparent"
-                border.width: 1
-                border.color: Kit.white(0.32)
-                visible: clockMa.containsMouse
-            }
+            lit: root.flyout === "calendar"
+            onClicked: root.toggleFlyout("calendar")
             Column {
                 anchors.centerIn: parent
                 ShadowText { width: 76; horizontalAlignment: Text.AlignHCenter; text: Qt.formatTime(root.now, "h:mm AP"); font: Kit.bodyFont(12) }
                 ShadowText { width: 76; horizontalAlignment: Text.AlignHCenter; text: Qt.formatDate(root.now, "M/d/yyyy"); font: Kit.bodyFont(12) }
             }
-            MouseArea { id: clockMa; anchors.fill: parent; hoverEnabled: true }
         }
 
         Cell {
             id: vol
             anchors { right: clock.left; rightMargin: 4 }
+            lit: root.flyout === "volume"
+            onClicked: root.toggleFlyout("volume")
+            onWheeled: function (dy) { root.nudgeVolume(dy / 120 * 0.02) }
             Svg { x: 3; y: 12; d: "M1.5 5.5 h3 l4 -3 v11 l-4 -3 h-3 z"; fill: "#ffffff" }
-            Svg { x: 3; y: 12; d: "M11 5 a4 4 0 0 1 0 6 M13.2 3 a7 7 0 0 1 0 10"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
+            Svg { visible: !root.volSilent; x: 3; y: 12; d: "M11 5 a4 4 0 0 1 0 6"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
+            Svg { visible: !root.volSilent && root.volLevel >= 0.5; x: 3; y: 12; d: "M13.2 3 a7 7 0 0 1 0 10"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
+            Svg { visible: root.volSilent; x: 3; y: 12; d: "M11.5 5.5 l4.5 5 M16 5.5 l-4.5 5"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
         }
         Cell {
             id: net
             anchors.right: vol.left
+            lit: root.flyout === "network"
+            onClicked: root.toggleFlyout("network")
             Svg { x: 3; y: 12; d: "M3.5 1.5 H14.5 a1 1 0 0 1 1 1 V9.5 a1 1 0 0 1 -1 1 H3.5 a1 1 0 0 1 -1 -1 V2.5 a1 1 0 0 1 1 -1 Z"; stroke: "#ffffff"; fill: Kit.dark(1) }
             Svg { x: 3; y: 12; d: "M4 3 H14 V9 H4 Z"; fill: Kit.withA("#2aa3b8", 0.8) }
             Svg { x: 3; y: 12; d: "M9 10.5 v2.5 M5 14.5 h8"; stroke: "#ffffff"; sw: 1.4 }
@@ -1030,8 +1263,15 @@ Item {
         Cell {
             id: flag
             anchors.right: net.left
+            lit: root.flyout === "action"
+            onClicked: root.toggleFlyout("action")
             Svg { x: 4; y: 12; d: "M3 1.5 v13.5"; stroke: "#ffffff"; sw: 1.5 }
             Svg { x: 4; y: 12; d: "M3.5 2.5 c3 -1.5 5 1.5 9.5 0 v7 c-4.5 1.5 -6.5 -1.5 -9.5 0 z"; fill: Kit.white(0.9) }
+            Dot {
+                visible: root.heraldCount > 0
+                x: 14; y: 22; d: 9
+                tone: root.kit.urgent
+            }
         }
         Cell {
             id: agents
@@ -1059,7 +1299,267 @@ Item {
             Svg { x: 4.5; y: 17; d: "M1 5 l3.5 -3.5 L8 5"; stroke: "#ffffff"; sw: 1.4 }
         }
 
+        Flyout {
+            name: "calendar"
+            cell: clock
+            flushRight: true
+            gate: !!root.stagingEngine && root.stagingEngine.resolveSong(root.livery.songName, "calendar") !== ""
+            implicitWidth: calRim.width
+            implicitHeight: calRim.height + 6
+            Rim {
+                id: calRim
+                width: calBody.implicitWidth + 14
+                height: calBody.implicitHeight + 14
+                WidgetSlot {
+                    id: calBody
+                    x: 7
+                    y: 7
+                    livery: root.livery
+                    bridge: root.bridge
+                    stagingEngine: root.stagingEngine
+                    slot: "calendar"
+                }
+            }
+        }
+
+        Flyout {
+            name: "action"
+            cell: flag
+            gate: !!root.stagingEngine && root.stagingEngine.resolveSong(root.livery.songName, "herald-center") !== ""
+            implicitWidth: acRim.width
+            implicitHeight: acRim.height + 6
+            Rim {
+                id: acRim
+                width: acBody.implicitWidth + 14
+                height: acBody.implicitHeight + 14
+                WidgetSlot {
+                    id: acBody
+                    x: 7
+                    y: 7
+                    livery: root.livery
+                    bridge: root.bridge
+                    stagingEngine: root.stagingEngine
+                    slot: "herald-center"
+                }
+            }
+        }
+
+        Flyout {
+            name: "volume"
+            cell: vol
+            implicitWidth: 84
+            implicitHeight: 308
+            Rim {
+                width: 84
+                height: 302
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    onWheel: function (w) { root.nudgeVolume(w.angleDelta.y / 120 * 0.02) }
+                }
+                Plate { x: 7; y: 7; width: 70; height: 288 }
+                Text {
+                    x: 7; y: 16; width: 70; height: 15
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: root.sink ? (root.sink.nickname || root.sink.description || root.sink.name) : "No output"
+                    elide: Text.ElideRight
+                    color: Kit.ink
+                    font: Kit.bodyFont(11)
+                    textFormat: Text.PlainText
+                }
+                Rectangle { x: 7; y: 35.5; width: 70; height: 1; color: Kit.dark(0.15) }
+                Svg { x: 32; y: 44.4; d: "M2 7 h4 l5 -4 v14 l-5 -4 H2 z"; fill: Kit.ink; transform: Scale { xScale: 0.9045; yScale: 0.9045 } }
+                Svg { x: 32; y: 44.4; d: "M14 6.5 a5 5 0 0 1 0 7 M16.5 4 a8.5 8.5 0 0 1 0 12"; stroke: Kit.ink; sw: 1.6; cap: ShapePath.RoundCap; transform: Scale { xScale: 0.9045; yScale: 0.9045 } }
+                Rectangle { id: track; x: 39; y: 76.5; width: 6; height: 135.7; radius: 3; color: Kit.dark(0.20); border.width: 1; border.color: Kit.dark(0.25) }
+                Rectangle {
+                    id: fill
+                    readonly property real fillH: track.height * Math.min(1, root.volLevel)
+                    x: 39; y: track.y + track.height - fillH; width: 6; height: fillH
+                    radius: 3
+                    color: root.volMuted ? Kit.dark(0.35) : "#25bbcf"
+                }
+                Rectangle {
+                    x: 33; y: fill.y - 5; width: 18; height: 10
+                    radius: 2
+                    border.width: 1
+                    border.color: Kit.dark(0.55)
+                    gradient: Gradient {
+                        GradientStop { position: 0; color: "#ffffff" }
+                        GradientStop { position: 0.5; color: "#dfeef0" }
+                        GradientStop { position: 0.5; color: "#c9e3e7" }
+                        GradientStop { position: 1; color: "#eaf5f6" }
+                    }
+                }
+                MouseArea {
+                    x: 29; y: track.y - 6; width: 26; height: track.height + 12
+                    enabled: !!root.sinkAudio
+                    cursorShape: Qt.PointingHandCursor
+                    onPressed: function (m) { root.setVolume(1 - (m.y - 6) / track.height) }
+                    onPositionChanged: function (m) { if (pressed) root.setVolume(1 - (m.y - 6) / track.height) }
+                }
+                Text {
+                    x: 7; y: 220.3; width: 70; height: 16.2
+                    horizontalAlignment: Text.AlignHCenter
+                    text: root.sinkAudio ? "" + Math.round(root.volLevel * 100) : "–"
+                    color: Kit.ink
+                    font: Kit.bodyFont(12)
+                    textFormat: Text.PlainText
+                }
+                Rectangle {
+                    x: 25; y: 244.4; width: 34; height: 23.7
+                    radius: 3
+                    border.width: 1
+                    border.color: Kit.dark(0.55)
+                    gradient: Gradient {
+                        GradientStop { position: 0; color: "#ffffff" }
+                        GradientStop { position: 0.5; color: "#e3f1f3" }
+                        GradientStop { position: 0.5; color: "#d3e9ec" }
+                        GradientStop { position: 1; color: "#f0f8f9" }
+                    }
+                    Rectangle { anchors.fill: parent; radius: 3; color: muteMa.containsMouse ? Kit.accent(0.15) : "transparent" }
+                    Svg { x: 9; y: 4.9; d: "M1 5 h3 l4 -3 v10 l-4 -3 H1 z"; fill: Kit.ink }
+                    Svg { visible: !root.volMuted; x: 9; y: 4.9; d: "M11 4.5 a3.5 3.5 0 0 1 0 5"; stroke: Kit.ink; sw: 1.4 }
+                    Svg { visible: root.volMuted; x: 9; y: 4.9; d: "M10.5 4.5 l4 5 M14.5 4.5 l-4 5"; stroke: Kit.ink; sw: 1.4; cap: ShapePath.RoundCap }
+                    MouseArea {
+                        id: muteMa
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        enabled: !!root.sinkAudio
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.sinkAudio.muted = !root.sinkAudio.muted
+                    }
+                }
+                Rectangle {
+                    x: 8; y: 268.2; width: 68; height: 25.8
+                    color: Kit.accent(0.10)
+                    Rectangle { x: 0; y: 0; width: parent.width; height: 1; color: Kit.dark(0.15) }
+                    Text {
+                        id: mixerText
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        y: 5; height: 15
+                        verticalAlignment: Text.AlignVCenter
+                        text: "Mixer"
+                        color: Kit.ink
+                        font: Kit.bodyFont(11)
+                        textFormat: Text.PlainText
+                    }
+                    Rectangle { visible: mixerMa.containsMouse; x: mixerText.x; y: 19; width: mixerText.width; height: 1; color: Kit.ink }
+                    MouseArea {
+                        id: mixerMa
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: { root.flyout = ""; root.runDetached("pavucontrol") }
+                    }
+                }
+            }
+        }
+
+        Flyout {
+            name: "network"
+            cell: net
+            implicitWidth: 300
+            implicitHeight: netRim.height + 6
+            Rim {
+                id: netRim
+                width: 300
+                height: 7 + 26 + netPlate.height + 7
+                Rectangle {
+                    x: 7; y: 7; width: 286; height: 26
+                    radius: 2
+                    bottomLeftRadius: 0
+                    bottomRightRadius: 0
+                    color: Kit.dark(0.80)
+                    Text {
+                        x: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: root.netUp ? "Currently connected to:" : "Not connected"
+                        color: "#ffffff"
+                        font: Kit.boldFont(12)
+                        textFormat: Text.PlainText
+                    }
+                }
+                Plate {
+                    id: netPlate
+                    readonly property int count: Math.max(1, Networking.devices && Networking.devices.values ? Networking.devices.values.length : 0)
+                    x: 7; y: 33; width: 286
+                    height: 58 + 29 + count * 26 + 4 + 26 + 2
+                    topLeftRadius: 0
+                    topRightRadius: 0
+                    NetGlyph { x: 12; y: 12; kind: root.netKind; visible: root.netUp; transform: Scale { xScale: 2; yScale: 2 } }
+                    Text {
+                        x: 56; y: 11; width: parent.width - 56 - 12
+                        text: root.netUp ? root.netName : "No network connection"
+                        elide: Text.ElideRight
+                        color: Kit.ink
+                        font: Kit.boldFont(12)
+                        textFormat: Text.PlainText
+                    }
+                    Text {
+                        x: 56; y: 29; width: parent.width - 56 - 12
+                        text: root.netAccess
+                        elide: Text.ElideRight
+                        color: Kit.dark(0.72)
+                        font: Kit.bodyFont(11)
+                        textFormat: Text.PlainText
+                    }
+                    Item {
+                        x: 4; y: 58; width: parent.width - 8; height: 26
+                        Text { x: 8; y: 6; text: "Connections"; color: Kit.dark(0.72); font: Kit.boldFont(12); textFormat: Text.PlainText }
+                        Rectangle { x: 0; y: 25; width: parent.width; height: 1; color: Kit.dark(0.20) }
+                    }
+                    Column {
+                        x: 1; y: 87; width: parent.width - 2
+                        Repeater {
+                            model: Networking.devices
+                            NetRow {
+                                required property var modelData
+                                readonly property bool wired: modelData.type === DeviceType.Wired
+                                kind: wired ? "wired" : "wifi"
+                                name: modelData.name
+                                tag: modelData.connected
+                                     ? (wired && modelData.linkSpeed > 0 ? "Connected · " + (modelData.linkSpeed >= 1000 ? modelData.linkSpeed / 1000 + " Gbps" : modelData.linkSpeed + " Mbps") : "Connected")
+                                     : (modelData.state === ConnectionState.Connecting ? "Connecting…" : "Not connected")
+                            }
+                        }
+                        NetRow {
+                            visible: root.netViaRoute
+                            height: visible ? 26 : 0
+                            kind: root.netKind
+                            name: root.netUp ? root.netName : "No network devices"
+                            tag: root.netUp ? "Connected" : ""
+                        }
+                    }
+                    Rectangle {
+                        x: 1; y: parent.height - 1 - 26; width: parent.width - 2; height: 26
+                        color: Kit.accent(0.10)
+                        Rectangle { x: 0; y: 0; width: parent.width; height: 1; color: Kit.dark(0.15) }
+                        Text {
+                            id: sharingText
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            y: 5; height: 15
+                            verticalAlignment: Text.AlignVCenter
+                            text: "Open Network and Sharing Center"
+                            color: Kit.ink
+                            font: Kit.bodyFont(11)
+                            textFormat: Text.PlainText
+                        }
+                        Rectangle { visible: sharingMa.containsMouse; x: sharingText.x; y: 19; width: sharingText.width; height: 1; color: Kit.ink }
+                        MouseArea {
+                            id: sharingMa
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: { root.flyout = ""; root.runDetached("nm-connection-editor") }
+                        }
+                    }
+                }
+            }
+        }
+
         WidgetSlot {
+            id: riceSlot
             livery: root.livery
             bridge: root.bridge
             stagingEngine: root.stagingEngine

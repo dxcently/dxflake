@@ -72,14 +72,24 @@ Glass is a frame, content is a plate, light comes from above.
   current one ticked (staged / declared tags), `Back to declarative ·
   <declared>`, drafts of the current song, `+ New draft`, `Save current as
   draft`.
-- **Tray flyout**: the Win7 narrow volume flyout (device, slider, percent,
-  mute, `Mixer` footer).
+- **Tray flyouts**: the Win7 narrow volume flyout (device, slider, percent,
+  mute, `Mixer` footer), the network flyout from its tray icon, and the
+  calendar flyout from the clock (month grid, today ringed, an analogue
+  clock beside it). One flyout is open at a time; opening one closes the
+  rest, the RICE menu and the agents flyout included.
+- **Action Center**: the ⚑ flag's flyout lists the notification ledger,
+  newest first, with `Clear all`; the flag carries a dot while the ledger
+  holds anything.
 - **Balloon**: white plate whose tail points at the tray icon it belongs
   to; an agent summons points at the agents button and shows Approve / Deny
   pills.
-- **Gadget**: CPU (110px) and RAM (70px) dials, chrome bezels, white needles,
+- **Gadgets**: CPU (110px) and RAM (70px) dials, chrome bezels, white needles,
   readouts on dark chips; sits free on the desktop, Win7-style (top right on
-  the board).
+  the board). Below them, the same family: a usage gadget (two 70px dials,
+  5-hour and week, reset chips, a today · week cost chip; parked needles and
+  `live usage unavailable` without data) and a power gadget (an inverted
+  70px dial with state and time chips) that collapses to nothing on a
+  machine with no battery.
 - **Lock** (panel in the board, 0.45 scale): the logon picture with its baked
   person tile, the `$USER` label at −21% and the 400×60 hyprlock field at
   −26% below centre. Nothing else; the song supplies only the picture and
