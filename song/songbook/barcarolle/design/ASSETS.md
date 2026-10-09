@@ -32,7 +32,18 @@
   helmet figure and the wordmark's colours); eidolon is the user's own
   project.
 - `../icons/launcher/g3-*.svg` are original work drawn here, inspired by
-  the Apple iMac G3 industrial design; no Apple logo.
+  the Apple iMac G3 industrial design; no Apple logo. `g3-note.svg` is a
+  pixel computer with a ♪ face, drawn here after the classic Mac OS
+  start-up face; no Apple artwork is copied.
+- `../icons/launcher/finder-*.svg` (folders, disk, trash, clippings, the
+  generic app, the dither and the menu-bar ♪) are original drawings made
+  here in the manner of Mac OS 8/9's Platinum icons; no Apple artwork is
+  copied.
+- `../widgets/Emoji.js` is generated from Unicode's `emoji-test.txt` 17.0
+  (Unicode License v3), keeping fully-qualified emoji the installed Noto
+  Color Emoji draws; names and subgroups are Unicode's.
+- `launcher-finder.png` is a headless Chromium render of the launcher
+  screen's design board.
 - `launcher-g3.png` is a headless Chromium render of `launcher-g3.html`,
   the G3 launcher's board; its icons and orb are the ones drawn here.
 - `agent-icons.png` is the agent icons' contact sheet, a headless Chromium

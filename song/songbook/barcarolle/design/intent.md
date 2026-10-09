@@ -1,8 +1,9 @@
 # barcarolle — intent
 
 Windows 7 Aero, rebuilt as an AoideOS rice: a glass superbar along the bottom,
-the Start orb and its iMac G3 launcher, white-plate flyouts and balloons
-(the agent sessions among them), and a CPU-meter gadget, all over a teal
+the Start orb and its Win7 Start menu, an iMac G3 app launcher on
+SUPER+Space, white-plate flyouts and balloons (the agent sessions among
+them), and CPU-meter gadgets, all over a teal
 Frutiger Aero wallpaper. The one structural change from Windows 7: the grouped taskbar
 buttons are **Hyprland workspaces**, not applications.
 
@@ -57,8 +58,19 @@ Glass is a frame, content is a plate, light comes from above.
   monitor's aspect: each window streams into its real position over the
   song's cover at 15 fps, shown or hidden workspace alike, and the streams
   stop when the peek closes. A window that cannot be captured shows its icon.
-- **Start**: an iMac G3 that rises out of the orb; its screen hosts the
-  Start content (see Start below).
+- **Start**: the ♪ orb opens the Win7 two-column Start menu as `mock.html`
+  draws it: pinned apps, All Programs ▸, "Search programs", the person
+  tile, places, Terminal, Settings, and the Lock ▸ power split (Log off,
+  Sleep, Hibernate, Restart, `Shut down…`). Power goes only through
+  aoided's `power` command; `Shut down…` opens the Shut Down dialog.
+- **Launcher**: SUPER+Space opens the iMac G3 in the middle of the focused
+  monitor; its screen is a Mac OS 9 Finder of apps, clipboard and emoji
+  (see Launcher: iMac G3 below).
+- **Shut Down dialog** (the powermenu): Win7's Alt+F4 dialog in the song's
+  glass, a ♪ barcarolle banner, "What do you want the computer to do?" with
+  Log off / Lock / Restart / Sleep / Hibernate / Shut down and a line
+  describing the choice, OK / Cancel / Help, centred over a near-clear
+  scrim. Escape cancels.
 - **Agent flyout** (352px, from the agents tray button `⧉`, whose badge
   counts the awaiting sessions): a Win7 notification-area flyout anchored
   above its button at the bottom right, one flyout open at a time like the
@@ -95,14 +107,15 @@ Glass is a frame, content is a plate, light comes from above.
   −26% below centre. Nothing else; the song supplies only the picture and
   colours (hyprlock dress contract).
 
-## Start: iMac G3
+## Launcher: iMac G3
 
-The Start menu is a large iMac G3 in Aero glass. Clicking the ♪ orb lifts
-it out of the orb with a small overshoot; its CRT powers on, shows the
-orb's ♪ for a beat, then the Start content fades in on the screen. Closing
-reverses it: the content fades, the CRT collapses to a dot and the G3 sinks
-back into the orb. The orb itself stays the dark-glass ♪ orb. Board:
-`launcher-g3.html` (rendered to `launcher-g3.png`); click its orb to replay.
+SUPER+Space opens the app launcher: a large iMac G3 in Aero glass, centred
+on the focused monitor. It pops in about its own centre with a small
+overshoot; its CRT powers on, shows a Happy Mac with a ♪ face for a beat,
+then the Finder fades in on the screen. Closing reverses it: the Finder
+fades, the CRT collapses to a dot and the G3 shrinks away. Boards:
+`launcher-g3.html` (rendered to `launcher-g3.png`; the machine and its
+timelines) and `launcher-finder.png` (the screen).
 
 - **Look**: front-facing, no back. A frosted ice-white front, symmetric
   about the screen centre, with a flat, low crown so the screen takes most
@@ -110,28 +123,31 @@ back into the orb. The orb itself stays the dark-glass ♪ orb. Board:
   teal speaker grilles at the bottom corners, a drive slot between them
   with the power LED under it; two short feet; a soft floor shadow. No
   Apple logo.
-- **Size and place**: a 760×480 viewBox at 1:1 on DP-1, at x 6, y 560, so
-  its foot meets the bar top (y 1040). The drawing fills only **x 0–504,
-  y 24–480** of it (front shell x 2–502, y 26–446; feet to y 450; shadow
-  to y 478); the rest is transparent, so a window may be cropped to that
-  box without moving anything.
+- **Size and place**: a 760×480 viewBox at 1:1. The drawing fills only
+  **x 0–504, y 24–480** of it (front shell x 2–502, y 26–446; feet to
+  y 450; shadow to y 478), so the window is cropped to that 504×456 box and
+  centred on the focused monitor's full output.
 - **Screen rect** (where the content goes), in G3 units: **x 62, y 72,
   380×284**, clipped to a 10px radius. The lit glass around it is the
   `screen` layer; the content sits inside its bulge.
-- **Content**, Win7 Start relaid for a landscape screen, 12px:
-  - left plate 228×250 (`notif.bg` at 0.93, ink): pinned Terminal and
-    Firefox, a rule, then VSCodium, Obsidian, Vesktop, Files, Pear Desktop
-    in 26px rows with 20px icons and jump-list arrows; `All Programs ▸`
-    at the plate's foot;
-  - search field 228×28 under it, at y 256: "Search programs";
-  - right deep pane 144×250 at x 236: a small person glyph and the name,
-    a rule, Home, Documents, Pictures, Music, Downloads, a rule, Terminal,
-    Settings, in 22px rows;
-  - power split 144×28 at x 236, y 256: **Lock** with a ▸ for Switch user /
-    Log off / Sleep / Hibernate / Restart / Shut down;
-  - scanlines over the content: a 1px line every 3px of `#021219` at 0.06.
-    They stay legible at that strength; drop them if the real render
-    shimmers.
+- **Content**, a Mac OS 9 desktop on the screen (`launcher-finder.png`):
+  a Platinum menu bar with a pixel ♪ for the Apple menu and a Find field;
+  the song's cover shrunk onto the little desktop (a teal dither without
+  one), with Macintosh HD and Trash icons; a Macintosh HD window holding
+  three folders, Applications, Clipboard and Emoji, in icon view. Opening
+  a folder opens its window in front while the HD window greys behind it.
+  Applications are the desktop entries A→Z with their icons; Clipboard
+  shows text and picture clippings (pictures as thumbnails); Emoji is an
+  8-wide grid of glyphs from `widgets/Emoji.js`. Selection is `#0f6d80`
+  with white text; a help balloon names the selected emoji or shows a
+  clipping's text; the status line reads "x items, 1 selected". Tahoma 12
+  and Verdana 10 stand in for Charcoal and Geneva.
+  - Keys: typing filters the open folder, or at the top opens a `Find "q"`
+    window over all three; arrows move; Enter opens a folder, launches an
+    app (a `systemd-run --user --scope`) or copies a clipping or emoji
+    (`wl-copy`), then closes; Backspace on an empty query goes up; Escape
+    closes. The `clipboard` shortcut opens straight to Clipboard.
+  - Scanlines over the content: a 1px line every 3px of `#021219` at 0.06.
 
 ### Layers
 
@@ -143,20 +159,19 @@ masks, clips or text), so QtSvg renders them as Chromium does.
 |---|---|---|
 | `g3-body.svg` | shadow, feet, front, dark screen, speakers, slot, dull LED | with the whole G3 |
 | `g3-screen.svg` | the lit screen glass | opacity, yScale, brightness |
-| `g3-note.svg` | the ♪ on the lit screen, with a soft halo | opacity, yScale, brightness (with the screen) |
-| *content* | the Start content (QML), in the screen rect | opacity |
+| `g3-note.svg` | the Happy Mac with a ♪ face on the lit screen | opacity, yScale, brightness (with the screen) |
+| *content* | the Finder (QML), in the screen rect | opacity |
 | `g3-beam.svg` | the CRT line: white core, hot centre, cyan halo | opacity, xScale |
 | `g3-glare.svg` | the vignette (curvature), the diagonal sheen, the top highlight | never |
 | `g3-led.svg` | the lit LED and its halo | opacity |
 
 - The screen, note and beam scale about the screen centre, (252, 214).
-- The whole G3 scales about the orb centre, which is (21, 500) in G3
-  units: the orb at (27, 1060) on DP-1.
+- The whole G3 scales about its own centre, (252, 252) in G3 units.
 - Brightness is a `MultiEffect.brightness` on the screen and note.
 
 ### Open, 460 ms
 
-t = 0 is the click. Before it every value is at rest: G3 opacity 0, scale
+t = 0 is the keypress. Before it every value is at rest: G3 opacity 0, scale
 0.12; led 0; beam 0, xScale 0.1; screen and note opacity 0, yScale 0.02,
 brightness 0; content 0. A track holds its last value after its end.
 
@@ -178,7 +193,7 @@ brightness 0; content 0. A track holds its last value after its end.
 
 ### Close, 320 ms
 
-t = 0 is the click, from the open values.
+t = 0 is the keypress, from the open values.
 
 | t (ms) | layer · property | value | easing |
 |---|---|---|---|
@@ -190,10 +205,10 @@ t = 0 is the click, from the open values.
 | 140 → 190 | beam · xScale | 1 → 0.03 | InCubic (line → dot) |
 | 190 → 230 | beam · opacity | 1 → 0 | Linear (afterglow) |
 | 190 | led · opacity | 0 | step |
-| 200 → 320 | G3 · scale | 1 → 0.12 | InCubic (sinks into the orb) |
+| 200 → 320 | G3 · scale | 1 → 0.12 | InCubic (shrinks away) |
 | 260 → 320 | G3 · opacity | 1 → 0 | Linear |
 
-A click mid-animation stops the running timeline and starts the other.
+A toggle mid-animation stops the running timeline and starts the other.
 Each eased track animates from its current value instead of its listed
 start; step tracks still fire, and a step whose time has already passed in
 the new timeline fires at once.
@@ -268,8 +283,8 @@ Consolas → Noto Sans Mono.
   agent flyout gets hyprglass. The G3 is drawn art and needs no blur.
 - **Icons**: all drawn here; the real bar resolves app icons from the icon
   theme. Agent icons: see above.
-- **Start**: `mock.html` still shows the Win7 two-column Start menu; the
-  G3 launcher that replaces it is on `launcher-g3.html` only.
+- **Start**: `mock.html` draws the orb's Start menu; the G3 launcher is on
+  `launcher-g3.html` and `launcher-finder.png` only.
 - **Data**: workspaces, sessions, songs and drafts are hard-coded sample
   data. Nothing reads `desktop.json`, `sessions.json` or `mode.json`.
 - **Board-only placement**: every surface is open at once, though only one
@@ -285,12 +300,11 @@ Consolas → Noto Sans Mono.
 
 1. **"awaiting" vs "asking"**: display the canonical word, or map it to
    "asking" in the UI only?
-2. **Start search**: the placeholder says "programs and files", but only a
-   programs search is planned. Rename it, or order a file-search bridge?
-3. **Orb size**: kept inside the 40px bar (Ø36). Win7's orb overhangs the
+2. **Orb size**: kept inside the 40px bar (Ø36). Win7's orb overhangs the
    taskbar; overhang needs a taller surface than the exclusive zone.
-4. **Power split**: Lock as the default with Shut down in the ▸ menu — keep
-   Restart/Shut down armed (second click) as specced?
-5. **Lock name legibility**: the bare `$USER` label sits on bright art just
+3. **Power split**: Lock is the default and `Shut down…` asks through the
+   dialog, but Restart in the ▸ menu acts on one click. Arm it too, or
+   route it through the dialog?
+4. **Lock name legibility**: the bare `$USER` label sits on bright art just
    under the tile; hyprlock's variables-only dress cannot add a plate, so any
    name band must be baked into the picture.

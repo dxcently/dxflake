@@ -33,6 +33,14 @@ function rimTint() { return Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.58) }
 
 function className(w) { return (w && w.lastIpcObject && w.lastIpcObject["class"]) || "" }
 
+function scopeArgv(e) {
+    var argv = ["systemd-run", "--user", "--scope", "--quiet", "--collect"]
+    if (e.workingDirectory) argv.push("--working-directory=" + e.workingDirectory)
+    argv.push("--")
+    for (var i = 0; i < e.command.length; i++) argv.push(e.command[i])
+    return argv
+}
+
 function make(livery) {
     var b = (livery && livery.raw && livery.raw.base16) ? livery.raw.base16 : {}
     function slot(n, fb) { return b[n] ? b[n] : fb }

@@ -37,9 +37,6 @@ Item {
     Timer { id: settle; interval: 60; onTriggered: root.tick++ }
 
     readonly property int rigPeek: parseInt(Quickshell.env("AOIDE_RIG_PEEK") || "-1")
-    readonly property bool rigStart: Quickshell.env("AOIDE_RIG_START") === "1"
-    readonly property string aoideRoot: Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")
-    readonly property string g3Dir: "file://" + aoideRoot + "/song/songbook/barcarolle/icons/launcher/"
 
     property var sessByAddr: ({})
     property int awaitingCount: 0
@@ -206,7 +203,7 @@ Item {
         if (root.flyout === "") return
         win.hotId = -1
         win.hotBtn = null
-        if (start.open) start.toggle()
+        if (root.flyout === "start") sm.reset()
         if (root.dock && typeof root.dock.hide === "function") root.dock.hide()
         var menu = riceSlot._item
         if (menu && menu.open) menu.open = false
@@ -216,10 +213,6 @@ Item {
         if (!win.screen) return
         Kit.hub.open = Kit.hub.open || {}
         Kit.hub.open[win.screen.name] = root.flyoutOpen
-    }
-    Connections {
-        target: start
-        function onOpenChanged() { if (start.open) root.flyout = "" }
     }
     Connections {
         target: root.dock
@@ -618,36 +611,50 @@ Item {
         id: ar
         property var entry: null
         property string label: entry ? entry.name : ""
+        property string sub: ""
+        property bool sel: false
         signal activated()
-        width: parent ? parent.width : 220
-        height: 26
+        width: parent ? parent.width : 266
+        height: 36
         Rectangle {
             anchors.fill: parent
             radius: 2
-            color: arMa.containsMouse ? Qt.rgba(37 / 255, 187 / 255, 207 / 255, 0.22) : "transparent"
+            color: ar.sel ? Kit.accent(0.22) : (arMa.containsMouse ? Kit.accent(0.10) : "transparent")
             border.width: 1
-            border.color: arMa.containsMouse ? Kit.dark(0.55) : "transparent"
+            border.color: ar.sel ? Kit.dark(0.55) : "transparent"
         }
         Icon {
-            x: 6; y: 3; width: 20; height: 20
+            x: 9; y: 2; width: 32; height: 32
             src: ar.entry ? (Quickshell.iconPath(ar.entry.icon, true) || Quickshell.iconPath("application-x-executable", true)) : ""
         }
-        Text {
-            x: 34
-            width: parent.width - 34 - 24
+        Column {
+            x: 51
+            width: parent.width - 51 - 28
             anchors.verticalCenter: parent.verticalCenter
-            text: ar.label
-            elide: Text.ElideRight
-            color: Kit.ink
-            font: Kit.bodyFont(12)
-            textFormat: Text.PlainText
+            Text {
+                width: parent.width
+                text: ar.label
+                elide: Text.ElideRight
+                color: Kit.ink
+                font: Kit.bodyFont(12)
+                textFormat: Text.PlainText
+            }
+            Text {
+                visible: ar.sub !== ""
+                width: parent.width
+                text: ar.sub
+                elide: Text.ElideRight
+                color: Kit.dark(0.72)
+                font: Kit.bodyFont(11)
+                textFormat: Text.PlainText
+            }
         }
         Text {
-            anchors { right: parent.right; rightMargin: 8; verticalCenter: parent.verticalCenter }
-            text: "▶"
-            opacity: 0.5
+            anchors { right: parent.right; rightMargin: 9; verticalCenter: parent.verticalCenter }
+            text: "\u25B6"
+            opacity: 0.55
             color: Kit.ink
-            font: Kit.bodyFont(9)
+            font: Kit.bodyFont(10)
             textFormat: Text.PlainText
         }
         MouseArea {
@@ -662,30 +669,39 @@ Item {
     component PaneRow: Item {
         id: pr
         property string label: ""
-        property real rh: 22
+        property real rh: 30
+        property bool plate: false
         signal activated()
-        width: parent ? parent.width : 136
+        width: parent ? parent.width : 132
         height: rh
         Rectangle {
             anchors.fill: parent
             radius: 2
-            color: prMa.containsMouse ? Kit.white(0.12) : "transparent"
+            color: prMa.containsMouse ? (pr.plate ? Kit.accent(0.10) : Kit.white(0.12)) : "transparent"
             border.width: 1
-            border.color: prMa.containsMouse ? Kit.white(0.40) : "transparent"
+            border.color: prMa.containsMouse && !pr.plate ? Kit.white(0.40) : "transparent"
         }
         Text {
-            x: 8
+            visible: pr.plate
+            x: 9
             anchors.verticalCenter: parent.verticalCenter
             text: pr.label
-            color: "#ffffff"
+            color: pr.enabled ? Kit.ink : Kit.dark(0.40)
             font: Kit.bodyFont(12)
             textFormat: Text.PlainText
+        }
+        ShadowText {
+            visible: !pr.plate
+            x: 13
+            anchors.verticalCenter: parent.verticalCenter
+            text: pr.label
+            font: Kit.bodyFont(12)
         }
         MouseArea {
             id: prMa
             anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
+            hoverEnabled: pr.enabled
+            cursorShape: pr.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: pr.activated()
         }
     }
@@ -733,11 +749,12 @@ Item {
         required property Item cell
         property bool gate: true
         property bool flushRight: false
+        property bool flushLeft: false
         visible: root.flyout === fy.name && fy.gate
         color: "transparent"
         anchor.item: fy.cell
-        anchor.edges: fy.flushRight ? Edges.Top | Edges.Right : Edges.Top
-        anchor.gravity: fy.flushRight ? Edges.Top | Edges.Left : Edges.Top
+        anchor.edges: fy.flushRight ? Edges.Top | Edges.Right : fy.flushLeft ? Edges.Top | Edges.Left : Edges.Top
+        anchor.gravity: fy.flushRight ? Edges.Top | Edges.Left : fy.flushLeft ? Edges.Top | Edges.Right : Edges.Top
         anchor.adjustment: PopupAdjustment.Slide
         grabFocus: true
         onVisibleChanged: {
@@ -888,7 +905,7 @@ Item {
         Item {
             id: orb
             x: 0; y: 0; width: Kit.orbWidth; height: Kit.barHeight
-            MouseArea { anchors.fill: parent; z: 1; cursorShape: Qt.PointingHandCursor; onClicked: start.toggle() }
+            MouseArea { anchors.fill: parent; z: 1; cursorShape: Qt.PointingHandCursor; onClicked: root.toggleFlyout("start") }
             Item {
                 id: orbArt
                 x: 7; y: 0; width: 40; height: 40
@@ -947,10 +964,11 @@ Item {
                 }
             }
             MultiEffect {
-                x: 7; y: 0; width: 40; height: 40
+                x: 7; y: root.flyout === "start" ? 1 : 0; width: 40; height: 40
                 source: orbArt
+                brightness: root.flyout === "start" ? -0.14 : 0
                 shadowEnabled: true
-                shadowColor: Kit.withA(Kit.cyan, 0.45)
+                shadowColor: Kit.withA(Kit.cyan, root.flyout === "start" ? 0.75 : 0.45)
                 shadowBlur: 0.5
                 shadowOpacity: 1
                 autoPaddingEnabled: true
@@ -1558,253 +1576,131 @@ Item {
             }
         }
 
-        WidgetSlot {
-            id: riceSlot
-            livery: root.livery
-            bridge: root.bridge
-            stagingEngine: root.stagingEngine
-            slot: "ricemode"
-            anchors.right: more.left
-            anchors.rightMargin: 6
-            anchors.verticalCenter: parent.verticalCenter
-        }
-    }
+        Flyout {
+            id: startFly
+            name: "start"
+            cell: orb
+            flushLeft: true
+            grabFocus: false
+            readonly property int rise: 24
+            implicitWidth: 440
+            implicitHeight: startFly.rise + 560
 
-    PanelWindow {
-        id: start
-        screen: win.screen
-        anchors { top: true; bottom: true; left: true; right: true }
-        exclusionMode: ExclusionMode.Normal
-        color: "transparent"
-        WlrLayershell.layer: WlrLayer.Overlay
-        WlrLayershell.namespace: "aoide-start"
-        WlrLayershell.keyboardFocus: start.open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
-        visible: start.open || gs.g3o > 0
-
-        property bool open: false
-        property bool allMode: false
-        property bool powerOpen: false
-        property real t: 0
-        property var tracks: []
-        property var from: ({})
-        readonly property var names: ["g3o", "g3s", "lo", "bo", "bx", "so", "sy", "br", "no", "co"]
-        readonly property var openTracks: [
-            ["g3o", 0, 0, 60, 1, "lin"], ["g3s", 0, 0.12, 170, 1.04, "outCubic"], ["g3s", 170, 1.04, 230, 1, "inOutQuad"],
-            ["lo", 180, 0, 180, 1, "step"], ["lo", 205, 1, 205, 0.25, "step"], ["lo", 230, 0.25, 230, 1, "step"],
-            ["bo", 200, 0, 230, 1, "outQuad"], ["bx", 200, 0.1, 250, 1, "outCubic"],
-            ["so", 250, 0, 250, 1, "step"], ["no", 250, 0, 250, 1, "step"], ["sy", 250, 0.02, 330, 1, "outCubic"],
-            ["bo", 250, 1, 300, 0, "lin"],
-            ["br", 250, 0.6, 330, 0.25, "lin"], ["br", 330, 0.25, 460, 0, "outQuad"],
-            ["no", 340, 1, 420, 0, "lin"], ["co", 340, 0, 440, 1, "outQuad"]]
-        readonly property var closeTracks: [
-            ["co", 0, 1, 70, 0, "inQuad"],
-            ["br", 40, 0, 80, 0.5, "lin"], ["sy", 60, 1, 140, 0.02, "inCubic"],
-            ["so", 140, 1, 140, 0, "step"], ["bo", 140, 0, 140, 1, "step"], ["bx", 140, 1, 190, 0.03, "inCubic"],
-            ["bo", 190, 1, 230, 0, "lin"], ["lo", 190, 1, 190, 0, "step"],
-            ["g3s", 200, 1, 320, 0.12, "inCubic"], ["g3o", 260, 1, 320, 0, "lin"]]
-
-        QtObject {
-            id: gs
-            property real g3o: 0
-            property real g3s: 0.12
-            property real lo: 0
-            property real bo: 0
-            property real bx: 0.1
-            property real so: 0
-            property real sy: 0.02
-            property real br: 0
-            property real no: 0
-            property real co: 0
-        }
-
-        function ease(n, k) {
-            switch (n) {
-            case "step": return 1
-            case "outCubic": return 1 - Math.pow(1 - k, 3)
-            case "inCubic": return k * k * k
-            case "outQuad": return 1 - (1 - k) * (1 - k)
-            case "inQuad": return k * k
-            case "inOutQuad": return k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2
-            default: return k
-            }
-        }
-        function apply() {
-            var o = {}
-            for (var n = 0; n < names.length; n++) o[names[n]] = from[names[n]]
-            for (var i = 0; i < tracks.length; i++) {
-                var q = tracks[i]
-                if (t < q[1]) continue
-                var k = q[3] > q[1] ? Math.min(1, (t - q[1]) / (q[3] - q[1])) : 1
-                o[q[0]] = q[2] + (q[4] - q[2]) * ease(q[5], k)
-            }
-            for (var m = 0; m < names.length; m++) gs[names[m]] = o[names[m]]
-        }
-        onTChanged: apply()
-
-        function toggle() {
-            g3clock.stop()
-            var f = {}
-            for (var n = 0; n < names.length; n++) f[names[n]] = gs[names[n]]
-            from = f
-            open = !open
-            var src = open ? openTracks : closeTracks
-            var seen = {}, tr = []
-            for (var i = 0; i < src.length; i++) {
-                var q = src[i].slice()
-                if (!seen[q[0]]) {
-                    seen[q[0]] = true
-                    if (q[5] !== "step" && !(open && q[0] === "br")) q[2] = f[q[0]]
+            HyprlandFocusGrab {
+                windows: [startFly]
+                active: startFly.visible
+                onCleared: {
+                    root.flyoutGone = "start"
+                    root.flyoutGoneAt = Date.now()
+                    root.flyout = ""
                 }
-                tr.push(q)
-            }
-            tracks = tr
-            var total = open ? 460 : 320
-            g3clock.to = total
-            g3clock.duration = total
-            t = 0
-            apply()
-            if (open) {
-                searchField.text = ""
-                allMode = false
-                powerOpen = false
-                Qt.callLater(function () { searchField.forceActiveFocus() })
-            }
-            g3clock.start()
-        }
-
-        readonly property var pins: {
-            root.tick
-            var defs = [["kitty", "Terminal"], ["zen", "Zen"], null, ["codium", "VSCodium"], ["md.obsidian.Obsidian", "Obsidian"],
-                        ["vesktop", "Vesktop"], ["thunar", "Files"], ["com.github.th-ch.youtube-music", "Pear Desktop"]]
-            var out = []
-            for (var i = 0; i < defs.length; i++) {
-                if (defs[i] === null) { out.push({ rule: true }); continue }
-                var e = DesktopEntries.byId(defs[i][0]) || DesktopEntries.heuristicLookup(defs[i][0])
-                if (e) out.push({ rule: false, entry: e, label: defs[i][1] })
-            }
-            return out
-        }
-        readonly property var settingsEntry: { root.tick; return start.entryById("thunar-settings") }
-        function entryById(id) { return DesktopEntries.byId(id) || DesktopEntries.heuristicLookup(id) }
-        function listFor(q) {
-            root.tick
-            var all = DesktopEntries.applications.values, out = [], needle = ("" + q).toLowerCase().trim()
-            for (var i = 0; i < all.length; i++) {
-                var e = all[i]
-                if (e.noDisplay) continue
-                if (needle && (("" + e.name).toLowerCase().indexOf(needle) < 0 && ("" + e.genericName).toLowerCase().indexOf(needle) < 0)) continue
-                out.push(e)
-            }
-            out.sort(function (a, b) {
-                if (needle) {
-                    var pa = ("" + a.name).toLowerCase().indexOf(needle) === 0 ? 0 : 1
-                    var pb = ("" + b.name).toLowerCase().indexOf(needle) === 0 ? 0 : 1
-                    if (pa !== pb) return pa - pb
-                }
-                return ("" + a.name).toLowerCase() < ("" + b.name).toLowerCase() ? -1 : 1
-            })
-            return out
-        }
-        function launch(e) { if (e) { e.execute(); start.toggle() } }
-        function openDir(sub) {
-            var h = Quickshell.env("HOME")
-            Quickshell.execDetached(["xdg-open", sub ? h + "/" + sub : h])
-            start.toggle()
-        }
-        function power(cmd) { Quickshell.execDetached(cmd); start.toggle() }
-
-        NumberAnimation { id: g3clock; target: start; property: "t"; from: 0; to: 460; duration: 460 }
-
-        Component.onCompleted: {
-            if (root.rigStart) {
-                start.open = true
-                gs.g3o = 1; gs.g3s = 1; gs.lo = 1; gs.bo = 0; gs.bx = 1
-                gs.so = 1; gs.sy = 1; gs.br = 0; gs.no = 0; gs.co = 1
-            }
-        }
-
-        FileView {
-            path: win.screen && win.screen.name === "DP-1" ? root.aoideRoot + "/state/start-toggle" : ""
-            watchChanges: true
-            printErrors: false
-            blockLoading: false
-            onFileChanged: { reload(); start.toggle() }
-        }
-
-        Shortcut { sequence: "Escape"; enabled: start.open; onActivated: start.toggle() }
-
-        MouseArea { anchors.fill: parent; onClicked: start.toggle() }
-
-        Item {
-            id: g3box
-            x: 6
-            y: start.height - 480
-            width: 760
-            height: 480
-            opacity: gs.g3o
-            transform: Scale { origin.x: 21; origin.y: 500; xScale: gs.g3s; yScale: gs.g3s }
-            MouseArea { anchors.fill: parent }
-
-            Image { source: root.g3Dir + "g3-body.svg"; sourceSize: Qt.size(760, 480) }
-
-            Image { id: g3scr; visible: false; source: root.g3Dir + "g3-screen.svg"; sourceSize: Qt.size(760, 480) }
-            MultiEffect {
-                source: g3scr
-                width: 760; height: 480
-                opacity: gs.so
-                brightness: gs.br
-                transform: Scale { origin.x: 252; origin.y: 214; yScale: gs.sy }
-            }
-            Image { id: g3note; visible: false; source: root.g3Dir + "g3-note.svg"; sourceSize: Qt.size(760, 480) }
-            MultiEffect {
-                source: g3note
-                width: 760; height: 480
-                opacity: gs.no * gs.so
-                brightness: gs.br
-                transform: Scale { origin.x: 252; origin.y: 214; yScale: gs.sy }
             }
 
-            Item {
-                x: 62; y: 72; width: 380; height: 284
-                opacity: gs.co
-                enabled: gs.co > 0.5
+            Rim {
+                y: startFly.rise
+                width: 440
+                height: 560
+                topLeftRadius: 6
+                topRightRadius: 6
+                bottomLeftRadius: 0
+                bottomRightRadius: 0
 
                 Item {
-                    id: g3content
-                    anchors.fill: parent
-                    layer.enabled: true
-                    opacity: 0.01
+                    id: sm
+                    x: 1; y: 1; width: 438; height: 558
 
-                    Rectangle {
-                        id: plateBox
-                        x: 0; y: 0; width: 228; height: 250
-                        radius: 4
-                        color: Kit.withA((root.livery && root.livery.notif && root.livery.notif.bg) ? root.livery.notif.bg : "#f5fbfb", 0.93)
-                        border.width: 1
-                        border.color: Kit.dark(0.55)
+                    property bool allMode: false
+                    property bool powerOpen: false
+
+                    readonly property var pins: {
+                        root.tick
+                        if (!startFly.visible) return []
+                        var defs = [["kitty", "Terminal", "kitty"], ["zen", "Zen", ""], null, ["codium", "VSCodium", ""],
+                                    ["md.obsidian.Obsidian", "Obsidian", ""], ["vesktop", "Vesktop", ""], ["thunar", "Files", ""],
+                                    ["com.github.th-ch.youtube-music", "Pear Desktop", ""], ["org.pulseaudio.pavucontrol", "Volume Control", ""],
+                                    ["thunar-settings", "Settings", ""]]
+                        var out = []
+                        for (var i = 0; i < defs.length; i++) {
+                            if (defs[i] === null) { out.push({ rule: true }); continue }
+                            var e = sm.entryById(defs[i][0])
+                            if (e) out.push({ rule: false, entry: e, label: defs[i][1], sub: defs[i][2] })
+                        }
+                        return out
+                    }
+                    readonly property var settingsEntry: { root.tick; return startFly.visible ? sm.entryById("thunar-settings") : null }
+                    readonly property var results: startFly.visible ? sm.listFor(searchField.text) : []
+
+                    function entryById(id) { return DesktopEntries.byId(id) || DesktopEntries.heuristicLookup(id) }
+                    function listFor(q) {
+                        root.tick
+                        var all = DesktopEntries.applications.values, out = [], needle = ("" + q).toLowerCase().trim()
+                        for (var i = 0; i < all.length; i++) {
+                            var e = all[i]
+                            if (e.noDisplay) continue
+                            if (needle && (("" + e.name).toLowerCase().indexOf(needle) < 0 && ("" + e.genericName).toLowerCase().indexOf(needle) < 0)) continue
+                            out.push(e)
+                        }
+                        out.sort(function (a, b) {
+                            if (needle) {
+                                var pa = ("" + a.name).toLowerCase().indexOf(needle) === 0 ? 0 : 1
+                                var pb = ("" + b.name).toLowerCase().indexOf(needle) === 0 ? 0 : 1
+                                if (pa !== pb) return pa - pb
+                            }
+                            return ("" + a.name).toLowerCase() < ("" + b.name).toLowerCase() ? -1 : 1
+                        })
+                        return out
+                    }
+                    function reset() {
+                        searchField.text = ""
+                        sm.allMode = false
+                        sm.powerOpen = false
+                        Qt.callLater(function () { searchField.forceActiveFocus() })
+                    }
+                    function launch(e) {
+                        if (!e || !e.command || e.command.length === 0) return
+                        Quickshell.execDetached(Kit.scopeArgv(e))
+                        root.flyout = ""
+                    }
+                    function openDir(sub) {
+                        var h = Quickshell.env("HOME")
+                        Quickshell.execDetached(["xdg-open", sub ? h + "/" + sub : h])
+                        root.flyout = ""
+                    }
+                    function power(action) {
+                        root.bridge.sendCommand({ cmd: "power", action: action })
+                        root.flyout = ""
+                    }
+                    function shutdownDialog() {
+                        root.flyout = ""
+                        if (root.powermenu) root.powermenu.show()
+                    }
+
+                    Plate {
+                        x: 8; y: 8; width: 276; height: 504
 
                         Column {
-                            x: 4; y: 4; width: 220
-                            visible: !start.allMode && searchField.text === ""
+                            x: 5; y: 7; width: 266
+                            visible: !sm.allMode && searchField.text === ""
                             Repeater {
-                                model: start.pins
+                                model: sm.pins
                                 Loader {
                                     required property var modelData
-                                    width: 220
-                                    height: modelData.rule ? 9 : 26
+                                    width: 266
+                                    height: modelData.rule ? 11 : 36
                                     sourceComponent: modelData.rule ? ruleC : rowC
                                     Component {
                                         id: rowC
                                         AppRow {
                                             entry: modelData.entry
                                             label: modelData.label
-                                            onActivated: start.launch(modelData.entry)
+                                            sub: modelData.sub
+                                            onActivated: sm.launch(modelData.entry)
                                         }
                                     }
                                     Component {
                                         id: ruleC
                                         Item {
-                                            Rectangle { x: 6; y: 4; width: 208; height: 1; color: Kit.dark(0.20) }
+                                            Rectangle { x: 8; y: 5; width: 250; height: 1; color: Kit.dark(0.20) }
                                         }
                                     }
                                 }
@@ -1813,20 +1709,22 @@ Item {
 
                         ListView {
                             id: appList
-                            x: 4; y: 4; width: 220; height: 212
-                            visible: start.allMode || searchField.text !== ""
+                            x: 5; y: 7; width: 266; height: 458
+                            visible: sm.allMode || searchField.text !== ""
                             clip: true
                             boundsBehavior: Flickable.StopAtBounds
-                            model: start.listFor(searchField.text)
+                            model: sm.results
                             delegate: AppRow {
                                 required property var modelData
+                                required property int index
                                 width: ListView.view.width
                                 entry: modelData
-                                onActivated: start.launch(modelData)
+                                sel: searchField.text !== "" && index === 0
+                                onActivated: sm.launch(modelData)
                             }
                             Text {
                                 visible: appList.count === 0
-                                x: 8; y: 6
+                                x: 9; y: 8
                                 text: "No programs"
                                 color: Kit.dark(0.55)
                                 font: Kit.bodyFont(12)
@@ -1835,26 +1733,26 @@ Item {
                         }
 
                         Item {
-                            x: 4; y: 220; width: 220; height: 26
+                            x: 5; y: 467; width: 266; height: 30
                             Rectangle {
                                 anchors.fill: parent
                                 radius: 2
-                                color: allMa.containsMouse ? Qt.rgba(37 / 255, 187 / 255, 207 / 255, 0.22) : "transparent"
+                                color: allMa.containsMouse ? Kit.accent(0.10) : "transparent"
                                 border.width: 1
-                                border.color: allMa.containsMouse ? Kit.dark(0.55) : "transparent"
+                                border.color: "transparent"
                             }
                             Text {
-                                x: 6
+                                x: 9
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: start.allMode ? "◂ Back" : "All Programs"
+                                text: sm.allMode ? "\u25C2 Back" : "All Programs"
                                 color: Kit.ink
-                                font: Kit.heavyFont(12)
+                                font: Kit.boldFont(12)
                                 textFormat: Text.PlainText
                             }
                             Text {
-                                visible: !start.allMode
-                                anchors { right: parent.right; rightMargin: 8; verticalCenter: parent.verticalCenter }
-                                text: "▸"
+                                visible: !sm.allMode
+                                anchors { right: parent.right; rightMargin: 9; verticalCenter: parent.verticalCenter }
+                                text: "\u25B8"
                                 color: Kit.ink
                                 font: Kit.bodyFont(12)
                                 textFormat: Text.PlainText
@@ -1864,29 +1762,37 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: { searchField.text = ""; start.allMode = !start.allMode }
+                                onClicked: { searchField.text = ""; sm.allMode = !sm.allMode }
                             }
                         }
                     }
 
                     Rectangle {
-                        x: 0; y: 256; width: 228; height: 28
+                        x: 8; y: 520; width: 276; height: 32
                         radius: 2
                         color: "#ffffff"
                         border.width: 1
                         border.color: Kit.dark(0.55)
+                        Rectangle {
+                            x: 1; y: 1; width: parent.width - 2; height: 3
+                            gradient: Gradient {
+                                GradientStop { position: 0; color: Kit.dark(0.12) }
+                                GradientStop { position: 1; color: Kit.dark(0) }
+                            }
+                        }
                         TextInput {
                             id: searchField
-                            x: 8
-                            width: parent.width - 8 - 30
+                            x: 11
+                            width: parent.width - 11 - 34
                             anchors.verticalCenter: parent.verticalCenter
                             color: Kit.ink
                             font: Kit.bodyFont(12)
                             clip: true
                             selectByMouse: true
-                            onTextChanged: if (text !== "") start.allMode = false
-                            Keys.onReturnPressed: start.launch(start.listFor(text)[0])
-                            Keys.onEnterPressed: start.launch(start.listFor(text)[0])
+                            onTextChanged: if (text !== "") sm.allMode = false
+                            Keys.onReturnPressed: if (text !== "") sm.launch(sm.results[0])
+                            Keys.onEnterPressed: if (text !== "") sm.launch(sm.results[0])
+                            Keys.onEscapePressed: root.flyout = ""
                             Text {
                                 visible: searchField.text === ""
                                 anchors.verticalCenter: parent.verticalCenter
@@ -1898,79 +1804,124 @@ Item {
                                 textFormat: Text.PlainText
                             }
                         }
-                        Svg { x: 208; y: 7; d: Kit.ell(6.5, 6.5, 4.5, 4.5, 0); stroke: Kit.dark(0.72); sw: 1.6 }
-                        Svg { x: 208; y: 7; d: "M10 10 l4.5 4.5"; stroke: Kit.dark(0.72); sw: 2; cap: ShapePath.RoundCap }
+                        Svg { x: 251; y: 8; d: Kit.ell(6.5, 6.5, 4.5, 4.5, 0); stroke: Kit.dark(0.72); sw: 1.6 }
+                        Svg { x: 251; y: 8; d: "M10 10 l4.5 4.5"; stroke: Kit.dark(0.72); sw: 2; cap: ShapePath.RoundCap }
                     }
 
                     Rectangle {
-                        x: 236; y: 0; width: 144; height: 250
-                        radius: 4
-                        color: Kit.dark(0.70)
-                        border.width: 1
-                        border.color: Kit.dark(0.85)
-                        Rectangle {
-                            x: 1; y: 1; width: parent.width - 2; height: parent.height / 2 - 1
-                            radius: 3
-                            gradient: Gradient {
-                                GradientStop { position: 0; color: Kit.white(0.14) }
-                                GradientStop { position: 1; color: Kit.white(0.04) }
-                            }
+                        x: 292; y: 8; width: 140; height: 504
+                        radius: 2
+                        color: Kit.dark(0.80)
+                        ShadowText {
+                            y: 40
+                            width: 140
+                            horizontalAlignment: Text.AlignHCenter
+                            text: Quickshell.env("USER")
+                            font: Kit.boldFont(13)
                         }
-                        Item {
-                            x: 6; y: 8; width: 132; height: 30
-                            Item {
-                                x: 4; y: 2
-                                scale: 0.5
-                                transformOrigin: Item.TopLeft
-                                Svg { d: Kit.ell(22, 15, 9, 9, 0); fill: "#a99cf6" }
-                                Svg { d: "M6 42 c0 -11 7 -17 16 -17 s16 6 16 17 z"; fill: "#25bbcf" }
-                            }
-                            Text {
-                                x: 34
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: Quickshell.env("USER")
-                                color: "#ffffff"
-                                font: Kit.heavyFont(13)
-                                textFormat: Text.PlainText
-                            }
-                        }
-                        Rectangle { x: 6; y: 40; width: 132; height: 1; color: Kit.white(0.18) }
                         Column {
-                            x: 4; y: 46; width: 136
-                            PaneRow { label: "Home"; onActivated: start.openDir("") }
-                            PaneRow { label: "Documents"; onActivated: start.openDir("Documents") }
-                            PaneRow { label: "Pictures"; onActivated: start.openDir("Pictures") }
-                            PaneRow { label: "Music"; onActivated: start.openDir("Music") }
-                            PaneRow { label: "Downloads"; onActivated: start.openDir("Downloads") }
-                            Item { width: 136; height: 9; Rectangle { x: 4; y: 4; width: 128; height: 1; color: Kit.white(0.18) } }
-                            PaneRow { label: "Terminal"; onActivated: start.launch(start.entryById("kitty")) }
+                            x: 4; y: 70; width: 132
+                            PaneRow { label: "Home"; onActivated: sm.openDir("") }
+                            PaneRow { label: "Documents"; onActivated: sm.openDir("Documents") }
+                            PaneRow { label: "Pictures"; onActivated: sm.openDir("Pictures") }
+                            PaneRow { label: "Music"; onActivated: sm.openDir("Music") }
+                            PaneRow { label: "Downloads"; onActivated: sm.openDir("Downloads") }
+                            Item { width: 132; height: 13; Rectangle { x: 8; y: 6; width: 116; height: 1; color: Kit.white(0.18) } }
+                            PaneRow { label: "Terminal"; onActivated: sm.launch(sm.entryById("kitty")) }
                             PaneRow {
-                                visible: start.settingsEntry !== null
+                                visible: sm.settingsEntry !== null
                                 height: visible ? rh : 0
                                 label: "Settings"
-                                onActivated: start.launch(start.settingsEntry)
+                                onActivated: sm.launch(sm.settingsEntry)
                             }
                         }
                     }
 
-                    Rectangle {
-                        x: 236; y: 256; width: 144; height: 28
-                        radius: 3
-                        color: "transparent"
-                        border.width: 1
-                        border.color: Kit.dark(0.85)
-                        clip: true
+                    Item {
+                        x: 330; y: -24; width: 64; height: 64
+                        Rectangle { x: 0; y: 2; width: 64; height: 64; radius: 4; color: Kit.withA("#000000", 0.20) }
+                        Rectangle { x: -1; y: -1; width: 66; height: 66; radius: 5; color: "transparent"; border.width: 1; border.color: Kit.dark(0.85) }
                         Rectangle {
-                            x: 0; y: 0; width: 116; height: 28
-                            color: lockMa.containsMouse ? Kit.dark(0.62) : Kit.dark(0.80)
+                            anchors.fill: parent
+                            radius: 4
+                            border.width: 1
+                            border.color: Kit.white(0.60)
+                            gradient: Gradient {
+                                GradientStop { position: 0; color: Kit.white(0.55) }
+                                GradientStop { position: 0.45; color: Kit.white(0.12) }
+                                GradientStop { position: 1; color: Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.45) }
+                            }
+                        }
+                        Rectangle {
+                            x: 4; y: 4; width: 56; height: 56
+                            radius: 2
+                            gradient: Gradient {
+                                GradientStop { position: 0; color: "#0f5b78" }
+                                GradientStop { position: 1; color: "#0a2c3e" }
+                            }
+                        }
+                        Shape {
+                            x: 10; y: 10; width: 44; height: 44
+                            preferredRendererType: Shape.CurveRenderer
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillGradient: LinearGradient {
+                                    x1: 0; y1: 6; x2: 0; y2: 24
+                                    GradientStop { position: 0; color: "#25bbcf" }
+                                    GradientStop { position: 1; color: "#a99cf6" }
+                                }
+                                PathSvg { path: Kit.ell(22, 15, 9, 9, 0) }
+                            }
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillGradient: LinearGradient {
+                                    x1: 0; y1: 25; x2: 0; y2: 42
+                                    GradientStop { position: 0; color: "#25bbcf" }
+                                    GradientStop { position: 1; color: "#a99cf6" }
+                                }
+                                PathSvg { path: "M6 42c0-11 7-17 16-17s16 6 16 17z" }
+                            }
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillColor: Kit.white(0.5)
+                                PathSvg { path: Kit.ell(20, 11, 6, 3.5, 0) }
+                            }
+                        }
+                    }
+
+                    Plate {
+                        visible: sm.powerOpen
+                        x: 296; y: 514 - height; width: 132
+                        height: powCol.height + 10
+                        Column {
+                            id: powCol
+                            x: 1; y: 5; width: 130
+                            PaneRow { plate: true; rh: 26; label: "Switch user"; enabled: false }
+                            PaneRow { plate: true; rh: 26; label: "Log off"; onActivated: sm.power("logout") }
+                            PaneRow { plate: true; rh: 26; label: "Sleep"; onActivated: sm.power("suspend") }
+                            PaneRow { plate: true; rh: 26; label: "Hibernate"; onActivated: sm.power("hibernate") }
+                            PaneRow { plate: true; rh: 26; label: "Restart"; onActivated: sm.power("reboot") }
+                            PaneRow { plate: true; rh: 26; label: "Shut down…"; onActivated: sm.shutdownDialog() }
+                        }
+                    }
+
+                    Item {
+                        x: 296; y: 520; width: 132; height: 32
+                        Rectangle { x: -1; y: -1; width: 134; height: 34; radius: 4; color: "transparent"; border.width: 1; border.color: Kit.dark(0.85) }
+                        Rectangle {
+                            x: 0; y: 0; width: 100; height: 32
+                            topLeftRadius: 3; bottomLeftRadius: 3
+                            color: lockMa.containsMouse ? Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.55) : Kit.dark(0.80)
                             Rectangle {
                                 anchors { left: parent.left; right: parent.right; top: parent.top }
-                                height: 14
+                                height: 16
+                                topLeftRadius: 3
                                 gradient: Gradient {
                                     GradientStop { position: 0; color: Kit.white(0.22) }
                                     GradientStop { position: 1; color: Kit.white(0.06) }
                                 }
                             }
+                            Rectangle { x: 99; y: 0; width: 1; height: 32; color: Kit.dark(0.85) }
                             Row {
                                 anchors.centerIn: parent
                                 spacing: 6
@@ -1980,12 +1931,10 @@ Item {
                                     Svg { d: "M1.5 6 h9 a0.5 0.5 0 0 1 0.5 0.5 V12 a1.5 1.5 0 0 1 -1.5 1.5 h-7 a1.5 1.5 0 0 1 -1.5 -1.5 V6.5 a0.5 0.5 0 0 1 0.5 -0.5 z"; fill: "#ffffff" }
                                     Svg { d: "M3 6 V4 a3 3 0 0 1 6 0 v2"; stroke: "#ffffff"; sw: 1.6 }
                                 }
-                                Text {
+                                ShadowText {
                                     anchors.verticalCenter: parent.verticalCenter
                                     text: "Lock"
-                                    color: "#ffffff"
                                     font: Kit.bodyFont(12)
-                                    textFormat: Text.PlainText
                                 }
                             }
                             MouseArea {
@@ -1993,74 +1942,46 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: start.power(["loginctl", "lock-session"])
+                                onClicked: sm.power("lock")
                             }
                         }
-                        Rectangle { x: 116; y: 0; width: 1; height: 28; color: Kit.dark(0.85) }
                         Rectangle {
-                            x: 117; y: 0; width: 27; height: 28
-                            color: moreMa.containsMouse || start.powerOpen ? Kit.dark(0.62) : Kit.dark(0.80)
+                            x: 100; y: 0; width: 32; height: 32
+                            topRightRadius: 3; bottomRightRadius: 3
+                            color: moreMa.containsMouse || sm.powerOpen ? Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.55) : Kit.dark(0.80)
                             Rectangle {
                                 anchors { left: parent.left; right: parent.right; top: parent.top }
-                                height: 14
+                                height: 16
+                                topRightRadius: 3
                                 gradient: Gradient {
                                     GradientStop { position: 0; color: Kit.white(0.22) }
                                     GradientStop { position: 1; color: Kit.white(0.06) }
                                 }
                             }
-                            Svg { x: 10; y: 9; d: "M1 1 l5 4 -5 4 z"; fill: "#ffffff" }
+                            Svg { x: 12; y: 11; d: "M1 1l5 4-5 4z"; fill: "#ffffff" }
                             MouseArea {
                                 id: moreMa
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: start.powerOpen = !start.powerOpen
+                                onClicked: sm.powerOpen = !sm.powerOpen
                             }
                         }
+                        Rectangle { anchors.fill: parent; radius: 3; color: "transparent"; border.width: 1; border.color: Kit.white(0.35) }
                     }
-
-                    Rectangle {
-                        visible: start.powerOpen
-                        x: 236; y: 256 - 4 - powerCol.height - 4; width: 144
-                        height: powerCol.height + 8
-                        radius: 4
-                        color: Kit.dark(0.92)
-                        border.width: 1
-                        border.color: Kit.dark(0.85)
-                        Column {
-                            id: powerCol
-                            x: 4; y: 4; width: 136
-                            PaneRow { rh: 24; label: "Log off"; onActivated: start.power(["hyprctl", "dispatch", "exit"]) }
-                            PaneRow { rh: 24; label: "Sleep"; onActivated: start.power(["systemctl", "suspend"]) }
-                            PaneRow { rh: 24; label: "Hibernate"; onActivated: start.power(["systemctl", "hibernate"]) }
-                            PaneRow { rh: 24; label: "Restart"; onActivated: start.power(["systemctl", "reboot"]) }
-                            PaneRow { rh: 24; label: "Shut down"; onActivated: start.power(["systemctl", "poweroff"]) }
-                        }
-                    }
-
-                    Repeater {
-                        model: 95
-                        Rectangle {
-                            required property int index
-                            y: index * 3
-                            width: 380
-                            height: 1
-                            color: Qt.rgba(2 / 255, 18 / 255, 25 / 255, 0.06)
-                        }
-                    }
-                }
-                Rectangle { id: g3mask; anchors.fill: parent; radius: 10; layer.enabled: true; visible: false }
-                MultiEffect {
-                    anchors.fill: parent
-                    source: g3content
-                    maskEnabled: true
-                    maskSource: g3mask
                 }
             }
+        }
 
-            Image { source: root.g3Dir + "g3-beam.svg"; sourceSize: Qt.size(760, 480); opacity: gs.bo; transform: Scale { origin.x: 252; origin.y: 214; xScale: gs.bx } }
-            Image { source: root.g3Dir + "g3-glare.svg"; sourceSize: Qt.size(760, 480) }
-            Image { source: root.g3Dir + "g3-led.svg"; sourceSize: Qt.size(760, 480); opacity: gs.lo }
+        WidgetSlot {
+            id: riceSlot
+            livery: root.livery
+            bridge: root.bridge
+            stagingEngine: root.stagingEngine
+            slot: "ricemode"
+            anchors.right: more.left
+            anchors.rightMargin: 6
+            anchors.verticalCenter: parent.verticalCenter
         }
     }
 }
