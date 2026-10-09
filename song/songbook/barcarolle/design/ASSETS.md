@@ -17,8 +17,9 @@
   contents; each matched its listed original more closely than any other.
 - `../icons/agents/{shell,agent}.svg` are original drawings made here for
   this song; no vendor logo is reproduced, traced or imitated.
-- `../icons/agents/kimi.svg` is drawn here after Moonshot AI's mark, from a
-  reference image the user supplied. The mark is Moonshot AI's trademark; it
+- `../icons/agents/kimi.svg` carries Moonshot AI's mark traced with potrace
+  from a reference image the user supplied (8× Lanczos upscale, threshold,
+  cropped to the mark). The mark is Moonshot AI's trademark; it
   is used on the user's own desktop by the user's ruling.
 - `../icons/agents/hermes.svg` is drawn here after Hermes Agent's CLI emblem
   (Nous Research), from a screenshot the user supplied; it is used on the
