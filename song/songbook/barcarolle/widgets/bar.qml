@@ -28,9 +28,15 @@ Item {
         target: Hyprland
         function onRawEvent(e) { settle.restart() }
     }
+    Connections {
+        target: DesktopEntries.applications
+        function onValuesChanged() { settle.restart() }
+    }
     Timer { id: settle; interval: 60; onTriggered: root.tick++ }
 
-    property var byWorkspace: ({})
+    readonly property int rigPeek: parseInt(Quickshell.env("AOIDE_RIG_PEEK") || "-1")
+
+    property var sessByAddr: ({})
     property int awaitingCount: 0
     property int workingCount: 0
 
@@ -59,23 +65,21 @@ Item {
         onLoaded: root.parseStage()
         onFileChanged: reload()
     }
+    function bare(addr) { return ("" + (addr || "")).toLowerCase().replace(/^0x/, "") }
+
     function parseStage() {
         var by = {}, aw = 0, wk = 0
         try {
             var o = JSON.parse(stage.text())
-            var s = (o && o.sessions) ? o.sessions : []
-            for (var i = 0; i < s.length; i++) {
-                var st = ("" + (s[i].state || "")).toLowerCase()
+            var l = (o && o.sessions) ? o.sessions : []
+            for (var i = 0; i < l.length; i++) {
+                var st = ("" + (l[i].state || "")).toLowerCase()
                 if (st === "awaiting") aw++
                 if (st === "working") wk++
-                var w = s[i].workspace
-                if (w === undefined || w === null) continue
-                var e = by[w] || (by[w] = { awaiting: 0, working: 0 })
-                if (st === "awaiting") e.awaiting++
-                if (st === "working") e.working++
+                if (l[i].windowAddress) by[root.bare(l[i].windowAddress)] = { state: st, tool: ("" + (l[i].tool || "")).split(":")[0].trim() }
             }
         } catch (err) {}
-        root.byWorkspace = by
+        root.sessByAddr = by
         root.awaitingCount = aw
         root.workingCount = wk
     }
@@ -95,41 +99,52 @@ Item {
         var wss = (Hyprland.workspaces && Hyprland.workspaces.values) ? Hyprland.workspaces.values : []
         var tops = (Hyprland.toplevels && Hyprland.toplevels.values) ? Hyprland.toplevels.values : []
         var front = Hyprland.activeToplevel ? Hyprland.activeToplevel.address : ""
-        var rows = [], drawers = []
+        var rows = [], drawers = [], lists = {}, exists = {}
         for (var i = 0; i < wss.length; i++) {
             var w = wss[i]
-            if (!w || !w.monitor || w.monitor.name !== screenName) continue
-            var counts = {}, order = [], lead = "", wins = 0
+            if (!w) continue
+            exists[w.id] = true
+            if (!w.monitor || w.monitor.name !== screenName) continue
+            var list = []
             for (var j = 0; j < tops.length; j++) {
                 var t = tops[j]
-                var tw = t.workspace ? t.workspace.id : -1
-                if (tw !== w.id) continue
+                if ((t.workspace ? t.workspace.id : -1) !== w.id) continue
                 var c = Kit.className(t)
-                wins++
-                if (!(c in counts)) { counts[c] = 0; order.push(c) }
-                counts[c]++
-                if (t.address === front) lead = c
+                var fh = t.lastIpcObject && t.lastIpcObject.focusHistoryID !== undefined ? t.lastIpcObject.focusHistoryID : 999
+                var se = root.sessByAddr[root.bare(t.address)]
+                list.push({
+                    address: t.address, cls: c, title: t.title || c, icon: root.iconFor(c),
+                    front: t.address === front, rank: t.address === front ? -1 : fh,
+                    state: se ? se.state : "", tool: se ? se.tool : ""
+                })
             }
-            order.sort(function (a, b) { return counts[b] - counts[a] })
-            if (lead) order.splice(order.indexOf(lead), 1), order.unshift(lead)
-            var ss = root.byWorkspace[w.id]
+            list.sort(function (a, b) { return a.rank - b.rank })
+            var aw = 0, wk = 0
+            for (var k = 0; k < list.length; k++) {
+                if (list[k].state === "awaiting") aw++
+                if (list[k].state === "working") wk++
+            }
+            lists[w.id] = list
             var m = {
                 id: w.id,
                 name: ("" + w.name).replace(/^special:/, ""),
                 ws: w,
-                wins: wins,
-                icons: order.map(root.iconFor),
+                wins: list.length,
+                icons: list.map(function (x) { return x.icon }),
                 active: w.active === true,
                 urgent: w.urgent === true,
-                awaiting: ss ? ss.awaiting : 0,
-                working: ss ? ss.working : 0
+                awaiting: aw,
+                working: wk,
+                ghost: false
             }
             if (w.id > 0) rows.push(m)
-            else if (wins > 0 || w.active) drawers.push(m)
+            else if (m.wins > 0 || w.active) drawers.push(m)
         }
+        for (var n = 1; n <= 8; n++)
+            if (!exists[n]) rows.push({ id: n, name: "" + n, ws: null, wins: 0, icons: [], active: false, urgent: false, awaiting: 0, working: 0, ghost: true })
         rows.sort(function (a, b) { return a.id - b.id })
         drawers.sort(function (a, b) { return a.name < b.name ? -1 : 1 })
-        return { rows: rows, drawers: drawers }
+        return { rows: rows, drawers: drawers, lists: lists }
     }
 
     function nextEmpty(rows) {
@@ -238,10 +253,14 @@ Item {
             anchors.fill: parent
             radius: width / 2
             color: dot.tone
-            gradient: Gradient {
-                GradientStop { position: 0; color: Kit.white(0.55) }
-                GradientStop { position: 0.6; color: Kit.white(0) }
-                GradientStop { position: 1; color: Kit.white(0) }
+            Rectangle {
+                anchors.fill: parent
+                radius: width / 2
+                gradient: Gradient {
+                    GradientStop { position: 0; color: Kit.white(0.55) }
+                    GradientStop { position: 0.6; color: Kit.white(0) }
+                    GradientStop { position: 1; color: Kit.white(0) }
+                }
             }
         }
         Text {
@@ -269,6 +288,7 @@ Item {
         readonly property bool occ: m.wins > 0
         readonly property bool lit: m.active
         readonly property real faceW: occ ? 56 : 38
+        readonly property alias hovered: ma.containsMouse
         width: occ ? Kit.buttonWidth : Kit.emptyWidth
         height: Kit.barHeight
 
@@ -384,7 +404,13 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: b.m.ws.activate()
+            onClicked: {
+                if (b.m.ws) b.m.ws.activate()
+                else {
+                    if (win.screen) Hyprland.dispatch("focusmonitor " + win.screen.name)
+                    Hyprland.dispatch("workspace " + b.m.id)
+                }
+            }
         }
     }
 
@@ -475,7 +501,39 @@ Item {
         WlrLayershell.layer: WlrLayer.Top
         WlrLayershell.namespace: "aoide-bar"
 
-        readonly property var model: root.build(win.screen ? win.screen.name : "")
+        property var model: ({ rows: [], drawers: [], lists: {} })
+        property var lists: ({})
+        property string sig: ""
+        function refresh() {
+            var nm = root.build(win.screen ? win.screen.name : "")
+            win.lists = nm.lists
+            var s = JSON.stringify(nm, function (k, v) { return k === "ws" || k === "lists" ? undefined : v })
+            if (s === win.sig) return
+            win.sig = s
+            win.model = nm
+        }
+        Connections {
+            target: root
+            function onTickChanged() { win.refresh() }
+        }
+        onScreenChanged: refresh()
+        Component.onCompleted: refresh()
+
+        property int hotId: -1
+        property Item hotBtn: null
+        property Item rigBtn: null
+        readonly property int peekId: hotId >= 0 ? hotId : (rigBtn ? root.rigPeek : -1)
+        readonly property Item peekBtn: hotId >= 0 ? hotBtn : rigBtn
+        readonly property var peekList: peekId >= 0 && lists[peekId] ? lists[peekId] : []
+        function hover(btn, on) {
+            if (on && btn.occ) { hotId = btn.m.id; hotBtn = btn; peekHide.stop() }
+            else if (!on && hotBtn === btn) peekHide.restart()
+        }
+        Timer {
+            id: peekHide
+            interval: 250
+            onTriggered: if (!peekHover.hovered) { win.hotId = -1; win.hotBtn = null }
+        }
 
         Item {
             anchors.fill: parent
@@ -594,7 +652,12 @@ Item {
             spacing: 2
             Repeater {
                 model: win.model.rows
-                WsButton { required property var modelData; m: modelData }
+                onItemAdded: function (i, item) { if (item.m.id === root.rigPeek) win.rigBtn = item }
+                WsButton {
+                    required property var modelData
+                    m: modelData
+                    onHoveredChanged: win.hover(this, hovered)
+                }
             }
             Item {
                 width: 13; height: Kit.barHeight
@@ -634,6 +697,154 @@ Item {
                         var n = root.nextEmpty(win.model.rows)
                         if (win.screen) Hyprland.dispatch("focusmonitor " + win.screen.name)
                         Hyprland.dispatch("workspace " + n)
+                    }
+                }
+            }
+        }
+
+        PopupWindow {
+            id: peek
+            visible: win.peekBtn !== null && win.peekList.length > 0
+            color: "transparent"
+            anchor.item: win.peekBtn
+            anchor.edges: Edges.Top | Edges.Left
+            anchor.gravity: Edges.Top | Edges.Right
+            anchor.adjustment: PopupAdjustment.Slide
+            implicitWidth: 300
+            implicitHeight: rim.height + 6
+
+            readonly property int agents: {
+                var n = 0
+                for (var i = 0; i < win.peekList.length; i++)
+                    if (win.peekList[i].state && win.peekList[i].state !== "idle") n++
+                return n
+            }
+            readonly property int count: win.peekList.length
+
+            Rectangle {
+                id: rim
+                width: 300
+                height: 6 + 26 + plate.height + 6
+                radius: 3
+                color: Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.58)
+                border.width: 1
+                border.color: Kit.dark(0.85)
+                HoverHandler { id: peekHover }
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 1
+                    radius: 2
+                    color: "transparent"
+                    border.width: 1
+                    border.color: Kit.white(0.35)
+                }
+                Rectangle {
+                    x: 1; y: 1; width: parent.width - 2; height: 24
+                    radius: 2
+                    gradient: Gradient {
+                        GradientStop { position: 0; color: Kit.white(0.22) }
+                        GradientStop { position: 1; color: Kit.white(0.06) }
+                    }
+                }
+                Rectangle {
+                    id: head
+                    x: 6; y: 6; width: 288; height: 26
+                    radius: 2
+                    color: Kit.dark(0.80)
+                    Text {
+                        x: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        color: "#ffffff"
+                        font: Kit.boldFont(12)
+                        textFormat: Text.PlainText
+                        text: "Workspace " + win.peekId + " · " + peek.count + (peek.count === 1 ? " window" : " windows")
+                              + (peek.agents > 0 ? " · " + peek.agents + (peek.agents === 1 ? " agent" : " agents") : "")
+                    }
+                }
+                Rectangle {
+                    id: plate
+                    x: 6; y: 32; width: 288
+                    height: 6 + peek.count * 28
+                    radius: 2
+                    color: Qt.rgba(245 / 255, 251 / 255, 251 / 255, 0.97)
+                    border.width: 1
+                    border.color: Kit.dark(0.55)
+                    Column {
+                        x: 1; y: 3; width: parent.width - 2
+                        Repeater {
+                            model: win.peekList
+                            Item {
+                                id: row
+                                required property var modelData
+                                width: parent.width
+                                height: 28
+                                Rectangle {
+                                    anchors.fill: parent
+                                    color: rowMa.containsMouse ? Qt.rgba(37 / 255, 187 / 255, 207 / 255, 0.10) : "transparent"
+                                }
+                                Rectangle {
+                                    visible: row.modelData.front
+                                    x: 0; y: 0; width: 2; height: parent.height
+                                    color: "#25bbcf"
+                                }
+                                Icon { x: 9; y: 6; width: 16; height: 16; src: row.modelData.icon }
+                                Text {
+                                    x: 33
+                                    width: stateRow.x - 8 - 33
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: row.modelData.title
+                                    elide: Text.ElideRight
+                                    color: root.kit.ink
+                                    font: Kit.bodyFont(12)
+                                    textFormat: Text.PlainText
+                                }
+                                Row {
+                                    id: stateRow
+                                    visible: row.modelData.state !== "" && row.modelData.state !== "idle"
+                                    anchors { right: parent.right; rightMargin: 9; verticalCenter: parent.verticalCenter }
+                                    spacing: 8
+                                    Item {
+                                        width: 12; height: 12
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        Rectangle {
+                                            anchors.fill: parent
+                                            radius: 6
+                                            color: row.modelData.state === "awaiting" ? root.kit.awaiting : root.kit.working
+                                            border.width: 1
+                                            border.color: Kit.dark(0.55)
+                                            Rectangle {
+                                                anchors.fill: parent
+                                                radius: width / 2
+                                                gradient: Gradient {
+                                                    GradientStop { position: 0; color: Kit.white(0.55) }
+                                                    GradientStop { position: 0.6; color: Kit.white(0) }
+                                                }
+                                            }
+                                        }
+                                        Rectangle { visible: row.modelData.state === "awaiting"; x: 3.5; y: 3; width: 1.5; height: 6; color: root.kit.ink }
+                                        Rectangle { visible: row.modelData.state === "awaiting"; x: 6.5; y: 3; width: 1.5; height: 6; color: root.kit.ink }
+                                    }
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: row.modelData.state + (row.modelData.tool ? " · " + row.modelData.tool : "")
+                                        color: Kit.dark(0.72)
+                                        font: Kit.bodyFont(11)
+                                        textFormat: Text.PlainText
+                                    }
+                                }
+                                MouseArea {
+                                    id: rowMa
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: {
+                                        Hyprland.dispatch("focuswindow address:0x" + root.bare(row.modelData.address))
+                                        win.hotId = -1
+                                        win.hotBtn = null
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
