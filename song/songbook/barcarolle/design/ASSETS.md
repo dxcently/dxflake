@@ -31,6 +31,10 @@
 - `../icons/agents/eidolon.svg` is drawn here after eidolon's own mark (the
   helmet figure and the wordmark's colours); eidolon is the user's own
   project.
+- `../icons/launcher/g3-*.svg` are original work drawn here, inspired by
+  the Apple iMac G3 industrial design; no Apple logo.
+- `launcher-g3.png` is the G3 tile's contact sheet, a headless Chromium
+  render.
 - `agent-icons.png` is the agent icons' contact sheet, a headless Chromium
   render.
 - `mock.png` is a headless Chromium render of `mock.html`; every glyph, icon

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="52" viewBox="0 0 48 52">
+<defs>
+<radialGradient id="g3-led-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#3bdcac" stop-opacity=".75"/><stop offset="1" stop-color="#3bdcac" stop-opacity="0"/></radialGradient>
+</defs>
+<circle cx="19.6" cy="36.3" r="3.2" fill="url(#g3-led-glow)"/>
+<circle cx="19.6" cy="36.3" r=".95" fill="#3bdcac" stroke="#0e6e52" stroke-width=".3"/>
+<circle cx="19.35" cy="36" r=".35" fill="#fff" fill-opacity=".9"/>
+</svg>

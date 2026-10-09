@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="52" viewBox="0 0 48 52">
+<defs>
+<radialGradient id="g3-shadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".42"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+<linearGradient id="g3-bubble" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9af3f5"/><stop offset=".35" stop-color="#34bfd0"/><stop offset=".75" stop-color="#127f96"/><stop offset="1" stop-color="#0a5266"/></linearGradient>
+<linearGradient id="g3-bubble-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="g3-shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fe9f0"/><stop offset=".5" stop-color="#25a9bd"/><stop offset="1" stop-color="#127c92"/></linearGradient>
+<linearGradient id="g3-ice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#eaf6f8"/><stop offset="1" stop-color="#c9e2e8"/></linearGradient>
+<linearGradient id="g3-well" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a5662"/><stop offset="1" stop-color="#16262e"/></linearGradient>
+<radialGradient id="g3-glass" cx=".42" cy=".35" r=".75"><stop offset="0" stop-color="#21505d"/><stop offset=".6" stop-color="#0b2731"/><stop offset="1" stop-color="#040f15"/></radialGradient>
+<linearGradient id="g3-speaker" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fe2ec"/><stop offset="1" stop-color="#16879c"/></linearGradient>
+<linearGradient id="g3-foot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4fbfc"/><stop offset="1" stop-color="#bcd8df"/></linearGradient>
+<radialGradient id="g3-button" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#b8fbfd"/><stop offset=".5" stop-color="#2fb9cc"/><stop offset="1" stop-color="#0d6577"/></radialGradient>
+<linearGradient id="g3-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity=".08"/></linearGradient>
+</defs>
+<ellipse cx="23" cy="49.4" rx="18" ry="2.3" fill="url(#g3-shadow)"/>
+<path d="M8 6.2C15 2.4 30 1.4 38.5 4.8C45 7.6 47 15.5 46.6 24.5C46.2 32 43 37.8 37.5 41.2L34 41.2L34 7Z" fill="url(#g3-bubble)" fill-opacity=".88" stroke="#073f4f" stroke-width=".8"/>
+<ellipse cx="40.2" cy="23" rx="3.6" ry="10.5" fill="#05303d" fill-opacity=".4"/>
+<path d="M38.5 13.5Q41 22 38.5 32.5" fill="none" stroke="#9af3f5" stroke-opacity=".35" stroke-width=".6"/>
+<path d="M11 5.4C18 2.9 30 2.4 37.6 5.4C41.6 7.1 44 10.4 45 14.6C41.5 10.6 36 8.4 28 7.6C21 7 15 7.6 11 8.6Z" fill="url(#g3-bubble-gloss)"/>
+<path d="M44.3 19C45.1 25 44.2 31 41 35.6" fill="none" stroke="#c8fbfc" stroke-opacity=".55" stroke-width=".9" stroke-linecap="round"/>
+<path d="M14 40.5L27 40.5L30.2 46.6Q30.8 48.6 28.8 48.6L12.2 48.6Q10.2 48.6 10.8 46.6Z" fill="url(#g3-foot)" stroke="#5f8995" stroke-width=".6"/>
+<path d="M12 46.9L29 46.9" stroke="#fff" stroke-opacity=".7" stroke-width=".5"/>
+<circle cx="20.5" cy="44.3" r="1.7" fill="url(#g3-button)" stroke="#0a4a5a" stroke-width=".4"/>
+<circle cx="20" cy="43.8" r=".55" fill="#fff" fill-opacity=".85"/>
+<path d="M11.5 5.4L28 5.4Q36.6 5.4 36.6 14L36.6 35.4Q36.6 41.4 30.6 41.4L8.6 41.4Q2.6 41.4 2.6 35.4L2.6 14Q2.6 5.4 11.5 5.4Z" fill="url(#g3-shell)" stroke="#073f4f" stroke-width=".8"/>
+<path d="M11.8 7.4L27.6 7.4Q34.6 7.4 34.6 14.2L34.6 34.6Q34.6 39.4 29.8 39.4L9.4 39.4Q4.6 39.4 4.6 34.6L4.6 14.2Q4.6 7.4 11.8 7.4Z" fill="url(#g3-ice)" stroke="#fff" stroke-opacity=".9" stroke-width=".5"/>
+<path d="M11.6 5.8L27.8 5.8Q36.2 5.8 36.2 13.6L36.2 18Q19.6 15.6 3 18L3 13.6Q3 5.8 11.6 5.8Z" fill="url(#g3-gloss)" fill-opacity=".55"/>
+<rect x="6.6" y="9.4" width="26" height="20.2" rx="3.4" fill="url(#g3-well)"/>
+<path d="M10 11Q19.5 10.2 29 11Q30.8 11.2 30.9 13Q31.3 19.25 30.9 25.5Q30.8 27.3 29 27.5Q19.5 28.3 10 27.5Q8.2 27.3 8.1 25.5Q7.7 19.25 8.1 13Q8.2 11.2 10 11Z" fill="url(#g3-glass)" stroke="#02090d" stroke-width=".4"/>
+<rect x="6.8" y="32.2" width="6" height="4.6" rx="2.3" fill="url(#g3-speaker)" stroke="#0a5566" stroke-width=".4"/>
+<rect x="26.4" y="32.2" width="6" height="4.6" rx="2.3" fill="url(#g3-speaker)" stroke="#0a5566" stroke-width=".4"/>
+<g fill="#0a5566" fill-opacity=".55"><circle cx="8.6" cy="33.9" r=".4"/><circle cx="10.2" cy="33.9" r=".4"/><circle cx="11.6" cy="34.3" r=".35"/><circle cx="9.4" cy="35.3" r=".4"/><circle cx="11" cy="35.5" r=".35"/><circle cx="28.2" cy="33.9" r=".4"/><circle cx="29.8" cy="33.9" r=".4"/><circle cx="31.2" cy="34.3" r=".35"/><circle cx="29" cy="35.3" r=".4"/><circle cx="30.6" cy="35.5" r=".35"/></g>
+<path d="M14.6 32.4L24.6 32.4" stroke="#7d9ca6" stroke-width=".7" stroke-linecap="round"/>
+<path d="M14.6 33.1L24.6 33.1" stroke="#fff" stroke-width=".4" stroke-linecap="round"/>
+<circle cx="19.6" cy="36.3" r=".95" fill="#88aab3" stroke="#5f8995" stroke-width=".3"/>
+</svg>
