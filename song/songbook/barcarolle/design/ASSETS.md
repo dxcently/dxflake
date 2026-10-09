@@ -33,8 +33,8 @@
   project.
 - `../icons/launcher/g3-*.svg` are original work drawn here, inspired by
   the Apple iMac G3 industrial design; no Apple logo.
-- `launcher-g3.png` is the G3 tile's contact sheet, a headless Chromium
-  render.
+- `launcher-g3.png` is a headless Chromium render of `launcher-g3.html`,
+  the G3 launcher's board; its icons and orb are the ones drawn here.
 - `agent-icons.png` is the agent icons' contact sheet, a headless Chromium
   render.
 - `mock.png` is a headless Chromium render of `mock.html`; every glyph, icon

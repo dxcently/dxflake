@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+<defs>
+<radialGradient id="g3-note-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="252" cy="214" rx="110" ry="100" fill="url(#g3-note-halo)"/>
+<g transform="translate(216 152) scale(6)">
+<path d="M5 2v15" stroke="#0c2130" stroke-width="2.2" stroke-linecap="round"/>
+<ellipse cx="3" cy="17.5" rx="3.6" ry="2.7" transform="rotate(-20 3 17.5)" fill="#0c2130"/>
+<path d="M6 2c3 0 3 2.2 6 2.2" fill="none" stroke="#1a8ea3" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M6 5c3 0 3 2.2 6 2.2" fill="none" stroke="#0c2130" stroke-width="1.8" stroke-linecap="round"/>
+<path d="M6 8c3 0 3 2.2 6 2.2" fill="none" stroke="#0f6d80" stroke-width="1.8" stroke-linecap="round"/>
+</g>
+</svg>

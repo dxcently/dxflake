@@ -1,7 +1,7 @@
 # barcarolle — intent
 
 Windows 7 Aero, rebuilt as an AoideOS rice: a glass superbar along the bottom,
-the Start orb and its two-column menu, white-plate flyouts and balloons
+the Start orb and its iMac G3 launcher, white-plate flyouts and balloons
 (the agent sessions among them), and a CPU-meter gadget, all over a teal
 Frutiger Aero wallpaper. The one structural change from Windows 7: the grouped taskbar
 buttons are **Hyprland workspaces**, not applications.
@@ -53,13 +53,8 @@ Glass is a frame, content is a plate, light comes from above.
   orange (the vesktop button on 6).
 - **Aero Peek**: hover a button → a rim + deep header + plate list of that
   workspace's windows; an agent's window carries its state dot and tool.
-- **Start**: left plate of pinned (Terminal, Firefox) and recent programs
-  with jump-list arrows, `All Programs ▸`, search field at the bottom
-  ("Search programs and files"); right deep pane with the iMac G3 tile
-  protruding above the frame (see below), the name, places, Terminal,
-  Settings; the power
-  split is **Lock** with a ▸ for Switch user / Log off / Sleep / Hibernate /
-  Restart / Shut down.
+- **Start**: an iMac G3 that rises out of the orb; its screen hosts the
+  Start content (see Start below).
 - **Agent flyout** (352px, from the agents tray button `⧉`, whose badge
   counts the awaiting sessions): a Win7 notification-area flyout anchored
   above its button at the bottom right, one flyout open at a time like the
@@ -86,90 +81,106 @@ Glass is a frame, content is a plate, light comes from above.
   −26% below centre. Nothing else; the song supplies only the picture and
   colours (hyprlock dress contract).
 
-## Start tile: iMac G3
+## Start: iMac G3
 
-Win7's framed user picture becomes a small iMac G3 in Aero glass, standing
-on the right pane and overhanging the Start frame. When Start opens it
-powers on and its screen shows the orb's ♪, so tile and orb rhyme; when
-Start closes it powers off. The orb itself stays the dark-glass ♪ orb.
-Contact sheet: `launcher-g3.png` (states at 48 · 64 · 96 px, both
-filmstrips).
+The Start menu is a large iMac G3 in Aero glass. Clicking the ♪ orb lifts
+it out of the orb with a small overshoot; its CRT powers on, shows the
+orb's ♪ for a beat, then the Start content fades in on the screen. Closing
+reverses it: the content fades, the CRT collapses to a dot and the G3 sinks
+back into the orb. The orb itself stays the dark-glass ♪ orb. Board:
+`launcher-g3.html` (rendered to `launcher-g3.png`); click its orb to replay.
 
-- **Look**: three-quarter front. A translucent Bondi-teal bubble back
-  bulging behind to the right (gloss along its top, the CRT neck a faint
-  shadow inside), a teal shell lip round a frosted ice-white bezel, a dark
-  CRT well with slightly bulged sides, two teal speaker pills either side
-  of a drive-slot line, a power LED under the slot, a frosted white foot
-  with a round teal button, a soft floor shadow. No Apple logo.
-- **Off**: the screen is dark glass with only the diagonal glare; LED dull.
-  **On**: the screen glows white at the centre to teal at the edges with
-  the orb's ♪ in ink; the LED is base0B green with a halo.
-- **Place**: 64×69 (viewBox 48×52, scale 4/3) at x 330, y −29 in the Start
-  frame, so its foot sits where the old tile's bottom edge was (y 40). Not
-  clickable; it is decoration, like the old tile was in the board.
+- **Look**: front view with the back showing to the right. Frosted
+  ice-white front with a flat, low crown so the screen takes most of it; a
+  dark CRT well round a screen with slightly bulged sides; two teal speaker
+  grilles at the bottom corners and a drive slot with the power LED under
+  it; a thin ice side; a translucent Bondi-teal back that falls from the
+  top of the front in one long curve, reaching furthest back low down, with
+  the CRT funnel, a vent grille and a gloss streak visible inside; a frosted
+  white wrap round its foot carrying a round teal button. No Apple logo.
+- **Size and place**: 760×480 at 1:1 on DP-1, at x 6, y 560, so its foot
+  meets the bar top (y 1040).
+- **Screen rect** (where the content goes), in G3 units: **x 62, y 72,
+  380×284**, clipped to a 10px radius. The lit glass around it is the
+  `screen` layer; the content sits inside its bulge.
+- **Content**, Win7 Start relaid for a landscape screen, 12px:
+  - left plate 228×250 (`notif.bg` at 0.93, ink): pinned Terminal and
+    Firefox, a rule, then VSCodium, Obsidian, Vesktop, Files, Pear Desktop
+    in 26px rows with 20px icons and jump-list arrows; `All Programs ▸`
+    at the plate's foot;
+  - search field 228×28 under it, at y 256: "Search programs";
+  - right deep pane 144×250 at x 236: a small person glyph and the name,
+    a rule, Home, Documents, Pictures, Music, Downloads, a rule, Terminal,
+    Settings, in 22px rows;
+  - power split 144×28 at x 236, y 256: **Lock** with a ▸ for Switch user /
+    Log off / Sleep / Hibernate / Restart / Shut down;
+  - scanlines over the content: a 1px line every 3px of `#021219` at 0.06.
+    They stay legible at that strength; drop them if the real render
+    shimmers.
 
 ### Layers
 
-`icons/launcher/`, all on the same 48×52 viewBox, stacked at the same
+`icons/launcher/`, all on one 760×480 viewBox, stacked at the same
 geometry, bottom → top. Static SVG Tiny (gradients only; no filters,
 masks, clips or text), so QtSvg renders them as Chromium does.
 
 | layer | holds | animated |
 |---|---|---|
-| `g3-body.svg` | shadow, bubble back, foot + button, shell, bezel, dark screen, speakers, slot, dull LED | never |
-| `g3-screen-on.svg` | the lit screen and its ♪ | opacity, yScale, brightness |
+| `g3-body.svg` | shadow, teal back and its insides, wrap and button, ice side, front, dark screen, speakers, slot, dull LED | with the whole G3 |
+| `g3-screen.svg` | the lit screen glass | opacity, yScale, brightness |
+| `g3-note.svg` | the ♪ on the lit screen, with a soft halo | opacity, yScale, brightness (with the screen) |
+| *content* | the Start content (QML), in the screen rect | opacity |
 | `g3-beam.svg` | the CRT line: white core, hot centre, cyan halo | opacity, xScale |
-| `g3-glare.svg` | the diagonal sheen and top highlight on the screen glass | never |
+| `g3-glare.svg` | the vignette (curvature), the diagonal sheen, the top highlight | never |
 | `g3-led.svg` | the lit LED and its halo | opacity |
 
-Off = body + glare. On = body + screen-on + glare + led. Screen-on and beam
-scale about the screen centre, viewBox (19.5, 19.25) = (26, 25.67) px at
-64 px wide. Brightness is a `MultiEffect.brightness` on the screen-on
-layer.
+- The screen, note and beam scale about the screen centre, (252, 214).
+- The whole G3 scales about the orb centre, which is (21, 500) in G3
+  units: the orb at (27, 1060) on DP-1.
+- Brightness is a `MultiEffect.brightness` on the screen and note.
 
-### Power-on (Start opens), 340 ms
+### Open, 460 ms
 
-t = 0 is the open toggle. At rest before it: menu opacity 0, y +10; led 0;
-beam 0, xScale 0.15; screen opacity 0, yScale 0.03, brightness 0. A track
-holds its last value after its end.
-
-| t (ms) | layer · property | value | easing |
-|---|---|---|---|
-| 0 → 140 | menu · opacity | 0 → 1 | OutCubic |
-| 0 → 140 | menu · y | +10 → 0 px | OutCubic |
-| 100 | led · opacity | 1 | step |
-| 130 | led · opacity | 0.25 | step (flicker) |
-| 160 | led · opacity | 1 | step |
-| 120 → 160 | beam · opacity | 0 → 1 | OutQuad |
-| 120 → 170 | beam · xScale | 0.15 → 1 | OutCubic |
-| 170 | screen · opacity | 1 | step |
-| 170 → 260 | screen · yScale | 0.03 → 1 | OutCubic |
-| 170 → 230 | beam · opacity | 1 → 0 | Linear |
-| 170 → 260 | screen · brightness | 0.6 → 0.3 | Linear (bloom) |
-| 260 → 340 | screen · brightness | 0.3 → 0 | OutQuad (settle) |
-
-The menu is fully up at 140 with the G3 dark on it; the line strikes, the
-screen opens out of it, blooms and settles by 340.
-
-### Power-off (Start closes), 200 ms
-
-t = 0 is the close toggle, from the On values.
+t = 0 is the click. Before it every value is at rest: G3 opacity 0, scale
+0.12; led 0; beam 0, xScale 0.1; screen and note opacity 0, yScale 0.02,
+brightness 0; content 0. A track holds its last value after its end.
 
 | t (ms) | layer · property | value | easing |
 |---|---|---|---|
-| 0 → 40 | screen · brightness | 0 → 0.5 | Linear |
-| 0 → 80 | screen · yScale | 1 → 0.03 | InCubic |
-| 80 | screen · opacity | 0 | step |
-| 80 | beam · opacity, xScale | 1, 1 | step |
-| 80 → 130 | beam · xScale | 1 → 0.04 | InCubic (line → dot) |
-| 130 → 190 | beam · opacity | 1 → 0 | Linear (afterglow) |
-| 130 | led · opacity | 0 | step |
-| 120 → 200 | menu · opacity | 1 → 0 | InQuad |
-| 120 → 200 | menu · y | 0 → +6 px | InQuad |
+| 0 → 60 | G3 · opacity | 0 → 1 | Linear |
+| 0 → 170 | G3 · scale | 0.12 → 1.04 | OutCubic |
+| 170 → 230 | G3 · scale | 1.04 → 1 | InOutQuad (settle) |
+| 180 / 205 / 230 | led · opacity | 1 / 0.25 / 1 | step (flicker) |
+| 200 → 230 | beam · opacity | 0 → 1 | OutQuad |
+| 200 → 250 | beam · xScale | 0.1 → 1 | OutCubic |
+| 250 | screen, note · opacity | 1 | step |
+| 250 → 330 | screen, note · yScale | 0.02 → 1 | OutCubic |
+| 250 → 300 | beam · opacity | 1 → 0 | Linear |
+| 250 → 330 | screen, note · brightness | 0.6 → 0.25 | Linear (bloom) |
+| 330 → 460 | screen, note · brightness | 0.25 → 0 | OutQuad (settle) |
+| 340 → 420 | note · opacity | 1 → 0 | Linear |
+| 340 → 440 | content · opacity | 0 → 1 | OutQuad |
 
-A toggle mid-animation stops the running timeline and starts the other;
-each eased track animates from its current value instead of its listed
-start, step tracks still fire, and a step whose time has already passed in
+### Close, 320 ms
+
+t = 0 is the click, from the open values.
+
+| t (ms) | layer · property | value | easing |
+|---|---|---|---|
+| 0 → 70 | content · opacity | 1 → 0 | InQuad |
+| 40 → 80 | screen · brightness | 0 → 0.5 | Linear |
+| 60 → 140 | screen · yScale | 1 → 0.02 | InCubic |
+| 140 | screen · opacity | 0 | step |
+| 140 | beam · opacity, xScale | 1, 1 | step |
+| 140 → 190 | beam · xScale | 1 → 0.03 | InCubic (line → dot) |
+| 190 → 230 | beam · opacity | 1 → 0 | Linear (afterglow) |
+| 190 | led · opacity | 0 | step |
+| 200 → 320 | G3 · scale | 1 → 0.12 | InCubic (sinks into the orb) |
+| 260 → 320 | G3 · opacity | 1 → 0 | Linear |
+
+A click mid-animation stops the running timeline and starts the other.
+Each eased track animates from its current value instead of its listed
+start; step tracks still fire, and a step whose time has already passed in
 the new timeline fires at once.
 
 ## Agent states
@@ -238,12 +249,12 @@ Consolas → Noto Sans Mono.
 
 - **Glass**: CSS `backdrop-filter` blur + a streak layer stands in for
   Hyprland blur and hyprglass refraction. The real strip is planned as a
-  baked frost (no compositor rule); popups get `blur_popups`; Start and the
-  agent flyout get hyprglass.
+  baked frost (no compositor rule); popups get `blur_popups`; the
+  agent flyout gets hyprglass. The G3 is drawn art and needs no blur.
 - **Icons**: all drawn here; the real bar resolves app icons from the icon
   theme. Agent icons: see above.
-- **Start tile**: the board still shows the framed avatar tile; the G3 and
-  its animation are shown in `launcher-g3.png` only.
+- **Start**: `mock.html` still shows the Win7 two-column Start menu; the
+  G3 launcher that replaces it is on `launcher-g3.html` only.
 - **Data**: workspaces, sessions, songs and drafts are hard-coded sample
   data. Nothing reads `desktop.json`, `sessions.json` or `mode.json`.
 - **Board-only placement**: every surface is open at once, though only one
