@@ -87,7 +87,7 @@ body{font:12px/1.35 var(--ui);color:#fff}
     <h1>barcarolle · the Start menu is an iMac G3</h1>
     <ul>
       <li>Click the ♪ orb: the G3 rises out of it, its CRT powers on, the ♪ shows, then the Start content fades in on the screen. Click again to power off.</li>
-      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [content] · beam · glare · led</code>.</li>
+      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [content] · beam · glare · led</code>. Front-facing: the drawing fills <code>x 0–504, y 24–480</code>; the rest of the viewBox is transparent.</li>
       <li>Screen rect for the content: <code>x 62, y 72, 380×284</code> in G3 units; the G3 sits at <code>x 6, y 560</code> on DP-1, so its foot meets the bar.</li>
       <li>Original drawing, inspired by the iMac G3; no Apple logo.</li>
     </ul>
@@ -182,9 +182,9 @@ function strip(id, tracks, from, times) {
     cell.innerHTML = '<div class="mbar"></div><div class="morb"></div>';
     const g = document.createElement("div"); g.className = "g3"; build(g);
     // shrunk about the foot so it stands on the mini bar
-    g.style.left = "1px"; g.style.top = (100 - 8 - 480) + "px";
+    g.style.left = "14px"; g.style.top = (100 - 8 - 480) + "px";
     paint(g, at(tracks, t, from));
-    g.style.transform = `scale(${.155 * at(tracks, t, from)["g3.scale"]})`;
+    g.style.transform = `scale(${.19 * at(tracks, t, from)["g3.scale"]})`;
     g.style.transformOrigin = "0 480px";
     cell.appendChild(g); wrap.appendChild(cell);
     const l = document.createElement("div"); l.className = "lab"; l.textContent = "t " + t; wrap.appendChild(l);

@@ -94,16 +94,17 @@ reverses it: the content fades, the CRT collapses to a dot and the G3 sinks
 back into the orb. The orb itself stays the dark-glass ♪ orb. Board:
 `launcher-g3.html` (rendered to `launcher-g3.png`); click its orb to replay.
 
-- **Look**: front view with the back showing to the right. Frosted
-  ice-white front with a flat, low crown so the screen takes most of it; a
-  dark CRT well round a screen with slightly bulged sides; two teal speaker
-  grilles at the bottom corners and a drive slot with the power LED under
-  it; a thin ice side; a translucent Bondi-teal back that falls from the
-  top of the front in one long curve, reaching furthest back low down, with
-  the CRT funnel, a vent grille and a gloss streak visible inside; a frosted
-  white wrap round its foot carrying a round teal button. No Apple logo.
-- **Size and place**: 760×480 at 1:1 on DP-1, at x 6, y 560, so its foot
-  meets the bar top (y 1040).
+- **Look**: front-facing, no back. A frosted ice-white front, symmetric
+  about the screen centre, with a flat, low crown so the screen takes most
+  of it; a dark CRT well round a screen with slightly bulged sides; two
+  teal speaker grilles at the bottom corners, a drive slot between them
+  with the power LED under it; two short feet; a soft floor shadow. No
+  Apple logo.
+- **Size and place**: a 760×480 viewBox at 1:1 on DP-1, at x 6, y 560, so
+  its foot meets the bar top (y 1040). The drawing fills only **x 0–504,
+  y 24–480** of it (front shell x 2–502, y 26–446; feet to y 450; shadow
+  to y 478); the rest is transparent, so a window may be cropped to that
+  box without moving anything.
 - **Screen rect** (where the content goes), in G3 units: **x 62, y 72,
   380×284**, clipped to a 10px radius. The lit glass around it is the
   `screen` layer; the content sits inside its bulge.
@@ -130,7 +131,7 @@ masks, clips or text), so QtSvg renders them as Chromium does.
 
 | layer | holds | animated |
 |---|---|---|
-| `g3-body.svg` | shadow, teal back and its insides, wrap and button, ice side, front, dark screen, speakers, slot, dull LED | with the whole G3 |
+| `g3-body.svg` | shadow, feet, front, dark screen, speakers, slot, dull LED | with the whole G3 |
 | `g3-screen.svg` | the lit screen glass | opacity, yScale, brightness |
 | `g3-note.svg` | the ♪ on the lit screen, with a soft halo | opacity, yScale, brightness (with the screen) |
 | *content* | the Start content (QML), in the screen rect | opacity |
