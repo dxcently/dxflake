@@ -51,8 +51,12 @@ Glass is a frame, content is a plate, light comes from above.
   badge, stack edges for 2+/3+ windows. Empty workspaces are 40px ghosts.
   Washes follow Win7 taskbar progress: working green, awaiting yellow, urgent
   orange (the vesktop button on 6).
-- **Aero Peek**: hover a button → a rim + deep header + plate list of that
-  workspace's windows; an agent's window carries its state dot and tool.
+- **Aero Peek**: hover a button → a rim + deep header, a live miniature of
+  the workspace, then the plate list of its windows; an agent's window
+  carries its state dot and tool. The miniature is 240px wide in the
+  monitor's aspect: each window streams into its real position over the
+  song's cover at 15 fps, shown or hidden workspace alike, and the streams
+  stop when the peek closes. A window that cannot be captured shows its icon.
 - **Start**: an iMac G3 that rises out of the orb; its screen hosts the
   Start content (see Start below).
 - **Agent flyout** (352px, from the agents tray button `⧉`, whose badge

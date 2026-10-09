@@ -720,11 +720,17 @@ Item {
                 return n
             }
             readonly property int count: win.peekList.length
+            readonly property var ws: win.peekBtn && win.peekBtn.m ? win.peekBtn.m.ws : null
+            readonly property real k: win.screen ? 240 / win.screen.width : 0.125
+            readonly property int miniH: win.screen ? Math.round(240 * win.screen.height / win.screen.width) : 135
+            onVisibleChanged: if (visible) Hyprland.refreshToplevels()
+            onWsChanged: if (visible) Hyprland.refreshToplevels()
+            Timer { id: peekClock; interval: 66; repeat: true; running: peek.visible }
 
             Rectangle {
                 id: rim
                 width: 300
-                height: 6 + 26 + plate.height + 6
+                height: 6 + 26 + 4 + mini.height + 4 + plate.height + 6
                 radius: 3
                 color: Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.58)
                 border.width: 1
@@ -762,8 +768,56 @@ Item {
                     }
                 }
                 Rectangle {
+                    id: mini
+                    x: 29; y: 36; width: 242; height: peek.miniH + 2
+                    radius: 2
+                    color: Kit.dark(0.80)
+                    border.width: 1
+                    border.color: Kit.dark(0.55)
+                    Item {
+                        x: 1; y: 1; width: 240; height: peek.miniH
+                        clip: true
+                        Image {
+                            anchors.fill: parent
+                            source: root.coverPath.length > 0 ? "file://" + root.coverPath : ""
+                            fillMode: Image.PreserveAspectCrop
+                            sourceSize.width: 480
+                            asynchronous: true
+                        }
+                        Repeater {
+                            model: peek.visible && peek.ws ? peek.ws.toplevels : null
+                            Item {
+                                id: tile
+                                required property var modelData
+                                readonly property var ipc: modelData.lastIpcObject
+                                readonly property bool placed: !!(ipc && ipc.at && ipc.size && win.screen)
+                                visible: placed && !ipc.hidden
+                                z: placed && ipc.floating ? 1 : 0
+                                x: placed ? (ipc.at[0] - win.screen.x) * peek.k : 0
+                                y: placed ? (ipc.at[1] - win.screen.y) * peek.k : 0
+                                width: placed ? ipc.size[0] * peek.k : 0
+                                height: placed ? ipc.size[1] * peek.k : 0
+                                ScreencopyView {
+                                    id: sv
+                                    anchors.fill: parent
+                                    captureSource: tile.modelData.wayland
+                                    live: false
+                                    Component.onCompleted: captureFrame()
+                                    Connections { target: peekClock; function onTriggered() { sv.captureFrame() } }
+                                }
+                                Icon {
+                                    visible: !sv.hasContent
+                                    anchors.centerIn: parent
+                                    width: 16; height: 16
+                                    src: root.iconFor(Kit.className(tile.modelData))
+                                }
+                            }
+                        }
+                    }
+                }
+                Rectangle {
                     id: plate
-                    x: 6; y: 32; width: 288
+                    x: 6; y: mini.y + mini.height + 4; width: 288
                     height: 6 + peek.count * 28
                     radius: 2
                     color: Qt.rgba(245 / 255, 251 / 255, 251 / 255, 0.97)

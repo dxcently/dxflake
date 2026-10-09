@@ -74,7 +74,7 @@
       gapsOut = 8;
       gapsIn = 4;
       borderSize = 1;
-      rounding = 6;
+      rounding = 10;
       blurEnabled = true;
       blurSize = 4;
       blurPasses = 1;
