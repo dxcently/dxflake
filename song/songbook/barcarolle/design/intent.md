@@ -138,22 +138,27 @@ timelines) and `launcher-finder.png` (the screen).
   a Platinum menu bar with a pixel ♪ for the Apple menu and a Find field;
   the song's cover shrunk onto the little desktop (a teal dither without
   one), with Macintosh HD and Trash icons; a Macintosh HD window holding
-  four folders, Applications, Clipboard, Emoji and Kaomoji, in icon view. Opening
-  a folder opens its window in front while the HD window greys behind it.
-  Applications are the desktop entries A→Z with their icons; Clipboard
-  shows text and picture clippings (pictures as thumbnails); Emoji is an
-  8-wide grid of glyphs from `widgets/Emoji.js`; Kaomoji is a one-column
-  list of the 384 in `widgets/Kaomoji.js` (Noto Sans CJK JP Medium 12, the
-  mood dim beside each), filtered by mood words. Selection is `#0f6d80`
-  with white text; a help balloon names the selected emoji or shows a
-  clipping's text; the status line reads "x items, 1 selected". Tahoma 12
-  and Verdana 10 stand in for Charcoal and Geneva.
-  - Keys: typing filters the open folder, or at the top opens a `Find "q"`
-    window over all four; arrows move; Enter opens a folder, launches an
-    app (a `systemd-run --user --scope`) or copies a clipping, emoji or
-    kaomoji
-    (`wl-copy`), then closes; Backspace on an empty query goes up; Escape
-    closes. The `clipboard` shortcut opens straight to Clipboard.
+  four folders, Applications, Clipboard, Emoji and Kaomoji, in icon view. Each
+  level opens its window in front while its parent greys behind, cascading
+  14px right and 18px down. Applications are the desktop entries A→Z with
+  their icons; Clipboard shows text and picture clippings (pictures as
+  thumbnails). Emoji holds nine folders, the Unicode groups in CLDR order
+  (Smileys & Emotion … Flags), each an 8-wide grid of glyphs from
+  `widgets/Emoji.js`. Kaomoji holds ten mood folders (Happy & Joy … Sleepy
+  & Faint), each a one-column list from `widgets/Kaomoji.js` (Noto Sans CJK
+  JP Medium 12, the mood dim beside each). Every subfolder is the one
+  lavender `finder-folder.svg` with its emblem, a glyph or kaomoji, drawn
+  over it in QML. Selection is `#0f6d80` with white text; a help balloon
+  names the selected emoji or shows a clipping's text; the status line
+  reads "x items, 1 selected". Tahoma 12 and Verdana 10 stand in for
+  Charcoal and Geneva.
+  - Keys: typing in Emoji or Kaomoji searches its whole subtree, typing in
+    a subfolder filters it, and typing at the top opens a `Find "q"` window
+    over all four; arrows move; Enter opens a folder, launches an app (a
+    `systemd-run --user --scope`) or copies a clipping, emoji or kaomoji
+    (`wl-copy`), then closes; Backspace on an empty query goes up one level
+    and reselects the folder it came from; Escape closes, and the next open
+    starts at the top. The `clipboard` shortcut opens straight to Clipboard.
   - Scanlines over the content: a 1px line every 3px of `#021219` at 0.06.
 
 ### Layers

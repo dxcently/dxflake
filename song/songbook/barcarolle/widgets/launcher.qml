@@ -35,7 +35,8 @@ PanelWindow {
         clip: { cw: 88, ch: 60, cols: 3 },
         emoji: { cw: 33, ch: 33, cols: 8 },
         kaomoji: { cw: 264, ch: 20, cols: 1 },
-        search: { cw: 66, ch: 60, cols: 4 }
+        search: { cw: 66, ch: 60, cols: 4 },
+        sub: { cw: 66, ch: 60, cols: 4 }
     })
     readonly property var folders: [
         { kind: "folder", key: "apps", name: "Applications", icon: root.g3Dir + "finder-folder-apps.svg" + root.bust },
@@ -43,6 +44,16 @@ PanelWindow {
         { kind: "folder", key: "emoji", name: "Emoji", icon: root.g3Dir + "finder-folder-emoji.svg" + root.bust },
         { kind: "folder", key: "kaomoji", name: "Kaomoji", icon: root.g3Dir + "finder-folder-kaomoji.svg" + root.bust }
     ]
+    readonly property var subs: ({ emoji: root.folderItems(Emoji.folders), kaomoji: root.folderItems(Kaomoji.folders) })
+    function folderItems(list) {
+        return list.map(function (f) {
+            return { kind: "folder", key: f.key, name: f.name, emblem: f.emblem, icon: root.g3Dir + "finder-folder.svg" + root.bust }
+        })
+    }
+    function keyIndex(list, key) {
+        for (var i = 0; i < list.length; i++) if (list[i].key === key) return i
+        return -1
+    }
 
     // ── window: the front drawing plus a bleed for the pop-in overshoot, centred by the compositor ──
     property var targetScreen: null
@@ -187,13 +198,16 @@ PanelWindow {
 
     // ── the Finder: state ──
     property string view: "top"
+    property string sub: ""
     property string query: ""
     property int dataTick: 0
 
     readonly property bool searching: root.view === "top" && root.query.trim() !== ""
     readonly property bool frontOpen: root.view !== "top" || root.searching
-    readonly property var geom: root.geoms[root.searching ? "search" : root.view]
-    readonly property var items: root.compute(root.view, root.query, root.dataTick)
+    readonly property bool inSub: root.sub !== ""
+    readonly property bool showFolders: !!root.subs[root.view] && !root.inSub && root.query.trim() === ""
+    readonly property var geom: root.geoms[root.searching ? "search" : root.showFolders ? "sub" : root.view]
+    readonly property var items: root.compute(root.view, root.sub, root.query, root.dataTick)
     readonly property Item grid: root.frontOpen ? frontGrid : topGrid
     readonly property string hdrText: {
         if (root.view === "clip" && root.clipboard.loading) return "Reading clipboard…"
@@ -205,14 +219,16 @@ PanelWindow {
             return root.clipboard.loading ? "" : (root.clipboard.loadError ? "Clipboard history unavailable" : "No clippings yet")
         return "No items match “" + root.query.trim() + "”"
     }
+    readonly property var curFolder: root.folders[root.keyIndex(root.folders, root.view)]
+    readonly property var curSub: root.inSub && root.subs[root.view] ? root.subs[root.view][root.keyIndex(root.subs[root.view], root.sub)] : undefined
     readonly property string frontTitle: {
         if (root.searching) return "Find “" + root.query.trim() + "”"
-        for (var i = 0; i < root.folders.length; i++) if (root.folders[i].key === root.view) return root.folders[i].name
-        return ""
+        if (root.curSub) return root.curSub.name
+        return root.curFolder ? root.curFolder.name : ""
     }
     readonly property string frontProxy: {
-        for (var i = 0; i < root.folders.length; i++) if (root.folders[i].key === root.view) return root.folders[i].icon
-        return ""
+        if (root.curSub) return root.curSub.icon
+        return root.curFolder ? root.curFolder.icon : ""
     }
 
     Connections {
@@ -289,17 +305,22 @@ PanelWindow {
     function glyphItems(list, q) {
         return q ? root.rank(q, list, function (e) { return e.name }, function (e) { return e.words }) : list
     }
-    function compute(view, query, tick) {
+    function glyphsIn(list, sub) {
+        return sub ? list.filter(function (e) { return e.group === sub }) : list
+    }
+    function compute(view, sub, query, tick) {
         var q = ("" + query).trim().toLowerCase()
         if (view === "top")
             return q === "" ? root.folders : root.appItems(q).concat(root.clipItems(q), root.glyphItems(Emoji.all(), q), root.glyphItems(Kaomoji.all(), q))
         if (view === "apps") return root.appItems(q)
         if (view === "clip") return root.clipItems(q)
-        return root.glyphItems(view === "emoji" ? Emoji.all() : Kaomoji.all(), q)
+        if (q === "" && sub === "") return root.subs[view]
+        return root.glyphItems(root.glyphsIn(view === "emoji" ? Emoji.all() : Kaomoji.all(), sub), q)
     }
 
     function resetState() {
         findField.text = ""
+        root.sub = ""
         root.view = "top"
         topGrid.currentIndex = 0
         topGrid.positionViewAtBeginning()
@@ -307,16 +328,29 @@ PanelWindow {
     }
     function openFolder(key) {
         findField.text = ""
+        root.sub = ""
         root.view = key
         if (key === "clip") root.clipboard.refresh()
     }
+    function openSub(key) {
+        findField.text = ""
+        root.sub = key
+    }
+    function goTop() {
+        var at = root.keyIndex(root.folders, root.view)
+        findField.text = ""
+        root.sub = ""
+        root.view = "top"
+        if (at >= 0) topGrid.currentIndex = at
+    }
     function goUp() {
         if (root.searching) { findField.text = ""; return }
-        if (root.view === "top") return
-        var from = 0
-        for (var i = 0; i < root.folders.length; i++) if (root.folders[i].key === root.view) from = i
-        root.view = "top"
-        topGrid.currentIndex = from
+        if (!root.inSub) { root.goTop(); return }
+        var at = root.keyIndex(root.subs[root.view], root.sub)
+        findField.text = ""
+        root.sub = ""
+        frontGrid.currentIndex = at
+        root.reveal(frontGrid, at)
     }
     function nav(dx, dy) {
         var g = root.grid, n = g.count
@@ -338,7 +372,7 @@ PanelWindow {
     }
     function activate(it) {
         if (!it) return
-        if (it.kind === "folder") root.openFolder(it.key)
+        if (it.kind === "folder") { if (root.view === "top") root.openFolder(it.key); else root.openSub(it.key) }
         else if (it.kind === "app") {
             if (!it.entry.command || it.entry.command.length === 0) return
             Quickshell.execDetached(Kit.scopeArgv(it.entry))
@@ -414,6 +448,19 @@ PanelWindow {
         font.family: root.fSmall
         font.pixelSize: 10
         font.hintingPreference: Font.PreferFullHinting
+    }
+
+    component Emblem: Text {
+        id: em
+        property bool emoji: root.view === "emoji"
+        property real dy: 0
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: Math.round(20.5 - em.height / 2) + em.dy
+        renderType: Text.NativeRendering
+        textFormat: Text.PlainText
+        font.family: em.emoji ? "Noto Color Emoji" : root.fKao
+        font.weight: Font.Medium
+        font.pixelSize: em.emoji ? 13 : 10
     }
 
     component Lens: Item {
@@ -650,6 +697,7 @@ PanelWindow {
         required property int index
         readonly property bool sel: GridView.isCurrentItem
         readonly property string kind: modelData.kind
+        readonly property string emblem: modelData.emblem || ""
         readonly property bool glyphOnly: kind === "emoji" && !root.searching
         readonly property bool bigGlyph: kind === "emoji" && root.searching
         readonly property bool row: kind === "kaomoji" && !root.searching
@@ -730,6 +778,16 @@ PanelWindow {
                 asynchronous: true
                 clip: true
             }
+        }
+        Item {
+            visible: cell.emblem !== ""
+            x: (cell.width - 32) / 2
+            y: 3
+            width: 32
+            height: 32
+            Emblem { visible: !emoji; text: cell.emblem; color: "#f1eeff"; dy: 1 }
+            Emblem { visible: !emoji; text: cell.emblem; color: "#5b50c4" }
+            Emblem { visible: emoji; text: cell.emblem }
         }
 
         Rectangle {
@@ -866,7 +924,7 @@ PanelWindow {
                         readonly property int lw: Math.ceil(dname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
                         T { id: dname; x: Math.round((72 - parent.lw) / 2) + 2; y: 35; text: "Macintosh HD"; lineHeight: 11; lineHeightMode: Text.FixedHeight }
-                        MouseArea { x: 14; width: 44; height: 46; onClicked: root.goUp() }
+                        MouseArea { x: 14; width: 44; height: 46; onClicked: root.goTop() }
                     }
                     Item {
                         x: 304; y: 226; width: 72; height: 48
@@ -885,7 +943,7 @@ PanelWindow {
                         hdr: hdWin.active ? root.hdrText : root.folders.length + " items"
                         view: topGrid
                         onCloseClicked: root.hide()
-                        onBodyClicked: if (!hdWin.active) root.goUp()
+                        onBodyClicked: if (!hdWin.active) root.goTop()
                         GridView {
                             id: topGrid
                             x: 3; y: 0
@@ -903,8 +961,22 @@ PanelWindow {
                     }
 
                     Win {
-                        id: frontWin
+                        id: midWin
                         x: 20; y: 48; width: 282; height: 230
+                        visible: root.inSub
+                        active: false
+                        title: root.curFolder ? root.curFolder.name : ""
+                        proxy: root.curFolder ? root.curFolder.icon : ""
+                        hdr: (root.subs[root.view] || []).length + " items"
+                        onBodyClicked: root.goUp()
+                    }
+
+                    Win {
+                        id: frontWin
+                        x: root.inSub ? 34 : 20
+                        y: root.inSub ? 66 : 48
+                        width: 282
+                        height: root.inSub ? 212 : 230
                         visible: root.frontOpen
                         title: root.frontTitle
                         proxy: root.frontProxy
