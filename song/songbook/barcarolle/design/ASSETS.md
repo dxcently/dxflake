@@ -32,10 +32,9 @@
   helmet figure and the wordmark's colours); eidolon is the user's own
   project.
 - `../icons/launcher/g3-*.svg` are original work drawn here, inspired by
-  the Apple iMac G3 industrial design; no Apple logo. `g3-note.svg` is a
-  pixel computer with a ♪ face, drawn here after the classic Mac OS
-  start-up face; no Apple artwork is copied.
-- `../icons/launcher/finder-*.svg` (folders, the face disk, trash, clippings, the
+  the Apple iMac G3 industrial design; no Apple logo. `g3-face.svg` is a
+  pixel (・ω・) kaomoji face for the power-on, drawn here.
+- `../icons/launcher/finder-*.svg` (folders, the drive, trash, clippings, the
   generic app, the dither and the menu-bar ♪) are original drawings made
   here in the manner of Mac OS 8/9's Platinum icons; no Apple artwork is
   copied.

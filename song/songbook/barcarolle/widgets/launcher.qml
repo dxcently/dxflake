@@ -888,9 +888,9 @@ PanelWindow {
             brightness: gs.br
             transform: Scale { origin.x: 252; origin.y: 214; yScale: gs.sy }
         }
-        Image { id: g3note; visible: false; source: root.g3Dir + "g3-note.svg" + root.bust; sourceSize: Qt.size(760, 480) }
+        Image { id: g3face; visible: false; source: root.g3Dir + "g3-face.svg" + root.bust; sourceSize: Qt.size(760, 480) }
         MultiEffect {
-            source: g3note
+            source: g3face
             width: 760; height: 480
             opacity: gs.no * gs.so
             brightness: gs.br
@@ -931,7 +931,7 @@ PanelWindow {
 
                     Item {
                         x: 304; y: 26; width: 72; height: 48
-                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-face.svg" + root.bust; sourceSize: Qt.size(32, 32) }
+                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-disk.svg" + root.bust; sourceSize: Qt.size(32, 32) }
                         readonly property int lw: Math.ceil(dname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
                         T { id: dname; x: Math.round((72 - parent.lw) / 2) + 2; y: 35; text: root.diskName; lineHeight: 11; lineHeightMode: Text.FixedHeight }
@@ -949,7 +949,7 @@ PanelWindow {
                         id: hdWin
                         x: 8; y: 26; width: 294; height: 112
                         title: root.diskName
-                        proxy: root.g3Dir + "finder-face.svg" + root.bust
+                        proxy: root.g3Dir + "finder-disk.svg" + root.bust
                         active: !root.frontOpen
                         hdr: hdWin.active ? root.hdrText : root.folders.length + " items"
                         view: topGrid

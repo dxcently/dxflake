@@ -118,7 +118,7 @@ Glass is a frame, content is a plate, light comes from above.
 
 SUPER+Space opens the app launcher: a large iMac G3 in Aero glass, centred
 on the focused monitor. It pops in about its own centre with a small
-overshoot; its CRT powers on, shows a Happy Mac with a ♪ face for a beat,
+overshoot; its CRT powers on, shows a pixel (・ω・) face for a beat,
 then the Finder fades in on the screen. Closing reverses it: the Finder
 fades, the CRT collapses to a dot and the G3 shrinks away. Boards:
 `launcher-g3.html` (rendered to `launcher-g3.png`; the machine and its
@@ -144,7 +144,7 @@ timelines) and `launcher-finder.png` (the screen).
 - **Content**, a Mac OS 9 desktop on the screen (`launcher-finder.png`):
   a Platinum menu bar with a pixel ♪ for the Apple menu and a Find field;
   the song's cover shrunk onto the little desktop (a teal dither without
-  one), with this computer's disk (a kaomoji-face tile, `finder-face.svg`,
+  one), with this computer's disk (the Platinum drive, `finder-disk.svg`,
   labelled with the hostname) and Trash; the disk's window, titled with the
   hostname, holding
   four folders, Applications, Clipboard, Emoji and Kaomoji, in icon view. Each
@@ -180,15 +180,15 @@ masks, clips or text), so QtSvg renders them as Chromium does.
 |---|---|---|
 | `g3-body.svg` | feet, front, dark screen, speakers, slot, dull LED | with the whole G3 |
 | `g3-screen.svg` | the lit screen glass | opacity, yScale, brightness |
-| `g3-note.svg` | the Happy Mac with a ♪ face on the lit screen | opacity, yScale, brightness (with the screen) |
+| `g3-face.svg` | the pixel (・ω・) face on the lit screen | opacity, yScale, brightness (with the screen) |
 | *content* | the Finder (QML), in the screen rect | opacity |
 | `g3-beam.svg` | the CRT line: white core, hot centre, cyan halo | opacity, xScale |
 | `g3-glare.svg` | the vignette (curvature), the diagonal sheen, the top highlight | never |
 | `g3-led.svg` | the lit LED and its halo | opacity |
 
-- The screen, note and beam scale about the screen centre, (252, 214).
+- The screen, face and beam scale about the screen centre, (252, 214).
 - The whole G3 scales about its own centre, (252, 252) in G3 units.
-- Brightness is a `MultiEffect.brightness` on the screen and note.
+- Brightness is a `MultiEffect.brightness` on the screen and face.
 - Every art URL carries a per-load `?v=` stamp: Qt's image cache lives as
   long as the shell process and is keyed by URL alone, so without it a
   reload keeps drawing art the song has since changed.
@@ -196,7 +196,7 @@ masks, clips or text), so QtSvg renders them as Chromium does.
 ### Open, 460 ms
 
 t = 0 is the keypress. Before it every value is at rest: G3 opacity 0, scale
-0.12; led 0; beam 0, xScale 0.1; screen and note opacity 0, yScale 0.02,
+0.12; led 0; beam 0, xScale 0.1; screen and face opacity 0, yScale 0.02,
 brightness 0; content 0. A track holds its last value after its end.
 
 | t (ms) | layer · property | value | easing |
@@ -207,12 +207,12 @@ brightness 0; content 0. A track holds its last value after its end.
 | 180 / 205 / 230 | led · opacity | 1 / 0.25 / 1 | step (flicker) |
 | 200 → 230 | beam · opacity | 0 → 1 | OutQuad |
 | 200 → 250 | beam · xScale | 0.1 → 1 | OutCubic |
-| 250 | screen, note · opacity | 1 | step |
-| 250 → 330 | screen, note · yScale | 0.02 → 1 | OutCubic |
+| 250 | screen, face · opacity | 1 | step |
+| 250 → 330 | screen, face · yScale | 0.02 → 1 | OutCubic |
 | 250 → 300 | beam · opacity | 1 → 0 | Linear |
-| 250 → 330 | screen, note · brightness | 0.6 → 0.25 | Linear (bloom) |
-| 330 → 460 | screen, note · brightness | 0.25 → 0 | OutQuad (settle) |
-| 340 → 420 | note · opacity | 1 → 0 | Linear |
+| 250 → 330 | screen, face · brightness | 0.6 → 0.25 | Linear (bloom) |
+| 330 → 460 | screen, face · brightness | 0.25 → 0 | OutQuad (settle) |
+| 340 → 420 | face · opacity | 1 → 0 | Linear |
 | 340 → 440 | content · opacity | 0 → 1 | OutQuad |
 
 ### Close, 320 ms
