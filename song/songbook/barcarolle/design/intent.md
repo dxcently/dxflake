@@ -58,11 +58,15 @@ Glass is a frame, content is a plate, light comes from above.
   monitor's aspect: each window streams into its real position over the
   song's cover at 15 fps, shown or hidden workspace alike, and the streams
   stop when the peek closes. A window that cannot be captured shows its icon.
+  On a scrolling workspace the miniature is the stretch of the strip on the
+  monitor, and a `+N` chip counts the windows scrolled off it.
 - **Start**: the ♪ orb opens the Win7 two-column Start menu as `mock.html`
   draws it: pinned apps, All Programs ▸, "Search programs", the person
   tile, places, Terminal, Settings, and the Lock ▸ power split (Log off,
   Sleep, Hibernate, Restart, `Shut down…`). Power goes only through
-  aoided's `power` command; `Shut down…` opens the Shut Down dialog.
+  aoided's `power` command. Lock, Sleep and Hibernate act at once; Log off,
+  Restart and `Shut down…` open the Shut Down dialog with that action
+  preselected, so nothing that ends the session takes one click.
 - **Launcher**: SUPER+Space opens the iMac G3 in the middle of the focused
   monitor; its screen is a Mac OS 9 Finder of apps, clipboard and emoji
   (see Launcher: iMac G3 below).
@@ -93,7 +97,14 @@ Glass is a frame, content is a plate, light comes from above.
 - **Tray flyouts**: the Win7 narrow volume flyout (device, slider, percent,
   mute, `Mixer` footer), the network flyout from its tray icon, and the
   calendar flyout from the clock (month grid, today ringed, an analogue
-  clock beside it). One flyout is open at a time; opening one closes the
+  clock beside it). The `^` chevron, shown while the tray holds an icon,
+  opens the notification-area overflow: a 4-wide grid of the tray's icons
+  on translucent deep glass, where the white symbolic icons most apps ship
+  stay readable, and the hovered icon's title in white beneath. A click
+  opens the icon's menu when it has one (so an icon with no Activate still
+  answers a left click); otherwise left activates and right
+  secondary-activates. An icon that publishes no picture shows an outlined
+  box. One flyout is open at a time; opening one closes the
   rest, the RICE menu and the agents dock included. Each holds itself open
   with Hyprland's focus grab and closes on a click outside.
 - **Action Center**: the ⚑ flag's flyout lists the notification ledger,
@@ -138,14 +149,17 @@ timelines) and `launcher-finder.png` (the screen).
   **x 0–504, y 24–480** of it (front shell x 2–502, y 26–446; feet to
   y 450), so the window is cropped to that 504×456 box and
   centred on the focused monitor's full output.
-- **Screen rect** (where the content goes), in G3 units: **x 62, y 72,
-  380×284**, clipped to a 10px radius. The lit glass around it is the
-  `screen` layer; the content sits inside its bulge.
+- **Screen rect** (where the content goes), in G3 units: the whole lit
+  glass, **x 43, y 55, 418×318**, clipped to the glass curve itself (the
+  `g3-screen.svg` path), so the desktop runs to the edges of the CRT.
 - **Content**, a Mac OS 9 desktop on the screen (`launcher-finder.png`):
-  a Platinum menu bar with a pixel ♪ for the Apple menu and a Find field;
+  a Platinum menu bar across the full width, its pixel ♪ Apple menu and
+  titles set 56px in and its Find field ending 62px from the right, clear
+  of the curve;
   the song's cover shrunk onto the little desktop (a teal dither without
   one), with this computer's disk (the Platinum drive, `finder-disk.svg`,
-  labelled with the hostname) and Trash; the disk's window, titled with the
+  labelled with the hostname) and the Trash in the bottom-right corner,
+  10px up; the disk's window, titled with the
   hostname, holding
   four folders, Applications, Clipboard, Emoji and Kaomoji, in icon view. Each
   level opens its window in front while its parent greys behind, cascading
@@ -326,9 +340,6 @@ Consolas → Noto Sans Mono.
    "asking" in the UI only?
 2. **Orb size**: kept inside the 40px bar (Ø36). Win7's orb overhangs the
    taskbar; overhang needs a taller surface than the exclusive zone.
-3. **Power split**: Lock is the default and `Shut down…` asks through the
-   dialog, but Restart in the ▸ menu acts on one click. Arm it too, or
-   route it through the dialog?
-4. **Lock name legibility**: the bare `$USER` label sits on bright art just
+3. **Lock name legibility**: the bare `$USER` label sits on bright art just
    under the tile; hyprlock's variables-only dress cannot add a plate, so any
    name band must be baked into the picture.

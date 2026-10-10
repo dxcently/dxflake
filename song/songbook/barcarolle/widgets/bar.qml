@@ -7,6 +7,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import Quickshell.Networking
 import Quickshell.Services.Pipewire
+import Quickshell.Services.SystemTray
 import "../.."
 import "Kit.js" as Kit
 
@@ -37,6 +38,8 @@ Item {
     Timer { id: settle; interval: 60; onTriggered: root.tick++ }
 
     readonly property int rigPeek: parseInt(Quickshell.env("AOIDE_RIG_PEEK") || "-1")
+    readonly property string bust: "?v=" + Date.now()
+    readonly property string appGlyph: (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/song/songbook/barcarolle/icons/launcher/finder-app.svg" + root.bust
 
     property var sessByAddr: ({})
     property int awaitingCount: 0
@@ -106,6 +109,7 @@ Item {
         if (!p) p = Quickshell.iconPath(cls, true)
         if (!p) p = Quickshell.iconPath(cls.toLowerCase(), true)
         if (!p) p = Quickshell.iconPath("application-x-executable", true)
+        if (!p) p = root.appGlyph
         return p
     }
 
@@ -190,6 +194,19 @@ Item {
     property string flyout: ""
     property string flyoutGone: ""
     property real flyoutGoneAt: 0
+    property string trayTip: ""
+    property int trayCount: 0
+    function recountTray() {
+        var n = SystemTray.items.values.length
+        if (n === 0 && root.flyout === "tray") root.flyout = ""
+        root.trayCount = n
+    }
+    Connections {
+        target: SystemTray.items
+        function onObjectInsertedPost() { root.recountTray() }
+        function onObjectRemovedPost() { root.recountTray() }
+    }
+    Component.onCompleted: root.recountTray()
 
     function toggleFlyout(name) {
         if (root.flyout === name) { root.flyout = ""; return }
@@ -625,7 +642,7 @@ Item {
         }
         Icon {
             x: 9; y: 2; width: 32; height: 32
-            src: ar.entry ? (Quickshell.iconPath(ar.entry.icon, true) || Quickshell.iconPath("application-x-executable", true)) : ""
+            src: ar.entry ? (Quickshell.iconPath(ar.entry.icon, true) || Quickshell.iconPath("application-x-executable", true) || root.appGlyph) : ""
         }
         Column {
             x: 51
@@ -1061,6 +1078,24 @@ Item {
             }
             readonly property int count: win.peekList.length
             readonly property var ws: win.peekBtn && win.peekBtn.m ? win.peekBtn.m.ws : null
+            readonly property bool scrolling: !!ws && ws.lastIpcObject.tiledLayout === "scrolling"
+            function onOutput(ipc) {
+                var s = win.screen
+                if (!s) return true
+                return ipc.at[0] < s.x + s.width && ipc.at[0] + ipc.size[0] > s.x
+                    && ipc.at[1] < s.y + s.height && ipc.at[1] + ipc.size[1] > s.y
+            }
+            readonly property int outside: {
+                var n = 0
+                if (scrolling) {
+                    var ts = ws.toplevels.values
+                    for (var i = 0; i < ts.length; i++) {
+                        var ipc = ts[i].lastIpcObject
+                        if (ipc && ipc.at && ipc.size && !ipc.hidden && !peek.onOutput(ipc)) n++
+                    }
+                }
+                return n
+            }
             readonly property real k: win.screen ? 240 / win.screen.width : 0.125
             readonly property int miniH: win.screen ? Math.round(240 * win.screen.height / win.screen.width) : 135
             onVisibleChanged: if (visible) Hyprland.refreshToplevels()
@@ -1131,7 +1166,7 @@ Item {
                                 required property var modelData
                                 readonly property var ipc: modelData.lastIpcObject
                                 readonly property bool placed: !!(ipc && ipc.at && ipc.size && win.screen)
-                                visible: placed && !ipc.hidden
+                                visible: placed && !ipc.hidden && (!peek.scrolling || peek.onOutput(ipc))
                                 z: placed && ipc.floating ? 1 : 0
                                 x: placed ? (ipc.at[0] - win.screen.x) * peek.k : 0
                                 y: placed ? (ipc.at[1] - win.screen.y) * peek.k : 0
@@ -1153,6 +1188,12 @@ Item {
                                 }
                             }
                         }
+                    }
+                    Chip {
+                        visible: peek.outside > 0
+                        anchors { right: parent.right; bottom: parent.bottom; rightMargin: 4; bottomMargin: 4 }
+                        px: 10; h: 14
+                        label: "+" + peek.outside
                     }
                 }
                 Rectangle {
@@ -1322,9 +1363,134 @@ Item {
         }
         Cell {
             id: more
-            width: 18
+            width: root.trayCount > 0 ? 18 : 0
+            visible: root.trayCount > 0
             anchors.right: agents.left
+            lit: root.flyout === "tray"
+            onClicked: { root.trayTip = ""; root.toggleFlyout("tray") }
             Svg { x: 4.5; y: 17; d: "M1 5 l3.5 -3.5 L8 5"; stroke: "#ffffff"; sw: 1.4 }
+        }
+
+        Flyout {
+            name: "tray"
+            cell: more
+            gate: root.trayCount > 0
+            implicitWidth: trayRim.width
+            implicitHeight: trayRim.height + 6
+            Rim {
+                id: trayRim
+                width: trayPlate.width + 14
+                height: trayPlate.height + 14
+                Plate {
+                    id: trayPlate
+                    x: 7
+                    y: 7
+                    width: 168
+                    height: trayGrid.height + 32
+                    color: Kit.dark(0.64)
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 2
+                        gradient: Gradient {
+                            GradientStop { position: 0; color: Kit.white(0.10) }
+                            GradientStop { position: 0.5; color: Kit.white(0.04) }
+                            GradientStop { position: 0.5; color: Kit.white(0) }
+                            GradientStop { position: 1; color: Kit.white(0) }
+                        }
+                    }
+                    Grid {
+                        id: trayGrid
+                        x: 4
+                        y: 4
+                        columns: 4
+                        Repeater {
+                            model: SystemTray.items
+                            delegate: Item {
+                                id: tc
+                                required property var modelData
+                                readonly property bool noIcon: {
+                                    var s = tc.modelData ? "" + (tc.modelData.icon || "") : ""
+                                    return s === "" || (s.indexOf("image://qspixmap/") === 0 && s.slice(-2) === "/0")
+                                        || (s.indexOf("image://icon/") === 0 && Quickshell.iconPath(s.slice(13), true) === "")
+                                }
+                                width: 40
+                                height: 40
+                                readonly property string label: tc.modelData
+                                    ? "" + (tc.modelData.tooltipTitle || tc.modelData.title || tc.modelData.id || "") : ""
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: 2
+                                    color: tcMa.containsMouse ? Kit.accent(0.22) : "transparent"
+                                    border.width: 1
+                                    border.color: tcMa.containsMouse ? Kit.white(0.40) : "transparent"
+                                }
+                                Icon {
+                                    id: tcIcon
+                                    x: 12
+                                    y: 12
+                                    width: 16
+                                    height: 16
+                                    src: tc.noIcon ? "" : "" + tc.modelData.icon
+                                }
+                                Svg {
+                                    visible: tc.noIcon || tcIcon.status === Image.Error
+                                    x: 12
+                                    y: 12
+                                    d: "M2.5 3.5 H13.5 V12.5 H2.5 Z"
+                                    stroke: Kit.white(0.6)
+                                    fill: Kit.white(0.12)
+                                    sw: 1
+                                }
+                                QsMenuAnchor {
+                                    id: tcMenu
+                                    menu: tc.modelData ? tc.modelData.menu : null
+                                    anchor.item: tc
+                                    anchor.edges: Edges.Top
+                                    anchor.gravity: Edges.Top
+                                    onClosed: root.flyout = ""
+                                }
+                                MouseArea {
+                                    id: tcMa
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                    cursorShape: Qt.PointingHandCursor
+                                    onEntered: root.trayTip = tc.label
+                                    onExited: if (root.trayTip === tc.label) root.trayTip = ""
+                                    onClicked: function (mouse) {
+                                        var m = tc.modelData
+                                        if (!m) return
+                                        if (m.hasMenu) { tcMenu.open(); return }
+                                        root.flyout = ""
+                                        if (mouse.button === Qt.RightButton) m.secondaryActivate()
+                                        else m.activate()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Rectangle {
+                        x: 4
+                        y: trayGrid.height + 8
+                        width: 160
+                        height: 1
+                        color: Kit.white(0.18)
+                    }
+                    Text {
+                        x: 4
+                        y: trayGrid.height + 12
+                        width: 160
+                        height: 16
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                        text: root.flyout === "tray" ? root.trayTip : ""
+                        color: "#ffffff"
+                        font: Kit.bodyFont(11)
+                        textFormat: Text.PlainText
+                    }
+                }
+            }
         }
 
         Flyout {
@@ -1669,9 +1835,9 @@ Item {
                         root.bridge.sendCommand({ cmd: "power", action: action })
                         root.flyout = ""
                     }
-                    function shutdownDialog() {
+                    function shutdownDialog(action) {
                         root.flyout = ""
-                        if (root.powermenu) root.powermenu.show()
+                        if (root.powermenu) root.powermenu.show(action)
                     }
 
                     Plate {
@@ -1896,10 +2062,10 @@ Item {
                             id: powCol
                             x: 1; y: 5; width: 130
                             PaneRow { plate: true; rh: 26; label: "Switch user"; enabled: false }
-                            PaneRow { plate: true; rh: 26; label: "Log off"; onActivated: sm.power("logout") }
+                            PaneRow { plate: true; rh: 26; label: "Log off"; onActivated: sm.shutdownDialog("logout") }
                             PaneRow { plate: true; rh: 26; label: "Sleep"; onActivated: sm.power("suspend") }
                             PaneRow { plate: true; rh: 26; label: "Hibernate"; onActivated: sm.power("hibernate") }
-                            PaneRow { plate: true; rh: 26; label: "Restart"; onActivated: sm.power("reboot") }
+                            PaneRow { plate: true; rh: 26; label: "Restart"; onActivated: sm.shutdownDialog("reboot") }
                             PaneRow { plate: true; rh: 26; label: "Shut down…"; onActivated: sm.shutdownDialog() }
                         }
                     }

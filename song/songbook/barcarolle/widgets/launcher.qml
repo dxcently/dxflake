@@ -898,7 +898,7 @@ PanelWindow {
         }
 
         Item {
-            x: 62; y: 72; width: 380; height: 284
+            x: 43; y: 55; width: 418; height: 318
             opacity: gs.co
             enabled: gs.co > 0.5
 
@@ -930,7 +930,7 @@ PanelWindow {
                     }
 
                     Item {
-                        x: 304; y: 26; width: 72; height: 48
+                        anchors.right: parent.right; anchors.rightMargin: 4; y: 26; width: 72; height: 48
                         Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-disk.svg" + root.bust; sourceSize: Qt.size(32, 32) }
                         readonly property int lw: Math.ceil(dname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
@@ -938,7 +938,7 @@ PanelWindow {
                         MouseArea { x: 14; width: 44; height: 46; onClicked: root.goTop() }
                     }
                     Item {
-                        x: 304; y: 226; width: 72; height: 48
+                        anchors.right: parent.right; anchors.rightMargin: 4; anchors.bottom: parent.bottom; anchors.bottomMargin: 10; width: 72; height: 48
                         Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-trash.svg" + root.bust; sourceSize: Qt.size(32, 32) }
                         readonly property int lw: Math.ceil(tname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
@@ -1020,15 +1020,15 @@ PanelWindow {
                     }
 
                     Rectangle {
-                        x: 0; y: 0; width: 380; height: 18
+                        x: 0; y: 0; width: parent.width; height: 18
                         gradient: Gradient {
                             GradientStop { position: 0; color: "#f4f4f4" }
                             GradientStop { position: 1; color: "#dadada" }
                         }
                         Rectangle { y: 17; width: parent.width; height: 1; color: root.pl.line }
-                        Image { x: 12; y: 1; width: 14; height: 16; source: root.g3Dir + "finder-note.svg" + root.bust; sourceSize: Qt.size(14, 16) }
+                        Image { x: 56; y: 1; width: 14; height: 16; source: root.g3Dir + "finder-note.svg" + root.bust; sourceSize: Qt.size(14, 16) }
                         Row {
-                            x: 34
+                            x: 78
                             Repeater {
                                 model: ["File", "Edit", "View", "Special"]
                                 Item {
@@ -1048,7 +1048,7 @@ PanelWindow {
                             }
                         }
                         Item {
-                            x: 251; y: 2; width: 120; height: 14
+                            anchors.right: parent.right; anchors.rightMargin: 62; y: 2; width: 120; height: 14
                             Rectangle { anchors.fill: parent; color: "#ffffff" }
                             Rectangle { x: 0; y: 0; width: 120; height: 1; color: "#5c5c5c" }
                             Rectangle { x: 0; y: 0; width: 1; height: 14; color: "#5c5c5c" }
@@ -1108,11 +1108,11 @@ PanelWindow {
                         readonly property real cx: frontWin.x + 2 + (frontGrid.currentIndex % root.geom.cols) * root.geom.cw + (balloon.ci ? balloon.ci.anchorX : root.geom.cw / 2)
                         readonly property real cellTop: frontWin.y + 1 + 34 + Math.floor(frontGrid.currentIndex / root.geom.cols) * root.geom.ch - frontGrid.contentY
                         readonly property real below: balloon.cellTop + (balloon.emojiOnly ? 32 : (balloon.kao && !root.searching ? root.geom.ch : 62)) + 9
-                        readonly property bool flip: balloon.below + box.height > 280
+                        readonly property bool flip: balloon.below + box.height > mac.height - 4
                         readonly property bool leftAnchor: balloon.cx < 200
                         visible: balloon.want
                         z: 5
-                        x: balloon.leftAnchor ? Math.max(4, balloon.cx - 10) : Math.min(376, balloon.cx + 10) - box.width
+                        x: balloon.leftAnchor ? Math.max(4, balloon.cx - 10) : Math.min(mac.width - 4, balloon.cx + 10) - box.width
                         y: balloon.flip ? balloon.cellTop - 9 - box.height + 6 : balloon.below
 
                         Rectangle { x: 2; y: 2; width: box.width; height: box.height; radius: 7; color: Qt.rgba(12 / 255, 33 / 255, 48 / 255, 0.35) }
@@ -1166,17 +1166,23 @@ PanelWindow {
                 }
 
                 Repeater {
-                    model: 95
+                    model: 106
                     Rectangle {
                         required property int index
                         y: index * 3
-                        width: 380
+                        width: parent.width
                         height: 1
                         color: Qt.rgba(2 / 255, 18 / 255, 25 / 255, 0.06)
                     }
                 }
             }
-            Rectangle { id: g3mask; anchors.fill: parent; radius: 10; layer.enabled: true; visible: false }
+            Item {
+                id: g3mask
+                anchors.fill: parent
+                layer.enabled: true
+                visible: false
+                Svg { x: -43; y: -55; width: 760; height: 480; d: "M70 58Q252 52 434 58Q458 59 459 84Q463 214 459 344Q458 369 434 370Q252 376 70 370Q46 369 45 344Q41 214 45 84Q46 59 70 58Z"; fill: "#ffffff" }
+            }
             MultiEffect {
                 anchors.fill: parent
                 source: g3content

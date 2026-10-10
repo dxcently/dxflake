@@ -66,12 +66,13 @@ PanelWindow {
         onPressed: root.toggle()
     }
 
-    function show() {
+    function show(preselect) {
         if (root.shown) return
         var s = root.focusedScreen()
         if (s) root.targetScreen = s
-        root.sel = root.defaultSel
-        root.hot = root.defaultSel
+        var at = root.actions.findIndex(function (a) { return a.action === preselect })
+        root.sel = at >= 0 ? at : root.defaultSel
+        root.hot = root.sel
         root.focusIdx = 1
         root.listOpen = false
         root.helpOpen = false

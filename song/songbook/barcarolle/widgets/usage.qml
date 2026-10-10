@@ -29,10 +29,10 @@ Item {
     function money(v) { return v === undefined ? "—" : "$" + Number(v).toFixed(2) }
     function clock(ms) { return Qt.formatTime(new Date(ms), "hh:mm") }
 
-    readonly property string caption: stale ? "stale · as of " + clock(fetchedMs) : "live usage unavailable"
+    readonly property string caption: !hasData ? "usage unavailable" : stale ? "stale · as of " + clock(fetchedMs) : "live usage unavailable"
 
     implicitWidth: 196
-    implicitHeight: hasData ? (hasLocal ? 112 : 95) : 0
+    implicitHeight: hasLocal ? 112 : 95
 
     FileView {
         path: root.livery.usagePath
@@ -73,7 +73,7 @@ Item {
 
     Item {
         anchors.fill: parent
-        opacity: root.liveOk && root.stale ? 0.55 : 1
+        opacity: (root.liveOk && root.stale) || !root.hasData ? 0.55 : 1
 
         Use { x: 17; y: 3; props: ({ livery: root.livery, label: "5 HR", value: Qt.binding(function () { return root.util(root.live.fiveHour) }) }) }
         Use { x: 109; y: 3; props: ({ livery: root.livery, label: "WEEK", value: Qt.binding(function () { return root.util(root.live.sevenDay) }) }) }
