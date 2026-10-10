@@ -49,6 +49,7 @@ Item {
 
     implicitWidth: label.implicitWidth + 50
     implicitHeight: 32
+    opacity: root.canMenu ? 1 : 0.55
 
     Rectangle {
         anchors.fill: parent

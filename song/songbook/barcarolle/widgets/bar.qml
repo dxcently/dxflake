@@ -1224,8 +1224,8 @@ Item {
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
                                         Hyprland.dispatch("focuswindow address:0x" + root.bare(row.modelData.address))
-                                        win.hotId = -1
                                         win.hotBtn = null
+                                        win.hotId = -1
                                     }
                                 }
                             }
