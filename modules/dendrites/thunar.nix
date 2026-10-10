@@ -4,6 +4,10 @@
 }:
 {
   config = {
+    # gio is glib's command line onto gvfs: what lists, restores and empties
+    # trash:/// for anything that is not a GTK program, the shell's Trash among them.
+    environment.systemPackages = [ pkgs.glib.bin ];
+
     programs = {
       thunar = {
         enable = true;
