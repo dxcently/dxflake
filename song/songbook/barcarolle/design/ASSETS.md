@@ -35,10 +35,13 @@
   the Apple iMac G3 industrial design; no Apple logo. `g3-note.svg` is a
   pixel computer with a ♪ face, drawn here after the classic Mac OS
   start-up face; no Apple artwork is copied.
-- `../icons/launcher/finder-*.svg` (folders, disk, trash, clippings, the
+- `../icons/launcher/finder-*.svg` (folders, the face disk, trash, clippings, the
   generic app, the dither and the menu-bar ♪) are original drawings made
   here in the manner of Mac OS 8/9's Platinum icons; no Apple artwork is
   copied.
+- `../icons/dock/*.svg` (disclosure triangles, room-log glyphs, the proxy
+  and recheck icons) are original drawings made here for the agents dock,
+  in the manner of Platinum; no Apple artwork is copied.
 - `../widgets/Emoji.js` is generated from Unicode's `emoji-test.txt` 17.0
   (Unicode License v3), keeping fully-qualified emoji the installed Noto
   Color Emoji draws; names and subgroups are Unicode's.

@@ -208,7 +208,7 @@ Item {
         var menu = riceSlot._item
         if (menu && menu.open) menu.open = false
     }
-    readonly property bool flyoutOpen: root.flyout !== "" || (!!root.dock && !!root.dock.shown)
+    readonly property bool flyoutOpen: root.flyout !== "" || (!!root.dock && !!root.dock.shown && root.dock.targetScreen === win.screen)
     onFlyoutOpenChanged: {
         if (!win.screen) return
         Kit.hub.open = Kit.hub.open || {}
@@ -756,7 +756,7 @@ Item {
         anchor.edges: fy.flushRight ? Edges.Top | Edges.Right : fy.flushLeft ? Edges.Top | Edges.Left : Edges.Top
         anchor.gravity: fy.flushRight ? Edges.Top | Edges.Left : fy.flushLeft ? Edges.Top | Edges.Right : Edges.Top
         anchor.adjustment: PopupAdjustment.Slide
-        grabFocus: true
+        grabFocus: false
         onVisibleChanged: {
             if (fy.visible || root.flyout !== fy.name) return
             root.flyoutGone = fy.name
@@ -764,6 +764,15 @@ Item {
             root.flyout = ""
         }
         Shortcut { sequence: "Escape"; enabled: fy.visible; onActivated: root.flyout = "" }
+        HyprlandFocusGrab {
+            windows: [fy]
+            active: fy.visible
+            onCleared: {
+                root.flyoutGone = fy.name
+                root.flyoutGoneAt = Date.now()
+                root.flyout = ""
+            }
+        }
     }
 
     component NetGlyph: Item {
@@ -1294,7 +1303,8 @@ Item {
         Cell {
             id: agents
             anchors.right: flag.left
-            onClicked: if (root.dock && root.dock.toggle) root.dock.toggle()
+            lit: !!root.dock && !!root.dock.shown && root.dock.targetScreen === win.screen
+            onClicked: if (root.dock && root.dock.toggle) root.dock.toggle(win.screen)
             Svg { x: 3; y: 12; d: "M3 4.5 H11 a1.5 1.5 0 0 1 1.5 1.5 V12 a1.5 1.5 0 0 1 -1.5 1.5 H3 a1.5 1.5 0 0 1 -1.5 -1.5 V6 a1.5 1.5 0 0 1 1.5 -1.5 Z"; stroke: Kit.white(0.7) }
             Svg { x: 3; y: 12; d: "M7 1.5 H15 a1.5 1.5 0 0 1 1.5 1.5 V9 a1.5 1.5 0 0 1 -1.5 1.5 H7 a1.5 1.5 0 0 1 -1.5 -1.5 V3 a1.5 1.5 0 0 1 1.5 -1.5 Z"; stroke: "#ffffff"; fill: Kit.dark(1) }
             Svg { x: 3; y: 12; d: "M7.5 4 l2 1.8 -2 1.8"; stroke: "#ffffff"; sw: 1.3 }
@@ -1581,20 +1591,9 @@ Item {
             name: "start"
             cell: orb
             flushLeft: true
-            grabFocus: false
             readonly property int rise: 24
             implicitWidth: 440
             implicitHeight: startFly.rise + 560
-
-            HyprlandFocusGrab {
-                windows: [startFly]
-                active: startFly.visible
-                onCleared: {
-                    root.flyoutGone = "start"
-                    root.flyoutGoneAt = Date.now()
-                    root.flyout = ""
-                }
-            }
 
             Rim {
                 y: startFly.rise

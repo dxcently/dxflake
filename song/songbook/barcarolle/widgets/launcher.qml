@@ -423,6 +423,17 @@ PanelWindow {
         onLoadFailed: root.coverPath = Quickshell.env("AOIDE_WALLPAPER") || ""
     }
 
+    property string hostName: ""
+    readonly property string diskName: root.hostName || "Computer"
+    FileView {
+        path: "/etc/hostname"
+        watchChanges: true
+        blockLoading: false
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: root.hostName = text().trim()
+    }
+
     component Svg: Shape {
         id: sv
         property string d: ""
@@ -920,10 +931,10 @@ PanelWindow {
 
                     Item {
                         x: 304; y: 26; width: 72; height: 48
-                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-disk.svg" + root.bust; sourceSize: Qt.size(32, 32) }
+                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-face.svg" + root.bust; sourceSize: Qt.size(32, 32) }
                         readonly property int lw: Math.ceil(dname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
-                        T { id: dname; x: Math.round((72 - parent.lw) / 2) + 2; y: 35; text: "Macintosh HD"; lineHeight: 11; lineHeightMode: Text.FixedHeight }
+                        T { id: dname; x: Math.round((72 - parent.lw) / 2) + 2; y: 35; text: root.diskName; lineHeight: 11; lineHeightMode: Text.FixedHeight }
                         MouseArea { x: 14; width: 44; height: 46; onClicked: root.goTop() }
                     }
                     Item {
@@ -937,8 +948,8 @@ PanelWindow {
                     Win {
                         id: hdWin
                         x: 8; y: 26; width: 294; height: 112
-                        title: "Macintosh HD"
-                        proxy: root.g3Dir + "finder-disk.svg" + root.bust
+                        title: root.diskName
+                        proxy: root.g3Dir + "finder-face.svg" + root.bust
                         active: !root.frontOpen
                         hdr: hdWin.active ? root.hdrText : root.folders.length + " items"
                         view: topGrid

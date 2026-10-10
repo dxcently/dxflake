@@ -71,14 +71,20 @@ Glass is a frame, content is a plate, light comes from above.
   Log off / Lock / Restart / Sleep / Hibernate / Shut down and a line
   describing the choice, OK / Cancel / Help, centred over a near-clear
   scrim. Escape cancels.
-- **Agent flyout** (352px, from the agents tray button `⧉`, whose badge
-  counts the awaiting sessions): a Win7 notification-area flyout anchored
-  above its button at the bottom right, one flyout open at a time like the
-  rest. Rim + deep header with the counts and a recheck, then one plate of
-  sessions grouped by workspace (mini workspace button + label; click jumps),
-  rows with the agent's icon (28px) wearing its state orb as an overlay,
-  agent · title, tool and cwd tail, and a context meter. Subagents indent.
-  "Elsewhere" holds sessions with no window. `+ New terminal` at the foot.
+- **Agents dock** (the `dock` slot, `widgets/dock.qml` and
+  `widgets/Buddy.js`; board `dock.png`, direction A): a Mac OS 8/9 Platinum
+  buddy list, 384×713, anchored above the agents tray button `⧉` (whose
+  badge counts the awaiting sessions) on the monitor whose bar was clicked;
+  SUPER+G opens it too. A Platinum title bar with the counts and a recheck,
+  then sessions grouped by workspace behind disclosure triangles (mini
+  workspace button + label; click jumps; Elsewhere holds sessions with no
+  window), rows with the agent's icon (28px) wearing its state orb, agent ·
+  title, tool and cwd tail, and a context meter. Subagents indent. An
+  awaiting row knocks: its ask with Approve / Deny, or "Answer in terminal"
+  when the herald holds no summons. Under the list, a small room log
+  (joins, leaves, state changes, herald toasts, asks), then `New terminal`.
+  No text input anywhere. It closes on a click outside, Escape or its close
+  box, and counts as the open flyout on its own monitor only.
 - **RICE cell + menu**: the cell shows the mode glyph and word (`Stage`) with
   a chevron. The menu: header `Rice · <song> · <mode>`, songs with the
   current one ticked (staged / declared tags), `Back to declarative ·
@@ -88,7 +94,8 @@ Glass is a frame, content is a plate, light comes from above.
   mute, `Mixer` footer), the network flyout from its tray icon, and the
   calendar flyout from the clock (month grid, today ringed, an analogue
   clock beside it). One flyout is open at a time; opening one closes the
-  rest, the RICE menu and the agents flyout included.
+  rest, the RICE menu and the agents dock included. Each holds itself open
+  with Hyprland's focus grab and closes on a click outside.
 - **Action Center**: the ⚑ flag's flyout lists the notification ledger,
   newest first, with `Clear all`; the flag carries a dot while the ledger
   holds anything.
@@ -137,7 +144,9 @@ timelines) and `launcher-finder.png` (the screen).
 - **Content**, a Mac OS 9 desktop on the screen (`launcher-finder.png`):
   a Platinum menu bar with a pixel ♪ for the Apple menu and a Find field;
   the song's cover shrunk onto the little desktop (a teal dither without
-  one), with Macintosh HD and Trash icons; a Macintosh HD window holding
+  one), with this computer's disk (a kaomoji-face tile, `finder-face.svg`,
+  labelled with the hostname) and Trash; the disk's window, titled with the
+  hostname, holding
   four folders, Applications, Clipboard, Emoji and Kaomoji, in icon view. Each
   level opens its window in front while its parent greys behind, cascading
   14px right and 18px down. Applications are the desktop entries A→Z with
@@ -295,7 +304,7 @@ Consolas → Noto Sans Mono.
 - **Glass**: CSS `backdrop-filter` blur + a streak layer stands in for
   Hyprland blur and hyprglass refraction. The real strip is planned as a
   baked frost (no compositor rule); popups get `blur_popups`; the
-  agent flyout gets hyprglass. The G3 is drawn art and needs no blur.
+  agents dock gets hyprglass. The G3 is drawn art and needs no blur.
 - **Icons**: all drawn here; the real bar resolves app icons from the icon
   theme. Agent icons: see above.
 - **Start**: `mock.html` draws the orb's Start menu; the G3 launcher is on
