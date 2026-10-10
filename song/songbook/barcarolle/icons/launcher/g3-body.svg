@@ -1,15 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
 <defs>
-<linearGradient id="g3-ice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#e8f5f7"/><stop offset="1" stop-color="#c4dde4"/></linearGradient>
+<linearGradient id="g3-ice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".72"/><stop offset=".6" stop-color="#e8f5f7" stop-opacity=".5"/><stop offset="1" stop-color="#c4dde4" stop-opacity=".62"/></linearGradient>
 <linearGradient id="g3-ice-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity=".1"/></linearGradient>
 <linearGradient id="g3-well" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5964"/><stop offset="1" stop-color="#15252d"/></linearGradient>
 <radialGradient id="g3-glass" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#1f4c58"/><stop offset=".6" stop-color="#0a2630"/><stop offset="1" stop-color="#030e13"/></radialGradient>
-<linearGradient id="g3-speaker" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78e6ee"/><stop offset="1" stop-color="#147f95"/></linearGradient>
+<linearGradient id="g3-speaker" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78e6ee" stop-opacity=".78"/><stop offset="1" stop-color="#147f95" stop-opacity=".7"/></linearGradient>
 <linearGradient id="g3-slot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6dce2"/><stop offset="1" stop-color="#f4fafb"/></linearGradient>
 </defs>
-<rect x="40" y="440" width="34" height="10" rx="3" fill="#8fb0b9"/><rect x="430" y="440" width="34" height="10" rx="3" fill="#8fb0b9"/>
+<rect x="40" y="440" width="34" height="10" rx="3" fill="#8fb0b9" fill-opacity=".6" stroke="#5f8995" stroke-width="1"/><rect x="430" y="440" width="34" height="10" rx="3" fill="#8fb0b9" fill-opacity=".6" stroke="#5f8995" stroke-width="1"/>
 <path d="M58 26L446 26Q492 26 494 70L502 402Q502 446 460 446L44 446Q2 446 2 402L10 70Q12 26 58 26Z" fill="url(#g3-ice)" stroke="#5f8995" stroke-width="2"/>
 <path d="M58 29L446 29Q489 29 491 70L492 100Q252 88 13 100L13 70Q15 29 58 29Z" fill="url(#g3-ice-gloss)" fill-opacity=".6"/>
+<path d="M58 29.5L446 29.5Q489.5 29.5 491 70L498.5 402Q498.5 442.5 460 442.5L44 442.5Q5.5 442.5 5.5 402L13.5 70Q15 29.5 58 29.5Z" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
 <path d="M60 31L444 31" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
 <rect x="30" y="42" width="444" height="344" rx="26" fill="url(#g3-well)" stroke="#a9c6ce" stroke-width="2"/>
 <path d="M70 58Q252 52 434 58Q458 59 459 84Q463 214 459 344Q458 369 434 370Q252 376 70 370Q46 369 45 344Q41 214 45 84Q46 59 70 58Z" fill="url(#g3-glass)" stroke="#02090d" stroke-width="2"/>

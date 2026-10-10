@@ -117,13 +117,16 @@ fades, the CRT collapses to a dot and the G3 shrinks away. Boards:
 `launcher-g3.html` (rendered to `launcher-g3.png`; the machine and its
 timelines) and `launcher-finder.png` (the screen).
 
-- **Look**: front-facing, no back. A frosted ice-white front, symmetric
-  about the screen centre, with a flat, low crown so the screen takes most
-  of it; a dark CRT well round a screen with slightly bulged sides; two
-  teal speaker grilles at the bottom corners, a drive slot between them
-  with the power LED under it; two short feet. No floor shadow: the G3
-  floats mid-screen, and the launcher layer's glass would smear a
-  translucent shadow into a rainbow. No Apple logo.
+- **Look**: front-facing, no back. A front of translucent frosted plastic,
+  symmetric about the screen centre, with a flat, low crown so the screen
+  takes most of it. The ice gradient runs at 0.72 → 0.5 → 0.62 alpha, the
+  feet at 0.6 and the teal speaker grilles at about 0.75, so the launcher
+  layer's hyprglass blurs and warps the desktop through the plastic; an
+  opaque outer rim, a white inner rim and the top highlight hold the
+  silhouette. The dark CRT well and the screen stay solid for legibility,
+  as does the drive slot between the grilles, with the power LED under it.
+  No floor shadow: the G3 floats mid-screen, and the launcher layer's glass
+  would smear a translucent shadow into a rainbow. No Apple logo.
 - **Size and place**: a 760×480 viewBox at 1:1. The drawing fills only
   **x 0–504, y 24–480** of it (front shell x 2–502, y 26–446; feet to
   y 450), so the window is cropped to that 504×456 box and

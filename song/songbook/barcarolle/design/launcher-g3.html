@@ -28,7 +28,9 @@ body{font:12px/1.35 var(--ui);color:#fff}
 
 /* the G3: every layer shares the 760x480 viewBox */
 .g3{position:absolute;width:760px;height:480px}
-.g3>img,.g3>.content{position:absolute;left:0;top:0}
+.g3>img,.g3>.content,.g3>.frost{position:absolute;left:0;top:0}
+/* the plastic is translucent: hyprglass blurs and tints what is behind every pixel above 0.05 alpha; mocked with a backdrop blur masked to the body */
+.g3>.frost{width:760px;height:480px;background:rgba(8,30,43,.22);backdrop-filter:blur(14px) saturate(1.35);-webkit-mask:url(../icons/launcher/g3-body.svg) 0 0/760px 480px no-repeat;mask:url(../icons/launcher/g3-body.svg) 0 0/760px 480px no-repeat}
 .g3 .scr,.g3 .note,.g3 .beam{transform-origin:252px 214px}
 /* the screen rect 62,72 380x284: the Finder's top level, cut from launcher-finder.png (its tile 1 screen sits at 78,143).
    That render already carries the glare and scanlines, so here it sits above g3-glare; in the QML the content sits under it. */
@@ -71,7 +73,7 @@ body{font:12px/1.35 var(--ui);color:#fff}
     <h1>barcarolle · the SUPER+Space launcher is an iMac G3</h1>
     <ul>
       <li>SUPER+Space (or the key below): the G3 pops in at the centre of the focused monitor, its CRT powers on, a Happy Mac with a ♪ face shows, then the Finder fades in on the screen. Again to power off. The ♪ orb opens the Win7 Start menu instead (not shown).</li>
-      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [Finder] · beam · glare · led</code>. Front-facing: the drawing fills <code>x 0–504, y 24–480</code>, the window's crop box, centred on the output; the G3 pops about its own centre <code>(252, 252)</code>.</li>
+      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [Finder] · beam · glare · led</code>. Front-facing, its plastic translucent so the glass blurs and warps the desktop through it; the drawing fills <code>x 0–504, y 24–480</code>, the window's crop box, centred on the output; the G3 pops about its own centre <code>(252, 252)</code>.</li>
       <li>Screen rect for the Finder: <code>x 62, y 72, 380×284</code> in G3 units. Shown here at its top level, cut from <code>launcher-finder.png</code>, which has every state.</li>
       <li>Original drawing, inspired by the iMac G3; no Apple logo.</li>
     </ul>
@@ -134,7 +136,7 @@ function at(tracks, t, from) {
   return s;
 }
 function build(el) {
-  el.innerHTML = `<img src="${L}g3-body.svg"><img class="scr" src="${L}g3-screen.svg"><img class="note" src="${L}g3-note.svg">
+  el.innerHTML = `<div class="frost"></div><img src="${L}g3-body.svg"><img class="scr" src="${L}g3-screen.svg"><img class="note" src="${L}g3-note.svg">
     <img class="beam" src="${L}g3-beam.svg"><img src="${L}g3-glare.svg"><div class="content"></div><img class="led" src="${L}g3-led.svg">`;
 }
 // the G3 pops in about its own centre, (252,252) in G3 units
