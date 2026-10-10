@@ -64,6 +64,9 @@
     # an Aoide option surface.
     openai.enable = true;
     openrazer.enable = true;
+    # ROS 2 on the workstation too (chiyo carries the same dendrite): the CLI
+    # tools, the ros.cachix.org substituter and the DDS port range, no service.
+    ros.enable = true;
     syncthing.enable = true;
     snowglobe.enable = true;
     virtualisation.enable = true;
