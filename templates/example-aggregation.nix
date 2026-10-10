@@ -4,8 +4,9 @@
 # Then:     nothing. modules/aggregations/default.nix discovers every immediate
 #           child directory that holds a default.nix — there is no collector
 #           line to add and no catalogue entry. Select it with
-#           `aggregation.<group>.enable = true;` on a host, or the same line
-#           under `users.<u>` for that person's home half.
+#           `habit.aggregation.<group>.enable = true;` on a host, or
+#           `habit.users.<u>.aggregation.<group>.enable = true;` for that
+#           person's home half.
 # Replace:  <group>, the description, and both membership halves.
 #
 # An aggregation body is DATA. It declares no options, carries no `mkIf`, and
@@ -17,11 +18,12 @@
 # A body is imported only if this host, or one of its users, selected it. A
 # group nobody selects is discovered by name and never read.
 {
-  # Shown on the generated `aggregation.<group>.enable` option.
+  # Shown on the generated `habit.aggregation.<group>.enable` option.
   description = "One line: what selecting this group gets you.";
 
-  # The half that answers for the HOST. `aggregation.<group>.enable = true` in
-  # hosts/<host>/default.nix selects exactly these.
+  # The half that answers for the HOST.
+  # `habit.aggregation.<group>.enable = true` in hosts/<host>/default.nix
+  # selects exactly these.
   system = {
     # Single-implementation members: catalogue names, nothing else.
     members = [
@@ -33,7 +35,7 @@
     # shared default — and each key becomes a selector on this group's own
     # interface, which is where a host states its choice:
     #
-    #   aggregation.<group> = {
+    #   habit.aggregation.<group> = {
     #     enable = true;
     #     compositor.provider = "niri";   # this host differs
     #   };
@@ -67,7 +69,7 @@
     # the group's convenience list last and it can never shadow a capability a
     # host actually selected. An ordinary NixOS module, evaluated only in the
     # platform pass — never during selection.
-    nixos =
+    module =
       { pkgs, lib, ... }:
       {
         environment.systemPackages = lib.mkAfter [ pkgs.jq ];
@@ -75,20 +77,21 @@
       };
   };
 
-  # The half that answers for a PERSON. `users.<u>.aggregation.<group>.enable`
-  # selects these into that user's home lane. Same file, same name, two halves
-  # that never leak into each other. Drop this whole attribute for a group with
-  # nothing to say about a user — an absent half is a real answer.
+  # The half that answers for a PERSON.
+  # `habit.users.<u>.aggregation.<group>.enable` selects these into that user's
+  # home. Same file, same name, two halves that never leak into each other.
+  # Drop this whole attribute for a group with nothing to say about a user — an
+  # absent half is a real answer.
   home = {
     members = [ "examplewidget" ];
 
     # A per-user daemon: the choice belongs to the person, so the selector
-    # appears under `users.<u>.aggregation.<group>`. "mako" is the shared
-    # default and any user may name the other one instead.
+    # appears under `habit.users.<u>.aggregation.<group>`. "mako" is the
+    # shared default and any user may name the other one instead.
     providers.notifications = "mako";
 
-    # Optional, and the home-lane twin of `system.nixos`.
-    homeManager =
+    # Optional, and the home twin of `system.module`.
+    module =
       { lib, ... }:
       {
         programs.example.fontSize = lib.mkDefault 12;

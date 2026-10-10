@@ -9,7 +9,7 @@
 # the `shell` aggregation answers with "transience" by default. A host that
 # wants another look writes one line:
 #
-#   users.<u>.aggregation.shell.rice.provider = "<other>";
+#   habit.users.<u>.aggregation.shell.rice.provider = "<other>";
 #
 # ── What transience actually owns ─────────────────────────────────────────
 # waybar     the stylesheet (source/waybar.css) and the bar's own composition
@@ -36,7 +36,7 @@
 # repainted. Both `livery.json` and `modules/dendrites/stylix.nix` read
 # `palette.nix`, the one source, and tests/rice asserts the chain still lands.
 {
-  homeManager =
+  habit.home =
     {
       config,
       lib,

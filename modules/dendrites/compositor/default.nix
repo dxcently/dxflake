@@ -4,7 +4,7 @@
 # compositor is the only provider entry ever read. Hyprland is the
 # implementation dxflake ships; adding niri is a folder beside `hyprland/` and a
 # line below, and the hosts that want it say so on their own interface
-# (`aggregation.shell.compositor.provider`).
+# (`habit.aggregation.shell.compositor.provider`).
 #
 # One folder per provider, and the folder holds the provider's own entry file
 # PLUS everything written against that compositor — a plugin compiled against

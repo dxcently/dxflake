@@ -4,7 +4,7 @@
 # `compositor` is a provider-bearing dendrite, so this aggregation exposes the
 # choice on its own interface and a host writes it there:
 #
-#   aggregation.shell = {
+#   habit.aggregation.shell = {
 #     enable = true;
 #     compositor.provider = "hyprland";
 #   };
@@ -38,7 +38,7 @@
     # waybar is deliberately absent: `programs.waybar.enable` in the waybar
     # dendrite already installs it, and switching it on here too would put two
     # copies on every host.
-    nixos =
+    module =
       { lib, ... }:
       {
         dx.packages =
@@ -72,7 +72,7 @@
     # dxflake ships one rice, and transience is the look this desktop has always
     # had, so a host that says nothing keeps it. song/songbook/default.nix is the
     # registry; a host that wants another writes
-    # `users.<u>.aggregation.shell.rice.provider`.
+    # `habit.users.<u>.aggregation.shell.rice.provider`.
     providers.rice = "transience";
   };
 }

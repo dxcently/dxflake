@@ -1,8 +1,6 @@
 {
-  nixos = { ... }: {
-    config = {
-      services.printing.enable = true;
-      programs.system-config-printer.enable = true;
-    };
+  config = {
+    services.printing.enable = true;
+    programs.system-config-printer.enable = true;
   };
 }

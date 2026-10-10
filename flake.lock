@@ -39,11 +39,11 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1791358651,
-        "narHash": "sha256-K1gfE7u7S+8bWaXAc56C9YiMx3eo+0NOGLY1i8GTDlo=",
+        "lastModified": 1791605994,
+        "narHash": "sha256-VKC9rNDiZcJyRoo8ZIlgV9vYCL4bxqyfzCmPYgIWilg=",
         "ref": "main",
-        "rev": "ae7831c5bc4a6add5aa20c0884b7aa133046c812",
-        "revCount": 1808,
+        "rev": "fddca2d1ce4bfbb0b04a501598d733c76f3192b2",
+        "revCount": 1916,
         "type": "git",
         "url": "https://github.com/dxcently/Aoide.git"
       },
@@ -401,16 +401,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1790931473,
-        "narHash": "sha256-K74sky0svkG2c7b78CImXzic2l+aeOVgUTjOiPZ/pHA=",
+        "lastModified": 1791584761,
+        "narHash": "sha256-6OAQiyF+tU+kXwqDBqI6JBNcv+k2I/yQ9TPyqLpDGC0=",
         "owner": "dxcently",
         "repo": "habit",
-        "rev": "fb29fb0ddcd87fb3335a9a5de31a065090a438e3",
+        "rev": "772f104470d320a3ce5ae6a0d8d3f5a04e1ffb70",
         "type": "github"
       },
       "original": {
         "owner": "dxcently",
-        "ref": "v1",
+        "ref": "v0.2.0",
         "repo": "habit",
         "type": "github"
       }

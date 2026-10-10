@@ -1,9 +1,6 @@
+{ pkgs, ... }:
 {
-  nixos =
-    { pkgs, ... }:
-    {
-      config = {
-        environment.systemPackages = [ pkgs.claude-code ]; # agentic AI coding assistant
-      };
-    };
+  config = {
+    environment.systemPackages = [ pkgs.claude-code ]; # agentic AI coding assistant
+  };
 }

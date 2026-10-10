@@ -10,7 +10,7 @@
 # dendrite's respectively, because which of them exists is a property of the
 # hardware, not of the compositor.
 {
-  homeManager =
+  habit.home =
     {
       pkgs,
       osConfig,

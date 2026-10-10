@@ -33,7 +33,7 @@ modules/default.nix (catalogue)  modules/aggregations/ (discovery)  hosts/<host>
                               |
       platform import ONLY the dendrite and provider files selection kept
                               |
-        nucleus + account lanes + system lanes + per-user home lanes
+        nucleus + accounts + system halves + per-user home halves
             + the overlays and modules the matched records carried
                               |
                      nixpkgs.lib.nixosSystem
@@ -57,20 +57,22 @@ them. Nothing else under `modules/dendrites/` is read at all.
 **Override records are the one weaker boundary, and it is stated rather than
 glossed.** `modules/overrides/*.nix` is imported on every host, because matching
 means reading which dendrites a record targets. What an unmatched host never
-spends is the *work*: `overlay`, `nixos` and `homeManager` are functions and
-nothing calls them. Keep imports, fetches and package computation inside those
-functions — metadata that computes defeats this, and only the function bodies
-are proved cold.
+spends is the *work*: `overlay`, `system` and `home` are functions and nothing
+calls them. Keep imports, fetches and package computation inside those functions
+— metadata that computes defeats this, and only the function bodies are proved
+cold.
 
 - **Catalogue** — `modules/default.nix`. Not a module: plain data, one
   `name = ./path;` line per capability plus `aggregations = import ./aggregations;`.
-  It generates `dendrites.<name>.enable` and `.provider`, so an unknown name
-  fails as an option that does not exist, naming the file that asked for it. A
-  name with no catalogue line is unreachable, which is what shelving means now
-  (the `_` filename prefix is the older convention and still marks parked files).
-- **Dendrite** — a selectable capability. One file exposing the lanes it
-  supports (`{ nixos = …; }`, `{ homeManager = …; }`, or both), or a directory
-  whose `default.nix` lists `providers = { … }` and imports none of them.
+  It generates `habit.dendrites.<name>.enable` and `.provider`, so an unknown
+  name fails as an option that does not exist, naming the file that asked for
+  it. A name with no catalogue line is unreachable, which is what shelving means
+  now (the `_` filename prefix is the older convention and still marks parked
+  files).
+- **Dendrite** — a selectable capability, with two halves. One file is a plain
+  NixOS module, which is its system half; `habit.home = { … };` beside it is its
+  home half. Or a directory whose `default.nix` lists `providers = { … }` and
+  imports none of them.
 - **Provider** — one implementation of a multi-implementation capability, and
   exclusive within a scope. `compositor` and `gpu` are the worked examples; the
   unchosen file is never imported. A single-implementation dendrite has no
@@ -87,27 +89,27 @@ are proved cold.
     system = {
       members = [ "catalogue-name" … ];   # single-implementation members
       providers.compositor = null;        # provider-bearing member, no default
-      nixos = { … };                      # optional preference that rides along
+      module = { … };                     # optional preference that rides along
     };
     home = {
       members = [ … ];
       providers.notifications = "mako";   # shared default a user may override
-      homeManager = { … };                # optional
+      module = { … };                     # optional
     };
   }
   ```
 
   `modules/aggregations/default.nix` discovers every immediate child directory
   holding a `default.nix` and does nothing else — there is no collector line to
-  add. `aggregation.desktop.enable` on the host selects the `system` half;
-  `users.khoa.aggregation.desktop.enable` selects the `home` half. An absent half
-  is a real answer, not a placeholder.
+  add. `habit.aggregation.desktop.enable` on the host selects the `system` half;
+  `habit.users.khoa.aggregation.desktop.enable` selects the `home` half. An
+  absent half is a real answer, not a placeholder.
 
   Each key of a `providers` attrset becomes a selector on that aggregation's own
   interface, in that scope — which is where a host states its choice:
 
   ```nix
-  aggregation.shell = {
+  habit.aggregation.shell = {
     enable = true;
     compositor.provider = "hyprland";
   };
@@ -120,11 +122,11 @@ are proved cold.
 
   What a group **installs** is not membership. A package list answers no
   question a host could answer differently, so it gets no catalogue line and is
-  not a dendrite: it goes in the group's own `nixos`/`homeManager` half, in a
-  `packages.nix` beside the `default.nix` when it is long enough to want a file
-  (`desktop/`, `shell/`) and inline when it is not (`gaming`). Those lists are
-  `lib.mkAfter`, so they order last into `system.path`, where collisions resolve
-  first-wins — a group's convenience list never shadows a selected capability.
+  not a dendrite: the group's own half `module` switches its `dx.packages`
+  lines on by name, and the lines themselves live once in
+  `modules/dendrites/packages.nix`. Those lists are `lib.mkAfter`,
+  so they order last into `system.path`, where collisions resolve first-wins — a
+  group's convenience list never shadows a selected capability.
 
   Membership is **static**: the list does not vary with the provider that was
   chosen. So a member only one implementation can run — a compositor plugin, a
@@ -134,16 +136,16 @@ are proved cold.
   only Hyprland can, and a host on another compositor selects `shell` alone.
 - **Override record** — a fix that belongs to a capability rather than to a
   host: `modules/overrides/<name>.nix`. It names the dendrites it is about,
-  optionally the hosts it is confined to, and carries an `overlay`, a `nixos`
-  module, a `homeManager` module, or any combination:
+  optionally the hosts it is confined to, and carries an `overlay`, a `system`
+  module, a `home` module, or any combination:
 
   ```nix
   {
     dendrites = [ "browser" ];        # catalogue names — required
     hosts = [ "osaka" "sakaki" ];     # optional; omit for every host that selected one
     overlay = _final: prev: { … };    # host package set
-    nixos = { lib, ... }: { … };      # deferred platform module
-    homeManager = { … };              # rides only the users who selected a target
+    system = { lib, ... }: { … };     # deferred platform module
+    home = { … };                     # rides only the users who chose a target
   }
   ```
 
@@ -152,24 +154,28 @@ are proved cold.
   capability nobody chose is a record that does not apply. A record applies at
   most once however many of its targets were selected, matched records apply in
   record-name order, and a record outranks everything the constructor imported
-  on its behalf while the host's own `nixos` block still outranks the record.
+  on its behalf while the host module still outranks the record.
   Unknown fields, unknown targets and unknown host names fail on *every* host,
   naming the record — a broken record cannot hide on the machines it would not
   have applied to.
-- **Nucleus** — `modules/nucleus/`, imported unconditionally on every host.
-- **Lane** — a module for one evaluator: `nixos`, `homeManager` (`darwin` is in
-  the vocabulary, unused here). Selecting a dendrite for the system imports its
-  `nixos` lane; selecting it under a user imports its `homeManager` lane.
-  Neither installs the other, and selecting a lane a dendrite does not expose is
-  an error naming the dendrite, the scope and the lanes it does support.
+- **Nucleus** — `modules/nucleus/`, imported unconditionally on every host
+  through `extraModules` in `flake.nix`.
+- **Halves** — a dendrite's two sides: its system half, the module itself
+  (services, packages, hardware), and its home half, `habit.home` (one user's
+  Home Manager module). Selecting it for the system applies the system half and
+  sends the home half to every user with `home.enable`; selecting it under
+  `habit.users.<u>` applies the system half too (`system = true` is the default)
+  and sends the home half to that user. `system = false` asks for the home half
+  alone. A half with nothing to say is empty, and selecting it fails nothing.
 
 ## Adding things
 
 Every row below has a template in `templates/`; `templates/README.md` maps role
 to destination.
 
-- **A dendrite** — write the file exposing its lane(s), add one catalogue line,
-  and select it from a host or a group. Nothing else.
+- **A dendrite** — write the file: a plain module, plus `habit.home` if it has a
+  home half. Add one catalogue line, and select it from a host or a group.
+  Nothing else.
 - **A provider** — add the file and one line to that dendrite's `providers`
   registry; select it where wanted.
 - **A group** — a directory under `modules/aggregations/` whose `default.nix`
@@ -178,32 +184,31 @@ to destination.
   one provider can run it. Its own group beside the provider-bearing one
   (`modules/aggregations/compositor/` beside `shell/`), so choosing another
   provider leaves it unselected and unevaluated.
-- **A package the group just installs** — that group's `packages.nix`, or its
-  inline `nixos` half. Never a catalogue line: there is nothing to select.
+- **A package the group just installs** — that group's `module` switches a
+  `dx.packages` line on. Never a catalogue line: there is nothing to select.
 - **A rice** — structurally a provider, so `example-provider.nix` is still the
   template, but it lives at `song/songbook/<name>/rice.nix` beside its `livery.json`,
   `design/intent.md` and source assets, and `song/songbook/default.nix` is its
   registry. The look only; the wiring stays in the dendrites.
   `song/songbook/transience/` is the worked example.
 - **A shared preference or package fix** — the owning group's `default.nix`,
-  once, in the half that matches the lane it rides: `system.nixos` for a
-  deferred platform preference, `home.homeManager` for a home one. Never
-  repeated across hosts.
+  once, in the half it rides: `system.module` for a deferred platform
+  preference, `home.module` for a home one. Never repeated across hosts.
 - **A capability-wide fix** — an override record under `modules/overrides/`,
   when a package or a setting is wrong for everyone who runs the thing.
   Repeating it per host drifts; putting it in the dendrite confuses what the
   thing IS with a patch log; a new aggregation or provider turns a patch into a
   capability. None of those.
 - **A host exception** — that host's own selection (`enable = false` beats a
-  `mkDefault true`, and `dendrites.<name>.provider` beats a group's choice), or
-  an ordinary setting in its `nixos` module.
+  `mkDefault true`, and `habit.dendrites.<name>.provider` beats a group's
+  choice), or an ordinary setting in the host module.
 - **A user** — one definition under `users/`, attached by the hosts that want
-  it. `users/khoa.nix` carries the account in its `nixos` lane and the shared
-  home floor in its `homeManager` lane; there are no per-host copies.
+  it. `users/khoa.nix` is one module: the account, plus `habit.home` for the
+  shared home floor. There are no per-host copies.
 
-A host file is selection first, then its own platform settings under `nixos`.
-That `nixos` block is an ordinary NixOS module: hardware imports, `dx.*` knobs,
-host-only overlays and packages.
+A host file is ONE module: `habit.*` selection first, then its own platform
+settings beside it. Those settings are an ordinary NixOS module: hardware
+imports, `dx.*` knobs, host-only overlays and packages.
 
 **Never** name a module file from anywhere but the catalogue.
 
@@ -228,13 +233,13 @@ sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
 
 `tests/selection/` runs dxflake's real registry and the sakaki host through
-habit's composition: the selection resolves, its lane files import, and the
-inventory reports the groups. Composition's own schema, with its
-fixtures that throw on import, is habit's suite.
+habit's composition: the selection resolves, its module files import, and the
+inventory reports the groups. Composition's own schema, with its fixtures that
+throw on import, is habit's suite.
 
 `tests/templates/` assembles a whole tree out of `templates/`, resolves two
 hosts against habit's composition, and checks the same non-evaluation there. It
-also runs the override template's `nixos` half through the real NixOS module
+also runs the override template's `system` half through the real NixOS module
 system, so "real options" is checked rather than claimed.
 
 `tests/rice/` covers the look: that transience's authored `livery.json` still
@@ -259,7 +264,8 @@ The look is a capability with providers, like the compositor:
 `song/songbook/` is the registry, one directory per rice, and the `shell`
 aggregation answers it — `transience` by default, because dxflake ships one
 rice and that is the look this desktop has always had.
-`users.<u>.aggregation.shell.rice.provider` is where a host says otherwise.
+`habit.users.<u>.aggregation.shell.rice.provider` is where a host says
+otherwise.
 
 A **rice** is the palette and the stylesheets. A **dendrite** is whether the
 program runs. `modules/dendrites/waybar.nix` is `enable` and a systemd
@@ -289,8 +295,8 @@ against Hyprland itself — `hyprland-keybinds`, `hyprland-decoration`,
 `hyprland-autostart`, `hyprglass` — and the `compositor` aggregation names
 exactly those four. The surfaces `waybar`/`rofi`/`satty`/`wlogout` are
 compositor-agnostic, so they sit at the dendrite root like every other
-single-file capability and belong to `shell`, which also installs the Wayland
-tool belt from its own `packages.nix`. That folder is the hyprland provider's:
+single-file capability and belong to `shell`, which also switches the Wayland
+tool belt on by name in its `module`. That folder is the hyprland provider's:
 one folder per provider under the `compositor` registry, holding the provider
 entry and everything written against that compositor. Nothing walks it; each
 file is reachable only through its own catalogue line. (`compositor/` and
@@ -359,24 +365,25 @@ own habit and nixpkgs inputs follow ours, so one habit is in the graph and
 Aoide's packages build against the nixpkgs the hosts run). Stylix, Hyprland and
 Quickshell are Aoide's inputs and reach hosts only through its exports; dxflake
 declares none of them, and a dendrite that wants one asks Aoide for an export.
-Hosts are built through the Aoide input's exports: `nixosModules.nucleus`, `overlays.default`, `lib.livery` and the lanes
-named in `aoideLanes`. The registry is dxflake's own and those lanes merged by
-habit's `mergeRegistries`, so a name both define is an error, never a silent
-winner. Aoide's `stylix` and `compositor` clash with dxflake's dendrites of the
-same names and are selected as `aoide-stylix` and `aoide-compositor`. The
-nucleus carries Aoide's option contract and the Stylix module,
-so no dendrite imports the Stylix module itself. Cross-lane questions are read
-from Aoide's enable facts (`aoide.quickshell.enable`, `aoide.stylix.enable`),
-never from a lane's own option. Songs come through `lib.songbook` over Aoide's
-`songbookRoot` export, wired by the `selectionModules` and `extraModulesFor`
-hooks in `flake.nix`: a host performs one of Aoide's songs by writing
-`song.declared` on its record, and lists the songs it only builds in, to stage
-without a rebuild, as `song.available`. No path into the Aoide input is named
-anywhere; do not add one. A host may name a runtime path on the box, such as the
-dev checkout (`aoide.checkout`) or the runtime root, which are places the box
-keeps, never paths into the input. `song/songbook/` here is the `shell`
-aggregation's provider registry of rices, a different thing from the songbook
-directory `lib.songbook` reads, and the two are not unioned.
+Hosts are built through the Aoide input's exports: `nixosModules.nucleus`,
+`overlays.default`, `lib.livery` and the lanes named in `aoideLanes`. The
+registry is dxflake's own and those lanes merged by habit's `mergeRegistries`,
+so a name both define is an error, never a silent winner. Aoide's `stylix` and
+`compositor` clash with dxflake's dendrites of the same names and are selected
+as `aoide-stylix` and `aoide-compositor`. The nucleus carries Aoide's option
+contract and the Stylix module, so no dendrite imports the Stylix module itself.
+Cross-lane questions are read from Aoide's enable facts
+(`aoide.quickshell.enable`, `aoide.stylix.enable`), never from a lane's own
+option. Songs come through `lib.songbook` over Aoide's `songbookRoot` export,
+wired by the `selectionModules` and `extraModulesFor` hooks in `flake.nix`: a
+host performs one of Aoide's songs by writing `habit.song.declared` in its host
+module, and lists the songs it only builds in, to stage without a rebuild, as
+`habit.song.available`. No path into the Aoide input is named anywhere; do not
+add one. A host may name a runtime path on the box, such as the dev checkout
+(`aoide.checkout`) or the runtime root, which are places the box keeps, never
+paths into the input. `song/songbook/` here is the `shell` aggregation's
+provider registry of rices, a different thing from the songbook directory
+`lib.songbook` reads, and the two are not unioned.
 
 Melete and Mneme (`modules/dendrites/{melete,mneme}.nix`) are sakaki-only. Both
 build from their canonical **private** GitHub repos — `noah427/melete`,

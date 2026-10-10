@@ -13,7 +13,7 @@ song/
 ├── songbook/
 │   ├── default.nix              the registry: names paths, imports none
 │   └── transience/
-│       ├── rice.nix             the composition — a homeManager lane
+│       ├── rice.nix             the composition — a module with a `habit.home`
 │       ├── palette.nix          the palette, the one source
 │       ├── livery.json          generated from palette.nix, Aoide's v0 livery schema
 │       ├── regen-livery.sh      writes livery.json from palette.nix
@@ -35,7 +35,7 @@ default because dxflake ships one rice and that is the look this desktop has
 always had:
 
 ```nix
-users.khoa.aggregation.shell.rice.provider = "transience";
+habit.users.khoa.aggregation.shell.rice.provider = "transience";
 ```
 
 The registry imports nothing, so an unselected rice is never read — same

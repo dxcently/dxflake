@@ -11,7 +11,7 @@
 # `lib.mkBefore` ahead of everything in this list. tests/session-guard asserts
 # that ordering against the rendered config, so it cannot drift back.
 {
-  homeManager =
+  habit.home =
     {
       pkgs,
       osConfig,
@@ -26,8 +26,8 @@
       # paint at once — two bars layered, two wallpapers racing the same output.
       #
       # Keyed on the `aoide.quickshell.enable` fact, never on a host name. Read
-      # through `osConfig` because the fact is a NixOS option and this is a home
-      # lane.
+      # through `osConfig` because the fact is a NixOS option and this is the
+      # home half.
       aoideQuickshell = osConfig.aoide.quickshell.enable;
     in
     {

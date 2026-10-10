@@ -5,7 +5,7 @@
 # a vague error is a failing test, not a passing one.
 #
 #   ./tests/selection/run.sh            # all cases
-#   ./tests/selection/run.sh realRegistryLanesImport
+#   ./tests/selection/run.sh realRegistryModulesImport
 set -uo pipefail
 cd "$(dirname "$0")" || exit 1
 root=$(cd ../.. && pwd)
@@ -14,13 +14,13 @@ root=$(cd ../.. && pwd)
 # every host evaluates with and the habit every host is built by.
 rev=$(jq -r '.nodes[.nodes.root.inputs.nixpkgs].locked.rev' "$root/flake.lock")
 lib="(builtins.getFlake \"github:nixos/nixpkgs/$rev\").lib"
-habitRev=$(jq -r '.nodes[.nodes.root.inputs.habit // "habit"].locked.rev // "v1"' "$root/flake.lock")
+habitRev=$(jq -r '.nodes[.nodes.root.inputs.habit // "habit"].locked.rev // "v0.2.0"' "$root/flake.lock")
 habit="(builtins.getFlake \"github:dxcently/habit/$habitRev\")"
 
 # case                              expect  substring the error must contain
 cases=$(cat <<'EOF'
 realRegistryResolvesSakaki          ok      "aoide,autologin,caddy,claude-code,cloudflared,eidolon,immich,jellyfin,kimi-cli,melete,mneme,nas-mounts,slskd,stylix,syncthing,transmission"
-realRegistryLanesImport             ok      true
+realRegistryModulesImport             ok      true
 realRegistryInventory               ok      "base"
 EOF
 )

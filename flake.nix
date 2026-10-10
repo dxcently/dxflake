@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     habit = {
-      url = "github:dxcently/habit/v1";
+      url = "github:dxcently/habit/v0.2.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
@@ -57,10 +57,10 @@
     # rebuild — `path:` re-hashes the directory as it is on disk:
     #   nh os switch -- --override-input melete-src path:/home/khoa/melete
     #
-    # Only sakaki enables these (dendrites.melete / dendrites.mneme /
-    # dendrites.eidolon are false elsewhere and module args are lazy), but the
-    # inputs are fetched at LOCK time on whatever host runs `nix flake update`,
-    # so run it as khoa.
+    # Only sakaki enables these (habit.dendrites.melete /
+    # habit.dendrites.mneme / habit.dendrites.eidolon are false elsewhere and
+    # module args are lazy), but the inputs are fetched at LOCK time on
+    # whatever host runs `nix flake update`, so run it as khoa.
     melete-src = {
       url = "git+https://github.com/noah427/melete.git?ref=master";
       flake = false;
@@ -190,16 +190,14 @@
           # of applying nowhere.
           knownHosts = hostNames;
           inherit registry;
-          hostModules = [ ./hosts/${name} ];
-          nucleus = {
-            imports = [
-              inputs.aoide.nixosModules.nucleus
-              ./modules/nucleus
-            ];
-          };
+          host = ./hosts/${name};
           overlays = [ inputs.aoide.overlays.default ];
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
-          extraModules = [ inputs.disko.nixosModules.disko ];
+          extraModules = [
+            inputs.aoide.nixosModules.nucleus
+            ./modules/nucleus
+            inputs.disko.nixosModules.disko
+          ];
           selectionModules = [ songbook.selectionModule ];
           extraModulesFor =
             sel:
@@ -230,9 +228,10 @@
     {
       nixosConfigurations = lib.mapAttrs (_: h: h.system) hosts;
 
-      # What each host actually resolved: dendrites, providers, users, lanes
-      # and the file each came from. Derived from selection, never maintained
-      # by hand — `nix eval --json .#inventory.osaka` is the review surface.
+      # What each host actually resolved: dendrites, providers, users, which
+      # halves each applies and the file each came from. Derived from selection,
+      # never maintained by hand — `nix eval --json .#inventory.osaka` is the
+      # review surface.
       inventory = lib.mapAttrs (_: h: h.inventory) hosts;
 
       # The merged catalogue hosts are composed from, so other flakes (snowglobe

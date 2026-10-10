@@ -1,7 +1,4 @@
+{ pkgs, ... }:
 {
-  nixos =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ (pkgs.callPackage ../../pkgs/bonsai { }) ];
-    };
+  environment.systemPackages = [ (pkgs.callPackage ../../pkgs/bonsai { }) ];
 }

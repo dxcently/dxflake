@@ -18,12 +18,9 @@
 # `modules/dendrites/compositor/hyprland/`, beside the provider entry it is
 # written against. A host on another compositor never imports that folder.
 #
-# Every member is a homeManager lane, so a host selects this on its user:
-#
-#   users.khoa.aggregation.compositor.enable = true;
-#
-# Selecting it for the system is harmless and does nothing — there is no system
-# half to contribute.
+# Every member is home-only, so a host selects this on its user:
+# `habit.users.khoa.aggregation.compositor.enable = true;` Selected on the host
+# instead, the same home halves would reach every user with `home.enable`.
 {
   description = "The compositor's own session: keybinds, decoration, autostart, lock and idle glass.";
 

@@ -4,39 +4,37 @@
 # Then:     add `<capability> = ./dendrites/<capability>.nix;` to the catalogue
 #           in modules/default.nix, and select it from a host, a user, or an
 #           aggregation's `members`.
-# Replace:  <capability>, the packages, and everything under each lane.
+# Replace:  <capability>, the packages, and the settings in each half.
 #
-# A dendrite is a plain attribute set naming the LANES it supports. A lane is a
-# module for one evaluator:
+# A dendrite is a plain NixOS module, written the way any module is. habit
+# splits it into two halves:
 #
-#   nixos        the host's NixOS module — services, system packages, hardware
-#   homeManager  one user's Home Manager module — dotfiles, user packages
-#   darwin       nix-darwin; in the vocabulary, unused in this tree
+#   the module as written   the system half — services, system packages,
+#                           hardware
+#   habit.home              the home half — one user's Home Manager module:
+#                           dotfiles, user packages
 #
-# Expose only the lanes this capability really answers for. There are no empty
-# stand-ins: selecting a lane a dendrite does not expose is an error naming the
-# dendrite, the scope and the lanes it does support. Selecting it for the system
-# does NOT select it for a user, and the reverse — `dendrites.<name>.enable` on
-# the host reaches `nixos`, the same line under `users.<u>` reaches
-# `homeManager`, and a capability that wants both is selected in both places.
+# Neither half is required. A module with no `habit.home` has an empty home
+# half and one with only `habit.home` has an empty system half; selecting it
+# where it has nothing to say applies the empty half and fails nothing. Who
+# selected it decides where the halves go: the host applies the system half and
+# sends the home half to every user with `home.enable`, and a user applies the
+# system half too and takes the home half alone.
 #
 # This file is imported only if something selected it. Nothing here runs at
 # selection time.
+{ pkgs, ... }:
 {
-  nixos =
-    { pkgs, ... }:
-    {
-      environment.systemPackages = [ pkgs.jq ];
-      services.example.enable = true;
-    };
+  environment.systemPackages = [ pkgs.jq ];
+  services.example.enable = true;
 
-  # Optional. Drop this lane entirely for a system-only capability.
+  # Optional. Drop this for a system-only capability.
   #
-  # A lane that outgrows one file moves out beside this one — `home.nix` or
-  # `nixos.nix` in a directory of its own — and this file becomes
-  #   { nixos = ./nixos.nix; homeManager = ./home.nix; }
-  # with the dendrite catalogued as the DIRECTORY. Same contract, one file each.
-  homeManager =
+  # A home half that outgrows one file moves beside this one — `home.nix` in a
+  # directory of its own — and this file becomes
+  #   { habit.home = ./home.nix; }
+  # with the dendrite catalogued as the DIRECTORY. `habit.home` takes a path.
+  habit.home =
     { pkgs, ... }:
     {
       home.packages = [ pkgs.jq ];

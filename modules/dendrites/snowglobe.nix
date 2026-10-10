@@ -5,12 +5,9 @@
 # home-manager (storage mode, budget, VMs). Like the aoide dendrite, this file is
 # one import that brings both in; every knob that varies per host (budget,
 # storage mode, the partition) is set by the host on the raw namespaces.
+{ inputs, username, ... }:
 {
-  nixos =
-    { inputs, username, ... }:
-    {
-      imports = [ inputs.snowglobe.nixosModules.host ];
-      home-manager.sharedModules = [ inputs.snowglobe.homeManagerModules.default ];
-      snowglobe.host.users = [ username ];
-    };
+  imports = [ inputs.snowglobe.nixosModules.host ];
+  home-manager.sharedModules = [ inputs.snowglobe.homeManagerModules.default ];
+  snowglobe.host.users = [ username ];
 }

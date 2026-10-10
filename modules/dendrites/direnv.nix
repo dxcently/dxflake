@@ -4,7 +4,7 @@
 # Ungated on purpose — same as starship/git: it's a shell convenience, not
 # a role. First use per repo still needs `direnv allow`.
 {
-  homeManager = {
+  habit.home = {
     programs.direnv = {
       enable = true;
       enableBashIntegration = true;
