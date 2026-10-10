@@ -19,6 +19,7 @@ PanelWindow {
 
     readonly property string aoideRoot: Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")
     readonly property string g3Dir: "file://" + root.aoideRoot + "/song/songbook/barcarolle/icons/launcher/"
+    readonly property string bust: "?v=" + Date.now()
     readonly property string fSys: Qt.fontFamilies().indexOf("Tahoma") >= 0 ? "Tahoma" : Kit.family
     readonly property string fSmall: Qt.fontFamilies().indexOf("Verdana") >= 0 ? "Verdana" : Kit.family
     readonly property string fKao: "Noto Sans CJK JP"
@@ -37,10 +38,10 @@ PanelWindow {
         search: { cw: 66, ch: 60, cols: 4 }
     })
     readonly property var folders: [
-        { kind: "folder", key: "apps", name: "Applications", icon: root.g3Dir + "finder-folder-apps.svg" },
-        { kind: "folder", key: "clip", name: "Clipboard", icon: root.g3Dir + "finder-folder-clipboard.svg" },
-        { kind: "folder", key: "emoji", name: "Emoji", icon: root.g3Dir + "finder-folder-emoji.svg" },
-        { kind: "folder", key: "kaomoji", name: "Kaomoji", icon: root.g3Dir + "finder-folder-kaomoji.svg" }
+        { kind: "folder", key: "apps", name: "Applications", icon: root.g3Dir + "finder-folder-apps.svg" + root.bust },
+        { kind: "folder", key: "clip", name: "Clipboard", icon: root.g3Dir + "finder-folder-clipboard.svg" + root.bust },
+        { kind: "folder", key: "emoji", name: "Emoji", icon: root.g3Dir + "finder-folder-emoji.svg" + root.bust },
+        { kind: "folder", key: "kaomoji", name: "Kaomoji", icon: root.g3Dir + "finder-folder-kaomoji.svg" + root.bust }
     ]
 
     // ── window: the front drawing plus a bleed for the pop-in overshoot, centred by the compositor ──
@@ -659,11 +660,11 @@ PanelWindow {
         readonly property real anchorX: cell.row ? 6 + Math.min(kt.implicitWidth, 158) / 2 : cell.width / 2
         readonly property string iconUrl: {
             if (kind === "folder") return modelData.icon
-            if (kind === "kaomoji") return root.g3Dir + "finder-clip-text.svg"
-            if (kind === "clip") return root.g3Dir + (modelData.clip.kind === "image" ? "finder-clip-picture.svg" : "finder-clip-text.svg")
+            if (kind === "kaomoji") return root.g3Dir + "finder-clip-text.svg" + root.bust
+            if (kind === "clip") return root.g3Dir + (modelData.clip.kind === "image" ? "finder-clip-picture.svg" : "finder-clip-text.svg") + root.bust
             if (kind !== "app") return ""
             var p = Quickshell.iconPath(modelData.entry.icon, true)
-            return p ? (p.indexOf("/") === 0 ? "file://" + p : p) : root.g3Dir + "finder-app.svg"
+            return p ? (p.indexOf("/") === 0 ? "file://" + p : p) : root.g3Dir + "finder-app.svg" + root.bust
         }
         readonly property string thumb: {
             if (kind !== "clip" || modelData.clip.kind !== "image") return ""
@@ -808,9 +809,9 @@ PanelWindow {
         transform: Scale { origin.x: 252; origin.y: 252; xScale: gs.g3s; yScale: gs.g3s }
         MouseArea { anchors.fill: parent }
 
-        Image { source: root.g3Dir + "g3-body.svg"; sourceSize: Qt.size(760, 480) }
+        Image { source: root.g3Dir + "g3-body.svg" + root.bust; sourceSize: Qt.size(760, 480) }
 
-        Image { id: g3scr; visible: false; source: root.g3Dir + "g3-screen.svg"; sourceSize: Qt.size(760, 480) }
+        Image { id: g3scr; visible: false; source: root.g3Dir + "g3-screen.svg" + root.bust; sourceSize: Qt.size(760, 480) }
         MultiEffect {
             source: g3scr
             width: 760; height: 480
@@ -818,7 +819,7 @@ PanelWindow {
             brightness: gs.br
             transform: Scale { origin.x: 252; origin.y: 214; yScale: gs.sy }
         }
-        Image { id: g3note; visible: false; source: root.g3Dir + "g3-note.svg"; sourceSize: Qt.size(760, 480) }
+        Image { id: g3note; visible: false; source: root.g3Dir + "g3-note.svg" + root.bust; sourceSize: Qt.size(760, 480) }
         MultiEffect {
             source: g3note
             width: 760; height: 480
@@ -845,7 +846,7 @@ PanelWindow {
                     Image {
                         anchors.fill: parent
                         visible: root.coverPath === ""
-                        source: root.g3Dir + "finder-dither.svg"
+                        source: root.g3Dir + "finder-dither.svg" + root.bust
                         fillMode: Image.Tile
                         sourceSize: Qt.size(2, 2)
                     }
@@ -861,7 +862,7 @@ PanelWindow {
 
                     Item {
                         x: 304; y: 26; width: 72; height: 48
-                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-disk.svg"; sourceSize: Qt.size(32, 32) }
+                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-disk.svg" + root.bust; sourceSize: Qt.size(32, 32) }
                         readonly property int lw: Math.ceil(dname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
                         T { id: dname; x: Math.round((72 - parent.lw) / 2) + 2; y: 35; text: "Macintosh HD"; lineHeight: 11; lineHeightMode: Text.FixedHeight }
@@ -869,7 +870,7 @@ PanelWindow {
                     }
                     Item {
                         x: 304; y: 226; width: 72; height: 48
-                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-trash.svg"; sourceSize: Qt.size(32, 32) }
+                        Image { x: 20; y: 0; width: 32; height: 32; source: root.g3Dir + "finder-trash.svg" + root.bust; sourceSize: Qt.size(32, 32) }
                         readonly property int lw: Math.ceil(tname.implicitWidth) + 4
                         Rectangle { x: Math.round((72 - parent.lw) / 2); y: 36; width: parent.lw; height: 11; color: "#ffffff" }
                         T { id: tname; x: Math.round((72 - parent.lw) / 2) + 2; y: 35; text: "Trash"; lineHeight: 11; lineHeightMode: Text.FixedHeight }
@@ -879,7 +880,7 @@ PanelWindow {
                         id: hdWin
                         x: 8; y: 26; width: 294; height: 112
                         title: "Macintosh HD"
-                        proxy: root.g3Dir + "finder-disk.svg"
+                        proxy: root.g3Dir + "finder-disk.svg" + root.bust
                         active: !root.frontOpen
                         hdr: hdWin.active ? root.hdrText : root.folders.length + " items"
                         view: topGrid
@@ -942,7 +943,7 @@ PanelWindow {
                             GradientStop { position: 1; color: "#dadada" }
                         }
                         Rectangle { y: 17; width: parent.width; height: 1; color: root.pl.line }
-                        Image { x: 12; y: 1; width: 14; height: 16; source: root.g3Dir + "finder-note.svg"; sourceSize: Qt.size(14, 16) }
+                        Image { x: 12; y: 1; width: 14; height: 16; source: root.g3Dir + "finder-note.svg" + root.bust; sourceSize: Qt.size(14, 16) }
                         Row {
                             x: 34
                             Repeater {
@@ -1101,8 +1102,8 @@ PanelWindow {
             }
         }
 
-        Image { source: root.g3Dir + "g3-beam.svg"; sourceSize: Qt.size(760, 480); opacity: gs.bo; transform: Scale { origin.x: 252; origin.y: 214; xScale: gs.bx } }
-        Image { source: root.g3Dir + "g3-glare.svg"; sourceSize: Qt.size(760, 480) }
-        Image { source: root.g3Dir + "g3-led.svg"; sourceSize: Qt.size(760, 480); opacity: gs.lo }
+        Image { source: root.g3Dir + "g3-beam.svg" + root.bust; sourceSize: Qt.size(760, 480); opacity: gs.bo; transform: Scale { origin.x: 252; origin.y: 214; xScale: gs.bx } }
+        Image { source: root.g3Dir + "g3-glare.svg" + root.bust; sourceSize: Qt.size(760, 480) }
+        Image { source: root.g3Dir + "g3-led.svg" + root.bust; sourceSize: Qt.size(760, 480); opacity: gs.lo }
     }
 }

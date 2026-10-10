@@ -121,11 +121,12 @@ timelines) and `launcher-finder.png` (the screen).
   about the screen centre, with a flat, low crown so the screen takes most
   of it; a dark CRT well round a screen with slightly bulged sides; two
   teal speaker grilles at the bottom corners, a drive slot between them
-  with the power LED under it; two short feet; a soft floor shadow. No
-  Apple logo.
+  with the power LED under it; two short feet. No floor shadow: the G3
+  floats mid-screen, and the launcher layer's glass would smear a
+  translucent shadow into a rainbow. No Apple logo.
 - **Size and place**: a 760×480 viewBox at 1:1. The drawing fills only
   **x 0–504, y 24–480** of it (front shell x 2–502, y 26–446; feet to
-  y 450; shadow to y 478), so the window is cropped to that 504×456 box and
+  y 450), so the window is cropped to that 504×456 box and
   centred on the focused monitor's full output.
 - **Screen rect** (where the content goes), in G3 units: **x 62, y 72,
   380×284**, clipped to a 10px radius. The lit glass around it is the
@@ -160,7 +161,7 @@ masks, clips or text), so QtSvg renders them as Chromium does.
 
 | layer | holds | animated |
 |---|---|---|
-| `g3-body.svg` | shadow, feet, front, dark screen, speakers, slot, dull LED | with the whole G3 |
+| `g3-body.svg` | feet, front, dark screen, speakers, slot, dull LED | with the whole G3 |
 | `g3-screen.svg` | the lit screen glass | opacity, yScale, brightness |
 | `g3-note.svg` | the Happy Mac with a ♪ face on the lit screen | opacity, yScale, brightness (with the screen) |
 | *content* | the Finder (QML), in the screen rect | opacity |
@@ -171,6 +172,9 @@ masks, clips or text), so QtSvg renders them as Chromium does.
 - The screen, note and beam scale about the screen centre, (252, 214).
 - The whole G3 scales about its own centre, (252, 252) in G3 units.
 - Brightness is a `MultiEffect.brightness` on the screen and note.
+- Every art URL carries a per-load `?v=` stamp: Qt's image cache lives as
+  long as the shell process and is keyed by URL alone, so without it a
+  reload keeps drawing art the song has since changed.
 
 ### Open, 460 ms
 

@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
 <defs>
-<radialGradient id="g3-shadow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
 <linearGradient id="g3-ice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".6" stop-color="#e8f5f7"/><stop offset="1" stop-color="#c4dde4"/></linearGradient>
 <linearGradient id="g3-ice-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity=".1"/></linearGradient>
 <linearGradient id="g3-well" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5964"/><stop offset="1" stop-color="#15252d"/></linearGradient>
@@ -8,7 +7,6 @@
 <linearGradient id="g3-speaker" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78e6ee"/><stop offset="1" stop-color="#147f95"/></linearGradient>
 <linearGradient id="g3-slot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6dce2"/><stop offset="1" stop-color="#f4fafb"/></linearGradient>
 </defs>
-<ellipse cx="252" cy="462" rx="250" ry="16" fill="url(#g3-shadow)"/>
 <rect x="40" y="440" width="34" height="10" rx="3" fill="#8fb0b9"/><rect x="430" y="440" width="34" height="10" rx="3" fill="#8fb0b9"/>
 <path d="M58 26L446 26Q492 26 494 70L502 402Q502 446 460 446L44 446Q2 446 2 402L10 70Q12 26 58 26Z" fill="url(#g3-ice)" stroke="#5f8995" stroke-width="2"/>
 <path d="M58 29L446 29Q489 29 491 70L492 100Q252 88 13 100L13 70Q15 29 58 29Z" fill="url(#g3-ice-gloss)" fill-opacity=".6"/>
