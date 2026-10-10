@@ -42,6 +42,10 @@
 - `../widgets/Emoji.js` is generated from Unicode's `emoji-test.txt` 17.0
   (Unicode License v3), keeping fully-qualified emoji the installed Noto
   Color Emoji draws; names and subgroups are Unicode's.
+- `../widgets/Kaomoji.js` is a list of common kaomoji curated here and
+  grouped by mood here; no site's collection is copied. Kaomoji whose first
+  strong character is right-to-left are left out, so every entry reads and
+  pastes left to right.
 - `launcher-finder.png` is a headless Chromium render of the launcher
   screen's design board.
 - `launcher-g3.png` is a headless Chromium render of `launcher-g3.html`,

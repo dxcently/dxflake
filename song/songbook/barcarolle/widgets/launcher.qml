@@ -7,6 +7,7 @@ import Quickshell.Wayland
 import Quickshell.Hyprland
 import "Kit.js" as Kit
 import "Emoji.js" as Emoji
+import "Kaomoji.js" as Kaomoji
 
 PanelWindow {
     id: root
@@ -20,6 +21,7 @@ PanelWindow {
     readonly property string g3Dir: "file://" + root.aoideRoot + "/song/songbook/barcarolle/icons/launcher/"
     readonly property string fSys: Qt.fontFamilies().indexOf("Tahoma") >= 0 ? "Tahoma" : Kit.family
     readonly property string fSmall: Qt.fontFamilies().indexOf("Verdana") >= 0 ? "Verdana" : Kit.family
+    readonly property string fKao: "Noto Sans CJK JP"
     readonly property int bleed: 12
 
     readonly property var pl: ({
@@ -27,16 +29,18 @@ PanelWindow {
         sel: "#0f6d80", selLine: "#0a4a58", thumbA: "#c3f0f4", thumbB: "#8fd9e3", thumbLine: "#1d4f5a"
     })
     readonly property var geoms: ({
-        top: { cw: 72, ch: 58, cols: 3 },
+        top: { cw: 70, ch: 58, cols: 4 },
         apps: { cw: 66, ch: 60, cols: 4 },
         clip: { cw: 88, ch: 60, cols: 3 },
         emoji: { cw: 33, ch: 33, cols: 8 },
+        kaomoji: { cw: 264, ch: 20, cols: 1 },
         search: { cw: 66, ch: 60, cols: 4 }
     })
     readonly property var folders: [
         { kind: "folder", key: "apps", name: "Applications", icon: root.g3Dir + "finder-folder-apps.svg" },
         { kind: "folder", key: "clip", name: "Clipboard", icon: root.g3Dir + "finder-folder-clipboard.svg" },
-        { kind: "folder", key: "emoji", name: "Emoji", icon: root.g3Dir + "finder-folder-emoji.svg" }
+        { kind: "folder", key: "emoji", name: "Emoji", icon: root.g3Dir + "finder-folder-emoji.svg" },
+        { kind: "folder", key: "kaomoji", name: "Kaomoji", icon: root.g3Dir + "finder-folder-kaomoji.svg" }
     ]
 
     // ── window: the front drawing plus a bleed for the pop-in overshoot, centred by the compositor ──
@@ -281,15 +285,16 @@ PanelWindow {
                      name: c.kind === "image" ? ("" + c.format).toUpperCase() + " " + c.width + "×" + c.height : c.preview }
         })
     }
-    function emojiItems(q) {
-        var list = Emoji.all()
+    function glyphItems(list, q) {
         return q ? root.rank(q, list, function (e) { return e.name }, function (e) { return e.words }) : list
     }
     function compute(view, query, tick) {
         var q = ("" + query).trim().toLowerCase()
         if (view === "top")
-            return q === "" ? root.folders : root.appItems(q).concat(root.clipItems(q), root.emojiItems(q))
-        return view === "apps" ? root.appItems(q) : view === "clip" ? root.clipItems(q) : root.emojiItems(q)
+            return q === "" ? root.folders : root.appItems(q).concat(root.clipItems(q), root.glyphItems(Emoji.all(), q), root.glyphItems(Kaomoji.all(), q))
+        if (view === "apps") return root.appItems(q)
+        if (view === "clip") return root.clipItems(q)
+        return root.glyphItems(view === "emoji" ? Emoji.all() : Kaomoji.all(), q)
     }
 
     function resetState() {
@@ -340,7 +345,7 @@ PanelWindow {
             root.hide()
         } else if (it.kind === "clip") {
             if (root.clipboard.copyById(it.clip.id)) root.hide()
-        } else if (it.kind === "emoji") {
+        } else if (it.kind === "emoji" || it.kind === "kaomoji") {
             Quickshell.execDetached(["wl-copy", "--", it.glyph])
             root.hide()
         }
@@ -646,10 +651,15 @@ PanelWindow {
         readonly property string kind: modelData.kind
         readonly property bool glyphOnly: kind === "emoji" && !root.searching
         readonly property bool bigGlyph: kind === "emoji" && root.searching
-        readonly property var fold: cell.glyphOnly ? ({ text: "", lines: 0, cut: false }) : root.clamp2(cell.modelData.name, cell.width - 8)
-        readonly property bool truncated: cell.fold.cut
+        readonly property bool row: kind === "kaomoji" && !root.searching
+        readonly property bool kaoLabel: kind === "kaomoji" && root.searching
+        readonly property var fold: (cell.glyphOnly || cell.row) ? ({ text: "", lines: 0, cut: false })
+            : cell.kaoLabel ? ({ text: cell.modelData.glyph, lines: 1, cut: false }) : root.clamp2(cell.modelData.name, cell.width - 8)
+        readonly property bool truncated: cell.kaoLabel ? lbl.truncated : cell.fold.cut
+        readonly property real anchorX: cell.row ? 6 + Math.min(kt.implicitWidth, 158) / 2 : cell.width / 2
         readonly property string iconUrl: {
             if (kind === "folder") return modelData.icon
+            if (kind === "kaomoji") return root.g3Dir + "finder-clip-text.svg"
             if (kind === "clip") return root.g3Dir + (modelData.clip.kind === "image" ? "finder-clip-picture.svg" : "finder-clip-text.svg")
             if (kind !== "app") return ""
             var p = Quickshell.iconPath(modelData.entry.icon, true)
@@ -692,7 +702,7 @@ PanelWindow {
 
         Item {
             id: ic
-            visible: !cell.glyphOnly && !cell.bigGlyph
+            visible: !cell.glyphOnly && !cell.bigGlyph && !cell.row
             x: (cell.width - 32) / 2
             y: 3
             width: 32
@@ -723,23 +733,61 @@ PanelWindow {
 
         Rectangle {
             visible: lbl.visible && cell.sel
-            width: (cell.fold.lines > 1 || cell.fold.cut) ? cell.width - 4 : Math.ceil(lbl.contentWidth) + 4
+            width: (cell.fold.lines > 1 || cell.truncated) ? cell.width - 4 : Math.ceil(lbl.contentWidth) + 4
             x: Math.round((cell.width - width) / 2)
-            y: cell.labelY
-            height: cell.fold.lines * 11
+            y: cell.kaoLabel ? cell.labelY - 1 : cell.labelY
+            height: cell.kaoLabel ? 15 : cell.fold.lines * 11
             color: root.pl.sel
         }
         T {
             id: lbl
-            visible: !cell.glyphOnly
+            visible: !cell.glyphOnly && !cell.row
             x: 4
             y: cell.labelY - 1
             width: cell.width - 8
+            height: cell.kaoLabel ? 15 : implicitHeight
             horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: cell.kaoLabel ? Text.AlignVCenter : Text.AlignTop
             text: cell.fold.text
             color: cell.sel ? "#ffffff" : "#000000"
-            lineHeight: 11
-            lineHeightMode: Text.FixedHeight
+            font.family: cell.kaoLabel ? root.fKao : root.fSmall
+            font.weight: cell.kaoLabel ? Font.Medium : Font.Normal
+            font.pixelSize: cell.kaoLabel ? 12 : 10
+            elide: cell.kaoLabel ? Text.ElideRight : Text.ElideNone
+            lineHeight: cell.kaoLabel ? 1 : 11
+            lineHeightMode: cell.kaoLabel ? Text.ProportionalHeight : Text.FixedHeight
+        }
+
+        Rectangle {
+            visible: cell.row && cell.sel
+            x: 0; y: 1
+            width: cell.width
+            height: cell.height - 2
+            color: root.pl.sel
+        }
+        T {
+            id: kt
+            visible: cell.row
+            x: 6
+            width: 158
+            height: cell.height
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: cell.row ? cell.modelData.glyph : ""
+            color: cell.sel ? "#ffffff" : "#000000"
+            font.family: root.fKao
+            font.weight: Font.Medium
+            font.pixelSize: 12
+        }
+        T {
+            visible: cell.row
+            x: 170
+            width: cell.width - 176
+            height: cell.height
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: cell.row ? cell.modelData.name : ""
+            color: cell.sel ? "#bfe4ea" : "#7a7a7a"
         }
 
         MouseArea {
@@ -829,24 +877,24 @@ PanelWindow {
 
                     Win {
                         id: hdWin
-                        x: 8; y: 26; width: 230; height: 112
+                        x: 8; y: 26; width: 294; height: 112
                         title: "Macintosh HD"
                         proxy: root.g3Dir + "finder-disk.svg"
                         active: !root.frontOpen
-                        hdr: hdWin.active ? root.hdrText : "3 items"
+                        hdr: hdWin.active ? root.hdrText : root.folders.length + " items"
                         view: topGrid
                         onCloseClicked: root.hide()
                         onBodyClicked: if (!hdWin.active) root.goUp()
                         GridView {
                             id: topGrid
-                            x: 5; y: 0
-                            width: 216
+                            x: 3; y: 0
+                            width: root.folders.length * root.geoms.top.cw
                             height: parent.height
                             visible: hdWin.active
                             header: Item { width: 1; height: 4 }
                             footer: Item { width: 1; height: 4 }
-                            cellWidth: 72
-                            cellHeight: 58
+                            cellWidth: root.geoms.top.cw
+                            cellHeight: root.geoms.top.ch
                             boundsBehavior: Flickable.StopAtBounds
                             model: root.folders
                             delegate: Cell {}
@@ -967,12 +1015,15 @@ PanelWindow {
                         id: balloon
                         readonly property var it: root.frontOpen ? root.items[frontGrid.currentIndex] : undefined
                         readonly property Item ci: frontGrid.currentItem
-                        readonly property bool want: !!balloon.it && !!balloon.ci
-                            && (balloon.it.kind === "emoji" || (balloon.it.kind === "clip" && balloon.it.clip.kind === "text" && balloon.ci.truncated))
+                        readonly property bool kao: !!balloon.it && balloon.it.kind === "kaomoji"
+                        readonly property bool kaoGlyph: balloon.kao && root.searching
+                        readonly property bool inView: balloon.cellTop + root.geom.ch > frontWin.y + 35 && balloon.cellTop < frontWin.y + frontWin.height - 1
+                        readonly property bool want: !!balloon.it && !!balloon.ci && balloon.inView
+                            && (balloon.it.kind === "emoji" || balloon.kao || (balloon.it.kind === "clip" && balloon.it.clip.kind === "text" && balloon.ci.truncated))
                         readonly property bool emojiOnly: !!balloon.it && balloon.it.kind === "emoji" && !root.searching
-                        readonly property real cx: frontWin.x + 2 + (frontGrid.currentIndex % root.geom.cols) * root.geom.cw + root.geom.cw / 2
+                        readonly property real cx: frontWin.x + 2 + (frontGrid.currentIndex % root.geom.cols) * root.geom.cw + (balloon.ci ? balloon.ci.anchorX : root.geom.cw / 2)
                         readonly property real cellTop: frontWin.y + 1 + 34 + Math.floor(frontGrid.currentIndex / root.geom.cols) * root.geom.ch - frontGrid.contentY
-                        readonly property real below: balloon.cellTop + (balloon.emojiOnly ? 32 : 62) + 9
+                        readonly property real below: balloon.cellTop + (balloon.emojiOnly ? 32 : (balloon.kao && !root.searching ? root.geom.ch : 62)) + 9
                         readonly property bool flip: balloon.below + box.height > 280
                         readonly property bool leftAnchor: balloon.cx < 200
                         visible: balloon.want
@@ -983,7 +1034,7 @@ PanelWindow {
                         Rectangle { x: 2; y: 2; width: box.width; height: box.height; radius: 7; color: Qt.rgba(12 / 255, 33 / 255, 48 / 255, 0.35) }
                         Rectangle {
                             id: box
-                            readonly property real tw: Math.min(152, Math.max(bk.visible ? bk.implicitWidth : 0, bt.implicitWidth))
+                            readonly property real tw: Math.min(balloon.kaoGlyph ? 156 : 152, Math.max(bk.visible ? bk.implicitWidth : 0, bt.implicitWidth))
                             width: tw + 16
                             height: bcol.height + 9
                             radius: 7
@@ -996,9 +1047,9 @@ PanelWindow {
                                 width: box.tw
                                 T {
                                     id: bk
-                                    visible: !!balloon.it && balloon.it.kind === "clip"
+                                    visible: !!balloon.it && (balloon.it.kind === "clip" || balloon.kaoGlyph)
                                     width: parent.width
-                                    text: "text clipping"
+                                    text: balloon.kao ? balloon.it.words : "text clipping"
                                     color: "#5a6b72"
                                     lineHeight: 12
                                     lineHeightMode: Text.FixedHeight
@@ -1006,9 +1057,12 @@ PanelWindow {
                                 T {
                                     id: bt
                                     width: parent.width
-                                    wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-                                    text: !balloon.it ? "" : (balloon.it.kind === "emoji" ? balloon.it.name : (balloon.it.full || ""))
-                                    lineHeight: 12
+                                    wrapMode: balloon.kao ? Text.NoWrap : Text.WrapAtWordBoundaryOrAnywhere
+                                    text: !balloon.it ? "" : (balloon.it.kind === "emoji" ? balloon.it.name : balloon.kao ? (root.searching ? balloon.it.glyph : balloon.it.words) : (balloon.it.full || ""))
+                                    font.family: balloon.kaoGlyph ? root.fKao : root.fSmall
+                                    font.weight: balloon.kaoGlyph ? Font.Medium : Font.Normal
+                                    font.pixelSize: balloon.kaoGlyph ? 12 : 10
+                                    lineHeight: balloon.kaoGlyph ? 14 : 12
                                     lineHeightMode: Text.FixedHeight
                                 }
                             }

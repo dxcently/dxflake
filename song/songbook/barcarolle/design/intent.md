@@ -134,17 +134,20 @@ timelines) and `launcher-finder.png` (the screen).
   a Platinum menu bar with a pixel ♪ for the Apple menu and a Find field;
   the song's cover shrunk onto the little desktop (a teal dither without
   one), with Macintosh HD and Trash icons; a Macintosh HD window holding
-  three folders, Applications, Clipboard and Emoji, in icon view. Opening
+  four folders, Applications, Clipboard, Emoji and Kaomoji, in icon view. Opening
   a folder opens its window in front while the HD window greys behind it.
   Applications are the desktop entries A→Z with their icons; Clipboard
   shows text and picture clippings (pictures as thumbnails); Emoji is an
-  8-wide grid of glyphs from `widgets/Emoji.js`. Selection is `#0f6d80`
+  8-wide grid of glyphs from `widgets/Emoji.js`; Kaomoji is a one-column
+  list of the 384 in `widgets/Kaomoji.js` (Noto Sans CJK JP Medium 12, the
+  mood dim beside each), filtered by mood words. Selection is `#0f6d80`
   with white text; a help balloon names the selected emoji or shows a
   clipping's text; the status line reads "x items, 1 selected". Tahoma 12
   and Verdana 10 stand in for Charcoal and Geneva.
   - Keys: typing filters the open folder, or at the top opens a `Find "q"`
-    window over all three; arrows move; Enter opens a folder, launches an
-    app (a `systemd-run --user --scope`) or copies a clipping or emoji
+    window over all four; arrows move; Enter opens a folder, launches an
+    app (a `systemd-run --user --scope`) or copies a clipping, emoji or
+    kaomoji
     (`wl-copy`), then closes; Backspace on an empty query goes up; Escape
     closes. The `clipboard` shortcut opens straight to Clipboard.
   - Scanlines over the content: a 1px line every 3px of `#021219` at 0.06.
