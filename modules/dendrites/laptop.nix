@@ -1,18 +1,16 @@
 {
-  nixos = {
-    config = {
-      services.auto-cpufreq.enable = true;
-      services.auto-cpufreq.settings = {
-        battery = {
-          governor = "powersave";
-          turbo = "never";
-        };
-        charger = {
-          governor = "performance";
-          turbo = "auto";
-        };
+  config = {
+    services.auto-cpufreq.enable = true;
+    services.auto-cpufreq.settings = {
+      battery = {
+        governor = "powersave";
+        turbo = "never";
       };
-      networking.networkmanager.wifi.powersave = false;
+      charger = {
+        governor = "performance";
+        turbo = "auto";
+      };
     };
+    networking.networkmanager.wifi.powersave = false;
   };
 }

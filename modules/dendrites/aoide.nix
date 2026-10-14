@@ -11,11 +11,12 @@
 # genuinely varies per host (a2a.spawnAgent/spawnPath/discoveryAdvertise/
 # tokenFile, secrets.members, …) is set by the host directly on the raw
 # `aoide.*` namespace once this dendrite (or any aoide-carrying host) has put
-# it in scope. The song is the exception: a host names it as `song.declared`
-# on its record, and the songs hook sets `aoide.song` from that, so a host
-# never writes `aoide.song` itself. Wrapping those in a parallel `dx.aoide.*` mirror would
-# just rename Aoide's own documented options for no reason; convention here
-# follows the option contract that already exists rather than inventing one.
+# it in scope. The song is the exception: a host names it as
+# `habit.song.declared` in its host module, and the songs hook sets `aoide.song`
+# from that, so a host never writes `aoide.song` itself. Wrapping those in a
+# parallel `dx.aoide.*` mirror would just rename Aoide's own documented options
+# for no reason; convention here follows the option contract that already exists
+# rather than inventing one.
 #
 # ── What "core" means ────────────────────────────────────────────────────
 #   aoide.enable        — the aoide/aoided binaries + daemon (nucleus/aoided.nix)
@@ -69,14 +70,11 @@
 # dxflake's Hyprland/Stylix dendrites unselected, so only one writer ever
 # touches those leaf options; the rest of the desktop aggregation (pipewire,
 # fonts, fcitx5, portals, ly login) does not collide and stays selected.
+{ lib, ... }:
 {
-  nixos =
-    { lib, ... }:
-    {
-      config = {
-        aoide.enable = true;
-        aoide.a2a.enable = lib.mkDefault true;
-        aoide.secrets.enable = true;
-      };
-    };
+  config = {
+    aoide.enable = true;
+    aoide.a2a.enable = lib.mkDefault true;
+    aoide.secrets.enable = true;
+  };
 }

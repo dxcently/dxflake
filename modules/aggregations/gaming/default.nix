@@ -14,7 +14,7 @@
     # modules/dendrites/packages.nix; this aggregation switches its own nine on
     # by name. An install is not a selectable capability, so it gets no
     # catalogue line.
-    nixos =
+    module =
       { lib, ... }:
       {
         dx.packages =

@@ -10,7 +10,7 @@
 # otherwise they fall back to the flake's own plain white/black pair. Both
 # branches were here before the split and neither changed.
 {
-  homeManager =
+  habit.home =
     {
       osConfig,
       lib,

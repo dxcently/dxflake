@@ -6,16 +6,16 @@
 # here or it cannot be selected, and a name with no line is unreachable, which
 # is what shelving means now.
 #
-# A dendrite with one implementation is one file at the dendrite root exposing
-# the lanes it supports. A dendrite with several is a directory whose
-# default.nix lists provider paths and imports none of them. A directory is
-# otherwise reserved for a capability that needs more than one file
+# A dendrite with one implementation is one file at the dendrite root: a plain
+# module whose `habit.home` is its home half. A dendrite with several is a
+# directory whose default.nix lists provider paths and imports none of them. A
+# directory is otherwise reserved for a capability that needs more than one file
 # (fastfetch and its logo), or for one provider's own folder: a
-# compositor-specific dendrite lives in its provider's folder under
-# compositor/ — beside the provider entry it is written against — and the
-# catalogue still names each one. There is no grouping exception at the root
-# any more. Grouping is the aggregations' job, so the root stays flat and the
-# catalogue name is the file name.
+# compositor-specific dendrite lives in its provider's folder under compositor/
+# — beside the provider entry it is written against — and the catalogue still
+# names each one. There is no grouping exception at the root any more. Grouping
+# is the aggregations' job, so the root stays flat and the catalogue name is the
+# file name.
 {
   catalogue = {
     aagl = ./dendrites/aagl.nix;

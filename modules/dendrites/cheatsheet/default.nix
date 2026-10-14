@@ -6,7 +6,7 @@
 # It is reached by NAME — any dendrite may `exec cheatsheet` — so no file points
 # at another file's path.
 {
-  homeManager =
+  habit.home =
     { pkgs, ... }:
     {
       home.packages = [

@@ -6,7 +6,7 @@
 
   # Aoide introduces the package in a normal-order overlay. Run after it so
   # its collision guard sees only the original nixpkgs package set.
-  nixos = { lib, ... }: {
+  system = { lib, ... }: {
     nixpkgs.overlays = lib.mkAfter [
       (final: prev: {
         chatgpt-linux = prev.chatgpt-linux.overrideAttrs (

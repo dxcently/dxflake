@@ -1,5 +1,5 @@
 {
-  homeManager =
+  habit.home =
     { pkgs, ... }:
     let
       # Pinned nixpkgs ships 0.84.1 — new enough for pi extensions (e.g.

@@ -28,14 +28,14 @@ files nobody selected stayed unread.
 | a headless machine | `example-host-headless.nix` | `hosts/<host>/default.nix` | same |
 | a person | `example-user.nix` | `users/<name>.nix` | attach from each host that wants them |
 | something every host gets | `example-nucleus-module.nix` | `modules/nucleus/<topic>.nix` | one import line in `modules/nucleus/default.nix` |
-| a package nixpkgs lacks | `example-package.nix` | `pkgs/<name>/default.nix` | `pkgs.callPackage` it from the lane that wants it |
+| a package nixpkgs lacks | `example-package.nix` | `pkgs/<name>/default.nix` | `pkgs.callPackage` it from the dendrite that wants it |
 | a fix a capability needs everywhere | `example-override.nix` | `modules/overrides/<name>.nix` | nothing — discovery finds it; it applies where a target was selected |
 | a whole new tree | `example-default-registry.nix`, `example-default-aggregations.nix`, `example-default-overrides.nix` | `modules/default.nix`, `modules/aggregations/default.nix`, `modules/overrides/default.nix` | these three are the floor everything else plugs into |
 
 `example-host.nix` and `example-host-headless.nix` are one role answered twice —
 read them side by side. They share a group, choose different implementations of
-the same capability, and one has a Home Manager lane while the other has only an
-account.
+the same capability, and one turns Home Manager on for its user while the other
+has only an account.
 
 ## What the templates assume you replace
 
@@ -55,22 +55,22 @@ four things are placeholders and will not work as shipped:
 
 The generic names (`exampletool`, `examplewidget`, `workspace`, `exampleuser`)
 are meant to be renamed. The `services.example.*` / `programs.example.*`
-settings inside the lanes are stand-ins for real options.
+settings inside the halves are stand-ins for real options.
 
-## Lanes, in one paragraph
+## Halves, in one paragraph
 
-A dendrite names the evaluators it answers for. `nixos` is the host's NixOS
-module — services, system packages, hardware. `homeManager` is one user's Home
-Manager module — dotfiles, user packages. `darwin` is nix-darwin; it is in the
-vocabulary and unused in this tree. Selecting a capability for the system
-imports its `nixos` lane and *not* its `homeManager` lane; selecting it under
-`users.<u>` does the reverse. Something that wants both is selected in both
-places, visibly. Selecting a lane a dendrite does not expose is an error naming
-the dendrite, the scope, and the lanes it does support — never a silent skip.
+A dendrite is a plain NixOS module, and habit splits it in two. The module as
+written is the system half — services, system packages, hardware. Its
+`habit.home` is the home half — one user's Home Manager module: dotfiles, user
+packages. Selecting a capability for the system applies its system half and
+sends its home half to every user with a Home Manager home; selecting it under
+`habit.users.<u>` applies the system half too and sends the home half to that
+user alone. A module with nothing to say in one half has an empty one there, and
+selecting it where it has nothing to say fails nothing.
 
-Home Manager is optional per user. `homeManager.enable = false` creates the
-account and imports no Home Manager module at all; asking for a home capability
-with that lane off is a configuration error, not a no-op.
+Home Manager is optional per user. `home.enable = false` creates the account and
+imports no Home Manager module at all; asking for a home capability with that
+off is a configuration error, not a no-op.
 
 ## Selection happens before imports
 
@@ -95,7 +95,7 @@ platform     import the chosen dendrite files and the chosen provider files.
 
 Override records are the documented exception — see below.
 
-An aggregation body is data — `members`, `providers`, `nixos` — so it cannot
+An aggregation body is data — `members`, `providers`, `module` — so it cannot
 enable another aggregation, and the gate step's answer is final. That is also
 why a body needs no `mkIf` and no `mkOption` of its own: the constructor wraps
 it once.
@@ -104,8 +104,8 @@ it once.
 
 Membership and provider choices from an aggregation are `mkDefault`, so:
 
-- `dendrites.<name>.enable = false` on a host beats a group that wants it.
-- `dendrites.<name>.provider = "x"` on a host beats a group's choice.
+- `habit.dendrites.<name>.enable = false` on a host beats a group that wants it.
+- `habit.dendrites.<name>.provider = "x"` on a host beats a group's choice.
 - Two groups naming the same capability on the same terms **merge** — one
   selection, not two instances.
 - Two groups naming **different** providers for it collide, with both values in
@@ -118,21 +118,21 @@ A record is a fix that belongs to a CAPABILITY — a package upstream broke, a
 setting every machine running the thing needs — and it lives in
 `modules/overrides/<name>.nix` rather than in every host that selected the
 thing. It names its targets by catalogue name, optionally confines itself to
-named hosts, and carries an `overlay`, a `nixos` module, a `homeManager` module,
+named hosts, and carries an `overlay`, a `system` module, a `home` module,
 or any combination.
 
 A record **never selects anything**: targeting a capability nobody chose is a
 record that does not apply, not a capability that gets installed. It applies at
 most once however many of its targets were selected, matched records apply in
 record-name order, and its overlay goes on the HOST package set — `useGlobalPkgs`
-means the home lanes see it too, and there is no private per-dendrite instance.
-Its `homeManager` half rides only the users whose own selection hit a target.
+means the homes see it too, and there is no private per-dendrite instance.
+Its `home` module rides only the users whose own selection hit a target.
 
 The evaluation boundary is weaker here than for selection, and saying so is the
 point: a record file IS imported on every host, because matching means reading
 which dendrites it targets. What an unmatched host never spends is the work —
-`overlay` and the lane modules are functions, and nothing calls them. Keep
-imports, fetches and package computation inside those functions.
+`overlay` and the `system` and `home` modules are functions, and nothing calls
+them. Keep imports, fetches and package computation inside those functions.
 
 ## Pending: songs and palettes
 

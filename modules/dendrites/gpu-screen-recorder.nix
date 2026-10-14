@@ -1,8 +1,6 @@
-{
-  nixos = { pkgs, ... }: {
-    config = {
-      programs.gpu-screen-recorder.enable = true;
-      environment.systemPackages = [ pkgs.gpu-screen-recorder-gtk ];
-    };
+{ pkgs, ... }: {
+  config = {
+    programs.gpu-screen-recorder.enable = true;
+    environment.systemPackages = [ pkgs.gpu-screen-recorder-gtk ];
   };
 }

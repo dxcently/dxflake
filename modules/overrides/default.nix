@@ -4,8 +4,8 @@
 # to a capability rather than to a host. Names and paths only — but unlike an
 # aggregation body, a record IS imported on every host, because matching means
 # reading which dendrites it targets. What an unmatched record never costs is
-# its work: `overlay` and the lane modules are functions, and nothing calls
-# them. See habit's composition for the boundary stated exactly.
+# its work: `overlay` and the `system` and `home` modules are functions, and
+# nothing calls them. See habit's composition for the boundary stated exactly.
 #
 # Empty is a real answer when no records are present.
 let

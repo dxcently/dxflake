@@ -51,14 +51,14 @@ imports the single dendrite (`hyprlock`) it still wants.
 Selectable — each has a catalogue line, can be named on its own, and is named
 by exactly one aggregation:
 
-| name                   | path                                          | lane        | named by     |
+| name                   | path                                          | half        | named by     |
 | ---------------------- | --------------------------------------------- | ----------- | ------------ |
-| `compositor`           | `dendrites/compositor` (provider)             | nixos       | `shell`      |
-| `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`             | homeManager | `shell`      |
-| `hyprland-autostart`   | `dendrites/compositor/hyprland/autostart.nix` | homeManager | `compositor` |
-| `hyprland-decoration`  | `dendrites/compositor/hyprland/decoration.nix`| homeManager | `compositor` |
-| `hyprland-keybinds`    | `dendrites/compositor/hyprland/keybinds.nix`  | homeManager | `compositor` |
-| `hyprglass`            | `dendrites/compositor/hyprland/hyprglass.nix` | homeManager | `compositor` |
+| `compositor`           | `dendrites/compositor` (provider)             | system+home | `shell`      |
+| `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`             | home        | `shell`      |
+| `hyprland-autostart`   | `dendrites/compositor/hyprland/autostart.nix` | home        | `compositor` |
+| `hyprland-decoration`  | `dendrites/compositor/hyprland/decoration.nix`| home        | `compositor` |
+| `hyprland-keybinds`    | `dendrites/compositor/hyprland/keybinds.nix`  | home        | `compositor` |
+| `hyprglass`            | `dendrites/compositor/hyprland/hyprglass.nix` | home        | `compositor` |
 
 Private helpers — no catalogue line, reachable only from the file that imports
 them by relative path:

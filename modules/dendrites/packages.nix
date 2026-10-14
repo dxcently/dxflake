@@ -1,12 +1,12 @@
 # modules/dendrites/packages.nix — the flat list of packages that need no
 # configuration, one line each, every line a switch of its own.
 #
-# NOT a dendrite: there is no lane attrset here and no catalogue line, because
-# nothing about this file is selectable as a whole. It is one ordinary NixOS
-# module, imported unconditionally by the nucleus, that declares
-# `dx.packages.<name>.enable` for every line below — all of them off — and
-# installs the ones something switched on. An aggregation switches its own
-# membership on by name; a host adds one with a single line.
+# NOT a dendrite: there is no catalogue line here, because nothing about this
+# file is selectable as a whole. It is one ordinary NixOS module, imported
+# unconditionally by the nucleus, that declares `dx.packages.<name>.enable` for
+# every line below — all of them off — and installs the ones something switched
+# on. An aggregation switches its own membership on by name; a host adds one
+# with a single line.
 #
 # `mkOrder 1400` pins where these land in system.path: after the nucleus floor
 # and a host's own plain definitions (order 1000) and before anything that pins

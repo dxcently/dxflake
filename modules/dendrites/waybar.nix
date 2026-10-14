@@ -5,7 +5,7 @@
 # the selected rice (song/songbook/<rice>/rice.nix), so a host can change how the
 # desktop looks without touching whether the bar exists.
 {
-  homeManager = _: {
+  habit.home = _: {
     programs.waybar = {
       enable = true;
       # Started from hyprland's `exec-once`, not by home-manager: the bar has to

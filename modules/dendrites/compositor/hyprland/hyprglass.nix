@@ -25,7 +25,7 @@
 # The package BUILD is not ours: pkgs/hyprglass lives in the Aoide input and
 # reaches us through the packages-walker overlay flake.nix installs.
 {
-  homeManager =
+  habit.home =
     {
       pkgs,
       osConfig,

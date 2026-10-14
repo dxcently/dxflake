@@ -25,7 +25,7 @@
     # `dx.packages` switches — the flat list lives once, in
     # modules/dendrites/packages.nix, and a package list answers no question a
     # host could answer differently, so it is not a dendrite.
-    nixos =
+    module =
       { pkgs, lib, ... }:
       {
         programs = {

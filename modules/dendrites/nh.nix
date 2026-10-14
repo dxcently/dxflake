@@ -1,5 +1,5 @@
 {
-  homeManager =
+  habit.home =
     {
       pkgs,
       inputs,

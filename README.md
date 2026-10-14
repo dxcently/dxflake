@@ -18,7 +18,7 @@
 - One shape everywhere:
 
   ```nix
-  { nixos = …; homeManager = …; }                             # a dendrite: one file, its lanes
+  { …; habit.home = …; }                                      # a dendrite: a plain module, and its home half
   { providers = { amd = ./amd.nix; intel = ./intel.nix; }; }  # a provider registry: names paths, imports none
   { description = …; system.members = [ … ]; home = { … }; }  # an aggregation: plain data
   ```
@@ -36,10 +36,10 @@ dxflake/
 │   ├── osaka/                # workstation · AMD GPU
 │   ├── sakaki/               # headless server
 │   └── yomi-strix/           # desktop · Strix Halo
-│       ├── default.nix       #   a selection, then this host's own `nixos` block
+│       ├── default.nix       #   a selection, then this host's own settings
 │       └── hardware.nix
 ├── users/
-│   └── khoa.nix              # ONE shared account — `nixos` lane + `homeManager` lane
+│   └── khoa.nix              # ONE shared account — a module + `habit.home`
 ├── modules/
 │   ├── default.nix           # THE REGISTRY. the catalogue, plus `import ./aggregations`
 │   ├── nucleus/              # the floor. no flag — so it applies always, everywhere.
@@ -51,10 +51,10 @@ dxflake/
 │   │                                                  #   naming what it installs by switch
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
-│   └── dendrites/            # one file per capability, exposing the lanes it supports
-│       ├── git.nix · btop.nix · yazi.nix …    #   { homeManager = …; }
-│       ├── bluetooth.nix · syncthing.nix …    #   { nixos = …; }
-│       ├── openai.nix                         #   { nixos = …; homeManager = …; }
+│   └── dendrites/            # one file per capability: a plain module, plus `habit.home`
+│       ├── git.nix · btop.nix · yazi.nix …    #   `habit.home = …;` only
+│       ├── bluetooth.nix · syncthing.nix …    #   a plain module
+│       ├── openai.nix                         #   a plain module
 │       ├── compositor/ gpu/                   #   a provider registry each; compositor/hyprland/
 │       │                                      #     holds the Hyprland provider and its dendrites
 │       ├── packages.nix                       #   the flat list: one line = one switch
@@ -84,12 +84,12 @@ dxflake/
 | **Catalogue** | `modules/default.nix` | one `name = ./path;` line per capability, by hand | walk the dendrite tree — a capability with no line is unreachable |
 | **Provider registry** | `modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix` | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
 | **Aggregation** | `modules/aggregations/<group>/default.nix`, by directory name | its `members` by catalogue name, the `providers` a host may choose, its own deferred preference | declare options, carry `mkIf`, or take a `scope` argument — it is plain data |
-| **Selection** | the host's `default.nix`, resolved by `inputs.habit.lib.composition` | `aggregation.*`, `dendrites.*`, `users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
+| **Selection** | the host's `default.nix`, resolved by `inputs.habit.lib.composition` | `habit.aggregation.*`, `habit.dendrites.*`, `habit.users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
 
 ### Flow
 
 ```text
-hosts/<h>/default.nix            the selection: aggregation.* · dendrites.* · users.<u>.*
+hosts/<h>/default.nix            the selection: habit.aggregation.* · habit.dendrites.* · habit.users.<u>.*
        ↓
 modules/aggregations/default.nix   names directories, imports no body
        ↓
@@ -109,7 +109,7 @@ platform import the chosen dendrite files and the chosen provider files.
 
 ```nix
 {
-  aggregation = {
+  habit.aggregation = {
     base.enable = true;
     desktop.enable = true;
     gaming.enable = true;
@@ -119,7 +119,7 @@ platform import the chosen dendrite files and the chosen provider files.
     };
   };
 
-  dendrites = {
+  habit.dendrites = {
     aoide.enable = true;
     autopsy.enable = true;
     # Radeon. The intel provider is never imported on this box.
@@ -127,9 +127,9 @@ platform import the chosen dendrite files and the chosen provider files.
     # … more, each one line
   };
 
-  users.khoa = {
+  habit.users.khoa = {
     definition = ../../users/khoa.nix;
-    homeManager.enable = true;
+    home.enable = true;
     aggregation = {
       base.enable = true;
       desktop.enable = true;
@@ -139,17 +139,17 @@ platform import the chosen dendrite files and the chosen provider files.
     dendrites.pi-coding-agent.enable = true;
   };
 
-  nixos = { … };  # hardware imports, dx.* knobs, host-only packages
+  # hardware imports, dx.* knobs, host-only packages: plain NixOS settings
 }
 ```
 
-Groups by name, lone capabilities by name, the account attached from `users/`. The `nixos` block below names no module file — it is ordinary platform settings.
+Groups by name, lone capabilities by name, the account attached from `users/`. The settings below the selection name no module file — they are ordinary platform settings.
 
 **Add a capability.** `modules/dendrites/cheatsheet/default.nix`:
 
 ```nix
 {
-  homeManager =
+  habit.home =
     { pkgs, ... }:
     {
       home.packages = [
@@ -172,7 +172,7 @@ Plus one line in the catalogue:
 cheatsheet = ./dendrites/cheatsheet;
 ```
 
-It is reached by **name**: `modules/dendrites/compositor/hyprland/keybinds.nix` binds `"SUPER, B, exec, cheatsheet"`, so a host that does not select it just has an inert key. The `desktop` aggregation lists `"cheatsheet"` in its home members, which is how osaka gets it; a host without that group selects it alone with `users.khoa.dendrites.cheatsheet.enable = true;`.
+It is reached by **name**: `modules/dendrites/compositor/hyprland/keybinds.nix` binds `"SUPER, B, exec, cheatsheet"`, so a host that does not select it just has an inert key. The `desktop` aggregation lists `"cheatsheet"` in its home members, which is how osaka gets it; a host without that group selects it alone with `habit.users.khoa.dendrites.cheatsheet.enable = true;`.
 
 **Swap a provider.** `modules/dendrites/gpu/default.nix`:
 
@@ -186,7 +186,7 @@ It is reached by **name**: `modules/dendrites/compositor/hyprland/keybinds.nix` 
 ```
 
 ```nix
-dendrites.gpu = {
+habit.dendrites.gpu = {
   enable = true;
   provider = "amd";
 };
@@ -207,14 +207,14 @@ dendrites.gpu = {
 The shell aggregation carries the default (`modules/aggregations/shell/default.nix` sets `providers.rice = "transience"`), and a host overrides it there or per user:
 
 ```nix
-users.khoa.aggregation.shell.rice.provider = "transience";
+habit.users.khoa.aggregation.shell.rice.provider = "transience";
 ```
 
 Adding a rice is a directory beside `transience/` and one line in the registry; the wiring does not move.
 
 **Shelve.** Strike the catalogue line and rename the file `_foo.nix`. The file sleeps on disk, nothing evaluates it, and no other line changes.
 
-A capability-scoped fix — a package upstream broke, a setting everyone running the thing needs — is an **override record** under `modules/overrides/`, not a repeat across hosts. It names its dendrites, optionally the hosts it is confined to, and carries an `overlay`, a `nixos` module, a `homeManager` module, or any combination; discovery finds it, so there is no catalogue line.
+A capability-scoped fix — a package upstream broke, a setting everyone running the thing needs — is an **override record** under `modules/overrides/`, not a repeat across hosts. It names its dendrites, optionally the hosts it is confined to, and carries an `overlay`, a `system` module, a `home` module, or any combination; discovery finds it, so there is no catalogue line.
 
 > _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._
 
@@ -245,7 +245,7 @@ Swap `<name>` for your host — it becomes the flake target.
 
    ```nix
    {
-     aggregation = {
+     habit.aggregation = {
        base.enable = true;        # the machine's half: stylix
        desktop.enable = true;     # audio, fonts, portals, login …
        shell = {
@@ -254,7 +254,7 @@ Swap `<name>` for your host — it becomes the flake target.
        };
      };
 
-     dendrites = {
+     habit.dendrites = {
        bluetooth.enable = true;
        gpu = {
          enable = true;
@@ -262,9 +262,9 @@ Swap `<name>` for your host — it becomes the flake target.
        };
      };
 
-     users.khoa = {
+     habit.users.khoa = {
        definition = ../../users/khoa.nix;
-       homeManager.enable = true;
+       home.enable = true;
        aggregation = {
          base.enable = true;      # the person's half: bash, git, neovim …
          desktop.enable = true;
@@ -272,10 +272,8 @@ Swap `<name>` for your host — it becomes the flake target.
        };
      };
 
-     nixos = {
-       imports = [ ./hardware.nix ];
-       boot.initrd.kernelModules = [ "nvme" ];
-     };
+     imports = [ ./hardware.nix ];
+     boot.initrd.kernelModules = [ "nvme" ];
    }
    ```
 
@@ -342,8 +340,8 @@ lock             # hyprlock
 
 Aoide runtime is wired from the pinned Aoide input through its exports:
 `flake.nix` composes every host with `inputs.habit.lib.composition`, adds
-`inputs.aoide.nixosModules.nucleus` to the nucleus and `inputs.aoide.overlays.default`
-to the overlays. The registry merges dxflake's catalogue with the Aoide lanes
+`inputs.aoide.nixosModules.nucleus` beside `./modules/nucleus` in `extraModules`, and
+`inputs.aoide.overlays.default` to the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
 Aoide's `habit` and `nixpkgs` inputs follow dxflake's. dxflake declares no
 `stylix`, `hyprland` or `quickshell` input: those are Aoide's, and reach the
@@ -403,32 +401,31 @@ Write the file under `modules/dendrites/`, add one line to the catalogue in `mod
 
 `templates/` holds one copyable `example-*.nix` per authoring role — dendrite, provider registry, provider, aggregation, host, user, nucleus file, package — with a table in `templates/README.md` saying where each copy goes and what the one follow-up line is. `./tests/templates/run.sh` assembles a whole tree out of that directory and resolves it against habit's composition, so the examples stay true.
 
-A dendrite is an attrset of **lanes**, one per evaluator. A **system** capability:
+A dendrite is a plain NixOS module, and habit splits it in two. The module as written is its **system** half. Its `habit.home` is its **home** half: one user's Home Manager module. A **system** capability:
 
 ```nix
 {
-  nixos = { ... }: {
-    services.foo.enable = true;
-  };
+  services.foo.enable = true;
 }
 ```
 
-A **home** capability — the same shape, the other lane:
+A **home** capability says nothing to the system, so it carries only `habit.home`:
 
 ```nix
 {
-  homeManager = { pkgs, ... }: {
+  habit.home = { pkgs, ... }: {
     programs.foo.enable = true;
   };
 }
 ```
 
-A capability that can answer either way carries both, and each is selected on its own — putting `foo` in a host's `dendrites` installs the system lane, putting it in `users.khoa.dendrites` installs the home lane, and neither drags the other in:
+A capability that answers both ways carries both halves, and the selection decides which apply. Putting `foo` in a host's `habit.dendrites` applies the system half and sends the home half to every user with `home.enable`. Putting it in `habit.users.khoa.dendrites` applies the system half too and sends the home half to khoa alone. `habit.dendrites.foo.system = false` asks for the home half alone:
 
 ```nix
+{ pkgs, ... }:
 {
-  nixos = { pkgs, ... }: { environment.systemPackages = [ pkgs.foo ]; };
-  homeManager = { pkgs, ... }: { home.packages = [ pkgs.foo ]; };
+  environment.systemPackages = [ pkgs.foo ];
+  habit.home = { pkgs, ... }: { home.packages = [ pkgs.foo ]; };
 }
 ```
 
@@ -444,7 +441,7 @@ A capability with several implementations is a **directory** whose `default.nix`
 }
 ```
 
-Then `gpu = { enable = true; provider = "amd"; }` on the host — `intel.nix` is never read. A provider-bearing member of an aggregation is chosen on that aggregation instead: `aggregation.shell.compositor.provider = "hyprland"`.
+Then `habit.dendrites.gpu = { enable = true; provider = "amd"; }` on the host — `intel.nix` is never read. A provider-bearing member of an aggregation is chosen on that aggregation instead: `habit.aggregation.shell.compositor.provider = "hyprland"`.
 
 An **aggregation** is a directory under `modules/aggregations/`, and its `default.nix` is data — no options, no `mkIf`, no `scope`:
 
@@ -455,7 +452,7 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
   system = {
     providers.compositor = null;     # no default: every host that takes this must choose
-    nixos = { lib, ... }: {          # what this aggregation installs; not a dendrite
+    module = { lib, ... }: {         # what this aggregation installs; not a dendrite
       dx.packages = lib.genAttrs [ "dunst" "wl-clipboard" "satty" ] (_: { enable = true; });
     };
   };
@@ -466,7 +463,7 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
 Discovery finds it by directory name; nothing imports it until a host or a user selects it. Members are catalogue names, so they stay where they live under `modules/dendrites/` rather than moving under the group. Each `providers` key becomes a `<name>.provider` option on this aggregation, in that scope — `null` demands a choice, a string is a default a host may override. A half that does not apply is left out; `gaming` has no `home` at all.
 
-What an aggregation **installs** goes in its own `nixos` block, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. The lines themselves live once, in `modules/dendrites/packages.nix` — one flat list of packages that need no configuration, where every line declares a `dx.packages.<name>.enable` switch of its own, all off. `desktop`, `shell` and `gaming` each switch their own membership on by name, and a host does the same for anything it alone wants. Nothing outside that file writes `environment.systemPackages` for a package that is only a package. The nucleus floor stays a plain list in `modules/nucleus/packages.nix`, because a host does not get to answer that one differently either, and a dendrite keeps its own package lines, because those must leave with the capability that brought them.
+What an aggregation **installs** goes in its own half's `module`, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. The lines themselves live once, in `modules/dendrites/packages.nix` — one flat list of packages that need no configuration, where every line declares a `dx.packages.<name>.enable` switch of its own, all off. `desktop`, `shell` and `gaming` each switch their own membership on by name, and a host does the same for anything it alone wants. Nothing outside that file writes `environment.systemPackages` for a package that is only a package. The nucleus floor stays a plain list in `modules/nucleus/packages.nix`, because a host does not get to answer that one differently either, and a dendrite keeps its own package lines, because those must leave with the capability that brought them.
 
 A host that wants one of those packages writes one line, and that is the only place a host says anything about packages at all:
 
@@ -478,10 +475,10 @@ dx.packages.chromium.enable = lib.mkForce false; # drop one an aggregation switc
 A package the flat list does not carry yet gets its own `pkgs.<name>` line there first; the switch appears by itself. `mkEnableOption` merges as bool-or, so `mkForce` is the honest way to say no to something a group already said yes to. The switch is named by the package's own `lib.getName`, not by the attribute it is written with — `pkgs.mpv` is `dx.packages.mpv-with-scripts`.
 
 **Two kinds of module, by what they need from a host:**
-- **Selected = active** — no `options.dx.<name>.enable` at all; the lane applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)
+- **Selected = active** — no `options.dx.<name>.enable` at all; the module applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)
 - **`dx.` knobs for what genuinely varies** — a capability some hosts configure differently keeps `options.dx.<name>.<knob>` for that variance only, never for whether it runs (`caddy.sites`, `cloudflared.tunnelId`/`hostnames`, `immich.mediaLocation`, `inference.igpu`, `nas-mounts.server`/`mounts`).
 
-Aggregations follow the same rule one level up: a group names each member once, in the half that matches the lane it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `nixos`/`homeManager` block, never a repeat across hosts.
+Aggregations follow the same rule one level up: a group names each member once, in the half it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `module`, never a repeat across hosts.
 
 **The look is a capability too.** `song/songbook/` is a provider registry of rices, and the `shell` aggregation answers it with `transience` — the look this desktop has always had, now written down instead of scattered. A rice owns the palette and the stylesheets; the dendrite owns whether the program runs, so swapping the rice never re-decides whether waybar exists. `song/songbook/transience/livery.json` is authored in Aoide's v0 livery schema and `source/waybar.css` uses Lyra's `{{group.key}}` template syntax, so `lyra livery lint` is a real check and the pure-Nix render and `lyra livery emit file` produce the same bytes — `./tests/rice/run.sh` asserts it. See `song/songbook/README.md`.
 
@@ -495,8 +492,8 @@ An **override record** is the last shape, and the one to reach for only when a f
   dendrites = [ "browser" ];        # catalogue names — required
   hosts = [ "osaka" "sakaki" ];     # optional; omit for every host that selected one
   overlay = _final: prev: { … };    # host package set
-  nixos = { lib, ... }: { … };      # deferred platform module
-  homeManager = { … };              # rides only the users who selected a target
+  system = { lib, ... }: { … };     # deferred platform module
+  home = { … };                     # rides only the users who chose a target
 }
 ```
 

@@ -9,25 +9,11 @@
 # `pkgs.chatgpt-linux` has no nixpkgs definition and
 # arrives through Aoide's `overlays.default`, which every host already carries —
 # the same package `aoide.openai.enable` installed, so membership is unchanged.
+{ pkgs, ... }:
 {
-  nixos =
-    { pkgs, ... }:
-    {
-      nixpkgs.config.allowUnfree = true;
-      environment.systemPackages = [
-        pkgs.codex
-        pkgs.chatgpt-linux
-      ];
-    };
-
-  # The same two applications for a user who wants them without a system-wide
-  # install. Package-set permissions stay the consumer's, as with any home lane.
-  homeManager =
-    { pkgs, ... }:
-    {
-      home.packages = [
-        pkgs.codex
-        pkgs.chatgpt-linux
-      ];
-    };
+  nixpkgs.config.allowUnfree = true;
+  environment.systemPackages = [
+    pkgs.codex
+    pkgs.chatgpt-linux
+  ];
 }

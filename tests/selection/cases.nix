@@ -8,37 +8,34 @@ let
 
   sakaki = composition.evalSelection {
     inherit registry;
-    modules = [ ../../hosts/sakaki ];
+    host = ../../hosts/sakaki;
+  };
+
+  inventory = composition.inventoryOf {
+    hostName = "sakaki";
+    selection = sakaki;
   };
 in
 {
   # The headless host selects exactly what its file names.
-  realRegistryResolvesSakaki = builtins.concatStringsSep "," (
-    builtins.attrNames (
-      composition.inventoryOf {
-        hostName = "sakaki";
-        selection = sakaki;
-      }
-    ).dendrites
-  );
+  realRegistryResolvesSakaki = builtins.concatStringsSep "," (builtins.attrNames inventory.dendrites);
 
-  # Every nixos lane file the selection kept imports.
-  realRegistryLanesImport =
+  # Every module the selection kept resolves to a file that imports as a plain
+  # module: an attribute set or a function, never a nixos/homeManager record.
+  realRegistryModulesImport =
     let
-      lanes = composition.lanesFor {
-        inherit (sakaki) catalogue;
-        selected = sakaki.dendrites;
-        lane = "nixos";
-        scope = "for the system";
-      };
+      impls = lib.mapAttrsToList (name: d: composition.implOf sakaki.catalogue name d.provider) (
+        lib.filterAttrs (_: d: d.enable) sakaki.dendrites
+      );
+      plain =
+        i:
+        let
+          m = import i.path;
+        in
+        builtins.isFunction m || (builtins.isAttrs m && !(m ? nixos || m ? homeManager));
     in
-    lanes != [ ] && builtins.all (m: builtins.isAttrs m || builtins.isFunction m || builtins.isPath m) lanes;
+    impls != [ ] && builtins.all plain impls;
 
   # The groups the host reports.
-  realRegistryInventory = builtins.concatStringsSep "," (
-    composition.inventoryOf {
-      hostName = "sakaki";
-      selection = sakaki;
-    }
-  ).aggregation;
+  realRegistryInventory = builtins.concatStringsSep "," inventory.aggregation;
 }

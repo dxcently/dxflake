@@ -1,4 +1,4 @@
-# example-host-headless.nix — a machine with no graphical session and no home lane.
+# example-host-headless.nix — a machine with no graphical session and no home.
 #
 # Copy to:  hosts/<host>/default.nix
 # Then:     add "<host>" to the host list in flake.nix.
@@ -10,9 +10,9 @@
 # account with no Home Manager module behind it. Two machines, one vocabulary,
 # no `if hostname ==` anywhere.
 {
-  aggregation.base.enable = true;
+  habit.aggregation.base.enable = true;
 
-  dendrites = {
+  habit.dendrites = {
     exampletool.enable = true;
 
     # The same capability the other host reaches through its group, answered
@@ -24,15 +24,13 @@
     };
   };
 
-  # An account and nothing more: no home lane is evaluated, no Home Manager
-  # module is imported by this host at all.
-  users.exampleuser = {
+  # An account and nothing more: no home is evaluated, no Home Manager module
+  # is imported by this host at all.
+  habit.users.exampleuser = {
     definition = ../../users/exampleuser.nix;
-    homeManager.enable = false;
+    home.enable = false;
   };
 
-  nixos = {
-    imports = [ ./hardware.nix ];
-    networking.hostName = "exampleserver";
-  };
+  imports = [ ./hardware.nix ];
+  networking.hostName = "exampleserver";
 }

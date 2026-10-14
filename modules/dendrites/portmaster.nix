@@ -1,7 +1,5 @@
 {
-  nixos = {
-    config = {
-      services.portmaster.enable = true;
-    };
+  config = {
+    services.portmaster.enable = true;
   };
 }

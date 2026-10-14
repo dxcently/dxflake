@@ -10,7 +10,7 @@
 # Adding a rice is a directory beside transience/ and one line below. The host
 # that wants it says so on the shell aggregation:
 #
-#   users.<u>.aggregation.shell.rice.provider = "<name>";
+#   habit.users.<u>.aggregation.shell.rice.provider = "<name>";
 {
   providers = {
     transience = ./transience/rice.nix;
