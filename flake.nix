@@ -32,11 +32,17 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # ── The noah427 AI stack: Melete, Mneme, harnox, Eidolon ──────────────
-    # All four are PRIVATE repos under noah427 and are fetched straight from
-    # GitHub. No local checkout is load-bearing any more: ~/melete, ~/mneme,
-    # ~/harnox and ~/eidolon are dev worktrees, and what a host BUILDS is
-    # whatever master says, re-locked on demand.
+    # ── The noah427 AI stack: Melete, Mneme, Eidolon ──────────────────────
+    # All three are PRIVATE repos under noah427 and are fetched straight from
+    # GitHub. No local checkout is load-bearing any more: ~/melete, ~/mneme and
+    # ~/eidolon are dev worktrees, and what a host BUILDS is whatever master
+    # says, re-locked on demand.
+    #
+    # harnox is deliberately NOT an input here. It is not a flake and nothing
+    # installs it on its own: it reaches the graph only as eidolon's own
+    # `flake = false` source input, on the rev eidolon's flake.lock names (see
+    # the eidolon input below). dxflake pins no harnox rev that could drift
+    # from that one.
     #
     # `git+https:` and not `github:` — the tarball fetcher a `github:` URL
     # uses can only authenticate from a nix.conf `access-tokens` entry (a
@@ -78,8 +84,12 @@
     eidolon = {
       url = "git+https://github.com/noah427/eidolon.git?ref=master";
       inputs.nixpkgs.follows = "nixpkgs";
-      # Its harnox input is `github:` (private, tarball fetcher): it reads
-      # the token bash.nix exports into NIX_CONFIG from khoa's gh login.
+      # harnox is eidolon's own input, not dxflake's: `flake = false` (a
+      # source, not a flake — nothing "installs" harnox), locked at the rev
+      # eidolon's own flake.lock names, which is why `nix flake update eidolon`
+      # is the harnox bump too. It is `github:` (private, tarball fetcher),
+      # which is why it reads the token bash.nix exports into NIX_CONFIG from
+      # khoa's gh login.
     };
 
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.

@@ -35,7 +35,7 @@ rustPlatform.buildRustPackage {
 
   cargoLock = {
     lockFile = src + "/Cargo.lock";
-    # Git dependencies (harnox, eidolon) live in PRIVATE noah427 repos. A
+    # Its one git dependency (harnox) lives in a PRIVATE noah427 repo. A
     # sandboxed fixed-output fetch has no credentials and can never reach
     # them, so let importCargoLock use builtins.fetchGit instead: it runs in
     # the evaluator, as the user running the rebuild, with that user's git
