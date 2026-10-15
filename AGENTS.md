@@ -402,10 +402,10 @@ Quickshell are Aoide's inputs and reach hosts only through its exports; dxflake
 declares none of them, and a dendrite that wants one asks Aoide for an export.
 Hosts are built through the Aoide input's exports: `nixosModules.nucleus`,
 `overlays.default`, `lib.livery` and the lanes named in `aoideLanes`. The
-`aoide` aggregation's five members are lanes too, named there beside the rest;
-`aoide-config` is named nowhere.
 registry is dxflake's own and those lanes merged by habit's `mergeRegistries`,
-so a name both define is an error, never a silent winner. Aoide's `stylix` and
+so a name both define is an error, never a silent winner. The `aoide`
+aggregation's five members are lanes too, named there beside the rest;
+`aoide-config` is named nowhere. Aoide's `stylix` and
 `compositor` clash with dxflake's dendrites of the same names and are selected
 as `aoide-stylix` and `aoide-compositor`. The nucleus carries Aoide's option
 contract and the Stylix module, so no dendrite imports the Stylix module itself.

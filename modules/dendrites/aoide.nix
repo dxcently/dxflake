@@ -1,34 +1,28 @@
-# Core Aoide (the `aoide.enable` switch and the A2A door default) — no paint.
-# The daemon, the secrets broker and the binaries are the `aoide` aggregation's
-# members (modules/aggregations/aoide), selected beside this dendrite.
+# Core Aoide: the `aoide.enable` switch and the A2A door's default, no paint.
 #
-# Aoide ships its own complete option contract (modules/nucleus/options.nix in
-# the Aoide input, brought into every host by its `nixosModules.nucleus`):
-# `aoide.enable`, `aoide.a2a.*`, `aoide.secrets.*`, the enable facts
+# Aoide's nucleus (`nixosModules.nucleus`, an extra module on every host) is
+# the option contract: `aoide.enable`, the enable facts
 # (`aoide.quickshell.enable`, `aoide.stylix.enable`, …), `aoide.lyra.enable`,
-# and so on. This dendrite is not a second option surface over that contract — it
-# is one import that turns on the CORE baseline every fleet box wants, so
-# hosts.wiring stops repeating the same three flags. Every knob that
-# genuinely varies per host (a2a.spawnAgent/spawnPath/discoveryAdvertise/
-# tokenFile, secrets.members, …) is set by the host directly on the raw
-# `aoide.*` namespace once this dendrite (or any aoide-carrying host) has put
-# it in scope. The song is the exception: a host names it as
-# `habit.song.declared` in its host module, and the songs hook sets `aoide.song`
-# from that, so a host never writes `aoide.song` itself. Wrapping those in a
-# parallel `dx.aoide.*` mirror would just rename Aoide's own documented options
-# for no reason; convention here follows the option contract that already exists
-# rather than inventing one.
+# and so on. The service options come with their own catalogue entries:
+# `aoide.a2a.*` is declared by `aoided`, and `aoide.secrets.*` by
+# `aoide-secrets`. Every knob that varies per host
+# (a2a.spawnAgent/spawnPath/discoveryAdvertise/tokenFile, secrets.members, …)
+# is set by the host on the raw `aoide.*` namespace once those are in scope.
+# The song is the exception: a host names it as `habit.song.declared`, and the
+# songs hook sets `aoide.song` from that, so a host never writes `aoide.song`.
+#
+# ── Dependency ──────────────────────────────────────────────────────────────
+# This dendrite sets `aoide.a2a.enable`, so it needs `aoide.a2a.*` declared,
+# which means `aoided` selected. Select the `aoide` aggregation
+# (modules/aggregations/aoide), which selects `aoided` with the rest of the
+# service floor. Without `aoided`, evaluation fails with "The option
+# `aoide.a2a' does not exist".
 #
 # ── What "core" means ────────────────────────────────────────────────────
 #   aoide.enable     — Aoide is on for this host
 #   aoide.a2a.enable — the A2A (Agent2Agent) door, loopback by default;
 #                      a default, so a host that fronts a public relay
 #                      (sakaki) turns the door off with a plain `false`
-#
-# The services those options drive are catalogue entries of their own:
-# `aoided` declares the A2A door's options, and `aoide-secrets` the broker's
-# (empty aoide.secrets.members means nobody can reach it yet, so a host adds
-# itself).
 #
 # ── Paint is NOT this dendrite's business ──────────────────────────────────
 # Lyra (the rice/paint binary) and the Quickshell render surface come from
