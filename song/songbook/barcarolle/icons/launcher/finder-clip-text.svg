@@ -1,6 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-<path d="M6.5 2.5h13l6 6v17l-2.5 2.5-2.5-2.5-2.5 2.5-2.5-2.5-2.5 2.5-2.5-2.5-2.5 2.5-2.5-2.5z" transform="translate(1 1)" fill="#0c2130" fill-opacity=".25"/>
-<path d="M6.5 2.5h13l6 6v17l-2.5 2.5-2.5-2.5-2.5 2.5-2.5-2.5-2.5 2.5-2.5-2.5-2.5 2.5-2.5-2.5z" fill="#ffffff" stroke="#1d1d1d" stroke-linejoin="miter"/>
-<path d="M19.5 2.5v6h6" fill="#e2e2e2" stroke="#1d1d1d"/>
-<g stroke="#8d9aa0" shape-rendering="crispEdges"><path d="M9 6.5h8M9 10.5h13M9 13.5h13M9 16.5h11M9 19.5h13M9 22.5h7"/></g>
+<defs>
+<radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#023340" stop-opacity="0.42"/><stop offset="1" stop-color="#023340" stop-opacity="0"/></radialGradient>
+<linearGradient id="pp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3f0f3"/></linearGradient>
+<linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8f7fc"/><stop offset="1" stop-color="#4fc9e1"/></linearGradient>
+</defs>
+<ellipse cx="16" cy="29.5" rx="11" ry="1.8" fill="url(#sh)"/>
+<path d="M6.5 2.5H19.5L25.5 8.5V25.5L23 28L20.5 25.5L18 28L15.5 25.5L13 28L10.5 25.5L8 28L6.5 26.5Z" fill="url(#pp)" stroke="#3f7f8f" stroke-linejoin="round"/>
+<path d="M7.5 25.5V3.5H19" fill="none" stroke="#fff"/>
+<path d="M19.5 2.5V8.5H25.5Z" fill="url(#ear)" stroke="#3f7f8f" stroke-linejoin="round"/>
+<path d="M9.5 6.5H16.5M9.5 10.5H22.5M9.5 13.5H22.5M9.5 16.5H20.5M9.5 19.5H22.5M9.5 22.5H16.5" stroke="#82b2bf"/>
 </svg>

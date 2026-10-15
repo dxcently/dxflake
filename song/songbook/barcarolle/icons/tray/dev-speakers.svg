@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1"><stop offset="0" stop-color="#03243f" stop-opacity="0.45"/><stop offset="1" stop-color="#03243f" stop-opacity="0"/></radialGradient>
+<linearGradient id="cab" gradientUnits="userSpaceOnUse" x1="8" y1="0" x2="24" y2="0"><stop offset="0" stop-color="#3a5468"/><stop offset="0.35" stop-color="#20384a"/><stop offset="1" stop-color="#152735"/></linearGradient>
+<linearGradient id="gl" gradientUnits="userSpaceOnUse" x1="0" y1="3" x2="0" y2="15"><stop offset="0" stop-color="#ffffff" stop-opacity="0.42"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.04"/></linearGradient>
+<linearGradient id="rim" gradientUnits="userSpaceOnUse" x1="0" y1="12" x2="0" y2="26"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#d0dbe3"/><stop offset="0.55" stop-color="#93a6b5"/><stop offset="1" stop-color="#e6edf2"/></linearGradient>
+<radialGradient id="cone" gradientUnits="userSpaceOnUse" cx="16" cy="19" r="4.8" fx="14.6" fy="17.4"><stop offset="0" stop-color="#d8fbff"/><stop offset="0.35" stop-color="#55c8f6"/><stop offset="1" stop-color="#0b5ca8"/></radialGradient>
+<radialGradient id="cap" gradientUnits="userSpaceOnUse" cx="16" cy="19" r="1.9" fx="15.4" fy="18.3"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#7fd2f6"/></radialGradient>
+<linearGradient id="tw" gradientUnits="userSpaceOnUse" x1="0" y1="5.5" x2="0" y2="10.5"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#b9c8d3"/><stop offset="1" stop-color="#e8eef2"/></linearGradient>
+<radialGradient id="twc" gradientUnits="userSpaceOnUse" cx="16" cy="8" r="1.5" fx="15.5" fy="7.4"><stop offset="0" stop-color="#b9f3ff"/><stop offset="1" stop-color="#0e5fa6"/></radialGradient>
+</defs>
+<ellipse cx="0" cy="0" rx="1" ry="1" fill="url(#sh)" transform="matrix(10 0 0 2 16 29.5)"/>
+<rect x="8.5" y="2.5" width="15" height="26" rx="2.5" fill="url(#cab)" stroke="#0a1924"/>
+<path d="M9 5Q9 3 11 3H21Q23 3 23 5V14.5Q16 16 9 14.5Z" fill="url(#gl)"/>
+<path d="M11 3.5H21" stroke="#fff" stroke-opacity=".55"/>
+<circle cx="16" cy="8" r="2.5" fill="url(#tw)" stroke="#0a1924" stroke-width=".6"/>
+<circle cx="16" cy="8" r="1.5" fill="url(#twc)"/>
+<circle cx="16" cy="19" r="6.1" fill="url(#rim)" stroke="#0a1924" stroke-width=".7"/>
+<circle cx="16" cy="19" r="4.8" fill="url(#cone)" stroke="#0a3e70" stroke-width=".6"/>
+<circle cx="16" cy="19" r="1.9" fill="url(#cap)"/>
+<path d="M12.8 16.6Q14 15.2 15.6 15" stroke="#fff" stroke-opacity=".85" stroke-width=".9" stroke-linecap="round" fill="none"/>
+</svg>

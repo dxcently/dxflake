@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1"><stop offset="0" stop-color="#03243f" stop-opacity="0.45"/><stop offset="1" stop-color="#03243f" stop-opacity="0"/></radialGradient>
+<linearGradient id="bez" gradientUnits="userSpaceOnUse" x1="0" y1="4" x2="0" y2="23"><stop offset="0" stop-color="#4d6273"/><stop offset="0.5" stop-color="#1d2e3b"/><stop offset="1" stop-color="#0e1b25"/></linearGradient>
+<linearGradient id="scr" gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="19"><stop offset="0" stop-color="#a8ecff"/><stop offset="0.45" stop-color="#36aeee"/><stop offset="1" stop-color="#0b56a2"/></linearGradient>
+<radialGradient id="glow" gradientUnits="userSpaceOnUse" cx="16" cy="19" r="1"><stop offset="0" stop-color="#d4fbff" stop-opacity="0.75"/><stop offset="1" stop-color="#d4fbff" stop-opacity="0"/></radialGradient>
+<linearGradient id="gl" gradientUnits="userSpaceOnUse" x1="0" y1="6" x2="0" y2="19"><stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.04"/></linearGradient>
+<linearGradient id="neck" gradientUnits="userSpaceOnUse" x1="0" y1="22" x2="0" y2="27"><stop offset="0" stop-color="#0e1b25"/><stop offset="1" stop-color="#3d5466"/></linearGradient>
+<linearGradient id="foot" gradientUnits="userSpaceOnUse" x1="0" y1="26" x2="0" y2="29"><stop offset="0" stop-color="#5d7486"/><stop offset="1" stop-color="#0e1b25"/></linearGradient>
+<radialGradient id="led" gradientUnits="userSpaceOnUse" cx="16" cy="20.8" r="0.9"><stop offset="0" stop-color="#d8fbff"/><stop offset="1" stop-color="#2aa6ee"/></radialGradient>
+</defs>
+<ellipse cx="0" cy="0" rx="1" ry="1" fill="url(#sh)" transform="matrix(10 0 0 1.6 16 29.6)"/>
+<path d="M13.5 22H18.5L19.5 27H12.5Z" fill="url(#neck)"/>
+<rect x="8.5" y="26.5" width="15" height="2" rx="1" fill="url(#foot)" stroke="#08121a"/>
+<rect x="2.5" y="4.5" width="27" height="18" rx="2" fill="url(#bez)" stroke="#08121a"/>
+<path d="M4.5 5.5H27.5" stroke="#fff" stroke-opacity=".35"/>
+<rect x="4" y="6" width="24" height="13" fill="url(#scr)"/>
+<ellipse cx="0" cy="0" rx="1" ry="1" fill="url(#glow)" transform="matrix(10 0 0 4 16 19)"/>
+<path d="M4 6H20L11 19H4Z" fill="url(#gl)"/>
+<path d="M4 18.5H28" stroke="#06223e" stroke-opacity=".5"/>
+<circle cx="16" cy="20.8" r=".9" fill="url(#led)"/>
+</svg>

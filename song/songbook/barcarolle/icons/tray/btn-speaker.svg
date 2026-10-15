@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<defs>
+<linearGradient id="box" gradientUnits="userSpaceOnUse" x1="0" y1="5" x2="0" y2="11"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#d6e0e8"/><stop offset="0.55" stop-color="#9fb1bf"/><stop offset="1" stop-color="#e4ebf0"/></linearGradient>
+<linearGradient id="cone" gradientUnits="userSpaceOnUse" x1="0" y1="1" x2="0" y2="15"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#d6e0e8"/><stop offset="0.55" stop-color="#9fb1bf"/><stop offset="1" stop-color="#e4ebf0"/></linearGradient>
+<linearGradient id="wl" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="14"><stop offset="0" stop-color="#d2f8ff"/><stop offset="0.5" stop-color="#5ccdf8"/><stop offset="1" stop-color="#2a9be6"/></linearGradient>
+<linearGradient id="wd" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="14"><stop offset="0" stop-color="#3cb4f0"/><stop offset="0.5" stop-color="#0f6cc0"/><stop offset="1" stop-color="#083f80"/></linearGradient>
+</defs>
+<rect x="1.5" y="5.5" width="3" height="5" fill="url(#box)" stroke="#2f4353"/>
+<path d="M4.5 5.5L8.5 1.5V14.5L4.5 10.5Z" fill="url(#cone)" stroke="#2f4353" stroke-linejoin="round"/>
+<path d="M2 6.5H4M5 6.5L8 3.5" stroke="#fff"/>
+<path d="M10 5h1v1h-1zM10 6h1v1h-1zM11 7h1v1h-1zM10 10h1v1h-1zM10 9h1v1h-1zM11 8h1v1h-1zM12 2h1v1h-1zM12 3h1v1h-1zM13 4h1v1h-1zM14 5h1v1h-1zM14 6h1v1h-1zM14 7h1v1h-1zM12 13h1v1h-1zM12 12h1v1h-1zM13 11h1v1h-1zM14 10h1v1h-1zM14 9h1v1h-1zM14 8h1v1h-1z" fill="url(#wl)"/>
+<path d="M11 6h1v1h-1zM12 7h1v1h-1zM11 9h1v1h-1zM12 8h1v1h-1zM13 3h1v1h-1zM14 4h1v1h-1zM15 5h1v1h-1zM15 6h1v1h-1zM15 7h1v1h-1zM13 12h1v1h-1zM14 11h1v1h-1zM15 10h1v1h-1zM15 9h1v1h-1zM15 8h1v1h-1z" fill="url(#wd)"/>
+<path d="M11 5h1v1h-1zM12 6h1v1h-1zM11 10h1v1h-1zM12 9h1v1h-1zM13 2h1v1h-1zM14 3h1v1h-1zM15 4h1v1h-1zM13 13h1v1h-1zM14 12h1v1h-1zM15 11h1v1h-1z" fill="url(#wd)" fill-opacity=".4"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1"><stop offset="0" stop-color="#03243f" stop-opacity="0.45"/><stop offset="1" stop-color="#03243f" stop-opacity="0"/></radialGradient>
+<linearGradient id="band" gradientUnits="userSpaceOnUse" x1="0" y1="5" x2="0" y2="20"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#c3cfd9"/><stop offset="1" stop-color="#8a9cab"/></linearGradient>
+<linearGradient id="cupL" gradientUnits="userSpaceOnUse" x1="3" y1="0" x2="11" y2="0"><stop offset="0" stop-color="#0b5aa6"/><stop offset="0.35" stop-color="#3cbcf4"/><stop offset="0.7" stop-color="#2a9be6"/><stop offset="1" stop-color="#0a4f96"/></linearGradient>
+<linearGradient id="cupR" gradientUnits="userSpaceOnUse" x1="21" y1="0" x2="29" y2="0"><stop offset="0" stop-color="#0a4f96"/><stop offset="0.3" stop-color="#2a9be6"/><stop offset="0.65" stop-color="#3cbcf4"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+<linearGradient id="gl" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="23"><stop offset="0" stop-color="#ffffff" stop-opacity="0.8"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.05"/></linearGradient>
+<linearGradient id="pad" gradientUnits="userSpaceOnUse" x1="0" y1="17" x2="0" y2="28"><stop offset="0" stop-color="#4f6578"/><stop offset="1" stop-color="#1c2c38"/></linearGradient>
+<linearGradient id="yoke" gradientUnits="userSpaceOnUse" x1="0" y1="14" x2="0" y2="18"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#8a9cab"/></linearGradient>
+</defs>
+<ellipse cx="0" cy="0" rx="1" ry="1" fill="url(#sh)" transform="matrix(13 0 0 1.8 16 29.6)"/>
+<path d="M6.5 17V15.5A9.5 9.5 0 0 1 25.5 15.5V17" fill="none" stroke="#2f4353" stroke-width="3.6"/>
+<path d="M6.5 17V15.5A9.5 9.5 0 0 1 25.5 15.5V17" fill="none" stroke="url(#band)" stroke-width="2"/>
+<path d="M8.2 11.2A8.6 8.6 0 0 1 16 6.9" fill="none" stroke="#fff" stroke-width=".8" stroke-linecap="round"/>
+<rect x="9" y="18.5" width="3" height="8" rx="1.5" fill="url(#pad)" stroke="#2f4353" stroke-width=".8"/>
+<rect x="20" y="18.5" width="3" height="8" rx="1.5" fill="url(#pad)" stroke="#2f4353" stroke-width=".8"/>
+<rect x="4.5" y="14.5" width="4" height="3" rx="1" fill="url(#yoke)" stroke="#2f4353" stroke-width=".8"/>
+<rect x="23.5" y="14.5" width="4" height="3" rx="1" fill="url(#yoke)" stroke="#2f4353" stroke-width=".8"/>
+<rect x="3.5" y="16.5" width="7" height="12" rx="3" fill="url(#cupL)" stroke="#073f78"/>
+<rect x="21.5" y="16.5" width="7" height="12" rx="3" fill="url(#cupR)" stroke="#073f78"/>
+<path d="M4 19.5Q4 17 6.5 17H7.5Q10 17 10 19.5V22Q7 22.8 4 22Z" fill="url(#gl)"/>
+<path d="M22 19.5Q22 17 24.5 17H25.5Q28 17 28 19.5V22Q25 22.8 22 22Z" fill="url(#gl)"/>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<defs>
+<linearGradient id="kb" gradientUnits="userSpaceOnUse" x1="0" y1="3" x2="0" y2="14"><stop offset="0" stop-color="#aebecb"/><stop offset="0.5" stop-color="#7f93a3"/><stop offset="1" stop-color="#566979"/></linearGradient>
+<linearGradient id="key" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4dee6"/></linearGradient>
+<linearGradient id="sp" gradientUnits="userSpaceOnUse" x1="0" y1="11" x2="0" y2="12"><stop offset="0" stop-color="#8fe0ff"/><stop offset="1" stop-color="#1680d6"/></linearGradient>
+</defs>
+<rect x="0.5" y="3.5" width="14" height="10" rx="1.5" fill="url(#kb)" stroke="#2f4353"/>
+<path d="M2 4.5H13" stroke="#fff" stroke-opacity=".8"/>
+<rect x="2" y="5" width="2" height="2" fill="url(#key)"/>
+<rect x="5" y="5" width="2" height="2" fill="url(#key)"/>
+<rect x="8" y="5" width="2" height="2" fill="url(#key)"/>
+<rect x="11" y="5" width="2" height="2" fill="url(#key)"/>
+<rect x="2" y="8" width="2" height="2" fill="url(#key)"/>
+<rect x="5" y="8" width="2" height="2" fill="url(#key)"/>
+<rect x="8" y="8" width="2" height="2" fill="url(#key)"/>
+<rect x="11" y="8" width="2" height="2" fill="url(#key)"/>
+<rect x="4" y="11" width="7" height="1" fill="url(#sp)"/>
+</svg>

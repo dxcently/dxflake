@@ -24,6 +24,7 @@ PanelWindow {
     readonly property string aoideRoot: Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")
     readonly property string stageDir: root.aoideRoot + "/state/stage/"
     readonly property string iconDir: "file://" + root.aoideRoot + "/song/songbook/barcarolle/icons/"
+    readonly property string bust: "?v=" + Date.now()
     readonly property string home: Quickshell.env("HOME") || ""
     readonly property string fUi: Qt.fontFamilies().indexOf("Tahoma") >= 0 ? "Tahoma" : Kit.family
     readonly property string fMono: Qt.fontFamilies().indexOf("Andale Mono") >= 0 ? "Andale Mono" : "Noto Sans Mono"
@@ -302,7 +303,7 @@ PanelWindow {
         property string name: ""
         width: 12; height: 12
         sourceSize: Qt.size(width, height)
-        source: name === "" ? "" : root.iconDir + "dock/" + name + ".svg"
+        source: name === "" ? "" : root.iconDir + "dock/" + name + ".svg" + root.bust
     }
     component Dash: Shape {
         id: ds
@@ -549,7 +550,7 @@ PanelWindow {
                                 x: 15; y: 4; spacing: 1
                                 Repeater {
                                     model: grp.g.minis
-                                    Image { required property var modelData; width: 12; height: 12; sourceSize: Qt.size(12, 12); source: root.iconDir + "agents/" + modelData + ".svg" }
+                                    Image { required property var modelData; width: 12; height: 12; sourceSize: Qt.size(12, 12); source: root.iconDir + "agents/" + modelData + ".svg" + root.bust }
                                 }
                             }
                         }
@@ -558,7 +559,7 @@ PanelWindow {
                             visible: grp.g.ws === null; anchors.centerIn: parent; spacing: 2; opacity: 0.55
                             Repeater {
                                 model: grp.g.minis
-                                Image { required property var modelData; width: 12; height: 12; sourceSize: Qt.size(12, 12); source: root.iconDir + "agents/" + modelData + ".svg" }
+                                Image { required property var modelData; width: 12; height: 12; sourceSize: Qt.size(12, 12); source: root.iconDir + "agents/" + modelData + ".svg" + root.bust }
                             }
                         }
                     }
@@ -611,7 +612,7 @@ PanelWindow {
                         Image {
                             x: 9; y: 3; width: 28; height: 28
                             sourceSize: Qt.size(28, 28)
-                            source: root.iconDir + "agents/" + row.r.icon + ".svg"
+                            source: root.iconDir + "agents/" + row.r.icon + ".svg" + root.bust
                             opacity: row.r.state === "done" ? 0.5 : row.r.state === "idle" ? 0.62 : 1
                             rotation: row.r.state === "awaiting" ? -6 : 0
                             layer.enabled: row.dim

@@ -10,6 +10,7 @@ import Quickshell.Services.Pipewire
 import Quickshell.Services.SystemTray
 import "../.."
 import "Kit.js" as Kit
+import "Rice.js" as Rice
 
 Item {
     id: root
@@ -29,7 +30,10 @@ Item {
     property int tick: 0
     Connections {
         target: Hyprland
-        function onRawEvent(e) { settle.restart() }
+        function onRawEvent(e) {
+            if (e.name === "activespecial") { Hyprland.refreshWorkspaces(); Hyprland.refreshMonitors() }
+            settle.restart()
+        }
     }
     Connections {
         target: DesktopEntries.applications
@@ -40,12 +44,15 @@ Item {
     readonly property int rigPeek: parseInt(Quickshell.env("AOIDE_RIG_PEEK") || "-1")
     readonly property string bust: "?v=" + Date.now()
     readonly property string appGlyph: (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/song/songbook/barcarolle/icons/launcher/finder-app.svg" + root.bust
+    readonly property string iconDir: (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/song/songbook/barcarolle/icons/"
+    readonly property string trayDir: root.iconDir + "tray/"
 
     property var sessByAddr: ({})
     property int awaitingCount: 0
     property int workingCount: 0
 
     property string coverPath: Quickshell.env("AOIDE_WALLPAPER") || ""
+    property bool coverTile: false
     FileView {
         path: (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/song/stage/cover.json"
         watchChanges: true
@@ -56,10 +63,12 @@ Item {
             var baked = Quickshell.env("AOIDE_WALLPAPER") || ""
             try {
                 var d = JSON.parse(text())
-                root.coverPath = (d && d.path && (!d.song || d.song === root.livery.songName)) ? "" + d.path : baked
-            } catch (e) { root.coverPath = baked }
+                var applies = !!(d && d.path && (!d.song || d.song === root.livery.songName))
+                root.coverPath = applies ? "" + d.path : baked
+                root.coverTile = applies && d.pick === true && d.tile === true
+            } catch (e) { root.coverPath = baked; root.coverTile = false }
         }
-        onLoadFailed: root.coverPath = Quickshell.env("AOIDE_WALLPAPER") || ""
+        onLoadFailed: { root.coverPath = Quickshell.env("AOIDE_WALLPAPER") || ""; root.coverTile = false }
     }
     FileView {
         id: stage
@@ -112,18 +121,35 @@ Item {
         if (!p) p = root.appGlyph
         return p
     }
+    readonly property var trayArt: ({ "Claude_status_icon_1": root.iconDir + "agents/claude.svg", "Fcitx": root.trayDir + "apps/fcitx.svg" })
+    function trayPics(item) {
+        var id = "" + (item.id || ""), title = "" + (item.title || "")
+        var e = (id && (DesktopEntries.byId(id) || DesktopEntries.heuristicLookup(id))) || (title && DesktopEntries.heuristicLookup(title))
+        var p = e && e.icon ? Quickshell.iconPath(e.icon, true) : ""
+        var out = p ? [p] : []
+        if (root.trayArt[id]) out.push(root.trayArt[id])
+        return out
+    }
 
     function build(screenName) {
         root.tick
+        if (!screenName) return { rows: [], drawers: [], lists: {} }
         var wss = (Hyprland.workspaces && Hyprland.workspaces.values) ? Hyprland.workspaces.values : []
         var tops = (Hyprland.toplevels && Hyprland.toplevels.values) ? Hyprland.toplevels.values : []
+        var mons = (Hyprland.monitors && Hyprland.monitors.values) ? Hyprland.monitors.values : []
         var front = Hyprland.activeToplevel ? Hyprland.activeToplevel.address : ""
-        var rows = [], drawers = [], lists = {}, exists = {}
+        var rows = [], drawers = [], lists = {}
         for (var i = 0; i < wss.length; i++) {
             var w = wss[i]
             if (!w) continue
-            exists[w.id] = true
-            if (!w.monitor || w.monitor.name !== screenName) continue
+            var shown = null
+            for (var q = 0; w.id < 0 && q < mons.length; q++) {
+                var sp = mons[q].lastIpcObject ? mons[q].lastIpcObject.specialWorkspace : null
+                if (sp && sp.name === w.name) shown = mons[q]
+            }
+            if (!shown && !w.monitor) continue
+            var mon = shown ? shown.name : w.monitor.name
+            var away = mon !== screenName
             var list = []
             for (var j = 0; j < tops.length; j++) {
                 var t = tops[j]
@@ -150,34 +176,26 @@ Item {
                 ws: w,
                 wins: list.length,
                 icons: list.map(function (x) { return x.icon }),
-                active: w.active === true,
+                active: w.id < 0 ? !!shown : w.active === true,
                 urgent: w.urgent === true,
                 awaiting: aw,
                 working: wk,
-                ghost: false
+                mon: mon,
+                away: away
             }
+            if (m.wins === 0 && !m.active && !(w.lastIpcObject && w.lastIpcObject.ispersistent)) continue
             if (w.id > 0) rows.push(m)
-            else if (m.wins > 0 || w.active) drawers.push(m)
+            else drawers.push(m)
         }
-        for (var n = 1; n <= 8; n++)
-            if (!exists[n]) rows.push({ id: n, name: "" + n, ws: null, wins: 0, icons: [], active: false, urgent: false, awaiting: 0, working: 0, ghost: true })
         rows.sort(function (a, b) { return a.id - b.id })
         drawers.sort(function (a, b) { return a.name < b.name ? -1 : 1 })
         return { rows: rows, drawers: drawers, lists: lists }
     }
 
-    function nextEmpty(rows) {
+    function nextEmpty() {
         var used = {}
-        for (var i = 0; i < rows.length; i++) if (rows[i].wins > 0 || rows[i].active) used[rows[i].id] = true
         var wss = Hyprland.workspaces.values
-        for (var k = 0; k < wss.length; k++) if (wss[k].id > 0) {
-            var occupied = false
-            for (var q = 0; q < Hyprland.toplevels.values.length; q++) {
-                var t = Hyprland.toplevels.values[q]
-                if (t.workspace && t.workspace.id === wss[k].id) { occupied = true; break }
-            }
-            if (occupied || wss[k].active) used[wss[k].id] = true
-        }
+        for (var k = 0; k < wss.length; k++) used[wss[k].id] = true
         var n = 1
         while (used[n]) n++
         return n
@@ -194,6 +212,11 @@ Item {
     property string flyout: ""
     property string flyoutGone: ""
     property real flyoutGoneAt: 0
+    property string volView: "main"
+    property string volPickKind: "out"
+    property string volBack: "main"
+    readonly property int volH: 305
+    readonly property int volW: root.volView === "list" ? 200 : root.volView === "mixer" ? 360 : 84
     property string trayTip: ""
     property int trayCount: 0
     function recountTray() {
@@ -218,6 +241,7 @@ Item {
     }
     onFlyoutChanged: {
         if (root.flyout === "") return
+        if (root.flyout === "volume") root.volView = "main"
         win.hotId = -1
         win.hotBtn = null
         if (root.flyout === "start") sm.reset()
@@ -243,18 +267,92 @@ Item {
     }
 
     readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
+    readonly property var mic: Pipewire.ready ? Pipewire.defaultAudioSource : null
     PwObjectTracker { objects: root.sink ? [root.sink] : [] }
+    PwObjectTracker { objects: root.mic ? [root.mic] : [] }
     readonly property var sinkAudio: root.sink && root.sink.audio ? root.sink.audio : null
     readonly property real volLevel: root.sinkAudio ? root.sinkAudio.volume : 0
     readonly property bool volMuted: root.sinkAudio ? root.sinkAudio.muted : false
     readonly property bool volSilent: !root.sinkAudio || root.volMuted || root.volLevel <= 0
-    function setVolume(v) {
-        if (!root.sinkAudio) return
-        root.sinkAudio.volume = Math.max(0, Math.min(1, v))
-        if (v > 0 && root.sinkAudio.muted) root.sinkAudio.muted = false
+    function setNodeVolume(n, v) {
+        var a = n && n.audio
+        if (!a) return
+        a.volume = Math.max(0, Math.min(1, v))
+        if (v > 0 && a.muted) a.muted = false
     }
+    function setNodeMuted(n, m) { if (n && n.audio) n.audio.muted = m }
+    function pickSink(n) { if (n) Pipewire.preferredDefaultAudioSink = n }
+    function pickSource(n) { if (n) Pipewire.preferredDefaultAudioSource = n }
+    function setVolume(v) { root.setNodeVolume(root.sink, v) }
     function nudgeVolume(delta) { root.setVolume(root.volLevel + delta) }
     function runDetached(name) { Quickshell.execDetached(["systemd-run", "--user", "--scope", name]) }
+
+    property int pwEpoch: 0
+    Connections {
+        target: Pipewire.nodes
+        function onObjectInsertedPost() { root.pwEpoch++ }
+        function onObjectRemovedPost() { root.pwEpoch++ }
+    }
+    function pwNodes(want) {
+        var epoch = root.pwEpoch
+        var vals = Pipewire.ready && Pipewire.nodes && Pipewire.nodes.values ? Pipewire.nodes.values : []
+        var o = []
+        for (var i = 0; i < vals.length; i++) {
+            var n = vals[i]
+            if (!n || !(n.type & PwNodeType.Audio)) continue
+            if (want === "stream") { if (n.isStream) o.push(n); continue }
+            if (!n.isStream && n.isSink === (want === "out")) o.push(n)
+        }
+        return o
+    }
+    readonly property var outNodes: root.pwNodes("out")
+    readonly property var inNodes: root.pwNodes("in")
+    readonly property var streamNodes: root.pwNodes("stream")
+    PwObjectTracker { objects: root.outNodes.concat(root.inNodes, root.streamNodes) }
+    readonly property var appNodes: {
+        var o = []
+        for (var i = 0; i < root.streamNodes.length; i++) {
+            var n = root.streamNodes[i]
+            var p = n.properties || ({})
+            if (!n.ready || ("" + p["stream.monitor"]) === "true") continue
+            if ((n.type & PwNodeType.AudioOutStream) !== PwNodeType.AudioOutStream) continue
+            o.push(n)
+        }
+        return o
+    }
+    function nodeLabel(n) {
+        var s = "" + (n.nickname || n.description || n.name || "")
+        return s.length > 0 ? s : "node " + n.id
+    }
+    function nodeGloss(n) {
+        var s = "" + (n.name || "")
+        var dot = s.lastIndexOf(".")
+        var tail = dot >= 0 ? s.substring(dot + 1) : s
+        return tail.length > 18 ? tail.substring(0, 17) + "…" : tail
+    }
+    function streamLabel(n) {
+        var p = n.properties || ({})
+        var s = "" + (p["application.name"] || n.description || n.name || "")
+        return s.length > 0 ? s : "node " + n.id
+    }
+    function devPic(n, out) {
+        if (!out) return root.trayDir + "dev-mic.svg"
+        var p = n && n.properties ? n.properties : ({})
+        var s = ("" + (n ? n.name : "") + " " + (n ? n.nickname : "")).toLowerCase()
+        var ff = ("" + (p["device.form-factor"] || "")).toLowerCase()
+        if (ff === "tv" || ff === "monitor" || s.indexOf("hdmi") >= 0 || s.indexOf("displayport") >= 0) return root.trayDir + "dev-hdmi.svg"
+        if (/headphone|headset|hands-free/.test(ff) || /headphone|headset|arctis/.test(s)) return root.trayDir + "dev-headphones.svg"
+        return root.trayDir + "dev-speakers.svg"
+    }
+    function appPic(n) {
+        var p = n.properties || ({})
+        return root.iconFor("" + (p["application.process.binary"] || p["application.name"] || ""))
+    }
+    function openList(kind, back) {
+        root.volPickKind = kind
+        root.volBack = back
+        root.volView = "list"
+    }
 
     property bool netUp: false
     property string netName: ""
@@ -299,7 +397,7 @@ Item {
     Timer {
         interval: 1500
         repeat: true
-        running: root.flyout === "network"
+        running: true
         triggeredOnStart: true
         onTriggered: root.netScan()
     }
@@ -371,6 +469,76 @@ Item {
         }
     }
 
+    readonly property var screenNo: {
+        var s = [], rows = [], no = {}, n = 1
+        for (var i = 0; i < Quickshell.screens.length; i++) s.push(Quickshell.screens[i])
+        s.sort(function (a, b) { return a.y - b.y })
+        for (var j = 0; j < s.length; j++) {
+            var r = rows[rows.length - 1]
+            if (r && s[j].y < r.end) { r.list.push(s[j]); r.end = Math.max(r.end, s[j].y + s[j].height) }
+            else rows.push({ end: s[j].y + s[j].height, list: [s[j]] })
+        }
+        for (var k = 0; k < rows.length; k++) {
+            rows[k].list.sort(function (a, b) { return a.x - b.x || a.y - b.y })
+            for (var t = 0; t < rows[k].list.length; t++) no[rows[k].list[t].name] = n++
+        }
+        return no
+    }
+
+    component ScreenMap: Rectangle {
+        id: sm
+        property string mon: ""
+        readonly property var box: {
+            var s = Quickshell.screens, x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity
+            for (var i = 0; i < s.length; i++) {
+                x0 = Math.min(x0, s[i].x); y0 = Math.min(y0, s[i].y)
+                x1 = Math.max(x1, s[i].x + s[i].width); y1 = Math.max(y1, s[i].y + s[i].height)
+            }
+            var k = Math.min(32 / (x1 - x0), 11 / (y1 - y0)), small = Infinity
+            for (var j = 0; j < s.length; j++)
+                small = Math.min(small, Math.max(2, Math.round(s[j].width * k) - 1), Math.max(2, Math.round(s[j].height * k) - 1))
+            return { x: x0, y: y0, k: k, w: (x1 - x0) * k, h: (y1 - y0) * k, small: small }
+        }
+        readonly property bool legible: box.small >= 4
+        readonly property int pos: root.screenNo[sm.mon] || 0
+        width: legible ? Math.round(box.w) + 4 : Math.max(17, nr.implicitWidth + 6)
+        height: legible ? Math.round(box.h) + 4 : 15
+        radius: 2
+        color: legible ? Kit.dark(0.90) : "transparent"
+        Repeater {
+            model: Quickshell.screens
+            Rectangle {
+                required property var modelData
+                visible: sm.legible
+                x: 2 + Math.round((modelData.x - sm.box.x) * sm.box.k)
+                y: 2 + Math.round((modelData.y - sm.box.y) * sm.box.k)
+                width: Math.max(2, Math.round(modelData.width * sm.box.k) - 1)
+                height: Math.max(2, Math.round(modelData.height * sm.box.k) - 1)
+                color: modelData.name === sm.mon ? Kit.cyan : "transparent"
+                border.width: 1
+                border.color: modelData.name === sm.mon ? "#ffffff" : Kit.white(0.55)
+            }
+        }
+        Rectangle {
+            visible: !sm.legible
+            width: sm.width; height: 12
+            radius: 2
+            color: Kit.dark(0.90)
+            border.width: 1
+            border.color: Kit.cyan
+            Text {
+                id: nr
+                anchors.centerIn: parent
+                text: sm.pos ? "" + sm.pos : "?"
+                color: Kit.cyan
+                font: Kit.boldFont(10)
+                textFormat: Text.PlainText
+            }
+        }
+        Rectangle { visible: !sm.legible; x: Math.round((sm.width - 3) / 2); y: 12; width: 3; height: 1; color: Kit.cyan }
+        Rectangle { visible: !sm.legible; x: Math.round((sm.width - 9) / 2); y: 13; width: 9; height: 2; radius: 1; color: Kit.cyan }
+    }
+
     component Dot: Item {
         id: dot
         property color tone: root.kit.working
@@ -406,7 +574,7 @@ Item {
 
     component Icon: Image {
         property string src: ""
-        source: src ? (src.indexOf("/") === 0 ? "file://" + src : src) : ""
+        source: src ? (src.indexOf("/") === 0 ? "file://" + src + root.bust : src) : ""
         sourceSize: Qt.size(64, 64)
         smooth: true
         asynchronous: true
@@ -418,19 +586,21 @@ Item {
         id: b
         required property var m
         readonly property bool occ: m.wins > 0
-        readonly property bool lit: m.active
-        readonly property real faceW: occ ? 56 : 38
+        readonly property bool lit: m.active && !m.away
+        property bool compact: false
+        readonly property real faceW: (occ || m.away) && !compact ? 56 : 38
         readonly property alias hovered: ma.containsMouse
-        width: occ ? Kit.buttonWidth : Kit.emptyWidth
+        width: (occ || m.away) && !compact ? Kit.buttonWidth : Kit.emptyWidth
         height: Kit.barHeight
+        opacity: m.away && !hovered ? 0.55 : 1
 
         Rectangle {
-            visible: b.m.wins >= 3
+            visible: !b.compact && b.m.wins >= 3
             x: 6; y: 2; width: 56; height: 36; radius: 3
             color: Kit.white(0.10); border.width: 1; border.color: Kit.white(0.18)
         }
         Rectangle {
-            visible: b.m.wins >= 2
+            visible: !b.compact && b.m.wins >= 2
             x: 3; y: 2; width: 56; height: 36; radius: 3
             color: Kit.white(0.10); border.width: 1; border.color: Kit.white(0.18)
         }
@@ -510,23 +680,31 @@ Item {
             }
         }
 
-        Icon { visible: b.occ && src.length > 0; x: 4; y: 4; width: 28; height: 28; src: b.m.icons.length > 0 ? b.m.icons[0] : "" }
-        Icon { visible: b.occ && src.length > 0; x: 37; y: 6; width: 14; height: 14; src: b.m.icons.length > 1 ? b.m.icons[1] : "" }
-        Icon { visible: b.occ && src.length > 0 && b.m.icons.length <= 3; x: 37; y: 22; width: 14; height: 14; src: b.m.icons.length > 2 ? b.m.icons[2] : "" }
+        Icon { id: lead; visible: !b.compact && b.occ && src.length > 0; x: b.m.icons.length > 1 ? 4 : (b.faceW - width) / 2; y: b.m.away ? 2 : 4; width: b.m.away ? 20 : 28; height: width; src: b.m.icons.length > 0 ? b.m.icons[0] : "" }
+        Icon { visible: !b.compact && b.occ && src.length > 0; x: 37; y: 6; width: 14; height: 14; src: b.m.icons.length > 1 ? b.m.icons[1] : "" }
+        Icon { visible: !b.compact && b.occ && src.length > 0 && b.m.icons.length <= 3; x: 37; y: 22; width: 14; height: 14; src: b.m.icons.length > 2 ? b.m.icons[2] : "" }
         Chip {
-            visible: b.m.icons.length > 3
+            visible: !b.compact && b.m.icons.length > 3
             x: 37; y: 22; width: 15; h: 14; px: 9
             label: "+" + (b.m.icons.length - 2)
         }
 
         Chip {
-            x: b.occ ? 1 : 12
-            y: b.occ ? 24 : 13
+            id: num
+            x: b.compact ? Math.round((b.faceW - width) / 2) : b.occ ? 1 : Math.round((b.faceW - width - (mark.visible ? mark.width + 2 : 0)) / 2)
+            y: b.compact ? 2 + Math.round((36 - 15 - mark.height) / 2) : b.occ ? 24 : 13
             label: "" + b.m.id
         }
+        ScreenMap {
+            id: mark
+            visible: b.m.away
+            mon: b.m.mon
+            x: b.compact ? Math.round((b.faceW - width) / 2) : num.x + num.width + 2
+            y: b.compact ? num.y + num.height + 2 : num.y + num.height - height
+        }
         Dot {
-            visible: b.occ && (b.m.awaiting > 0 || b.m.working > 0)
-            x: 22; y: 24
+            visible: b.occ && !b.m.away && (b.m.awaiting > 0 || b.m.working > 0)
+            x: lead.x + 18; y: 24
             tone: b.m.awaiting > 0 ? root.kit.awaiting : root.kit.working
             label: b.m.awaiting > 0 ? "❚❚" : (b.m.working > 1 ? "" + b.m.working : "●")
         }
@@ -536,54 +714,62 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
-            onClicked: {
-                if (b.m.ws) b.m.ws.activate()
-                else {
-                    if (win.screen) Hyprland.dispatch("focusmonitor " + win.screen.name)
-                    Hyprland.dispatch("workspace " + b.m.id)
-                }
-            }
+            onClicked: if (b.m.ws) b.m.ws.activate()
         }
     }
 
     component Drawer: Item {
         id: dr
         required property var m
-        readonly property bool open: m.active
-        width: 40
+        readonly property bool open: m.active && !m.away
+        readonly property bool elsewhere: m.active && m.away
+        readonly property bool low: elsewhere && drMap.width > 21
+        readonly property string tab: "M0.5 " + (height - 0.5) + " V4.5 a4 4 0 0 1 4 -4 H35.5 a4 4 0 0 1 4 4 V" + (height - 0.5) + " Z"
+        readonly property int more: m.wins - (elsewhere ? 1 : 2)
+        width: 46
         height: open ? 38 : 36
         y: open ? 2 : 4
+        opacity: elsewhere && !dma.containsMouse ? 0.55 : 1
+        Svg { visible: dr.m.wins >= 3; x: 6; d: dr.tab; fill: Kit.white(0.10); stroke: Kit.white(0.18) }
+        Svg { visible: dr.m.wins >= 2; x: 3; d: dr.tab; fill: Kit.white(0.10); stroke: Kit.white(0.18) }
         Svg {
             d: "M0 " + dr.height + " V4 a4 4 0 0 1 4 -4 H36 a4 4 0 0 1 4 4 V" + dr.height + " Z"
             fill: dr.open ? "transparent" : Kit.white(0.05)
         }
         Rectangle {
             visible: dr.open
-            anchors.fill: parent
+            width: 40; height: dr.height
             gradient: Gradient {
                 GradientStop { position: 0; color: Kit.white(0.16) }
                 GradientStop { position: 1; color: Kit.white(0.06) }
             }
         }
-        Svg {
-            d: "M0.5 " + (dr.height - 0.5) + " V4.5 a4 4 0 0 1 4 -4 H35.5 a4 4 0 0 1 4 4 V" + (dr.height - 0.5) + " Z"
-            stroke: Kit.white(0.20)
-        }
+        Svg { d: dr.tab; stroke: Kit.white(0.20) }
         Svg {
             visible: dr.open
             d: "M0.8 5 a4.2 4.2 0 0 1 4.2 -4.2 H35 a4.2 4.2 0 0 1 4.2 4.2"
             stroke: Kit.cyan
             sw: 2
         }
-        Item {
-            x: 3; y: 3 - (dr.open ? 0 : 0)
-            Svg { d: "M3 4 H11.5 a1.5 1.5 0 0 1 1.5 1.5 V11 a1.5 1.5 0 0 1 -1.5 1.5 H3 a1.5 1.5 0 0 1 -1.5 -1.5 V5.5 a1.5 1.5 0 0 1 1.5 -1.5 Z"; stroke: Kit.white(0.7) }
-            Svg { d: "M5 2 H13 a1.5 1.5 0 0 1 1.5 1.5 V9 a1.5 1.5 0 0 1 -1.5 1.5 H5 a1.5 1.5 0 0 1 -1.5 -1.5 V3.5 a1.5 1.5 0 0 1 1.5 -1.5 Z"; stroke: "#ffffff"; fill: Kit.dark(0.6) }
+        ScreenMap { id: drMap; visible: dr.elsewhere; mon: dr.m.mon; x: dr.low ? Math.round((40 - width) / 2) : 1; y: dr.low ? dr.height - 1 - height : 3 }
+        Icon {
+            x: dr.elsewhere ? (dr.low ? 3 : 22) : (dr.m.wins === 1 ? 12 : 3)
+            y: 4; width: 16; height: 16
+            src: dr.m.icons.length > 0 ? dr.m.icons[0] : ""
         }
-        Icon { x: 20; y: 4; width: 16; height: 16; src: dr.m.icons.length > 0 ? dr.m.icons[0] : "" }
-        Chip { x: 2; y: 22; px: 9; h: 11; label: dr.m.name.substring(0, 3) }
+        Icon { x: 21; y: 4; width: 16; height: 16; src: !dr.elsewhere && dr.m.icons.length > 1 ? dr.m.icons[1] : "" }
+        Chip { id: drName; visible: !dr.low; x: 2; y: 22; px: 9; h: 11; label: dr.m.name.substring(0, 3) }
+        Chip {
+            visible: dr.more > 0
+            x: dr.low ? 38 - width : Math.max(drName.x + drName.width + 1, 38 - width)
+            y: dr.low ? 7 : 22
+            px: 9; h: 11
+            label: "+" + dr.more
+        }
         MouseArea {
+            id: dma
             anchors.fill: parent
+            hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: Hyprland.dispatch("togglespecialworkspace " + dr.m.name)
         }
@@ -688,19 +874,23 @@ Item {
         property string label: ""
         property real rh: 30
         property bool plate: false
+        property bool lit: false
+        property real textX: 9
         signal activated()
         width: parent ? parent.width : 132
         height: rh
         Rectangle {
             anchors.fill: parent
             radius: 2
-            color: prMa.containsMouse ? (pr.plate ? Kit.accent(0.10) : Kit.white(0.12)) : "transparent"
+            color: prMa.containsMouse || pr.lit ? (pr.plate ? Kit.accent(0.10) : Kit.white(0.12)) : "transparent"
             border.width: 1
-            border.color: prMa.containsMouse && !pr.plate ? Kit.white(0.40) : "transparent"
+            border.color: (prMa.containsMouse || pr.lit) && !pr.plate ? Kit.white(0.40) : "transparent"
         }
         Text {
             visible: pr.plate
-            x: 9
+            x: pr.textX
+            width: pr.width - pr.textX - 6
+            elide: Text.ElideRight
             anchors.verticalCenter: parent.verticalCenter
             text: pr.label
             color: pr.enabled ? Kit.ink : Kit.dark(0.40)
@@ -783,11 +973,140 @@ Item {
         Shortcut { sequence: "Escape"; enabled: fy.visible; onActivated: root.flyout = "" }
         HyprlandFocusGrab {
             windows: [fy]
-            active: fy.visible
+            active: fy.visible && fy.backingWindowVisible
             onCleared: {
                 root.flyoutGone = fy.name
                 root.flyoutGoneAt = Date.now()
                 root.flyout = ""
+            }
+        }
+    }
+
+    component VolCol: Item {
+        id: vc
+        property var node: null
+        property string label: ""
+        property string picture: ""
+        property bool headed: false
+        property bool metering: false
+        readonly property var audio: vc.node && vc.node.audio ? vc.node.audio : null
+        readonly property real level: vc.audio ? vc.audio.volume : 0
+        readonly property bool muted: vc.audio ? vc.audio.muted === true : false
+        signal headerClicked()
+        width: 68
+        height: 272
+
+        PwNodePeakMonitor { id: pk; node: vc.node; enabled: vc.metering }
+
+        Rectangle { x: 0; y: 16; width: 68; height: 48; color: hdrMa.containsMouse ? Kit.accent(0.12) : "transparent" }
+        Icon { x: 18; y: 16; width: 32; height: 32; src: vc.picture }
+        Text {
+            x: 6; y: 48; width: 56; height: 16
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            text: vc.label
+            color: Kit.ink
+            font: Kit.bodyFont(11)
+            textFormat: Text.PlainText
+        }
+        MouseArea {
+            id: hdrMa
+            x: 0; y: 16; width: 68; height: 48
+            enabled: vc.headed
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: vc.headerClicked()
+        }
+        Rectangle { x: 0; y: 72; width: 68; height: 1; color: Kit.dark(0.15) }
+
+        Rectangle {
+            id: track
+            x: 27; y: 88; width: 6; height: 120
+            radius: 3
+            color: Kit.dark(0.20)
+            border.width: 1
+            border.color: Kit.dark(0.25)
+        }
+        Rectangle {
+            id: fill
+            readonly property real fillH: Math.round(track.height * Math.min(1, vc.level))
+            x: 27; y: track.y + track.height - fillH; width: 6; height: fillH
+            radius: 3
+            gradient: Gradient {
+                GradientStop { position: 0; color: vc.muted ? "#d5dde0" : "#a6f0f7" }
+                GradientStop { position: 0.5; color: vc.muted ? "#8e9ba0" : "#25bbcf" }
+                GradientStop { position: 1; color: vc.muted ? "#5f6e73" : "#11707e" }
+            }
+        }
+        Rectangle { x: 27; y: fill.y + 2; width: 1; height: Math.max(0, fill.fillH - 4); color: Kit.white(0.55) }
+        Rectangle {
+            x: 21; y: fill.y - 5; width: 18; height: 10
+            radius: 2
+            border.width: 1
+            border.color: Kit.dark(0.55)
+            gradient: Gradient {
+                GradientStop { position: 0; color: "#ffffff" }
+                GradientStop { position: 0.5; color: "#dfeef0" }
+                GradientStop { position: 0.5; color: "#c9e3e7" }
+                GradientStop { position: 1; color: "#eaf5f6" }
+            }
+        }
+
+        Rectangle {
+            x: 42; y: 88; width: 5; height: 120
+            color: Kit.dark(0.12)
+            border.width: 1
+            border.color: Kit.dark(0.25)
+        }
+        Rectangle {
+            x: 43; width: 3
+            height: vc.muted ? 0 : Math.round(Math.min(1, pk.peak) * 118)
+            y: 207 - height
+            gradient: Gradient {
+                GradientStop { position: 0; color: "#c6f7b4" }
+                GradientStop { position: 1; color: "#2f9e46" }
+            }
+        }
+
+        Text {
+            x: 0; y: 216; width: 68; height: 16
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: vc.audio ? "" + Math.round(vc.level * 100) : "–"
+            color: Kit.ink
+            font: Kit.bodyFont(12)
+            textFormat: Text.PlainText
+        }
+        MouseArea {
+            x: 18; y: 82; width: 24; height: 132
+            enabled: !!vc.audio
+            cursorShape: Qt.PointingHandCursor
+            onPressed: function (m) { root.setNodeVolume(vc.node, 1 - (m.y - 6) / track.height) }
+            onPositionChanged: function (m) { if (pressed) root.setNodeVolume(vc.node, 1 - (m.y - 6) / track.height) }
+            onWheel: function (w) { root.setNodeVolume(vc.node, vc.level + w.angleDelta.y / 120 * 0.02) }
+        }
+
+        Rectangle {
+            x: 17; y: 240; width: 34; height: 24
+            radius: 3
+            border.width: 1
+            border.color: Kit.dark(0.55)
+            gradient: Gradient {
+                GradientStop { position: 0; color: "#ffffff" }
+                GradientStop { position: 0.5; color: "#e3f1f3" }
+                GradientStop { position: 0.5; color: "#d3e9ec" }
+                GradientStop { position: 1; color: "#f0f8f9" }
+            }
+            Rectangle { anchors.fill: parent; radius: 3; color: muteMa.containsMouse ? Kit.accent(0.15) : "transparent" }
+            Icon { x: 9; y: 4; width: 16; height: 16; src: root.trayDir + (vc.muted ? "btn-speaker-muted.svg" : "btn-speaker.svg") }
+            MouseArea {
+                id: muteMa
+                anchors.fill: parent
+                hoverEnabled: true
+                enabled: !!vc.audio
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.setNodeMuted(vc.node, !vc.muted)
             }
         }
     }
@@ -873,6 +1192,18 @@ Item {
         }
         onScreenChanged: refresh()
         Component.onCompleted: refresh()
+        readonly property var fit: {
+            var rows = win.model.rows, wide = 0, slim = 0, keep = 0
+            var tail = 13 + 2 + (46 + 2) * win.model.drawers.length + 28
+            var room = riceSlot.x - 6 - Kit.stripLeft
+            for (var i = 0; i < rows.length; i++) {
+                var w = rows[i].away || rows[i].wins > 0 ? Kit.buttonWidth : Kit.emptyWidth
+                wide += w + 2
+                slim += (rows[i].away ? Kit.emptyWidth : w) + 2
+                if (slim - 2 <= room) keep = slim - 2
+            }
+            return { room: room, compact: wide + tail > room, clip: slim + tail > room, keep: keep }
+        }
 
         property int hotId: -1
         property Item hotBtn: null
@@ -890,30 +1221,6 @@ Item {
             onTriggered: if (!peekHover.hovered) { win.hotId = -1; win.hotBtn = null }
         }
 
-        Item {
-            anchors.fill: parent
-            clip: true
-            Image {
-                id: frostSrc
-                visible: false
-                width: win.screen ? win.screen.width : win.width
-                height: win.screen ? win.screen.height : 1080
-                y: Kit.barHeight - height
-                source: root.coverPath.length > 0 ? "file://" + root.coverPath : ""
-                fillMode: Image.PreserveAspectCrop
-                asynchronous: true
-                smooth: true
-            }
-            MultiEffect {
-                source: frostSrc
-                x: frostSrc.x; y: frostSrc.y
-                width: frostSrc.width; height: frostSrc.height
-                blurEnabled: true
-                blur: 1.0
-                blurMax: 48
-                saturation: 0.35
-            }
-        }
         Rectangle { anchors.fill: parent; color: Kit.dark(0.64) }
         Rectangle {
             anchors.fill: parent
@@ -969,12 +1276,23 @@ Item {
                 Svg { d: Kit.ell(20, 20, 17.5, 17.5, 0); stroke: Kit.white(0.35) }
                 Svg { d: Kit.ell(20, 20, 18.5, 18.5, 0); stroke: Kit.dark(0.85) }
                 Item {
-                    x: 13.5; y: 9
-                    Svg { d: "M5 2 v15"; stroke: "#ffffff"; sw: 2.2; cap: ShapePath.RoundCap }
-                    Svg { d: Kit.ell(3, 17.5, 3.6, 2.7, -20); fill: "#ffffff"; stroke: Kit.withA("#081e2b", 0.45) }
-                    Svg { d: "M6 2 c3 0 3 2.2 6 2.2"; stroke: "#4fd8e6"; sw: 1.8; cap: ShapePath.RoundCap }
-                    Svg { d: "M6 5 c3 0 3 2.2 6 2.2"; stroke: "#ffffff"; sw: 1.8; cap: ShapePath.RoundCap }
-                    Svg { d: "M6 8 c3 0 3 2.2 6 2.2"; stroke: "#2aa3b8"; sw: 1.8; cap: ShapePath.RoundCap }
+                    x: 15.77; y: 8
+                    Svg { d: Kit.clef; stroke: Kit.withA("#081e2b", 0.55); sw: 2.2 }
+                    Svg { d: Kit.clef; stroke: "#c3d0d9"; sw: 0.9 }
+                    Shape {
+                        preferredRendererType: Shape.CurveRenderer
+                        ShapePath {
+                            strokeColor: "transparent"
+                            fillGradient: LinearGradient {
+                                x1: 0; y1: 0; x2: 0; y2: 24
+                                GradientStop { position: 0; color: "#ffffff" }
+                                GradientStop { position: 0.45; color: "#d6e0e8" }
+                                GradientStop { position: 0.55; color: "#9fb1bf" }
+                                GradientStop { position: 1; color: "#e4ebf0" }
+                            }
+                            PathSvg { path: Kit.clef }
+                        }
+                    }
                 }
                 Shape {
                     preferredRendererType: Shape.CurveRenderer
@@ -1005,6 +1323,8 @@ Item {
             id: strip
             x: Kit.stripLeft
             y: 0
+            width: win.fit.clip ? win.fit.keep : implicitWidth
+            clip: win.fit.clip
             height: Kit.barHeight
             spacing: 2
             Repeater {
@@ -1013,6 +1333,7 @@ Item {
                 WsButton {
                     required property var modelData
                     m: modelData
+                    compact: modelData.away && win.fit.compact
                     onHoveredChanged: win.hover(this, hovered)
                 }
             }
@@ -1026,16 +1347,16 @@ Item {
                 Item {
                     id: slot
                     required property var modelData
-                    width: 40; height: Kit.barHeight
+                    width: 46; height: Kit.barHeight
                     Drawer { m: slot.modelData }
                 }
             }
             Item {
                 width: 28; height: Kit.barHeight
                 Item {
-                    y: 2; width: 28; height: 36
+                    y: 5; width: 28; height: 32
                     Svg {
-                        d: "M3.5 0.5 H24.5 a3 3 0 0 1 3 3 V32.5 a3 3 0 0 1 -3 3 H3.5 a3 3 0 0 1 -3 -3 V3.5 a3 3 0 0 1 3 -3 Z"
+                        d: "M3.5 0.5 H24.5 a3 3 0 0 1 3 3 V28.5 a3 3 0 0 1 -3 3 H3.5 a3 3 0 0 1 -3 -3 V3.5 a3 3 0 0 1 3 -3 Z"
                         stroke: Kit.white(0.35)
                         dash: true
                     }
@@ -1051,7 +1372,7 @@ Item {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     onClicked: {
-                        var n = root.nextEmpty(win.model.rows)
+                        var n = root.nextEmpty()
                         if (win.screen) Hyprland.dispatch("focusmonitor " + win.screen.name)
                         Hyprland.dispatch("workspace " + n)
                     }
@@ -1078,9 +1399,15 @@ Item {
             }
             readonly property int count: win.peekList.length
             readonly property var ws: win.peekBtn && win.peekBtn.m ? win.peekBtn.m.ws : null
+            readonly property var scr: {
+                var n = ws && ws.monitor ? ws.monitor.name : ""
+                var s = Quickshell.screens
+                for (var i = 0; i < s.length; i++) if (s[i].name === n) return s[i]
+                return win.screen
+            }
             readonly property bool scrolling: !!ws && ws.lastIpcObject.tiledLayout === "scrolling"
             function onOutput(ipc) {
-                var s = win.screen
+                var s = peek.scr
                 if (!s) return true
                 return ipc.at[0] < s.x + s.width && ipc.at[0] + ipc.size[0] > s.x
                     && ipc.at[1] < s.y + s.height && ipc.at[1] + ipc.size[1] > s.y
@@ -1096,8 +1423,8 @@ Item {
                 }
                 return n
             }
-            readonly property real k: win.screen ? 240 / win.screen.width : 0.125
-            readonly property int miniH: win.screen ? Math.round(240 * win.screen.height / win.screen.width) : 135
+            readonly property real k: scr ? 240 / scr.width : 0.125
+            readonly property int miniH: scr ? Math.round(240 * scr.height / scr.width) : 135
             onVisibleChanged: if (visible) Hyprland.refreshToplevels()
             onWsChanged: if (visible) Hyprland.refreshToplevels()
             Timer { id: peekClock; interval: 66; repeat: true; running: peek.visible }
@@ -1152,12 +1479,14 @@ Item {
                     Item {
                         x: 1; y: 1; width: 240; height: peek.miniH
                         clip: true
-                        Image {
+                        Loader {
                             anchors.fill: parent
-                            source: root.coverPath.length > 0 ? "file://" + root.coverPath : ""
-                            fillMode: Image.PreserveAspectCrop
-                            sourceSize.width: 480
-                            asynchronous: true
+                            Component.onCompleted: setSource(Kit.helper("CoverArt"), {
+                                source: Qt.binding(function () { return root.coverPath.length > 0 ? "file://" + root.coverPath : "" }),
+                                tile: Qt.binding(function () { return root.coverTile }),
+                                screenWidth: Qt.binding(function () { return peek.scr ? peek.scr.width : 1920 }),
+                                cropWidth: 480
+                            })
                         }
                         Repeater {
                             model: peek.visible && peek.ws ? peek.ws.toplevels : null
@@ -1165,11 +1494,11 @@ Item {
                                 id: tile
                                 required property var modelData
                                 readonly property var ipc: modelData.lastIpcObject
-                                readonly property bool placed: !!(ipc && ipc.at && ipc.size && win.screen)
+                                readonly property bool placed: !!(ipc && ipc.at && ipc.size && peek.scr)
                                 visible: placed && !ipc.hidden && (!peek.scrolling || peek.onOutput(ipc))
                                 z: placed && ipc.floating ? 1 : 0
-                                x: placed ? (ipc.at[0] - win.screen.x) * peek.k : 0
-                                y: placed ? (ipc.at[1] - win.screen.y) * peek.k : 0
+                                x: placed ? (ipc.at[0] - peek.scr.x) * peek.k : 0
+                                y: placed ? (ipc.at[1] - peek.scr.y) * peek.k : 0
                                 width: placed ? ipc.size[0] * peek.k : 0
                                 height: placed ? ipc.size[1] * peek.k : 0
                                 ScreencopyView {
@@ -1314,27 +1643,24 @@ Item {
             lit: root.flyout === "volume"
             onClicked: root.toggleFlyout("volume")
             onWheeled: function (dy) { root.nudgeVolume(dy / 120 * 0.02) }
-            Svg { x: 3; y: 12; d: "M1.5 5.5 h3 l4 -3 v11 l-4 -3 h-3 z"; fill: "#ffffff" }
-            Svg { visible: !root.volSilent; x: 3; y: 12; d: "M11 5 a4 4 0 0 1 0 6"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
-            Svg { visible: !root.volSilent && root.volLevel >= 0.5; x: 3; y: 12; d: "M13.2 3 a7 7 0 0 1 0 10"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
-            Svg { visible: root.volSilent; x: 3; y: 12; d: "M11.5 5.5 l4.5 5 M16 5.5 l-4.5 5"; stroke: "#ffffff"; sw: 1.3; cap: ShapePath.RoundCap }
+            Icon {
+                x: 4; y: 12; width: 16; height: 16
+                src: root.trayDir + (root.volSilent ? "tray-vol-mute.svg" : root.volLevel >= 0.5 ? "tray-vol-high.svg" : "tray-vol-low.svg")
+            }
         }
         Cell {
             id: net
             anchors.right: vol.left
             lit: root.flyout === "network"
             onClicked: root.toggleFlyout("network")
-            Svg { x: 3; y: 12; d: "M3.5 1.5 H14.5 a1 1 0 0 1 1 1 V9.5 a1 1 0 0 1 -1 1 H3.5 a1 1 0 0 1 -1 -1 V2.5 a1 1 0 0 1 1 -1 Z"; stroke: "#ffffff"; fill: Kit.dark(1) }
-            Svg { x: 3; y: 12; d: "M4 3 H14 V9 H4 Z"; fill: Kit.withA("#2aa3b8", 0.8) }
-            Svg { x: 3; y: 12; d: "M9 10.5 v2.5 M5 14.5 h8"; stroke: "#ffffff"; sw: 1.4 }
+            Icon { x: 4; y: 12; width: 16; height: 16; src: root.trayDir + (root.netUp ? "tray-net-up.svg" : "tray-net-down.svg") }
         }
         Cell {
             id: flag
             anchors.right: net.left
             lit: root.flyout === "action"
             onClicked: root.toggleFlyout("action")
-            Svg { x: 4; y: 12; d: "M3 1.5 v13.5"; stroke: "#ffffff"; sw: 1.5 }
-            Svg { x: 4; y: 12; d: "M3.5 2.5 c3 -1.5 5 1.5 9.5 0 v7 c-4.5 1.5 -6.5 -1.5 -9.5 0 z"; fill: Kit.white(0.9) }
+            Icon { x: 4; y: 12; width: 16; height: 16; src: root.trayDir + "tray-flag.svg" }
             Dot {
                 visible: root.heraldCount > 0
                 x: 14; y: 22; d: 9
@@ -1346,9 +1672,7 @@ Item {
             anchors.right: flag.left
             lit: !!root.dock && !!root.dock.shown && root.dock.targetScreen === win.screen
             onClicked: if (root.dock && root.dock.toggle) root.dock.toggle(win.screen)
-            Svg { x: 3; y: 12; d: "M3 4.5 H11 a1.5 1.5 0 0 1 1.5 1.5 V12 a1.5 1.5 0 0 1 -1.5 1.5 H3 a1.5 1.5 0 0 1 -1.5 -1.5 V6 a1.5 1.5 0 0 1 1.5 -1.5 Z"; stroke: Kit.white(0.7) }
-            Svg { x: 3; y: 12; d: "M7 1.5 H15 a1.5 1.5 0 0 1 1.5 1.5 V9 a1.5 1.5 0 0 1 -1.5 1.5 H7 a1.5 1.5 0 0 1 -1.5 -1.5 V3 a1.5 1.5 0 0 1 1.5 -1.5 Z"; stroke: "#ffffff"; fill: Kit.dark(1) }
-            Svg { x: 3; y: 12; d: "M7.5 4 l2 1.8 -2 1.8"; stroke: "#ffffff"; sw: 1.3 }
+            Icon { x: 4; y: 12; width: 16; height: 16; src: root.trayDir + "tray-agents.svg" }
             Dot {
                 visible: root.awaitingCount > 0
                 x: 14; y: 6; d: 11
@@ -1368,7 +1692,7 @@ Item {
             anchors.right: agents.left
             lit: root.flyout === "tray"
             onClicked: { root.trayTip = ""; root.toggleFlyout("tray") }
-            Svg { x: 4.5; y: 17; d: "M1 5 l3.5 -3.5 L8 5"; stroke: "#ffffff"; sw: 1.4 }
+            Icon { x: 4; y: 15; width: 10; height: 10; src: root.trayDir + "tray-more.svg" }
         }
 
         Flyout {
@@ -1424,16 +1748,21 @@ Item {
                                     border.width: 1
                                     border.color: tcMa.containsMouse ? Kit.white(0.40) : "transparent"
                                 }
+                                readonly property var pics: (tc.noIcon ? [] : ["" + tc.modelData.icon]).concat(root.trayPics(tc.modelData))
+                                property int tried: 0
+                                onPicsChanged: tc.tried = 0
+                                readonly property string pic: tc.tried < tc.pics.length ? tc.pics[tc.tried] : ""
                                 Icon {
                                     id: tcIcon
                                     x: 12
                                     y: 12
                                     width: 16
                                     height: 16
-                                    src: tc.noIcon ? "" : "" + tc.modelData.icon
+                                    src: tc.pic
+                                    onStatusChanged: if (status === Image.Error) tc.tried += 1
                                 }
                                 Svg {
-                                    visible: tc.noIcon || tcIcon.status === Image.Error
+                                    visible: tc.pic === ""
                                     x: 12
                                     y: 12
                                     d: "M2.5 3.5 H13.5 V12.5 H2.5 Z"
@@ -1541,108 +1870,226 @@ Item {
         Flyout {
             name: "volume"
             cell: vol
-            implicitWidth: 84
-            implicitHeight: 308
+            implicitWidth: volRim.width
+            implicitHeight: volRim.height + 6
             Rim {
-                width: 84
-                height: 302
+                id: volRim
+                width: root.volW
+                height: root.volH
                 MouseArea {
                     anchors.fill: parent
+                    enabled: root.volView === "main"
                     acceptedButtons: Qt.NoButton
                     onWheel: function (w) { root.nudgeVolume(w.angleDelta.y / 120 * 0.02) }
                 }
-                Plate { x: 7; y: 7; width: 70; height: 288 }
-                Text {
-                    x: 7; y: 16; width: 70; height: 15
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    text: root.sink ? (root.sink.nickname || root.sink.description || root.sink.name) : "No output"
-                    elide: Text.ElideRight
-                    color: Kit.ink
-                    font: Kit.bodyFont(11)
-                    textFormat: Text.PlainText
-                }
-                Rectangle { x: 7; y: 35.5; width: 70; height: 1; color: Kit.dark(0.15) }
-                Svg { x: 32; y: 44.4; d: "M2 7 h4 l5 -4 v14 l-5 -4 H2 z"; fill: Kit.ink; transform: Scale { xScale: 0.9045; yScale: 0.9045 } }
-                Svg { x: 32; y: 44.4; d: "M14 6.5 a5 5 0 0 1 0 7 M16.5 4 a8.5 8.5 0 0 1 0 12"; stroke: Kit.ink; sw: 1.6; cap: ShapePath.RoundCap; transform: Scale { xScale: 0.9045; yScale: 0.9045 } }
-                Rectangle { id: track; x: 39; y: 76.5; width: 6; height: 135.7; radius: 3; color: Kit.dark(0.20); border.width: 1; border.color: Kit.dark(0.25) }
-                Rectangle {
-                    id: fill
-                    readonly property real fillH: track.height * Math.min(1, root.volLevel)
-                    x: 39; y: track.y + track.height - fillH; width: 6; height: fillH
-                    radius: 3
-                    color: root.volMuted ? Kit.dark(0.35) : "#25bbcf"
+                Plate { x: 7; y: 8; width: volRim.width - 14; height: volRim.height - 16 }
+
+                VolCol {
+                    visible: root.volView === "main"
+                    x: 8
+                    node: root.sink
+                    label: root.sink ? root.nodeLabel(root.sink) : "No output"
+                    picture: root.devPic(root.sink, true)
+                    headed: true
+                    metering: root.flyout === "volume" && root.volView === "main"
+                    onHeaderClicked: root.openList("out", "main")
                 }
                 Rectangle {
-                    x: 33; y: fill.y - 5; width: 18; height: 10
-                    radius: 2
-                    border.width: 1
-                    border.color: Kit.dark(0.55)
-                    gradient: Gradient {
-                        GradientStop { position: 0; color: "#ffffff" }
-                        GradientStop { position: 0.5; color: "#dfeef0" }
-                        GradientStop { position: 0.5; color: "#c9e3e7" }
-                        GradientStop { position: 1; color: "#eaf5f6" }
-                    }
-                }
-                MouseArea {
-                    x: 29; y: track.y - 6; width: 26; height: track.height + 12
-                    enabled: !!root.sinkAudio
-                    cursorShape: Qt.PointingHandCursor
-                    onPressed: function (m) { root.setVolume(1 - (m.y - 6) / track.height) }
-                    onPositionChanged: function (m) { if (pressed) root.setVolume(1 - (m.y - 6) / track.height) }
-                }
-                Text {
-                    x: 7; y: 220.3; width: 70; height: 16.2
-                    horizontalAlignment: Text.AlignHCenter
-                    text: root.sinkAudio ? "" + Math.round(root.volLevel * 100) : "–"
-                    color: Kit.ink
-                    font: Kit.bodyFont(12)
-                    textFormat: Text.PlainText
-                }
-                Rectangle {
-                    x: 25; y: 244.4; width: 34; height: 23.7
-                    radius: 3
-                    border.width: 1
-                    border.color: Kit.dark(0.55)
-                    gradient: Gradient {
-                        GradientStop { position: 0; color: "#ffffff" }
-                        GradientStop { position: 0.5; color: "#e3f1f3" }
-                        GradientStop { position: 0.5; color: "#d3e9ec" }
-                        GradientStop { position: 1; color: "#f0f8f9" }
-                    }
-                    Rectangle { anchors.fill: parent; radius: 3; color: muteMa.containsMouse ? Kit.accent(0.15) : "transparent" }
-                    Svg { x: 9; y: 4.9; d: "M1 5 h3 l4 -3 v10 l-4 -3 H1 z"; fill: Kit.ink }
-                    Svg { visible: !root.volMuted; x: 9; y: 4.9; d: "M11 4.5 a3.5 3.5 0 0 1 0 5"; stroke: Kit.ink; sw: 1.4 }
-                    Svg { visible: root.volMuted; x: 9; y: 4.9; d: "M10.5 4.5 l4 5 M14.5 4.5 l-4 5"; stroke: Kit.ink; sw: 1.4; cap: ShapePath.RoundCap }
-                    MouseArea {
-                        id: muteMa
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        enabled: !!root.sinkAudio
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.sinkAudio.muted = !root.sinkAudio.muted
-                    }
-                }
-                Rectangle {
-                    x: 8; y: 268.2; width: 68; height: 25.8
+                    visible: root.volView === "main"
+                    x: 8; y: 272; width: 68; height: 24
                     color: Kit.accent(0.10)
                     Rectangle { x: 0; y: 0; width: parent.width; height: 1; color: Kit.dark(0.15) }
                     Text {
                         id: mixerText
                         anchors.horizontalCenter: parent.horizontalCenter
-                        y: 5; height: 15
+                        y: 4; height: 16
                         verticalAlignment: Text.AlignVCenter
                         text: "Mixer"
                         color: Kit.ink
                         font: Kit.bodyFont(11)
                         textFormat: Text.PlainText
                     }
-                    Rectangle { visible: mixerMa.containsMouse; x: mixerText.x; y: 19; width: mixerText.width; height: 1; color: Kit.ink }
+                    Rectangle { visible: mixerMa.containsMouse; x: mixerText.x; y: 18; width: mixerText.width; height: 1; color: Kit.ink }
                     MouseArea {
                         id: mixerMa
                         anchors.fill: parent
                         hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.volView = "mixer"
+                    }
+                }
+
+                Text {
+                    visible: root.volView === "list"
+                    x: 16; y: 16; width: volRim.width - 32; height: 16
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                    text: root.volPickKind === "in" ? "Input device" : "Output device"
+                    color: Kit.ink
+                    font: Kit.boldFont(11)
+                    textFormat: Text.PlainText
+                }
+                Rectangle { visible: root.volView === "list"; x: 8; y: 40; width: volRim.width - 16; height: 1; color: Kit.dark(0.15) }
+                ListView {
+                    id: devList
+                    visible: root.volView === "list"
+                    x: 8; y: 44; width: volRim.width - 16; height: 224
+                    clip: true
+                    boundsBehavior: Flickable.StopAtBounds
+                    model: root.volPickKind === "in" ? root.inNodes : root.outNodes
+                    delegate: Item {
+                        id: pick
+                        required property var modelData
+                        readonly property bool current: {
+                            var c = root.volPickKind === "in" ? root.mic : root.sink
+                            return !!c && c.id === pick.modelData.id
+                        }
+                        width: devList.width
+                        height: 34
+                        Rectangle {
+                            anchors.fill: parent
+                            color: pickMa.containsMouse ? Kit.accent(0.15) : pick.current ? Kit.accent(0.10) : "transparent"
+                        }
+                        Rectangle { visible: pick.current; x: 0; y: 0; width: 2; height: parent.height; color: "#25bbcf" }
+                        Icon { x: 6; y: 9; width: 16; height: 16; src: root.devPic(pick.modelData, root.volPickKind !== "in") }
+                        Text {
+                            x: 30; y: 4; width: pick.width - 34; height: 15
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                            text: root.nodeLabel(pick.modelData)
+                            color: Kit.ink
+                            font: Kit.bodyFont(11)
+                            textFormat: Text.PlainText
+                        }
+                        Text {
+                            x: 30; y: 19; width: pick.width - 34; height: 13
+                            verticalAlignment: Text.AlignVCenter
+                            elide: Text.ElideRight
+                            text: root.nodeGloss(pick.modelData)
+                            color: Kit.dark(0.6)
+                            font: Kit.bodyFont(9)
+                            textFormat: Text.PlainText
+                        }
+                        MouseArea {
+                            id: pickMa
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (root.volPickKind === "in") root.pickSource(pick.modelData)
+                                else root.pickSink(pick.modelData)
+                                root.volView = root.volBack
+                            }
+                        }
+                    }
+                }
+                Text {
+                    visible: root.volView === "list" && devList.count === 0
+                    x: 8; y: 120; width: devList.width
+                    horizontalAlignment: Text.AlignHCenter
+                    text: "No devices"
+                    color: Kit.dark(0.6)
+                    font: Kit.bodyFont(11)
+                    textFormat: Text.PlainText
+                }
+                Rectangle {
+                    visible: root.volView === "list"
+                    x: 8; y: 272; width: volRim.width - 16; height: 24
+                    color: Kit.accent(0.10)
+                    Rectangle { x: 0; y: 0; width: parent.width; height: 1; color: Kit.dark(0.15) }
+                    Text {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        y: 4; height: 16
+                        verticalAlignment: Text.AlignVCenter
+                        text: "Back"
+                        color: Kit.ink
+                        font: Kit.bodyFont(11)
+                        textFormat: Text.PlainText
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.volView = root.volBack
+                    }
+                }
+
+                VolCol {
+                    visible: root.volView === "mixer"
+                    x: 16
+                    node: root.sink
+                    label: root.sink ? root.nodeLabel(root.sink) : "No output"
+                    picture: root.devPic(root.sink, true)
+                    headed: true
+                    metering: root.flyout === "volume" && root.volView === "mixer"
+                    onHeaderClicked: root.openList("out", "mixer")
+                }
+                VolCol {
+                    visible: root.volView === "mixer"
+                    x: 92
+                    node: root.mic
+                    label: root.mic ? root.nodeLabel(root.mic) : "No input"
+                    picture: root.devPic(root.mic, false)
+                    headed: true
+                    metering: root.flyout === "volume" && root.volView === "mixer"
+                    onHeaderClicked: root.openList("in", "mixer")
+                }
+                Rectangle { visible: root.volView === "mixer"; x: 168; y: 16; width: 1; height: 248; color: Kit.dark(0.15) }
+                MouseArea { visible: root.volView === "mixer"; x: 176; y: 0; width: 168; height: 272; acceptedButtons: Qt.NoButton; onWheel: function (w) { appCols.contentX = Math.max(0, Math.min(appCols.contentWidth - appCols.width, appCols.contentX - w.angleDelta.y)) } }
+                ListView {
+                    id: appCols
+                    visible: root.volView === "mixer"
+                    x: 176; y: 0; width: 168; height: 272
+                    orientation: ListView.Horizontal
+                    spacing: 8
+                    clip: true
+                    boundsBehavior: Flickable.StopAtBounds
+                    model: root.appNodes
+                    delegate: VolCol {
+                        required property var modelData
+                        node: modelData
+                        label: root.streamLabel(modelData)
+                        picture: root.appPic(modelData)
+                        metering: root.flyout === "volume" && root.volView === "mixer"
+                    }
+                }
+                Text {
+                    visible: root.volView === "mixer" && appCols.count === 0
+                    x: 176; y: 120; width: 168
+                    horizontalAlignment: Text.AlignHCenter
+                    text: "No apps playing"
+                    color: Kit.dark(0.6)
+                    font: Kit.bodyFont(11)
+                    textFormat: Text.PlainText
+                }
+                Rectangle {
+                    visible: root.volView === "mixer"
+                    x: 8; y: 272; width: volRim.width - 16; height: 24
+                    color: Kit.accent(0.10)
+                    Rectangle { x: 0; y: 0; width: parent.width; height: 1; color: Kit.dark(0.15) }
+                    Text {
+                        x: 8; y: 4; height: 16
+                        verticalAlignment: Text.AlignVCenter
+                        text: "Back"
+                        color: Kit.ink
+                        font: Kit.bodyFont(11)
+                        textFormat: Text.PlainText
+                    }
+                    MouseArea {
+                        x: 0; y: 0; width: 56; height: parent.height
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.volView = "main"
+                    }
+                    Text {
+                        anchors.right: parent.right; anchors.rightMargin: 8
+                        y: 4; height: 16
+                        verticalAlignment: Text.AlignVCenter
+                        text: "Advanced…"
+                        color: Kit.ink
+                        font: Kit.bodyFont(11)
+                        textFormat: Text.PlainText
+                    }
+                    MouseArea {
+                        anchors.right: parent.right; y: 0; width: 84; height: parent.height
                         cursorShape: Qt.PointingHandCursor
                         onClicked: { root.flyout = ""; root.runDetached("pavucontrol") }
                     }
@@ -1758,8 +2205,9 @@ Item {
             cell: orb
             flushLeft: true
             readonly property int rise: 24
-            implicitWidth: 440
+            implicitWidth: sm.stageOpen ? sm.x + stagePlate.x + stagePlate.width : 440
             implicitHeight: startFly.rise + 560
+            mask: Region { width: 440; height: startFly.implicitHeight; Region { item: stagePlate } }
 
             Rim {
                 y: startFly.rise
@@ -1776,6 +2224,11 @@ Item {
 
                     property bool allMode: false
                     property bool powerOpen: false
+                    property string faceBust: root.bust
+                    function pickPicture() {
+                        picFly.refresh()
+                        root.toggleFlyout("picture")
+                    }
 
                     readonly property var pins: {
                         root.tick
@@ -1819,6 +2272,7 @@ Item {
                         searchField.text = ""
                         sm.allMode = false
                         sm.powerOpen = false
+                        sm.stageOpen = false
                         Qt.callLater(function () { searchField.forceActiveFocus() })
                     }
                     function launch(e) {
@@ -1838,6 +2292,27 @@ Item {
                     function shutdownDialog(action) {
                         root.flyout = ""
                         if (root.powermenu) root.powermenu.show(action)
+                    }
+
+                    property bool stageOpen: false
+                    property var riceAnswer: null
+                    property int riceAsked: 0
+                    property bool ricePending: false
+                    readonly property string riceKey: root.livery.riceMode + "/" + root.livery.songName + "/" + ((root.livery.modeRaw && root.livery.modeRaw.draft) || "")
+                    onRiceKeyChanged: sm.ricePending = false
+                    Timer { interval: 10000; running: sm.ricePending; onTriggered: sm.ricePending = false }
+                    readonly property var stageRows: sm.ricePending ? [Rice.waiting(null)] : Rice.switchRows(sm.riceAnswer, root.livery.riceMode)
+                    function stage() {
+                        sm.powerOpen = false
+                        sm.stageOpen = !sm.stageOpen
+                        if (!sm.stageOpen) return
+                        var ask = ++sm.riceAsked
+                        sm.riceAnswer = null
+                        root.bridge.riceMenu(function (a) { if (ask === sm.riceAsked) sm.riceAnswer = a })
+                    }
+                    function rice(row) {
+                        if (Rice.act(root.bridge, row)) sm.ricePending = true
+                        root.flyout = ""
                     }
 
                     Plate {
@@ -1974,6 +2449,7 @@ Item {
                     }
 
                     Rectangle {
+                        id: rightPane
                         x: 292; y: 8; width: 140; height: 504
                         radius: 2
                         color: Kit.dark(0.80)
@@ -1985,6 +2461,7 @@ Item {
                             font: Kit.boldFont(13)
                         }
                         Column {
+                            id: paneCol
                             x: 4; y: 70; width: 132
                             PaneRow { label: "Home"; onActivated: sm.openDir("") }
                             PaneRow { label: "Documents"; onActivated: sm.openDir("Documents") }
@@ -1998,6 +2475,43 @@ Item {
                                 height: visible ? rh : 0
                                 label: "Settings"
                                 onActivated: sm.launch(sm.settingsEntry)
+                            }
+                            PaneRow {
+                                id: stageRow
+                                label: "Stage"
+                                lit: sm.stageOpen
+                                enabled: !!root.bridge && typeof root.bridge.riceMenu === "function"
+                                opacity: enabled ? 1 : 0.55
+                                onActivated: sm.stage()
+                                ShadowText {
+                                    anchors { right: parent.right; rightMargin: 9; verticalCenter: parent.verticalCenter }
+                                    text: "\u25B8"
+                                    font: Kit.bodyFont(12)
+                                }
+                            }
+                        }
+                    }
+
+                    Plate {
+                        id: stagePlate
+                        visible: sm.stageOpen
+                        width: 220
+                        height: stageCol.height + 10
+                        x: sm.width + 3
+                        y: Math.min(rightPane.y + paneCol.y + stageRow.y + (stageRow.height - 26) / 2 - stageCol.y, sm.height + 1 - height)
+                        Column {
+                            id: stageCol
+                            x: 1; y: 5; width: parent.width - 2
+                            Repeater {
+                                model: sm.stageRows
+                                PaneRow {
+                                    required property var modelData
+                                    plate: true; rh: 26; textX: 24
+                                    label: modelData.label
+                                    enabled: modelData.live
+                                    onActivated: sm.rice(modelData)
+                                    Text { x: 9; anchors.verticalCenter: parent.verticalCenter; text: modelData.mark; color: Kit.ink; font: Kit.heavyFont(12); textFormat: Text.PlainText }
+                                }
                             }
                         }
                     }
@@ -2025,32 +2539,26 @@ Item {
                                 GradientStop { position: 1; color: "#0a2c3e" }
                             }
                         }
-                        Shape {
-                            x: 10; y: 10; width: 44; height: 44
-                            preferredRendererType: Shape.CurveRenderer
-                            ShapePath {
-                                strokeColor: "transparent"
-                                fillGradient: LinearGradient {
-                                    x1: 0; y1: 6; x2: 0; y2: 24
-                                    GradientStop { position: 0; color: "#25bbcf" }
-                                    GradientStop { position: 1; color: "#a99cf6" }
-                                }
-                                PathSvg { path: Kit.ell(22, 15, 9, 9, 0) }
-                            }
-                            ShapePath {
-                                strokeColor: "transparent"
-                                fillGradient: LinearGradient {
-                                    x1: 0; y1: 25; x2: 0; y2: 42
-                                    GradientStop { position: 0; color: "#25bbcf" }
-                                    GradientStop { position: 1; color: "#a99cf6" }
-                                }
-                                PathSvg { path: "M6 42c0-11 7-17 16-17s16 6 16 17z" }
-                            }
-                            ShapePath {
-                                strokeColor: "transparent"
-                                fillColor: Kit.white(0.5)
-                                PathSvg { path: Kit.ell(20, 11, 6, 3.5, 0) }
-                            }
+                        Image {
+                            id: faceImg
+                            x: 8; y: 8; width: 48; height: 48
+                            fillMode: Image.PreserveAspectCrop
+                            sourceSize: Qt.size(48, 48)
+                            smooth: true
+                            asynchronous: true
+                            property int tryIndex: 0
+                            readonly property var candidates: [
+                                "file://" + picFly.face + sm.faceBust,
+                                "file://" + picFly.fallback + sm.faceBust
+                            ]
+                            source: candidates[tryIndex]
+                            onStatusChanged: if (status === Image.Error && tryIndex < candidates.length - 1) tryIndex++
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: sm.pickPicture()
                         }
                     }
 
@@ -2129,7 +2637,7 @@ Item {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: sm.powerOpen = !sm.powerOpen
+                                onClicked: { sm.stageOpen = false; sm.powerOpen = !sm.powerOpen }
                             }
                         }
                         Rectangle { anchors.fill: parent; radius: 3; color: "transparent"; border.width: 1; border.color: Kit.white(0.35) }
@@ -2138,6 +2646,383 @@ Item {
             }
         }
 
+        Flyout {
+            id: picFly
+            name: "picture"
+            cell: orb
+            flushLeft: true
+            readonly property int rise: 24
+            readonly property string home: Quickshell.env("HOME") || ""
+            readonly property string face: picFly.home + "/.face"
+            readonly property string songDir: root.iconDir + "user/"
+            readonly property string fallback: picFly.songDir + "chrome-sash.svg"
+            readonly property string cacheDir: (Quickshell.env("XDG_CACHE_HOME") || (picFly.home + "/.cache")) + "/barcarolle/picture"
+            readonly property var songTiles: [
+                { path: picFly.fallback, key: picFly.cacheDir + "/chrome-sash.png", song: true },
+                { path: picFly.songDir + "silhouette.svg", key: picFly.cacheDir + "/silhouette.png", song: true },
+                { path: picFly.songDir + "pixel-face.svg", key: picFly.cacheDir + "/pixel-face.png", song: true }
+            ]
+            property string pictDir: picFly.home + "/Pictures/avatars"
+            readonly property string shownDir: picFly.home !== "" && picFly.pictDir.indexOf(picFly.home + "/") === 0 ? "~" + picFly.pictDir.substring(picFly.home.length) : picFly.pictDir
+            property var folderTiles: []
+            readonly property var listed: picFly.songTiles.concat(picFly.folderTiles)
+            property var hashes: ({})
+            readonly property string faceHash: picFly.hashes[picFly.face] || ""
+            readonly property bool faceListed: {
+                for (var i = 0; i < picFly.listed.length; i++) if (picFly.hashes[picFly.listed[i].key] === picFly.faceHash) return true
+                return false
+            }
+            readonly property var handTiles: picFly.faceHash === "" || picFly.faceListed ? [] : [{ path: picFly.face, key: picFly.face, song: false, hand: true }]
+            readonly property var tiles: picFly.handTiles.concat(picFly.listed)
+            property string picked: ""
+            property string note: ""
+            property string snapTarget: ""
+            property string probing: ""
+            property bool snapping: false
+            readonly property string keepScript: 'ext=img; case $(od -An -N12 -tx1 -- "$2" | tr -d " \\n") in 89504e47*) ext=png ;; ffd8ff*) ext=jpg ;; 47494638*) ext=gif ;; 52494646????????57454250*) ext=webp ;; esac; mkdir -p -- "$1" && { [ ! -e "$1/previous-$3.$ext" ] || exit 3; } && cp -- "$2" "$1/previous-$3.$ext"'
+            implicitWidth: 360
+            implicitHeight: picFly.rise + 340
+
+            component PicRun: Process {
+                id: pr
+                property var done: null
+                property int code: -1
+                property int halves: 0
+                property bool began: false
+                stdout: StdioCollector {
+                    id: prOut
+                    waitForEnd: true
+                    onStreamFinished: pr.half()
+                }
+                onStarted: pr.began = true
+                onExited: function (exitCode) { pr.code = exitCode; pr.half() }
+                onRunningChanged: if (!pr.running && !pr.began && pr.done) pr.finish(127, "")
+                function run(argv, cb) {
+                    if (pr.running) return false
+                    pr.done = cb
+                    pr.halves = 0
+                    pr.code = -1
+                    pr.began = false
+                    pr.command = argv
+                    pr.running = true
+                    return true
+                }
+                function half() {
+                    pr.halves++
+                    if (pr.halves === 2) pr.finish(pr.code, prOut.text)
+                }
+                function finish(c, text) {
+                    var f = pr.done
+                    pr.done = null
+                    pr.halves = 0
+                    if (f) f(c, text)
+                }
+            }
+
+            PicRun { id: picRead }
+            PicRun { id: picAct }
+
+            Component.onCompleted: picRead.run(["xdg-user-dir", "PICTURES"], function (code, text) {
+                var d = ("" + text).trim()
+                if (code === 0 && d !== "") picFly.pictDir = d + "/avatars"
+            })
+
+            function isCurrent(t) {
+                if (picFly.faceHash === "") return t.song && t.path === picFly.fallback
+                return picFly.hashes[t.key] === picFly.faceHash
+            }
+            function tileFor(path) {
+                for (var i = 0; i < picFly.tiles.length; i++) if (picFly.tiles[i].path === path) return picFly.tiles[i]
+                return null
+            }
+            function refresh() {
+                if (picRead.running) return
+                picFly.note = ""
+                picRead.run(["find", picFly.pictDir, "-maxdepth", "1", "-type", "f", "(", "-iname", "*.png", "-o", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.webp", "-o", "-iname", "*.gif", ")"], function (code, text) {
+                    picFly.folderTiles = ("" + text).split("\n").filter(function (p) { return p !== "" }).sort().map(function (p) { return { path: p, key: p, song: false } })
+                    picFly.hashTiles()
+                })
+            }
+            function digest(paths, cb) {
+                var argv = ["sha256sum", "--", picFly.face]
+                for (var i = 0; i < paths.length; i++) argv.push(paths[i])
+                return picRead.run(argv, function (code, text) {
+                    var h = {}, lines = ("" + text).split("\n")
+                    for (var j = 0; j < lines.length; j++) {
+                        var sp = lines[j].indexOf("  ")
+                        if (sp > 0) h[lines[j].substring(sp + 2)] = lines[j].substring(0, sp)
+                    }
+                    cb(h)
+                })
+            }
+            function hashTiles() {
+                picFly.digest(picFly.listed.map(function (t) { return t.key }), function (h) {
+                    picFly.hashes = h
+                    picFly.picked = ""
+                    for (var k = 0; k < picFly.tiles.length; k++) {
+                        if (picFly.isCurrent(picFly.tiles[k])) { picFly.picked = picFly.tiles[k].path; break }
+                    }
+                })
+            }
+            function failed(more) {
+                picFly.snapping = false
+                picFly.probing = ""
+                picFly.note = "Could not change the picture." + (more || "")
+            }
+            function keep(then) {
+                var argv = ["sh", "-c", picFly.keepScript, "sh", picFly.pictDir, picFly.face, Qt.formatDateTime(new Date(), "yyyyMMdd-HHmmss")]
+                if (!picAct.run(argv, function (code) {
+                    if (code === 0) then()
+                    else if (code === 3) picFly.failed(" Try again in a second.")
+                    else picFly.failed()
+                })) picFly.failed()
+            }
+            function install(src) {
+                var keys = picFly.listed.map(function (t) { return t.key })
+                if (!picFly.digest(keys, function (h) {
+                    var mine = h[picFly.face]
+                    if (mine === undefined || keys.some(function (k) { return h[k] === mine })) return picFly.place(src)
+                    picFly.keep(function () { picFly.place(src) })
+                })) picFly.failed()
+            }
+            function place(src) {
+                if (!picAct.run(["cp", "--remove-destination", "--", src, picFly.face], function (code) {
+                    if (code !== 0) return picFly.failed()
+                    sm.faceBust = "?v=" + Date.now()
+                    faceImg.tryIndex = 0
+                    root.flyout = ""
+                })) picFly.failed()
+            }
+            function capture() {
+                picFly.snapping = false
+                snap.grabToImage(function (r) {
+                    if (!r || !r.saveToFile(picFly.snapTarget)) return picFly.failed()
+                    picFly.install(picFly.snapTarget)
+                })
+            }
+            function stage(t) {
+                if (!t.song) {
+                    picFly.probing = t.path
+                    probeImg.source = ""
+                    probeImg.source = "file://" + t.path + root.bust
+                    return
+                }
+                picAct.run(["mkdir", "-p", "--", picFly.cacheDir], function (code) {
+                    if (code !== 0) return picFly.failed()
+                    picFly.snapTarget = t.key
+                    picFly.snapping = true
+                    snapImg.source = ""
+                    snapImg.source = "file://" + t.path + root.bust
+                })
+            }
+            function apply() {
+                var t = picFly.picked === "" ? null : picFly.tileFor(picFly.picked)
+                if (!t || picRead.running || picAct.running) return
+                if (picFly.isCurrent(t)) { root.flyout = ""; return }
+                picFly.note = ""
+                picFly.stage(t)
+            }
+            function folderArgv(entry, dir) {
+                if (!entry || !entry.command || entry.command.length === 0) return []
+                var out = [], filled = false
+                for (var i = 0; i < entry.command.length; i++) {
+                    var a = "" + entry.command[i]
+                    if (/^%[ikc]$/.test(a)) continue
+                    if (/%[UuFf]/.test(a)) { a = a.replace(/%[UuFf]/g, dir); filled = true }
+                    out.push(a)
+                }
+                if (!filled) out.push(dir)
+                return out
+            }
+            function openFolder() {
+                picAct.run(["mkdir", "-p", "--", picFly.pictDir], function (code) {
+                    if (code !== 0) { picFly.note = "Could not create " + picFly.pictDir; return }
+                    picRead.run(["xdg-mime", "query", "default", "inode/directory"], function (c, text) {
+                        var id = c === 0 ? ("" + text).trim().replace(/\.desktop$/, "") : ""
+                        var argv = id === "" ? [] : picFly.folderArgv(DesktopEntries.byId(id), picFly.pictDir)
+                        if (argv.length > 0) Quickshell.execDetached(Kit.scopeArgv({ command: argv }))
+                        else Quickshell.execDetached(["xdg-open", picFly.pictDir])
+                        root.flyout = ""
+                    })
+                })
+            }
+
+            Item {
+                id: snap
+                x: -300; y: 0
+                width: 256; height: 256
+                Image {
+                    id: snapImg
+                    anchors.fill: parent
+                    sourceSize: Qt.size(256, 256)
+                    asynchronous: false
+                    fillMode: Image.PreserveAspectFit
+                    onStatusChanged: if (status === Image.Ready && picFly.snapping) picFly.capture(); else if (status === Image.Error && picFly.snapping) picFly.failed()
+                }
+            }
+            Image {
+                id: probeImg
+                x: -300; y: 300
+                width: 1; height: 1
+                asynchronous: false
+                onStatusChanged: {
+                    if (picFly.probing === "") return
+                    if (status === Image.Ready) {
+                        var p = picFly.probing
+                        picFly.probing = ""
+                        picFly.install(p)
+                    } else if (status === Image.Error) picFly.failed()
+                }
+            }
+
+            Rim {
+                y: picFly.rise
+                width: 360
+                height: 340
+                topLeftRadius: 6
+                topRightRadius: 6
+                bottomLeftRadius: 0
+                bottomRightRadius: 0
+
+                ShadowText {
+                    x: 12; y: 4
+                    width: 336
+                    text: "Change your picture"
+                    font: Kit.boldFont(12)
+                }
+                Plate {
+                    x: 8; y: 30; width: 344; height: 262
+
+                    GridView {
+                        id: tileGrid
+                        x: 8; y: 8; width: 328; height: 164
+                        cellWidth: 82; cellHeight: 82
+                        clip: true
+                        boundsBehavior: Flickable.StopAtBounds
+                        model: picFly.tiles
+                        delegate: Item {
+                            required property var modelData
+                            width: 82; height: 82
+                            readonly property bool sel: picFly.picked === modelData.path
+                            readonly property bool cur: picFly.isCurrent(modelData)
+                            Rectangle {
+                                x: 6; y: 6; width: 70; height: 70
+                                radius: 2
+                                color: sel ? Kit.accent(0.22) : "transparent"
+                                border.width: cur ? 2 : 1
+                                border.color: cur ? Kit.accent(1) : (sel ? Kit.dark(0.55) : "transparent")
+                            }
+                            Image {
+                                x: 9; y: 9; width: 64; height: 64
+                                source: "file://" + modelData.path + root.bust
+                                sourceSize: Qt.size(64, 64)
+                                fillMode: Image.PreserveAspectCrop
+                                smooth: true
+                                asynchronous: true
+                            }
+                            Rectangle {
+                                visible: modelData.hand === true
+                                x: 9; y: 57; width: 64; height: 16
+                                color: Kit.white(0.85)
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "Current"
+                                    color: Kit.ink
+                                    font: Kit.bodyFont(10)
+                                    textFormat: Text.PlainText
+                                }
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: picFly.picked = modelData.path
+                            }
+                        }
+                    }
+                    Text {
+                        visible: picFly.folderTiles.length === 0
+                        x: 12; y: 180
+                        text: "No pictures in this folder yet."
+                        color: Kit.dark(0.72)
+                        font: Kit.bodyFont(12)
+                        textFormat: Text.PlainText
+                    }
+                    Row {
+                        x: 12; y: 202
+                        Text {
+                            text: "Put pictures in "
+                            color: Kit.ink
+                            font: Kit.bodyFont(12)
+                            textFormat: Text.PlainText
+                        }
+                        Text {
+                            text: picFly.shownDir
+                            color: Kit.ink
+                            font.family: Kit.family
+                            font.pixelSize: 12
+                            font.underline: true
+                            textFormat: Text.PlainText
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: picFly.openFolder()
+                            }
+                        }
+                    }
+                    Text {
+                        x: 12; y: 228; width: 320
+                        text: picFly.note
+                        color: Kit.ink
+                        font: Kit.bodyFont(12)
+                        elide: Text.ElideRight
+                        textFormat: Text.PlainText
+                    }
+                }
+                Rectangle {
+                    x: 160; y: 300; width: 124; height: 26
+                    radius: 2
+                    color: "#ffffff"
+                    border.width: 1
+                    border.color: changeMa.containsMouse ? Kit.accent(1) : Kit.dark(0.55)
+                    opacity: picFly.picked === "" ? 0.5 : 1
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Change Picture"
+                        color: Kit.ink
+                        font: Kit.boldFont(12)
+                        textFormat: Text.PlainText
+                    }
+                    MouseArea {
+                        id: changeMa
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: picFly.apply()
+                    }
+                }
+                Rectangle {
+                    x: 292; y: 300; width: 60; height: 26
+                    radius: 2
+                    color: "#ffffff"
+                    border.width: 1
+                    border.color: cancelMa.containsMouse ? Kit.accent(1) : Kit.dark(0.55)
+                    Text {
+                        anchors.centerIn: parent
+                        text: "Cancel"
+                        color: Kit.ink
+                        font: Kit.bodyFont(12)
+                        textFormat: Text.PlainText
+                    }
+                    MouseArea {
+                        id: cancelMa
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.flyout = ""
+                    }
+                }
+            }
+        }
         WidgetSlot {
             id: riceSlot
             livery: root.livery
@@ -2146,7 +3031,7 @@ Item {
             slot: "ricemode"
             anchors.right: more.left
             anchors.rightMargin: 6
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.top: parent.top
         }
     }
 }

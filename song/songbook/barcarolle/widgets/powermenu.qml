@@ -257,9 +257,25 @@ PanelWindow {
                 x: 9; y: 6; width: 12; height: 18
                 scale: 0.8
                 transformOrigin: Item.TopLeft
-                Svg { d: "M5 2 v15"; stroke: "#ffffff"; sw: 2.2; cap: ShapePath.RoundCap }
-                Svg { d: Kit.ell(3, 17.5, 3.6, 2.7, -20); fill: "#ffffff" }
-                Svg { d: "M6 2 c3 0 3 2.2 6 2.2"; stroke: "#4fd8e6"; sw: 1.8; cap: ShapePath.RoundCap }
+                Item {
+                    x: 1.97; y: -1.4
+                    Svg { d: Kit.clef; stroke: Kit.withA("#081e2b", 0.55); sw: 2.2 }
+                    Svg { d: Kit.clef; stroke: "#c3d0d9"; sw: 0.9 }
+                    Shape {
+                        preferredRendererType: Shape.CurveRenderer
+                        ShapePath {
+                            strokeColor: "transparent"
+                            fillGradient: LinearGradient {
+                                x1: 0; y1: 0; x2: 0; y2: 24
+                                GradientStop { position: 0; color: "#ffffff" }
+                                GradientStop { position: 0.45; color: "#d6e0e8" }
+                                GradientStop { position: 0.55; color: "#9fb1bf" }
+                                GradientStop { position: 1; color: "#e4ebf0" }
+                            }
+                            PathSvg { path: Kit.clef }
+                        }
+                    }
+                }
             }
             Text { x: 31; y: 8.5; text: "Shut Down"; color: Kit.withA("#000000", 0.45); font: Kit.bodyFont(12); textFormat: Text.PlainText }
             Text { x: 31; y: 7; text: "Shut Down"; color: "#ffffff"; font: Kit.bodyFont(12); textFormat: Text.PlainText }
@@ -343,11 +359,25 @@ PanelWindow {
                     x: 26; y: 16; width: 40; height: 48
                     scale: 2.3
                     transformOrigin: Item.TopLeft
-                    Svg { d: "M5 2 v15"; stroke: "#ffffff"; sw: 2.2; cap: ShapePath.RoundCap }
-                    Svg { d: Kit.ell(3, 17.5, 3.6, 2.7, -20); fill: "#ffffff"; stroke: Kit.withA("#081e2b", 0.45) }
-                    Svg { d: "M6 2 c3 0 3 2.2 6 2.2"; stroke: "#4fd8e6"; sw: 1.8; cap: ShapePath.RoundCap }
-                    Svg { d: "M6 5 c3 0 3 2.2 6 2.2"; stroke: "#ffffff"; sw: 1.8; cap: ShapePath.RoundCap }
-                    Svg { d: "M6 8 c3 0 3 2.2 6 2.2"; stroke: "#2aa3b8"; sw: 1.8; cap: ShapePath.RoundCap }
+                    Item {
+                        x: 1.97; y: -1.4
+                        Svg { d: Kit.clef; stroke: Kit.withA("#081e2b", 0.55); sw: 2.2 }
+                        Svg { d: Kit.clef; stroke: "#c3d0d9"; sw: 0.9 }
+                        Shape {
+                            preferredRendererType: Shape.CurveRenderer
+                            ShapePath {
+                                strokeColor: "transparent"
+                                fillGradient: LinearGradient {
+                                    x1: 0; y1: 0; x2: 0; y2: 24
+                                    GradientStop { position: 0; color: "#ffffff" }
+                                    GradientStop { position: 0.45; color: "#d6e0e8" }
+                                    GradientStop { position: 0.55; color: "#9fb1bf" }
+                                    GradientStop { position: 1; color: "#e4ebf0" }
+                                }
+                                PathSvg { path: Kit.clef }
+                            }
+                        }
+                    }
                 }
                 Text {
                     x: 91; y: 16

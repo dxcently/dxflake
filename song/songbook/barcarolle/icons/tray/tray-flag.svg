@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<defs>
+<linearGradient id="pole" gradientUnits="userSpaceOnUse" x1="2" y1="0" x2="5" y2="0"><stop offset="0" stop-color="#9fb1bf"/><stop offset="0.4" stop-color="#ffffff"/><stop offset="1" stop-color="#8a9cab"/></linearGradient>
+<linearGradient id="cloth" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="10"><stop offset="0" stop-color="#b4f0ff"/><stop offset="0.48" stop-color="#46b8f2"/><stop offset="0.52" stop-color="#1a86da"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+<radialGradient id="knob" gradientUnits="userSpaceOnUse" cx="3" cy="1.6" r="2"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#9fb1bf"/></radialGradient>
+</defs>
+<rect x="2.5" y="2.5" width="2" height="12" fill="url(#pole)" stroke="#2f4353"/>
+<path d="M4.5 3C7 1.5 9.5 4.5 14.5 3V10C9.5 11.5 7 8.5 4.5 10Z" fill="url(#cloth)" stroke="#0b4f8c" stroke-linejoin="round"/>
+<path d="M5.5 3.6C7.5 2.6 9.5 5 13.5 3.8V6C9.5 7.4 7.5 5 5.5 6.1Z" fill="#ffffff" fill-opacity=".5"/>
+<circle cx="3.5" cy="2" r="1.5" fill="url(#knob)" stroke="#2f4353"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10">
+<defs>
+<linearGradient id="chev" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="8.5"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#d6e0e8"/><stop offset="0.55" stop-color="#9fb1bf"/><stop offset="1" stop-color="#e4ebf0"/></linearGradient>
+</defs>
+<path d="M0.8 6.5L5 2.3L9.2 6.5L7.7 8L5 5.3L2.3 8Z" fill="url(#chev)" stroke="#2f4353" stroke-linejoin="round"/>
+<path d="M1.8 6.4L5 3.2L8.2 6.4" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width=".6"/>
+</svg>
