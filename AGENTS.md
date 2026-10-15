@@ -62,10 +62,13 @@ calls them. Keep imports, fetches and package computation inside those functions
 — metadata that computes defeats this, and only the function bodies are proved
 cold.
 
-- **Catalogue** — `modules/default.nix`. Not a module: plain data, one
-  `name = ./path;` line per capability, `aggregations = import ./aggregations;`,
-  and one generated entry per line of `modules/dendrites/packages.nix`. It
-  generates `habit.dendrites.<name>.enable` and `.provider`, so an unknown
+- **Catalogue** — `modules/default.nix`. A function of one optional argument,
+  `packages` (default `modules/dendrites/packages.nix`), returning plain data:
+  one `name = ./path;` line per capability, `aggregations = import ./aggregations;`,
+  and the generator's one entry per package line, named by its path's last
+  segment. Call it as `import ./modules { }`. The generator throws, naming the
+  name, on a clash with a hand-written entry, a repeated path, or two paths
+  sharing a last segment. It generates `habit.dendrites.<name>.enable` and `.provider`, so an unknown
   name fails as an option that does not exist, naming the file that asked for
   it. A name with no catalogue line is unreachable, which is what shelving means
   now (the `_` filename prefix is the older convention and still marks parked

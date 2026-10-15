@@ -41,8 +41,8 @@ dxflake/
 ├── users/
 │   └── khoa.nix              # ONE shared account — a module + `habit.home`
 ├── modules/
-│   ├── default.nix           # THE REGISTRY. the catalogue, plus `import ./aggregations`
-│   ├── packages-entries.nix  # the function that generates one catalogue entry per package line
+│   ├── default.nix           # THE REGISTRY, a function of `packages` (default: dendrites/packages.nix).
+│   │                        #   the catalogue, one generated entry per package line, `import ./aggregations`
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
 │   │   └── base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,

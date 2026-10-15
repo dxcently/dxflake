@@ -170,7 +170,7 @@
       };
 
       registry = (inputs.habit.lib.catalogues { inherit lib; }).mergeRegistries [
-        (import ./modules // { name = "dx"; })
+        (import ./modules { } // { name = "dx"; })
         {
           name = "aoide";
           catalogue = aoideLanes;

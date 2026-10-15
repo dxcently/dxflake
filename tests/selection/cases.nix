@@ -4,7 +4,7 @@
 { lib, habit }:
 let
   composition = habit.lib.composition { inherit lib; };
-  registry = import ../../modules;
+  registry = import ../../modules { };
 
   sakaki = composition.evalSelection {
     inherit registry;
@@ -16,10 +16,6 @@ let
     selection = sakaki;
   };
 
-  # The package-entry generator is the one the registry runs (modules/default.nix
-  # calls it too). Forcing the names forces its checks.
-  packageEntries =
-    args: import ../../modules/packages-entries.nix ({ file = "fixture/packages.nix"; } // args);
 in
 {
   # The headless host selects exactly what its file names.
@@ -44,36 +40,39 @@ in
   # The groups the host reports.
   realRegistryInventory = builtins.concatStringsSep "," inventory.aggregation;
 
-  packageEntriesNamedByLastSegment = builtins.concatStringsSep "," (
-    builtins.attrNames (packageEntries {
-      packages = [
-        "kdePackages.filelight"
-        "vim"
-      ];
-      handWritten = { };
-    })
+  # The registry is its own package-entry generator: a test passes a package list
+  # and forces the catalogue, which runs the checks the real list runs.
+  packageEntriesNamedByLastSegment =
+    let
+      c =
+        (import ../../modules {
+          packages = [
+            "kdePackages.filelight"
+            "vim"
+          ];
+        }).catalogue;
+    in
+    c ? filelight && c ? vim && !(c ? "kdePackages.filelight");
+
+  packageEntriesClashWithHandWritten = builtins.attrNames (
+    (import ../../modules { packages = [ "bash" ]; }).catalogue
   );
 
-  packageEntriesClashWithHandWritten = builtins.attrNames (packageEntries {
-    packages = [ "bash" ];
-    handWritten = {
-      bash = ./dendrites/none;
-    };
-  });
+  packageEntriesListedTwice = builtins.attrNames (
+    (import ../../modules {
+      packages = [
+        "hugo"
+        "hugo"
+      ];
+    }).catalogue
+  );
 
-  packageEntriesListedTwice = builtins.attrNames (packageEntries {
-    packages = [
-      "hugo"
-      "hugo"
-    ];
-    handWritten = { };
-  });
-
-  packageEntriesSharedName = builtins.attrNames (packageEntries {
-    packages = [
-      "hugo"
-      "kdePackages.hugo"
-    ];
-    handWritten = { };
-  });
+  packageEntriesSharedName = builtins.attrNames (
+    (import ../../modules {
+      packages = [
+        "hugo"
+        "kdePackages.hugo"
+      ];
+    }).catalogue
+  );
 }

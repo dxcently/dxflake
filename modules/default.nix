@@ -1,7 +1,9 @@
 # modules/default.nix — the registry.
 #
-# This is NOT a module. It is plain data, read by the constructor before any
-# module graph exists: one catalogue line per capability, plus the aggregations
+# A function of one optional argument, `packages`: the package paths, defaulting
+# to dendrites/packages.nix (a test passes its own list). It returns the registry,
+# plain data read by the constructor before any module graph exists: one catalogue
+# line per capability, the generated package entries, and the aggregations
 # discovered beside it. Nothing walks the dendrite tree — a capability exists
 # here or it cannot be selected, and a name with no line is unreachable, which
 # is what shelving means now.
@@ -16,9 +18,56 @@
 # names each one. There is no grouping exception at the root any more. Grouping
 # is the aggregations' job, so the root stays flat and the catalogue name is the
 # file name.
+{
+  packages ? import ./dendrites/packages.nix,
+}:
 let
-  # The hand-written catalogue. The package entries are generated beside it:
-  # see packages-entries.nix and modules/dendrites/packages.nix.
+  file = toString ./dendrites/packages.nix;
+
+  # `kdePackages.filelight` is catalogue entry `filelight`.
+  nameOf = path: baseNameOf (builtins.replaceStrings [ "." ] [ "/" ] path);
+  count = x: list: builtins.length (builtins.filter (y: y == x) list);
+  unique = list: builtins.foldl' (acc: x: if builtins.elem x acc then acc else acc ++ [ x ]) [ ] list;
+
+  paths = unique packages;
+  names = unique (map nameOf paths);
+
+  clashing = builtins.filter (n: builtins.hasAttr n handWritten) names;
+  listedTwice = builtins.filter (p: count p packages > 1) paths;
+  sharing = builtins.filter (n: count n (map nameOf paths) > 1) names;
+
+  entry = path: {
+    _file = "${file}#${nameOf path}";
+    imports = [
+      (
+        { pkgs, lib, ... }:
+        {
+          environment.systemPackages = lib.mkOrder 1400 [
+            (lib.getAttrFromPath (lib.splitString "." path) pkgs)
+          ];
+        }
+      )
+    ];
+  };
+
+  generated = builtins.listToAttrs (
+    map (path: {
+      name = nameOf path;
+      value = entry path;
+    }) paths
+  );
+
+  checked =
+    if clashing != [ ] then
+      throw "${file}: '${builtins.head clashing}' names both a package line and a hand-written catalogue entry; rename one, or make the package a dendrite of its own"
+    else if listedTwice != [ ] then
+      throw "${file}: '${builtins.head listedTwice}' is listed twice; every package line needs its own path"
+    else if sharing != [ ] then
+      throw "${file}: ${
+        builtins.concatStringsSep " and " (builtins.filter (p: nameOf p == builtins.head sharing) paths)
+      } share the catalogue name '${builtins.head sharing}'; every package needs a distinct last segment"
+    else
+      generated;
   handWritten = {
     aagl = ./dendrites/aagl.nix;
     aoide = ./dendrites/aoide.nix;
@@ -104,15 +153,13 @@ let
     xserver = ./dendrites/xserver.nix;
     yazi = ./dendrites/yazi.nix;
   };
-in
-{
+
   # Each line of dendrites/packages.nix is a generated entry, merged beside the
   # hand-written ones; the generator throws on a clash.
-  catalogue = import ./packages-entries.nix {
-    inherit handWritten;
-    packages = import ./dendrites/packages.nix;
-    file = toString ./dendrites/packages.nix;
-  };
+  catalogue = handWritten // checked;
+in
+{
+  inherit catalogue;
 
   # The override records, discovered beside the aggregations: capability-scoped
   # fixes, matched against what a host resolved. Names and paths only here; the
