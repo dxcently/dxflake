@@ -219,6 +219,7 @@ PanelWindow {
     property string view: "top"
     property string sub: ""
     property string query: ""
+    onQueryChanged: root.picSel = ""
     property int dataTick: 0
     property var binds: []
     property string bindsState: "idle"
@@ -258,6 +259,7 @@ PanelWindow {
     readonly property string hdrText: {
         if (root.view === "clip" && root.clipboard.loading) return "Reading clipboard…"
         if (root.view === "clip" && root.clipErr !== "") return root.clipErr
+        if (root.view === "pics" && root.picErr !== "") return root.picErr
         if (root.view === "songs" && !Rice.ready(root.answer)) return ""
         if (root.view === "songs" && root.pending) return "…"
         var n = root.items.length
@@ -577,6 +579,8 @@ PanelWindow {
         root.keyFocus = "grid"
         root.viewIt = null
         root.clipErr = ""
+        root.picSel = ""
+        root.picErr = ""
         topGrid.currentIndex = 0
         topGrid.positionViewAtBeginning()
         root.clipboard.refresh()
@@ -584,6 +588,8 @@ PanelWindow {
     function openFolder(key) {
         root.viewIt = null
         root.clipErr = ""
+        root.picSel = ""
+        root.picErr = ""
         findField.text = ""
         root.sub = ""
         root.view = key
@@ -799,7 +805,7 @@ PanelWindow {
         else if ((k === Qt.Key_Left || k === Qt.Key_Right) && at >= 0) root.openTitle(root.titles[(at + (k === Qt.Key_Left ? -1 : 1) + n) % n])
         else if (k === Qt.Key_Return || k === Qt.Key_Enter) {
             var row = d.hot >= 0 ? d.rows[d.hot] : null
-            root.keyFocus = at < 0 && root.band[root.bandAt] !== undefined ? "band" : "grid"
+            root.keyFocus = root.menuOpen === "Position" && root.band[root.bandAt] !== undefined ? "band" : "grid"
             root.menuOpen = ""
             if (row && !row.sep && row.live === true) row.act()
         }
@@ -817,6 +823,7 @@ PanelWindow {
     function bandKey(k) {
         if (k !== Qt.Key_Return && k !== Qt.Key_Enter && k !== Qt.Key_Space) return false
         if (root.bandFocus === "remove") root.removePicture()
+        else if (root.bandFocus === "add") root.addPictures()
         else if (root.bandFocus === "position") root.openPosition(true)
         return true
     }
@@ -832,10 +839,13 @@ PanelWindow {
     readonly property bool coverLocked: root.riceMode === "declarative"
     readonly property bool canRemove: root.coverPick && !root.coverLocked && !root.aboutOpen
     readonly property bool canPosition: root.coverStill && !root.coverLocked && !root.aboutOpen
+    readonly property bool canAddPics: root.view === "pics" && !root.aboutOpen && !root.coverLocked
+    readonly property bool canTrashPic: root.view === "pics" && !root.aboutOpen && !root.coverLocked && !picOp.running
+        && !!root.selItem && root.selItem.kind === "pic" && !root.selItem.own
     readonly property var positions: [["auto", "Automatic"], ["tile", "Tile on Screen"], ["fill", "Fill Screen"]]
     readonly property real posBoxW: 6 + Math.ceil(posFit.implicitWidth) + 6 + 17
     T { id: posFit; visible: false; font.family: root.fSys; font.pixelSize: 12; text: root.positions.map(function (q) { return q[1] }).join("\n") }
-    readonly property var band: root.view === "pics" ? [root.canRemove ? "remove" : "", root.canPosition ? "position" : ""].filter(function (b) { return b !== "" }) : []
+    readonly property var band: root.view === "pics" ? [root.canRemove ? "remove" : "", root.canPosition ? "position" : "", root.canAddPics ? "add" : ""].filter(function (b) { return b !== "" }) : []
     readonly property string bandFocus: root.keyFocus === "band" ? (root.band[root.bandAt] || "") : ""
     // a band control that goes away (pick cleared, declarative, another window, About in front) closes its popup and hands the keys back to the grid
     onBandChanged: {
@@ -864,6 +874,62 @@ PanelWindow {
     }
     function removePicture() {
         if (root.canRemove) Quickshell.execDetached(["lyra", "cover", "set", "--clear"])
+    }
+    // the folder the Pictures list reads, in the default file manager; the list's folder watch picks up what lands there
+    function addPictures() {
+        root.menuOpen = ""
+        if (root.canAddPics) Quickshell.execDetached(["xdg-open", root.coversDir])
+    }
+    // a library picture to the system Trash (gio, recoverable, no confirm); the pick in force is cleared first, and the trash
+    // runs only once lyra has cleared it. A failure shows in the Pictures window's header (picErr), as clipErr does for clippings.
+    property string picErr: ""
+    Process {
+        id: picOp
+        property var next: null
+        property string name: ""
+        property bool cleared: false
+        property bool began: false
+        onStarted: picOp.began = true
+        onExited: function (code) { root.picOpDone(code) }
+        // a binary that is not on PATH never starts and never exits
+        onRunningChanged: if (!picOp.running && !picOp.began) root.picOpDone(127)
+    }
+    function trashPicture() {
+        root.menuOpen = ""
+        if (!root.canTrashPic) return
+        var it = root.selItem, name = it.path.slice(it.path.lastIndexOf("/") + 1)
+        root.picErr = ""
+        if (name === "" || it.path !== root.coversDir + "/" + name) { root.picErr = "Couldn\u2019t move " + name + " to the Trash"; return }
+        var trash = ["gio", "trash", it.path]
+        var inForce = root.coverPick && it.path === root.coverPath
+        picOp.name = name
+        picOp.cleared = false
+        picOp.began = false
+        picOp.next = inForce ? trash : null
+        picOp.command = inForce ? ["lyra", "cover", "set", "--clear"] : trash
+        picOp.running = true
+    }
+    function picOpDone(code) {
+        var n = picOp.next
+        picOp.next = null
+        if (code !== 0) root.picErr = n ? "Couldn\u2019t clear the desktop picture"
+            : picOp.cleared ? "Desktop picture cleared; couldn\u2019t trash " + picOp.name : "Couldn\u2019t move " + picOp.name + " to the Trash"
+        else if (n) { picOp.cleared = true; picOp.began = false; picOp.command = n; picOp.running = true; return }
+        root.refreshTrash()
+    }
+    // the selected picture by path, so a folder change under the window keeps it (or lands on its neighbour when it went away);
+    // a Find change lands on the best match (index 0) as everywhere else. Recorded a tick late, after the grid's own reset to the
+    // first item and onModelChanged's restore.
+    property string picSel: ""
+    property int picAt: 0
+    property string picQuery: ""
+    function notePic() {
+        var it = root.view === "pics" ? root.items[frontGrid.currentIndex] : undefined
+        if (it && it.kind === "pic") { root.picSel = it.path; root.picAt = frontGrid.currentIndex; root.picQuery = root.query }
+    }
+    function picLanded() {
+        for (var i = 0; i < root.items.length; i++) if (root.items[i].path === root.picSel) return i
+        return Math.min(root.picAt, root.items.length - 1)
     }
     function setPosition(word) {
         if (root.canPosition && word !== root.coverPosition)
@@ -930,7 +996,8 @@ PanelWindow {
         onCountChanged: root.dataTick++
     }
     Pics { id: ownPics; folder: "file://" + root.aoideRoot + "/song/songbook/barcarolle/cover" }
-    Pics { id: libPics; folder: "file://" + root.aoideRoot + "/song/covers" }
+    readonly property string coversDir: root.aoideRoot + "/song/covers"
+    Pics { id: libPics; folder: "file://" + root.coversDir }
 
     property string hostName: ""
     readonly property string diskName: root.hostName || "Computer"
@@ -1099,7 +1166,7 @@ PanelWindow {
             var m = root.menuOpen
             root.menuOpen = ""
             if (root.keyMenu && m === "Position") root.keyFocus = root.band[root.bandAt] !== undefined ? "band" : "grid"
-            else if (root.keyMenu) root.toBar(m)
+            else if (root.keyMenu && root.titles.indexOf(m) >= 0) root.toBar(m)
         }
         else if (root.keyFocus !== "grid") root.keyFocus = "grid"
         else if (root.aboutOpen) root.aboutOpen = false
@@ -1172,7 +1239,7 @@ PanelWindow {
     function dropOf(label) {
         return label === "♪" ? appleDrop : label === "File" ? fileDrop : label === "Edit" ? editDrop
             : label === "View" ? viewDrop : label === "Special" ? specialDrop : label === "Help" ? helpDrop
-            : label === "Song" ? songDrop : label === "Position" ? posDrop : null
+            : label === "Song" ? songDrop : label === "Position" ? posDrop : label === "Context" ? ctxDrop : null
     }
     function titleAt(x, y) {
         var ts = [appleTitle, fileTitle, editTitle, viewTitle, specialTitle, helpTitle, songTitle]
@@ -1201,7 +1268,7 @@ PanelWindow {
     // ── the picture viewer: an image clipping opened in its own window; ←/→ walk the front window's image clippings ──
     property var viewIt: null
     readonly property string viewHome: [root.view, root.sub, root.query].join("/")
-    onViewHomeChanged: root.viewIt = null
+    onViewHomeChanged: { root.viewIt = null; if (root.menuOpen === "Context") root.menuOpen = "" }
     readonly property var viewPics: root.items.filter(function (it) { return it.kind === "clip" && it.clip.kind === "image" })
     readonly property int viewAt: {
         for (var i = 0; root.viewIt && i < root.viewPics.length; i++) if (root.viewPics[i].clip.id === root.viewIt.clip.id) return i
@@ -1258,6 +1325,20 @@ PanelWindow {
         if (v >= 0 && root.viewPics.length > 0) { root.openViewer(root.viewPics[Math.min(v, root.viewPics.length - 1)]); return }
         if (v >= 0) root.viewIt = null
         if (c >= 0 && root.grid.count > 0) root.jump(Math.min(c, root.grid.count - 1))
+    }
+    // the contextual menu: a right-press on a clipping or a picture selects it (the viewer closes) and opens its rows at the pointer
+    property string ctxKind: ""
+    property point ctxAt: Qt.point(0, 0)
+    function openContext(cell, mx, my) {
+        var k = cell.modelData.kind
+        if (root.aboutOpen || root.alertOpen || (k !== "clip" && k !== "pic")) return
+        root.viewIt = null
+        cell.GridView.view.currentIndex = cell.index
+        root.ctxKind = k
+        var p = cell.mapToItem(mac, mx, my)
+        root.ctxAt = Qt.point(Math.round(p.x), Math.round(p.y))
+        root.keyMenu = false
+        root.menuOpen = "Context"
     }
     function askClearClip() {
         if (!root.canClearClip) return
@@ -2063,8 +2144,10 @@ PanelWindow {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: cell.GridView.view.currentIndex = cell.index
-            onDoubleClicked: root.activate(cell.modelData)
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onPressed: function (m) { if (m.button === Qt.RightButton) root.openContext(cell, m.x, m.y) }
+            onClicked: function (m) { if (m.button === Qt.LeftButton) cell.GridView.view.currentIndex = cell.index }
+            onDoubleClicked: function (m) { if (m.button === Qt.LeftButton) root.activate(cell.modelData) }
         }
     }
 
@@ -2212,7 +2295,7 @@ PanelWindow {
                         homeX: root.inSub ? 34 : 20
                         homeY: root.inSub ? 66 : 48
                         baseW: 282
-                        baseH: root.inSub ? 212 : 230
+                        baseH: root.inSub ? 212 : root.view === "pics" ? 254 : 230
                         fitW: root.listed ? root.listWant : (root.view === "pics" ? 116 + posLbl.implicitWidth + 4 + root.posBoxW + 6 + 17 : 0)
                         opening: [root.shown, root.view, root.sub, root.searching].join("/")
                         readonly property real split: root.view === "keys" ? 10 + root.listCols[0] : frontWin.width - 22 - root.listCols[1]
@@ -2227,7 +2310,7 @@ PanelWindow {
                         onUpClicked: root.goUp()
                         GridView {
                             id: frontGrid
-                            x: 1; y: root.view === "pics" ? 28 : 0
+                            x: 1; y: root.view === "pics" ? 52 : 0
                             width: root.geom.cols * root.geom.cw
                             height: parent.height - y
                             header: Item { width: 1; height: 4 }
@@ -2238,15 +2321,20 @@ PanelWindow {
                             visible: !root.listed
                             model: root.frontOpen && !root.listed ? root.items : []
                             delegate: Cell {}
-                            onModelChanged: { currentIndex = 0; positionViewAtBeginning() }
+                            onModelChanged: {
+                                if (root.view === "pics" && root.picSel !== "" && root.query === root.picQuery && count > 0) { currentIndex = root.picLanded(); root.reveal(frontGrid, currentIndex) }
+                                else { currentIndex = 0; positionViewAtBeginning() }
+                            }
+                            onCurrentIndexChanged: Qt.callLater(root.notePic)
                         }
                         Rectangle {
                             visible: root.view === "pics"
                             width: parent.width
-                            height: 28
+                            height: 52
                             color: root.pl.face
-                            Rectangle { y: 27; width: parent.width; height: 1; color: root.pl.sh }
+                            Rectangle { y: 51; width: parent.width; height: 1; color: root.pl.sh }
                             PBtn { x: 6; y: 4; width: 104; label: "Remove Picture"; live: root.canRemove; focused: root.bandFocus === "remove"; onChosen: root.removePicture() }
+                            PBtn { id: addBtn; x: 6; y: 28; width: 104; label: "Add Pictures…"; live: root.canAddPics; focused: root.bandFocus === "add"; onChosen: root.addPictures() }
                             T {
                                 id: posLbl
                                 x: 116; y: 4; height: 20
@@ -2566,6 +2654,8 @@ PanelWindow {
                         rows: [
                             { label: "Open", key: "⌘O", live: root.canOpen, act: root.openSel },
                             { label: "Delete Clipping", key: "⌘⌫", live: root.canTrashClip, act: root.trashClip },
+                            { label: "Move to Trash", live: root.canTrashPic, act: root.trashPicture },
+                            { label: "Add Pictures…", live: root.canAddPics, act: root.addPictures },
                             { label: "Close Window", key: "⌘W", live: root.frontOpen || root.aboutOpen, act: root.closeWindow },
                             { sep: true },
                             { label: "Find…", key: "⌘F", live: !root.aboutOpen, act: root.focusFind },
@@ -2635,6 +2725,26 @@ PanelWindow {
                         rows: root.positions.map(function (q) {
                             return { label: q[1], check: root.coverPosition === q[0], live: true, act: function () { root.setPosition(q[0]) } }
                         })
+                    }
+                    Drop {
+                        id: ctxDrop
+                        visible: root.menuOpen === "Context"
+                        x: Math.max(0, Math.min(mac.width - ctxDrop.width, root.ctxAt.x))
+                        y: Math.max(0, Math.min(mac.height - ctxDrop.height, root.ctxAt.y))
+                        z: 41
+                        width: Math.max(120, 16 + Math.ceil(ctxFit.implicitWidth) + 14)
+                        rows: root.ctxKind === "clip" ? [
+                            { label: "Open", live: root.canOpen, act: root.openSel },
+                            { label: "Copy", live: root.canCopy && !!root.selItem && root.selItem.kind === "clip", act: function () { root.clipboard.copyById(root.selItem.clip.id) } },
+                            { sep: true },
+                            { label: "Delete Clipping", live: root.canTrashClip, act: root.trashClip }
+                        ] : [
+                            { label: "Open", live: root.canOpen, act: root.openSel },
+                            { sep: true },
+                            { label: "Remove Picture", live: root.canRemove && !!root.selItem && root.selItem.path === root.coverPath, act: root.removePicture },
+                            { label: "Move to Trash", live: root.canTrashPic, act: root.trashPicture }
+                        ]
+                        T { id: ctxFit; visible: false; font.family: root.fSys; font.pixelSize: 12; text: ctxDrop.rows.map(function (r) { return r.sep ? "" : r.label }).join("\n") }
                     }
                     Win {
                         id: viewWin
@@ -2738,6 +2848,7 @@ PanelWindow {
                         anchors.fill: parent
                         z: 30
                         visible: root.menuOpen !== ""
+                        acceptedButtons: Qt.AllButtons
                         onClicked: root.menuOpen = ""
                     }
                     Item {
