@@ -20,6 +20,7 @@
         nerd-fonts.lekton
         (pkgs.callPackage ./../../pkgs/azuki-font-b { })
         (pkgs.callPackage ./../../pkgs/azuki-font { })
+        (pkgs.callPackage ./../../pkgs/sleet-vga { })
       ];
     };
   };
