@@ -23,7 +23,7 @@
     # What `desktop` installs, plus one preference. Both are the aggregation's
     # own, deferred until the platform pass. The packages are named by their
     # `dx.packages` switches — the flat list lives once, in
-    # modules/dendrites/packages.nix, and a package list answers no question a
+    # modules/packages.nix, and a package list answers no question a
     # host could answer differently, so it is not a dendrite.
     module =
       { pkgs, lib, ... }:

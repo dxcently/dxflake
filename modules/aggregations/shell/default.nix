@@ -31,7 +31,7 @@
     providers.compositor = null;
 
     # The Wayland tool belt this aggregation installs, switched on by name. The
-    # lines themselves live once, in modules/dendrites/packages.nix — an install
+    # lines themselves live once, in modules/packages.nix — an install
     # is not a selectable capability, so it gets no catalogue line and no file
     # of its own here.
     #

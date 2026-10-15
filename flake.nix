@@ -206,6 +206,7 @@
           extraModules = [
             inputs.aoide.nixosModules.nucleus
             ./modules/nucleus
+            ./modules/sops.nix
             inputs.disko.nixosModules.disko
           ];
           selectionModules = [ songbook.selectionModule ];

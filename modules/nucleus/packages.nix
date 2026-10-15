@@ -7,7 +7,7 @@
 #
 # Not a dendrite list and not switched: an unbootable shell prompt or a missing
 # archive tool is not something a host should be able to answer differently. What
-# IS switchable lives in modules/dendrites/packages.nix.
+# IS switchable lives in modules/packages.nix.
 { pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     # ── Shell & Terminal ──

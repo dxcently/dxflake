@@ -124,7 +124,7 @@ cold.
   question a host could answer differently, so it gets no catalogue line and is
   not a dendrite: the group's own half `module` switches its `dx.packages`
   lines on by name, and the lines themselves live once in
-  `modules/dendrites/packages.nix`. Those lists are `lib.mkAfter`,
+  `modules/packages.nix`. Those lists are `lib.mkAfter`,
   so they order last into `system.path`, where collisions resolve first-wins — a
   group's convenience list never shadows a selected capability.
 

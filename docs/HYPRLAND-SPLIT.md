@@ -100,7 +100,7 @@ that invokes them: `hyprpolkitagent` → `hyprland-autostart` (it runs
 an install is not a capability — it answers no question a host could answer
 differently, so it gets no catalogue line. The Wayland tool belt (dunst, awww,
 wl-clipboard, satty, cliphist, brightnessctl, ydotool, yad, zenity) is carried
-by the flat list in `modules/dendrites/packages.nix`, and the `shell`
+by the flat list in `modules/packages.nix`, and the `shell`
 aggregation switches those nine on by name in its own `default.nix`. There is
 no `hyprland-packages` dendrite any more — nor `desktop-packages` or
 `gaming-packages`, which moved the same way. Nothing in the tool belt is

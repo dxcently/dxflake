@@ -1,4 +1,4 @@
-# modules/dendrites/packages.nix — the flat list of packages that need no
+# modules/packages.nix — the flat list of packages that need no
 # configuration, one line each, every line a switch of its own.
 #
 # NOT a dendrite: there is no catalogue line here, because nothing about this
@@ -98,7 +98,7 @@ let
   # it, so a duplicate line would silently lose a package and look exactly like
   # one switched off. Refuse it, naming the whole list, rather than drop one.
   distinct = lib.assertMsg (builtins.length packages == builtins.length (lib.attrNames byName)) (
-    "modules/dendrites/packages.nix: two entries share a lib.getName, so listToAttrs "
+    "modules/packages.nix: two entries share a lib.getName, so listToAttrs "
     + "would silently drop one of them; every line needs a distinct name. The list is: "
     + lib.concatStringsSep ", " names
   );

@@ -11,7 +11,7 @@
     ];
 
     # The launchers that are nothing but a package. Their lines live once, in
-    # modules/dendrites/packages.nix; this aggregation switches its own nine on
+    # modules/packages.nix; this aggregation switches its own nine on
     # by name. An install is not a selectable capability, so it gets no
     # catalogue line.
     module =
