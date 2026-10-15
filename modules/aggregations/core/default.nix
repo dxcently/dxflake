@@ -4,13 +4,15 @@
 # Members are ordinary dendrites, so a host that wants one gone says
 # `habit.dendrites.<name>.enable = false`, and these are the caveats:
 #
-# - `boot` is the bootloader. Deselected, the host has none unless it declares one.
-# - `networking` is the hostName, NetworkManager, and the login account with its
-#   authorized key. Deselected, the host is named "nixos" and that account is
-#   not declared.
-# - `system` is the time zone, locale, nix settings and substituters, the default
-#   editor, dconf, and `nixpkgs.config.allowUnfree`. Deselected, all of them fall
-#   back to the platform defaults. `system.stateVersion` is the host's own
+# - `boot` is the bootloader. Deselected, the host must declare its own, or
+#   evaluation fails.
+# - `networking` is the hostName, NetworkManager, and one authorized key on the
+#   login account (the account itself comes from users/khoa.nix). Deselected,
+#   the hostName is "nixos" and that key is gone.
+# - `system` is the time zone, the locale categories, nix settings and
+#   substituters, the default editor, dconf, and `nixpkgs.config.allowUnfree`.
+#   Deselected, the time zone is unset, unfree packages are refused, and the rest
+#   fall back to the platform defaults. `system.stateVersion` is the host's own
 #   (hosts/<name>/default.nix) whether or not `system` is selected.
 {
   description = "The machine itself: bootloader, hostname and NetworkManager, the base packages, polkit and rtkit, and the Nix and locale settings.";

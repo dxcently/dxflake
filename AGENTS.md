@@ -163,13 +163,16 @@ cold.
   system; `modules/aggregations/network/` is avahi, openssh and tailscale. Each
   host also selects the `postgresql` dendrite by name and sets its own
   `system.stateVersion`. A host drops a member with
-  `habit.dendrites.<name>.enable = false`, with these caveats: `boot` leaves no
-  bootloader unless the host declares one; `networking` carries the hostName and
-  the login account's authorized key (deselected, the host is named `nixos` and
-  that account is not declared); `system` carries the time zone, locale, nix
-  settings and substituters, `allowUnfree`, the default editor and dconf
-  (deselected, they fall back to the platform defaults); and `openssh` is the
-  only sshd, which a host routing ssh through `dx.cloudflared` needs.
+  `habit.dendrites.<name>.enable = false`, with these caveats: `boot` is the
+  bootloader, so the host must declare its own or evaluation fails; `networking`
+  carries the hostName and one authorized key on the login account (deselected,
+  the hostName is `nixos` and that key is gone); `system` carries the time zone,
+  locale categories, nix settings and substituters, `allowUnfree`, the default
+  editor and dconf (deselected, the time zone is unset, unfree packages are
+  refused, and the rest fall back to the platform defaults); and `openssh` is the
+  only sshd, which a host routing ssh through `dx.cloudflared` needs. `postgresql`
+  is not the only thing that starts postgres: on sakaki immich does, so
+  deselecting the dendrite there only restores nixpkgs' authentication defaults.
   `modules/packages.nix` and `modules/sops.nix` are not members: the first is the
   contract behind every `dx.packages.<name>.enable` switch, the second is
   sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing`

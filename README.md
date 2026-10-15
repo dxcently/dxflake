@@ -225,7 +225,7 @@ A capability-scoped fix — a package upstream broke, a setting everyone running
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
 A host is a folder under `hosts/<name>/`: a generated `hardware.nix` and a `default.nix` holding this machine's selection. Every host selects `core`, `network` and the `postgresql` dendrite, and sets its own `system.stateVersion`; everything else is reached only when the host — or a user attached to it — selects it by catalogue name.
-A host may drop a member of `core` with `habit.dendrites.<name>.enable = false`, with three caveats: `boot` leaves no bootloader unless the host declares one; `networking` carries the hostName and the login account's authorized key, so without it the host is named `nixos` and that account is not declared; and `system` carries the time zone, locale, nix settings and substituters, `allowUnfree`, the default editor and dconf, so without it all of those fall back to the platform defaults.
+A host may drop a member of `core` with `habit.dendrites.<name>.enable = false`, with three caveats: `boot` is the bootloader, so the host must declare its own or evaluation fails; `networking` carries the hostName and one authorized key on the login account, so without it the hostName is `nixos` and that key is gone; and `system` carries the time zone, locale categories, nix settings and substituters, `allowUnfree`, the default editor and dconf, so without it the time zone is unset, unfree packages are refused, and the rest fall back to the platform defaults.
 Swap `<name>` for your host — it becomes the flake target.
 
 1. Clone the repo:
