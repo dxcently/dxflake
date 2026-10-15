@@ -46,6 +46,7 @@ let
     direnv = ./dendrites/direnv.nix;
     displaymanager = ./dendrites/displaymanager.nix;
     fastfetch = ./dendrites/fastfetch;
+    ffmpeg = ./dendrites/ffmpeg.nix;
     fcitx5 = ./dendrites/fcitx5.nix;
     flatpak = ./dendrites/flatpak.nix;
     foliate = ./dendrites/foliate.nix;

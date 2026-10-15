@@ -31,7 +31,6 @@
   "poppler" # PDF rendering library and CLI tools
   "socat" # bidirectional data relay
   "age" # modern, secure file encryption
-  "ffmpeg" # audio/video encoding framework
   "yt-dlp" # feature-rich youtube-dl fork
   "vim" # vi-compatible modal text editor
   "neovide" # GPU-accelerated Neovim GUI

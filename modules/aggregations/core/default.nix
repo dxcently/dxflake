@@ -53,7 +53,6 @@
     "poppler"
     "socat"
     "age"
-    "ffmpeg"
     "yt-dlp"
     "vim"
     "neovide"
@@ -71,8 +70,9 @@
     "ngrok"
     "nodejs"
 
-    # Dendrites the floor used to be: the Jupyter environment and fastfetch.
+    # Dendrites the floor used to be: the Jupyter environment, ffmpeg and fastfetch.
     "python"
+    "ffmpeg"
     "fastfetch"
   ];
 }
