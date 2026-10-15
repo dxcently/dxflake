@@ -38,6 +38,18 @@ in
     # apparatus — these tools hold their own credentials.
     habit.home.xdg.configFile."eidolon/config.toml".text = ''
       default_model = "ollama:deepseek-v4.1-flash"
+      default_persona = "Rook ♜"
+
+      # Both MCP servers bind loopback on sakaki (mneme :8000, melete :8787);
+      # the user unit eidolon-mcp-forward.service forwards them onto this host's
+      # loopback. Passphrases the harness exchanges for a bearer token.
+      [mneme]
+      mcp_url = "http://127.0.0.1:8000/mcp"
+      passphrase_file = "~/.config/eidolon/mneme-password"
+
+      [melete]
+      mcp_url = "http://127.0.0.1:8787/mcp"
+      passphrase_file = "~/.config/eidolon/melete-password"
     '';
   };
 }
