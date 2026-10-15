@@ -76,7 +76,9 @@
   # Reaches sakaki off the home LAN: ssh rides sakaki's Cloudflare tunnel
   # (`sakaki-ssh.necoconeco.net`) via a ProxyCommand in ~/.ssh/config, which
   # dxflake does not manage (modules/dendrites/cloudflared.nix, step 7).
-  dx.packages.cloudflared.enable = true;
+  # The cloudflared dendrite is a service; this host only needs the client for
+  # `cloudflared access ssh`, so it installs the package alone.
+  environment.systemPackages = [ pkgs.cloudflared ];
 
   # Pins stateful-data formats from the first install; do not change it.
   system.stateVersion = "23.11";

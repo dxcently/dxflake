@@ -273,12 +273,12 @@
   ];
   # This host's own additions to the shared list. The overlay above fixes
   # two of them; both fixes are host-local, so they stay here.
-  dx.packages.soundconverter.enable = true;
-  dx.packages.udiskie.enable = true;
-  dx.packages.filezilla.enable = true;
-  dx.packages.filelight.enable = true;
-  dx.packages.tor-browser.enable = true;
-  dx.packages.stremio-linux-shell.enable = true;
+  habit.dendrites.soundconverter.enable = true;
+  habit.dendrites.udiskie.enable = true;
+  habit.dendrites.filezilla.enable = true;
+  habit.dendrites.filelight.enable = true;
+  habit.dendrites.tor-browser.enable = true;
+  habit.dendrites.stremio-linux-shell.enable = true;
   boot = {
     initrd.kernelModules = [ "nvme" ];
     kernelParams = [ "mitigations=off" ];

@@ -20,15 +20,59 @@
 # - `sops` is sops-nix, the module behind every `sops.*` option. Deselected, it is
 #   not imported, so a host that keeps tailscale, cloudflared, syncthing or slskd
 #   fails evaluation with "The option `sops' does not exist".
+# - The package names are the floor every host carries: each is a catalogue
+#   entry of its own (modules/dendrites/packages.nix), so one is dropped with
+#   `habit.dendrites.<name>.enable = false` like any member.
 {
   description = "The machine itself: bootloader, hostname and NetworkManager, the base packages, polkit and rtkit, the sops-nix secrets, and the Nix and locale settings.";
 
   system.members = [
     "boot"
     "networking"
-    "packages"
     "security"
     "sops"
     "system"
+
+    # The floor, one catalogue entry per package (modules/dendrites/packages.nix).
+    "unrar"
+    "unzip"
+    "unar"
+    "fd"
+    "file"
+    "xdg-utils"
+    "bat"
+    "cowsay"
+    "fzf"
+    "htop"
+    "gptfdisk"
+    "lshw"
+    "usbutils"
+    "lm_sensors"
+    "v4l-utils"
+    "clinfo"
+    "poppler"
+    "socat"
+    "age"
+    "ffmpeg"
+    "yt-dlp"
+    "vim"
+    "neovide"
+    "lazygit"
+    "ripgrep"
+    "jq"
+    "curl"
+    "wget"
+    "godot"
+    "arduino-ide"
+    "typst"
+    "tinymist"
+    "nixfmt"
+    "nix-tree"
+    "ngrok"
+    "nodejs"
+
+    # Dendrites the floor used to be: the Jupyter environment and fastfetch.
+    "python"
+    "fastfetch"
   ];
 }

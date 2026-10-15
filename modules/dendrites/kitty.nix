@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -31,6 +32,8 @@ let
 in
 {
   config = {
+    environment.systemPackages = [ pkgs.kitty ];
+
     habit.home =
       {
         pkgs,

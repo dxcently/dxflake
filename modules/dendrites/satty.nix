@@ -1,4 +1,7 @@
+{ pkgs, ... }:
 {
+  environment.systemPackages = [ pkgs.satty ];
+
   habit.home =
     {
       pkgs,

@@ -5,34 +5,18 @@
 {
   description = "Steam, gamescope and the launchers.";
 
-  system = {
-    members = [
-      "steam"
-    ];
+  system.members = [
+    "steam"
 
-    # The launchers that are nothing but a package. Their lines live once, in
-    # modules/packages.nix; this aggregation switches its own nine on
-    # by name. An install is not a selectable capability, so it gets no
-    # catalogue line.
-    module =
-      { lib, ... }:
-      {
-        dx.packages =
-          lib.genAttrs
-            [
-              "osu-lazer-bin"
-              "lutris"
-              "wine"
-              "protonup-qt"
-              "bottles"
-              "prismlauncher"
-              "r2modman"
-              "winetricks"
-              "protontricks"
-            ]
-            (_: {
-              enable = true;
-            });
-      };
-  };
+    # The launchers that are nothing but a package, one catalogue entry each.
+    "osu-lazer-bin"
+    "lutris"
+    "wine"
+    "protonup-qt"
+    "bottles"
+    "prismlauncher"
+    "r2modman"
+    "winetricks"
+    "protontricks"
+  ];
 }

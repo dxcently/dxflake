@@ -30,7 +30,7 @@ in
       plain =
         i:
         let
-          m = import i.path;
+          m = if i.path != null then import i.path else i.value;
         in
         builtins.isFunction m || (builtins.isAttrs m && !(m ? nixos || m ? homeManager));
     in

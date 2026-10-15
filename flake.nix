@@ -201,11 +201,17 @@
           knownHosts = hostNames;
           inherit registry;
           host = ./hosts/${name};
-          overlays = [ inputs.aoide.overlays.default ];
+          overlays = [
+            inputs.aoide.overlays.default
+            # The Zen package has no nixpkgs attribute; the catalogue names it as
+            # pkgs.zen-browser, so this is where pkgs learns it.
+            (_final: prev: {
+              zen-browser = inputs.zen-browser.packages.${prev.stdenv.hostPlatform.system}.default;
+            })
+          ];
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
           extraModules = [
             inputs.aoide.nixosModules.nucleus
-            ./modules/packages.nix
             inputs.disko.nixosModules.disko
           ];
           selectionModules = [ songbook.selectionModule ];

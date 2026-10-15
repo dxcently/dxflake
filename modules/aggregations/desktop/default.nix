@@ -18,15 +18,41 @@
       "printing"
       "thunar"
       "xserver"
+
+      # The desktop's apps, one catalogue entry per package.
+      "mission-center"
+      "file-roller"
+      "gparted"
+      "mpv"
+      "vlc"
+      "wireplumber"
+      "pavucontrol"
+      "strawberry"
+      "playerctl"
+      "ffmpegthumbnailer"
+      "obs-studio"
+      "grim"
+      "slurp"
+      "losslesscut-bin"
+      "scrcpy"
+      "zen-browser"
+      "chromium"
+      "libreoffice"
+      "qbittorrent"
+      "nicotine-plus"
+      "zoom-us"
+      "obsidian"
+      "anki-bin"
+      "pear-desktop"
+      "gimp3-with-plugins"
+      "webcamoid"
+      "orca-slicer"
     ];
 
     # What `desktop` installs, plus one preference. Both are the aggregation's
-    # own, deferred until the platform pass. The packages are named by their
-    # `dx.packages` switches — the flat list lives once, in
-    # modules/packages.nix, and a package list answers no question a
-    # host could answer differently, so it is not a dendrite.
+    # own, deferred until the platform pass.
     module =
-      { pkgs, lib, ... }:
+      { pkgs, ... }:
       {
         programs = {
           virt-manager.enable = true;
@@ -42,49 +68,12 @@
 
         # Gaming and electron want a high mmap count; shared by every desktop.
         boot.kernel.sysctl."vm.max_map_count" = 2147483642;
-
-        dx.packages =
-          lib.genAttrs
-            [
-              "kitty"
-              "mission-center"
-              "file-roller"
-              "gparted"
-              "mpv-with-scripts"
-              "vlc"
-              "wireplumber"
-              "pavucontrol"
-              "strawberry"
-              "playerctl"
-              "ffmpegthumbnailer"
-              "obs-studio"
-              "grim"
-              "slurp"
-              "losslesscut"
-              "scrcpy"
-              "zen-browser"
-              "chromium"
-              "libreoffice"
-              "qbittorrent"
-              "nicotine-plus"
-              "zoom"
-              "obsidian"
-              "anki-bin"
-              "pear-desktop"
-              "gimp-with-plugins"
-              "webcamoid"
-              "orca-slicer"
-            ]
-            (_: {
-              enable = true;
-            });
       };
   };
 
   home.members = [
     "cheatsheet"
     "composekey"
-    "fastfetch"
     "foliate"
     "gtk"
     "qt"

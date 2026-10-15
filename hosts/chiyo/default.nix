@@ -150,9 +150,10 @@
   # screenshot lanes ship their own equivalents with matching systemd
   # services and keybinds — switching those packages on here would just
   # shadow them. brightnessctl and ydotool have no Aoide-side equivalent,
-  # so this host takes those two out of the shared list by name.
-  dx.packages.brightnessctl.enable = true;
-  dx.packages.ydotool.enable = true;
+  # so this host selects those two by name: it does not select the shell
+  # aggregation that would otherwise carry them.
+  habit.dendrites.brightnessctl.enable = true;
+  habit.dendrites.ydotool.enable = true;
   # upowerd on the system bus — the bar's battery gauge and the power stele
   # read Quickshell.Services.UPower, a client only; without the daemon every
   # battery renders as absent ("AC — no battery present").

@@ -30,33 +30,29 @@
   system = {
     providers.compositor = null;
 
-    # The Wayland tool belt this aggregation installs, switched on by name. The
-    # lines themselves live once, in modules/packages.nix — an install
-    # is not a selectable capability, so it gets no catalogue line and no file
-    # of its own here.
+    # The Wayland tool belt this aggregation installs, one catalogue entry per
+    # package (modules/dendrites/packages.nix). satty is not here: it is the
+    # satty dendrite's, selected by the home member below.
     #
     # waybar is deliberately absent: `programs.waybar.enable` in the waybar
     # dendrite already installs it, and switching it on here too would put two
     # copies on every host.
+    members = [
+      "awww"
+      "wl-clipboard"
+      "cliphist"
+      "brightnessctl"
+      "ydotool"
+      "yad"
+      "zenity"
+    ];
+
+    # dunst is not a catalogue entry: the Aoide `dunst` lane owns that name, so
+    # the package is installed here, under the same order the entries use.
     module =
-      { lib, ... }:
+      { pkgs, lib, ... }:
       {
-        dx.packages =
-          lib.genAttrs
-            [
-              "dunst"
-              "awww"
-              "wl-clipboard"
-              "satty"
-              "cliphist"
-              "brightnessctl"
-              "ydotool"
-              "yad"
-              "zenity"
-            ]
-            (_: {
-              enable = true;
-            });
+        environment.systemPackages = lib.mkOrder 1400 [ pkgs.dunst ];
       };
   };
 
