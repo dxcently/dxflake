@@ -4,14 +4,14 @@
 {
   imports = [
     ../packages.nix
-    ./avahi.nix
-    ./boot.nix
-    ./networking.nix
-    ./openssh.nix
-    ./packages.nix
-    ./postgresql.nix
-    ./security.nix
-    ./system.nix
-    ./tailscale.nix
+    ../dendrites/packages.nix
+    ../dendrites/avahi.nix
+    ../dendrites/boot.nix
+    ../dendrites/networking.nix
+    ../dendrites/openssh.nix
+    ../dendrites/postgresql.nix
+    ../dendrites/security.nix
+    ../dendrites/system.nix
+    ../dendrites/tailscale.nix
   ];
 }
