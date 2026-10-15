@@ -38,7 +38,7 @@ t=$(mktemp -d) || exit 1
 trap 'rm -rf "$t"' EXIT
 T="$root/templates"
 
-mkdir -p "$t"/modules/{aggregations/base,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor/hyprland} \
+mkdir -p "$t"/modules/{aggregations/base,aggregations/core,aggregations/network,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor/hyprland} \
          "$t"/hosts/{examplehost,exampleserver} "$t"/users "$t"/pkgs/example-tool
 
 cp "$T/example-default-registry.nix"          "$t/modules/default.nix"
@@ -80,6 +80,21 @@ cat > "$t/modules/aggregations/base/default.nix" <<'EOF'
 {
   description = "What every host carries.";
   system.members = [ "exampletool" ];
+}
+EOF
+# The floor both copied hosts select. Its members are the real dendrites, which
+# this tree does not ship, so the body selects none; the checks below only ask
+# that the copied hosts reach it.
+cat > "$t/modules/aggregations/core/default.nix" <<'EOF'
+{
+  description = "Stands in for the floor every host selects.";
+  system.members = [ ];
+}
+EOF
+cat > "$t/modules/aggregations/network/default.nix" <<'EOF'
+{
+  description = "Stands in for the network group every host selects.";
+  system.members = [ ];
 }
 EOF
 cat > "$t/modules/aggregations/landmine/default.nix" <<'EOF'
@@ -130,6 +145,8 @@ in {
   bNotifications = b.inv.dendrites ? notifications;
   bHome = b.inv.users.exampleuser.home;
   bUserDendrites = builtins.length (builtins.attrNames b.inv.users.exampleuser.dendrites);
+  aAggregation = a.inv.aggregation;
+  bAggregation = b.inv.aggregation;
 
   # The override record: matched where its host filter and a selected target
   # agree, and carrying all three halves.
@@ -179,6 +196,9 @@ else
   check "unselected group's members stay unselected" "false" "$(g bNotifications)"
   check "no home where HM is off"                 "false"    "$(g bHome)"
   check "and the user selects nothing for it"     "0"        "$(g bUserDendrites)"
+  # Both copied hosts reach the floor the templates tell them to select.
+  check "copied host selects the floor (examplehost)"  "base,core,network,workspace" "$(g 'aAggregation | join(",")')"
+  check "copied host selects the floor (exampleserver)" "base,core,network"          "$(g 'bAggregation | join(",")')"
   # The override record. tripwire.nix targets a capability neither host
   # selected and throws in both its bodies; the deepSeq above would have caught
   # a call, so "unmatched work is never done" is proved, not asserted.

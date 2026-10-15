@@ -4,12 +4,17 @@
 # Then:     add "<host>" to the host list in flake.nix.
 # Replace:  as example-host.nix.
 #
+# Every host selects `core` and `network`, the floor it carries; a copy keeps
+# both.
+#
 # The same interface, answered differently. Read it beside example-host.nix:
 # one group is shared, the graphical group is simply not selected, the same
 # capability is answered with the other implementation, and the user gets an
 # account with no Home Manager module behind it. Two machines, one vocabulary,
 # no `if hostname ==` anywhere.
 {
+  habit.aggregation.core.enable = true;
+  habit.aggregation.network.enable = true;
   habit.aggregation.base.enable = true;
 
   habit.dendrites = {
@@ -33,4 +38,7 @@
 
   imports = [ ./hardware.nix ];
   networking.hostName = "exampleserver";
+
+  # Pins stateful-data formats from the first install; do not change it.
+  system.stateVersion = "25.11";
 }

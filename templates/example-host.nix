@@ -3,7 +3,10 @@
 # Copy to:  hosts/<host>/default.nix, beside a generated hardware.nix
 # Then:     add "<host>" to the host list in flake.nix. That is the only edit
 #           flake.nix ever takes.
-# Replace:  <host>, the selection, the user, and the platform settings below.
+# Replace:  <host>, the selection, the user, the platform settings below, and
+#           the stateVersion, which is the release you first install.
+# Every host selects `core` and `network`, the floor it carries; a copy keeps
+# both.
 #           `./hardware.nix` is a placeholder — generate your own with
 #           `nixos-generate-config`; the hardware in this tree's hosts is
 #           specific to those machines.
@@ -21,6 +24,8 @@
   # owns the capability, so a host says what it runs in one place and needs no
   # separate `habit.dendrites.*` override to do it.
   habit.aggregation = {
+    core.enable = true;
+    network.enable = true;
     base.enable = true;
 
     workspace = {
@@ -72,4 +77,7 @@
   imports = [ ./hardware.nix ];
   networking.hostName = "examplehost";
   environment.systemPackages = [ pkgs.filezilla ];
+
+  # Pins stateful-data formats from the first install; do not change it.
+  system.stateVersion = "25.11";
 }
