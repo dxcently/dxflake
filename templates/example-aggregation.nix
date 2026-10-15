@@ -59,11 +59,10 @@
     # habit's suite proves the separation
     # against a member that throws on import.
 
-    # ── What the group INSTALLS ─────────────────────────────────────────────
-    # Not membership. A package list answers no question a host could answer
-    # differently, so it gets no catalogue line and is not a dendrite — it goes
-    # here, in the group's own half. Long lists earn a ./packages.nix beside
-    # this file (`imports = [ ./packages.nix ];`); short ones stay inline.
+    # ── What the group INSTALLS beside its members ─────────────────────────
+    # A package that needs no configuration is a line in
+    # modules/dendrites/packages.nix and a member above, not code in this file.
+    # What belongs here is a preference or an install the members cannot say.
     #
     # `mkAfter` because system.path resolves file collisions first-wins: order
     # the group's convenience list last and it can never shadow a capability a

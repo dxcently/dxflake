@@ -63,8 +63,9 @@ calls them. Keep imports, fetches and package computation inside those functions
 cold.
 
 - **Catalogue** — `modules/default.nix`. Not a module: plain data, one
-  `name = ./path;` line per capability plus `aggregations = import ./aggregations;`.
-  It generates `habit.dendrites.<name>.enable` and `.provider`, so an unknown
+  `name = ./path;` line per capability, `aggregations = import ./aggregations;`,
+  and one generated entry per line of `modules/dendrites/packages.nix`. It
+  generates `habit.dendrites.<name>.enable` and `.provider`, so an unknown
   name fails as an option that does not exist, naming the file that asked for
   it. A name with no catalogue line is unreachable, which is what shelving means
   now (the `_` filename prefix is the older convention and still marks parked
@@ -120,13 +121,12 @@ cold.
   into one selection, and two that name different providers for it collide with
   both values in the error. Import order never picks a winner.
 
-  What a group **installs** is not membership. A package list answers no
-  question a host could answer differently, so it gets no catalogue line and is
-  not a dendrite: the group's own half `module` switches its `dx.packages`
-  lines on by name, and the lines themselves live once in
-  `modules/packages.nix`. Those lists are `lib.mkAfter`,
-  so they order last into `system.path`, where collisions resolve first-wins — a
-  group's convenience list never shadows a selected capability.
+  What a group **installs** is membership too. A package is one line of
+  `modules/dendrites/packages.nix`, and each line is a catalogue entry named by
+  its path's last segment, so a group names it in `members` like a dendrite.
+  Package entries install at `mkOrder 1400` in `system.path`, after a dendrite's
+  own packages (default order), so a dendrite wins a collision with a package.
+  Collisions resolve first-wins.
 
   Membership is **static**: the list does not vary with the provider that was
   chosen. So a member only one implementation can run — a compositor plugin, a
@@ -159,8 +159,9 @@ cold.
   naming the record — a broken record cannot hide on the machines it would not
   have applied to.
 - **Core and network** — the two aggregations every host selects.
-  `modules/aggregations/core/` is boot, networking, packages, security, sops and
-  system; `modules/aggregations/network/` is avahi, openssh and tailscale. Each
+  `modules/aggregations/core/` is boot, networking, security, sops and system,
+  plus the package floor, `python` and `fastfetch`; `modules/aggregations/network/`
+  is avahi, openssh and tailscale. Each
   host also selects the `postgresql` dendrite by name and sets its own
   `system.stateVersion`. A host drops a member with
   `habit.dendrites.<name>.enable = false`, with these caveats: `boot` is the
@@ -179,9 +180,8 @@ cold.
   keeps any of those four fails evaluation with "The option `sops' does not exist". `postgresql`
   is not the only thing that starts postgres: on sakaki immich does, so
   deselecting the dendrite there only restores nixpkgs' authentication defaults.
-  `modules/packages.nix` is not a member: it is the contract behind every
-  `dx.packages.<name>.enable` switch, and it is imported on every host through
-  `extraModules`.
+  The package floor is core's members, one catalogue entry each, generated from
+  `modules/dendrites/packages.nix`: a plain list of names, not a module.
 - **Halves** — a dendrite's two sides: its system half, the module itself
   (services, packages, hardware), and its home half, `habit.home` (one user's
   Home Manager module). Selecting it for the system applies the system half and
@@ -206,8 +206,10 @@ to destination.
   one provider can run it. Its own group beside the provider-bearing one
   (`modules/aggregations/compositor/` beside `shell/`), so choosing another
   provider leaves it unselected and unevaluated.
-- **A package the group just installs** — that group's `module` switches a
-  `dx.packages` line on. Never a catalogue line: there is nothing to select.
+- **A package** — one line in `modules/dendrites/packages.nix`, then a group or
+  host selects it by name. A package that needs configuration is a dendrite of
+  its own (`python.nix`), and a package a dendrite owns is installed by that
+  dendrite's system half, with no line in the list.
 - **A rice** — structurally a provider, so `example-provider.nix` is still the
   template, but it lives at `song/songbook/<name>/rice.nix` beside its `livery.json`,
   `design/intent.md` and source assets, and `song/songbook/default.nix` is its

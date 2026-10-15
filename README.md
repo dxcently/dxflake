@@ -42,11 +42,10 @@ dxflake/
 │   └── khoa.nix              # ONE shared account — a module + `habit.home`
 ├── modules/
 │   ├── default.nix           # THE REGISTRY. the catalogue, plus `import ./aggregations`
-│   ├── packages.nix          # the dx.packages switch contract. no catalogue line; flake.nix imports it
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
 │   │   └── base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,
-│   │                                                  #   naming what it installs by switch
+│   │                                                  #   naming its members
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability: a plain module, plus `habit.home`
@@ -55,7 +54,8 @@ dxflake/
 │       ├── openai.nix                         #   a plain module
 │       ├── compositor/ gpu/                   #   a provider registry each; compositor/hyprland/
 │       │                                      #     holds the Hyprland provider and its dendrites
-│       ├── boot.nix · networking.nix · packages.nix …  #   plain modules; the `core` aggregation selects them
+│       ├── packages.nix      #   a plain list of package names: one catalogue entry each
+│       ├── boot.nix · networking.nix …  #   plain modules; the `core` aggregation selects them
 │       ├── openssh.nix · avahi.nix · tailscale.nix     #   plain modules; the `network` aggregation selects them
 │       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
@@ -340,7 +340,7 @@ lock             # hyprlock
 
 Aoide runtime is wired from the pinned Aoide input through its exports:
 `flake.nix` composes every host with `inputs.habit.lib.composition`, adds
-`inputs.aoide.nixosModules.nucleus` and `./modules/packages.nix` in `extraModules`, and
+`inputs.aoide.nixosModules.nucleus` in `extraModules`, and
 `inputs.aoide.overlays.default` to
 the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
@@ -453,9 +453,7 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
   system = {
     providers.compositor = null;     # no default: every host that takes this must choose
-    module = { lib, ... }: {         # what this aggregation installs; not a dendrite
-      dx.packages = lib.genAttrs [ "dunst" "wl-clipboard" "satty" ] (_: { enable = true; });
-    };
+    members = [ "awww" "wl-clipboard" ];   # packages are members too: one catalogue entry each
   };
 
   home.members = [ "rofi" "satty" "waybar" "wlogout" ];
@@ -464,16 +462,16 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
 Discovery finds it by directory name; nothing imports it until a host or a user selects it. Members are catalogue names, so they stay where they live under `modules/dendrites/` rather than moving under the group. Each `providers` key becomes a `<name>.provider` option on this aggregation, in that scope — `null` demands a choice, a string is a default a host may override. A half that does not apply is left out; `gaming` has no `home` at all.
 
-What an aggregation **installs** goes in its own half's `module`, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. The lines themselves live once, in `modules/packages.nix` — one flat list of packages that need no configuration, where every line declares a `dx.packages.<name>.enable` switch of its own, all off. `desktop`, `shell` and `gaming` each switch their own membership on by name, and a host does the same for anything it alone wants. Nothing outside that file writes `environment.systemPackages` for a package that is only a package. `core`'s base list stays a plain list in `modules/dendrites/packages.nix`: a host takes it whole or deselects `packages`, and does not answer it line by line. A dendrite keeps its own package lines, because those must leave with the capability that brought them.
+What an aggregation **installs** is membership too. A package that needs no configuration is one line of `modules/dendrites/packages.nix`, a plain list of `pkgs` attribute paths. `modules/default.nix` turns each line into a catalogue entry named by the path's last segment (`kdePackages.filelight` is `filelight`), so a package is selected like any dendrite: `desktop`, `shell` and `gaming` name theirs in `system.members`, and a host selects anything it alone wants with `habit.dendrites.<name>.enable = true`. A package with a dendrite of its own (`bash`, `kitty`, `satty`) is installed by that dendrite's system half and has no line in the list. A package that needs configuration, such as the Jupyter environment, is a dendrite too (`python.nix`).
 
-A host that wants one of those packages writes one line, and that is the only place a host says anything about packages at all:
+A host that wants one of those packages writes one line:
 
 ```nix
-dx.packages.scrcpy.enable = true;                # one more than its aggregations give it
-dx.packages.chromium.enable = lib.mkForce false; # drop one an aggregation switched on
+habit.dendrites.scrcpy.enable = true;                # one more than its aggregations select
+habit.dendrites.chromium.enable = lib.mkForce false; # drop one an aggregation selected
 ```
 
-A package the flat list does not carry yet gets its own `pkgs.<name>` line there first; the switch appears by itself. `mkEnableOption` merges as bool-or, so `mkForce` is the honest way to say no to something a group already said yes to. The switch is named by the package's own `lib.getName`, not by the attribute it is written with — `pkgs.mpv` is `dx.packages.mpv-with-scripts`.
+A package the list does not carry yet gets its line there first; the catalogue entry appears by itself. `mkForce` is how a host says no to something a group already selected.
 
 **Two kinds of module, by what they need from a host:**
 - **Selected = active** — no `options.dx.<name>.enable` at all; the module applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)

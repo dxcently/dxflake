@@ -96,20 +96,20 @@ that invokes them: `hyprpolkitagent` → `hyprland-autostart` (it runs
 `hyprland-keybinds` (its binds shell out to both). Both dendrites are the
 `compositor` aggregation's, so a host on another compositor installs neither.
 
-**A package nothing in particular calls is the aggregation's own install**, and
-an install is not a capability — it answers no question a host could answer
-differently, so it gets no catalogue line. The Wayland tool belt (dunst, awww,
-wl-clipboard, satty, cliphist, brightnessctl, ydotool, yad, zenity) is carried
-by the flat list in `modules/packages.nix`, and the `shell`
-aggregation switches those nine on by name in its own `default.nix`. There is
-no `hyprland-packages` dendrite any more — nor `desktop-packages` or
-`gaming-packages`, which moved the same way. Nothing in the tool belt is
-Hyprland-specific, so it stays with the compositor-agnostic half.
+**A package nothing in particular calls is an ordinary package entry.** It is one
+line of `modules/dendrites/packages.nix`, and the aggregation that wants it names
+it in `members`. The Wayland tool belt (awww, wl-clipboard, cliphist,
+brightnessctl, ydotool, yad, zenity) is selected by the `shell` aggregation.
+`satty` is the satty dendrite's own, selected by shell's home members, and
+`dunst` is installed by shell's own `module`, because the Aoide `dunst` lane owns
+that name. There is no `hyprland-packages` dendrite any more, nor
+`desktop-packages` or `gaming-packages`: `desktop` and `gaming` name their
+packages the same way. Nothing in the tool belt is Hyprland-specific, so it stays
+with the compositor-agnostic half.
 
-Those lists are `lib.mkAfter`. `system.path` resolves file collisions
-first-wins, and without a pin an aggregation's list sits wherever module order
-happens to put it; ordering it last means a convenience package can never
-shadow a capability a host actually selected.
+Package entries install at `mkOrder 1400` in `system.path`, after a dendrite's
+own packages, which sit at the default order. Where a dendrite and a package
+provide the same file, the dendrite wins.
 
 Package *builds* did not move: `pkgs/` is untouched, and `pkgs.hyprglass`
 still comes from the Aoide input's overlay.
