@@ -257,6 +257,7 @@ PanelWindow {
     readonly property real listWant: (root.view === "keys" ? 6 : 24) + root.listCols[0] + 4 + root.listCols[1] + 22
     readonly property string hdrText: {
         if (root.view === "clip" && root.clipboard.loading) return "Reading clipboard…"
+        if (root.view === "clip" && root.clipErr !== "") return root.clipErr
         if (root.view === "songs" && !Rice.ready(root.answer)) return ""
         if (root.view === "songs" && root.pending) return "…"
         var n = root.items.length
@@ -486,7 +487,9 @@ PanelWindow {
         ["Page Up / Page Down", "Move one page"],
         ["Home / End", "First / last item"],
         ["Left / Right (picture)", "Previous / next picture clipping"],
-        ["Return (picture)", "Copy the picture"]
+        ["Return (picture)", "Copy the picture"],
+        ["Delete / Ctrl + Backspace", "Delete the selected clipping"],
+        ["Ctrl + Backspace", "In the picture viewer: delete it, show the next"]
     ].map(function (k) { return { kind: "bind", group: "Finder", keys: k[0], label: k[1] } })
     function capWord(k) {
         var s = "" + k
@@ -573,12 +576,14 @@ PanelWindow {
         root.aboutOpen = false
         root.keyFocus = "grid"
         root.viewIt = null
+        root.clipErr = ""
         topGrid.currentIndex = 0
         topGrid.positionViewAtBeginning()
         root.clipboard.refresh()
     }
     function openFolder(key) {
         root.viewIt = null
+        root.clipErr = ""
         findField.text = ""
         root.sub = ""
         root.view = key
@@ -675,6 +680,10 @@ PanelWindow {
             case Qt.Key_V: if (root.canPaste) root.pasteText(); break
             case Qt.Key_Y: root.putAway(); break
             case Qt.Key_Up: if (root.canUp) root.goUp(); break
+            case Qt.Key_Backspace:
+                if (findField.text !== "" && !root.viewIt) { known = false; break }
+                if (root.canTrashClip && !e.isAutoRepeat) root.trashClip()
+                break
             case Qt.Key_Slash:
                 if (root.menuOpen === "Position") { root.menuOpen = ""; root.keyFocus = root.band[root.bandAt] !== undefined ? "band" : "grid" }
                 (root.aboutOpen ? aboutWin : root.viewIt ? viewWin : root.frontOpen ? frontWin : hdWin).zoom()
@@ -731,6 +740,12 @@ PanelWindow {
         case Qt.Key_Backspace:
             if (findField.text === "") {
                 if (!e.isAutoRepeat) root.goUp()
+                e.accepted = true
+            }
+            break
+        case Qt.Key_Delete:
+            if (findField.text === "" && root.canTrashClip) {
+                if (!e.isAutoRepeat) root.trashClip()
                 e.accepted = true
             }
             break
@@ -983,6 +998,8 @@ PanelWindow {
             + ". Are you sure you want to permanently remove " + (root.trashItems.length === 1 ? "this item" : "these items") + "?"
         if (root.alertKind === "reboot") return "Are you sure you want to restart your computer now?"
         if (root.alertKind === "shutdown") return "Are you sure you want to shut down your computer now?"
+        if (root.alertKind === "clip") return "Clear the clipboard history? All " + root.fmt(root.clipCount) + (root.clipCount === 1 ? " clipping" : " clippings")
+            + " will be removed. This can\u2019t be undone."
         return "Are you sure you want to log out now?"
     }
 
@@ -1061,6 +1078,7 @@ PanelWindow {
         var k = root.alertKind
         root.alertOpen = false
         if (k === "empty") { root.runTrashOp(Trash.emptyArgv); findField.forceActiveFocus() }
+        else if (k === "clip") { if (root.canClearClip) root.clipboard.clear(); findField.forceActiveFocus() }
         else root.power(k)
     }
     function alertCancel() {
@@ -1189,7 +1207,11 @@ PanelWindow {
         for (var i = 0; root.viewIt && i < root.viewPics.length; i++) if (root.viewPics[i].clip.id === root.viewIt.clip.id) return i
         return -1
     }
-    readonly property var viewState: root.viewIt ? root.clipboard.imageStates[root.viewIt.clip.id] : undefined
+    // a copy, so a decode finishing (the same state object, mutated) still reaches the viewer
+    readonly property var viewState: {
+        var st = root.viewIt ? root.clipboard.imageStates[root.viewIt.clip.id] : undefined
+        return st ? { state: st.state, source: st.source } : undefined
+    }
     function openViewer(it) {
         root.viewIt = it
         root.keyFocus = "grid"
@@ -1202,6 +1224,46 @@ PanelWindow {
     }
     function viewerCopy() {
         if (root.viewIt && root.clipboard.copyById(root.viewIt.clip.id)) root.hide()
+    }
+
+    // ── removing clippings: lyra clipboard delete/clear through the clipboard extra, which reloads the list when lyra exits ──
+    readonly property bool canEditClip: typeof root.clipboard.deleteById === "function"
+    readonly property int clipCount: (root.clipboard.parsedEntries || []).length
+    readonly property bool canTrashClip: root.canEditClip && !root.aboutOpen && root.view === "clip" && !root.clipboard.loading
+        && (!!root.viewIt || (!!root.selItem && root.selItem.kind === "clip"))
+    readonly property bool canClearClip: root.canEditClip && !root.clipboard.loading && root.clipCount > 0
+    property string clipErr: ""
+    property int clipAfter: -1
+    property int viewAfter: -1
+    Connections {
+        target: root.clipboard
+        ignoreUnknownSignals: true
+        function onActionErrorChanged() { root.clipErr = root.clipboard.actionError }
+        function onLoadingChanged() { if (!root.clipboard.loading) Qt.callLater(root.clipLanded) }
+    }
+    // the selection lands on the deleted clipping's neighbour; the viewer on the next picture, or closes when none is left
+    function trashClip() {
+        root.menuOpen = ""
+        if (!root.canTrashClip) return
+        var it = root.viewIt || root.selItem
+        root.viewAfter = root.viewIt ? root.viewAt : -1
+        root.clipAfter = root.grid.currentIndex
+        root.clipboard.deleteById(it.clip.id)
+    }
+    function clipLanded() {
+        var v = root.viewAfter, c = root.clipAfter
+        root.viewAfter = -1
+        root.clipAfter = -1
+        if (root.view !== "clip") return
+        if (v >= 0 && root.viewPics.length > 0) { root.openViewer(root.viewPics[Math.min(v, root.viewPics.length - 1)]); return }
+        if (v >= 0) root.viewIt = null
+        if (c >= 0 && root.grid.count > 0) root.jump(Math.min(c, root.grid.count - 1))
+    }
+    function askClearClip() {
+        if (!root.canClearClip) return
+        root.menuOpen = ""
+        root.alertKind = "clip"
+        root.alertOpen = true
     }
 
     // a Platinum menu-bar title; its drop-down is a Drop at window level (below). A press opens it, a drag
@@ -2503,6 +2565,7 @@ PanelWindow {
                         x: barRow.x + fileTitle.x; y: 18; z: 41
                         rows: [
                             { label: "Open", key: "⌘O", live: root.canOpen, act: root.openSel },
+                            { label: "Delete Clipping", key: "⌘⌫", live: root.canTrashClip, act: root.trashClip },
                             { label: "Close Window", key: "⌘W", live: root.frontOpen || root.aboutOpen, act: root.closeWindow },
                             { sep: true },
                             { label: "Find…", key: "⌘F", live: !root.aboutOpen, act: root.focusFind },
@@ -2540,6 +2603,7 @@ PanelWindow {
                         x: barRow.x + specialTitle.x; y: 18; z: 41
                         rows: [
                             { label: "Empty Trash…", live: root.canEmpty, act: root.askEmpty },
+                            { label: "Clear Clipboard History…", live: root.canClearClip, act: root.askClearClip },
                             { sep: true },
                             { label: "Sleep", live: true, act: root.sleepNow },
                             { label: "Restart…", live: true, act: function () { root.askPower("reboot") } },
@@ -2702,7 +2766,7 @@ PanelWindow {
                                 lineHeightMode: Text.FixedHeight
                             }
                             PBtn { x: 122; y: 88; label: "Cancel"; dflt: true; onChosen: root.alertCancel() }
-                            PBtn { x: 196; y: 88; label: "OK"; onChosen: root.alertOk() }
+                            PBtn { x: 196; y: 88; label: root.alertKind === "clip" ? "Clear" : "OK"; onChosen: root.alertOk() }
                         }
                     }
                 }
