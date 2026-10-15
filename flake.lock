@@ -1270,11 +1270,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792059041,
-        "narHash": "sha256-CWk3Rta19k1SIEKhFRVKIGydqnnoIVKZ4+k3NEW0nd0=",
+        "lastModified": 1792084771,
+        "narHash": "sha256-1Ab307zfe691+owECKEx4A5jM88GViXAoBCOTXOCiHE=",
         "ref": "refs/heads/main",
-        "rev": "fe7fcc88a7749b86b796a55322af36fc55b8ad06",
-        "revCount": 47,
+        "rev": "8cd6caff2382fa92ff254ba242065c3da25cfd71",
+        "revCount": 54,
         "type": "git",
         "url": "file:///home/khoa/snowglobe"
       },
