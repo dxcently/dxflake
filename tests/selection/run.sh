@@ -19,9 +19,9 @@ habit="(builtins.getFlake \"github:dxcently/habit/$habitRev\")"
 
 # case                              expect  substring the error must contain
 cases=$(cat <<'EOF'
-realRegistryResolvesSakaki          ok      "aoide,autologin,caddy,claude-code,cloudflared,eidolon,immich,jellyfin,kimi-cli,melete,mneme,nas-mounts,slskd,stylix,syncthing,transmission"
+realRegistryResolvesSakaki          ok      "aoide,autologin,avahi,boot,caddy,claude-code,cloudflared,eidolon,immich,jellyfin,kimi-cli,melete,mneme,nas-mounts,networking,openssh,packages,postgresql,security,slskd,stylix,syncthing,system,tailscale,transmission"
 realRegistryModulesImport             ok      true
-realRegistryInventory               ok      "base"
+realRegistryInventory               ok      "base,core,network"
 EOF
 )
 
