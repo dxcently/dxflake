@@ -50,16 +50,15 @@
           # global-shortcuts-v1 from inside the running Quickshell process, so
           # `global, aoide:<name>` is the ONLY way to reach them (the old
           # `aoide shell launcher`/`dock` commands are unimplemented stubs).
-          # Without these three binds the shell would draw a bar and nothing the
+          # Without these binds the shell would draw a bar and nothing the
           # keyboard could summon.
           #
-          # SUPER+SPACE is the swap: it is Aoide's own launcher key (see the
-          # Aoide hyprland dendrite) and it is rofi's here, so the shell takes
-          # it over and hands it straight back when switched off. SUPER+G and
-          # SUPER+W are additive — both are unbound in this dendrite otherwise.
-          # SUPER+C is NOT swapped to `aoide:clipboard`: that chapter is fed by
-          # the cliphist provider in Aoide's clipboard lane, but dxflake's rofi picker below
-          # already works and stays the clipboard seam on these hosts.
+          # SUPER+SPACE, SUPER+C and SUPER+Tab are the swaps: each is rofi's
+          # here, so the shell takes it over and hands it straight back when
+          # switched off.
+          # The riced clipboard reads cliphist's default database, which the
+          # autostart's `wl-paste --watch cliphist store` fills. SUPER+G, SUPER+W
+          # and SUPER+SHIFT+Escape are additive — unbound here otherwise.
           bind = [
             "SUPER, RETURN, exec, kitty"
           ]
@@ -69,16 +68,21 @@
                 "SUPER, SPACE, global, aoide:launcher"
                 "SUPER, G, global, aoide:dock"
                 "SUPER, W, global, aoide:wallpaper"
+                "SUPER, C, global, aoide:clipboard"
+                "SUPER SHIFT, Escape, global, aoide:powermenu"
+                "SUPER, Tab, global, aoide:switcher"
               ]
             else
-              [ "SUPER, SPACE, exec, rofi -show drun" ]
+              [
+                "SUPER, SPACE, exec, rofi -show drun"
+                "SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+                "SUPER, Tab, exec, rofi -show"
+              ]
           )
           ++ [
             "SUPER, T, exec, [float] thunar"
-            "SUPER, C, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
             "SUPER, S, exec, pkill hyprpicker; hyprshot -z --raw -m region | satty --filename -"
             "SUPER SHIFT, S, exec, pkill hyprpicker; hyprshot -z --raw -m output | satty --filename -"
-            "SUPER, Tab, exec, rofi -show"
             # The binary is the cheatsheet dendrite's, by NAME; a host that does
             # not select it gets an inert key.
             "SUPER, B, exec, cheatsheet"
