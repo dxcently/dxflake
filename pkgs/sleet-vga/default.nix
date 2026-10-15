@@ -1,9 +1,10 @@
-{ stdenvNoCC }:
+{ lib, stdenvNoCC }:
 
-# Sleet VGA v8.8, the snowglobe pixel face (OFL 1.1, Copyright 2026 dxcently).
-# Built in the snowglobe font workspace; the TTFs here are that build's output.
+# Sleet VGA, the snowglobe pixel face (OFL 1.1, Copyright 2026 dxcently).
+# The files here come from ~/sleet-fonts/sleet-vga via its sync.sh; VERSION names the build.
 stdenvNoCC.mkDerivation {
-  name = "sleet-vga-8.8";
+  pname = "sleet-vga";
+  version = lib.fileContents ./VERSION;
   src = ./.;
 
   installPhase = ''
