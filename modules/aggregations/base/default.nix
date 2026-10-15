@@ -1,4 +1,4 @@
-# base — what every host carries beyond the nucleus.
+# base — what every host carries beyond core and network.
 #
 # An aggregation body is DATA: the members it selects in each scope, the
 # provider choices it exposes, and any preference that rides along. It declares

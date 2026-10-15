@@ -8,6 +8,8 @@
   habit.song.declared = "sonata";
 
   habit.aggregation = {
+    core.enable = true;
+    network.enable = true;
     base.enable = true;
     # desktop stays: it carries pipewire, fonts, fcitx5, portals and ly login —
     # none of those collide with Aoide's paint. The shell aggregation is NOT
@@ -47,6 +49,7 @@
     laptop.enable = true;
     ros.enable = true;
     syncthing.enable = true;
+    postgresql.enable = true;
   };
 
   habit.users.khoa = {
@@ -193,7 +196,7 @@
   };
   # No web service runs here (no dx.caddy),
   # so this tunnel carries ssh only: sshHostnames routes straight to chiyo's
-  # own sshd (already on by default, modules/nucleus/openssh.nix), with no
+  # own sshd (already on by default, modules/dendrites/openssh.nix), with no
   # Caddy in the path. See modules/dendrites/cloudflared.nix for the
   # one-time `cloudflared tunnel create` + sops steps this depends on.
   dx.cloudflared = {
@@ -205,5 +208,8 @@
     initrd.kernelModules = [ "nvme" ];
     resumeDevice = "/dev/nvme0n1p3";
   };
+
+  # Pins stateful-data formats from the first install; do not change it.
+  system.stateVersion = "23.11";
 
 }

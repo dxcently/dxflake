@@ -9,8 +9,8 @@
 # `sshHostnames` entry instead lands on the box's own sshd (ssh://localhost:22)
 # with no Caddy involved, for hosts that want tunnel-borne ssh reachability
 # and nothing else (a laptop with no web service to expose). Such a login
-# reaches sshd from loopback, and the nucleus makes every loopback login
-# key-only (modules/nucleus/openssh.nix), so the hostname never offers a
+# reaches sshd from loopback, and the openssh dendrite makes every loopback
+# login key-only (modules/dendrites/openssh.nix), so the hostname never offers a
 # password prompt to the internet.
 #
 # One tunnel per host: tunnelId is a per-machine identity, not shared, so two

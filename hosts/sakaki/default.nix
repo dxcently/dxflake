@@ -2,6 +2,8 @@
 # paints, so no desktop or shell aggregation and no graphical dendrite.
 { pkgs, ... }:
 {
+  habit.aggregation.core.enable = true;
+  habit.aggregation.network.enable = true;
   habit.aggregation.base.enable = true;
 
   habit.dendrites = {
@@ -17,6 +19,7 @@
     melete.enable = true;
     mneme.enable = true;
     nas-mounts.enable = true;
+    postgresql.enable = true;
     slskd.enable = true;
     syncthing.enable = true;
     transmission.enable = true;
@@ -123,7 +126,7 @@
     ];
     # ssh to this box from anywhere, for a node that leaves the LAN (yomi-strix
     # rides it as its Aoide `via`). Straight to sshd, no Caddy; key-only by
-    # the nucleus rule for loopback-borne logins (modules/nucleus/openssh.nix).
+    # the openssh rule for loopback-borne logins (modules/dendrites/openssh.nix).
     sshHostnames = [ "sakaki-ssh.necoconeco.net" ];
   };
   dx.caddy = {
@@ -374,5 +377,8 @@
   # socket-only door, TOTP-gated. The operator joins the access group;
   # enrollment is a separate, User-initiated act — never part of the switch.
   aoide.secrets.members = [ "khoa" ];
+
+  # Pins stateful-data formats from the first install; do not change it.
+  system.stateVersion = "23.11";
 
 }

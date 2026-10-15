@@ -28,8 +28,6 @@
       ];
     };
   };
-  # Configuration that used to live beside the floor's package list in
-  # modules/nucleus/packages.nix. Unconditional, like everything else here.
   programs = {
     neovim = {
       enable = true;
@@ -62,7 +60,4 @@
       LC_TIME = "en_US.UTF-8";
     };
   };
-
-  #Don't ever change this lol
-  system.stateVersion = "23.11";
 }

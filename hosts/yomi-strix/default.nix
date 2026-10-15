@@ -3,8 +3,10 @@
 { pkgs, ... }:
 {
   habit.aggregation = {
+    core.enable = true;
+    network.enable = true;
     base.enable = true;
-    # Dev tooling comes free from base and the nucleus (git, neovim, …);
+    # Dev tooling comes free from base and core (git, neovim, …);
     # desktop and shell bring the GUI.
     desktop.enable = true;
     shell = {
@@ -27,6 +29,7 @@
     # Codex + the ChatGPT desktop, dxflake's own dendrite rather than
     # `aoide.openai.enable` — this host sets no upstream Aoide flag at all now.
     openai.enable = true;
+    postgresql.enable = true;
   };
 
   habit.users.khoa = {
@@ -74,5 +77,8 @@
   # (`sakaki-ssh.necoconeco.net`) via a ProxyCommand in ~/.ssh/config, which
   # dxflake does not manage (modules/dendrites/cloudflared.nix, step 7).
   dx.packages.cloudflared.enable = true;
+
+  # Pins stateful-data formats from the first install; do not change it.
+  system.stateVersion = "23.11";
 
 }

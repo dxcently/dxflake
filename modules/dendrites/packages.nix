@@ -1,15 +1,18 @@
-# modules/nucleus/packages.nix — the floor: packages every host carries,
-# unconditionally.
+# modules/dendrites/packages.nix — the packages every host carries, a member of
+# the `core` aggregation.
 #
-# Packages and nothing else. The `programs` and `nixpkgs` settings that used to
-# sit beside this list live in modules/nucleus/system.nix with the rest of the
-# unconditional system configuration.
+# Packages and nothing else. The `programs` and `nixpkgs` settings sit beside
+# this list in modules/dendrites/system.nix.
 #
-# Not a dendrite list and not switched: an unbootable shell prompt or a missing
-# archive tool is not something a host should be able to answer differently. What
-# IS switchable lives in modules/packages.nix.
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [
+# Not switched per package: an unbootable shell prompt or a missing archive tool
+# is not something a host should answer line by line. What IS switchable lives
+# in modules/packages.nix.
+#
+# `mkBefore` keeps this list ahead of the other entries in system.path, so where
+# a file collides (first wins) this list answers: the Jupyter python3 env, not
+# ros-env's.
+{ lib, pkgs, ... }: {
+  environment.systemPackages = lib.mkBefore (with pkgs; [
     # ── Shell & Terminal ──
     bash # GNU Bourne Again shell
     starship # minimal, fast, customizable shell prompt
@@ -62,5 +65,5 @@
     nh # Nix helper for rebuilds and cleanup
     ngrok # expose local servers via secure tunnels
     nodejs # cross-platform JavaScript runtime
-  ];
+  ]);
 }

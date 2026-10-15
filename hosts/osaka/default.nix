@@ -22,6 +22,8 @@
   ];
 
   habit.aggregation = {
+    core.enable = true;
+    network.enable = true;
     base.enable = true;
     desktop.enable = true;
     gaming.enable = true;
@@ -70,6 +72,7 @@
     syncthing.enable = true;
     snowglobe.enable = true;
     virtualisation.enable = true;
+    postgresql.enable = true;
   };
 
   habit.users.khoa = {
@@ -246,7 +249,7 @@
   dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
   # Two upstream package fixes for this nixpkgs pin. Osaka is
   # the only consumer of either package, so the overlay lives here rather
-  # than the nucleus (moved from modules/nucleus/packages.nix).
+  # than in core.
   #
   # soundconverter 4.0.6 breaks under Python 3.14 (tests/test.py does
   # args[1:] on a None argv); skip the install-check.
@@ -280,5 +283,8 @@
     initrd.kernelModules = [ "nvme" ];
     kernelParams = [ "mitigations=off" ];
   };
+
+  # Pins stateful-data formats from the first install; do not change it.
+  system.stateVersion = "23.11";
 
 }
