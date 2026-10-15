@@ -249,6 +249,39 @@ Item {
         if (root.dock && typeof root.dock.hide === "function") root.dock.hide()
         var menu = riceSlot._item
         if (menu && menu.open) menu.open = false
+        root.claimFlyouts()
+    }
+    property string flyoutShown: ""
+    readonly property bool catching: root.flyoutShown !== "" || (!!riceSlot._item && !!riceSlot._item.open)
+    function dropFlyouts() {
+        root.flyout = ""
+        var menu = riceSlot._item
+        if (menu && menu.open) menu.open = false
+    }
+    function claimFlyouts() {
+        var other = Kit.hub.flyoutBar
+        if (other && other !== root) { try { other.dropFlyouts() } catch (e) {} }
+        Kit.hub.flyoutBar = root
+    }
+    Variants {
+        model: Quickshell.screens
+        PanelWindow {
+            required property var modelData
+            screen: modelData
+            visible: root.catching
+            anchors { top: true; bottom: true; left: true; right: true }
+            exclusionMode: ExclusionMode.Normal
+            exclusiveZone: 0
+            color: "transparent"
+            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.namespace: "aoide-catch"
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.AllButtons
+                onClicked: root.dropFlyouts()
+            }
+        }
     }
     readonly property bool flyoutOpen: root.flyout !== "" || (!!root.dock && !!root.dock.shown && root.dock.targetScreen === win.screen)
     onFlyoutOpenChanged: {
@@ -264,7 +297,7 @@ Item {
     Connections {
         target: riceSlot._item
         ignoreUnknownSignals: true
-        function onOpenChanged() { var menu = riceSlot._item; if (menu && menu.open) root.flyout = "" }
+        function onOpenChanged() { var menu = riceSlot._item; if (menu && menu.open) { root.flyout = ""; root.claimFlyouts() } }
     }
 
     readonly property var sink: Pipewire.ready ? Pipewire.defaultAudioSink : null
@@ -745,13 +778,14 @@ Item {
                 GradientStop { position: 1; color: Kit.white(0.06) }
             }
         }
-        Svg { d: dr.tab; stroke: Kit.white(0.20) }
+        Glow { visible: dr.open; x: 4; width: 32; height: dr.height; rx: width / 2; ry: 10 }
         Svg {
             visible: dr.open
-            d: "M0.8 5 a4.2 4.2 0 0 1 4.2 -4.2 H35 a4.2 4.2 0 0 1 4.2 4.2"
-            stroke: Kit.cyan
-            sw: 2
+            x: -1; y: -1
+            d: "M0.5 " + (dr.height + 1) + " V4.5 a4 4 0 0 1 4 -4 H37.5 a4 4 0 0 1 4 4 V" + (dr.height + 1)
+            stroke: Kit.dark(0.5)
         }
+        Svg { d: dr.tab; stroke: Kit.white(dr.open ? 0.45 : 0.20) }
         ScreenMap { id: drMap; visible: dr.elsewhere; mon: dr.m.mon; x: dr.low ? Math.round((40 - width) / 2) : 1; y: dr.low ? dr.height - 1 - height : 3 }
         Icon {
             x: dr.elsewhere ? (dr.low ? 3 : 22) : (dr.m.wins === 1 ? 12 : 3)
@@ -878,6 +912,7 @@ Item {
         property bool lit: false
         property real textX: 9
         signal activated()
+        signal context()
         width: parent ? parent.width : 132
         height: rh
         Rectangle {
@@ -909,8 +944,9 @@ Item {
             id: prMa
             anchors.fill: parent
             hoverEnabled: pr.enabled
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
             cursorShape: pr.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
-            onClicked: pr.activated()
+            onClicked: function (mouse) { if (mouse.button === Qt.RightButton) pr.context(); else pr.activated() }
         }
     }
 
@@ -920,17 +956,16 @@ Item {
         property string label: Power.find(pw.action) ? Power.find(pw.action).name + (pw.more ? "\u2026" : "") : ""
         property string pic: pw.action
         property bool more: false
-        readonly property string hint: Power.find(pw.action) ? Power.find(pw.action).hint : ""
         signal activated()
-        width: parent ? parent.width : 298
-        height: 40
+        width: parent ? parent.width : 218
+        height: 30
         Rectangle {
             anchors.fill: parent
             radius: 2
             color: pwMa.containsMouse ? Kit.accent(0.10) : "transparent"
         }
         Icon {
-            x: 9; y: 10; width: 20; height: 20
+            x: 9; y: 5; width: 20; height: 20
             sourceSize: Qt.size(20, 20)
             opacity: pw.enabled ? 1 : 0.4
             src: root.iconDir + "power/" + pw.pic + ".svg"
@@ -945,15 +980,6 @@ Item {
                 elide: Text.ElideRight
                 color: pw.enabled ? Kit.ink : Kit.dark(0.40)
                 font: Kit.bodyFont(12)
-                textFormat: Text.PlainText
-            }
-            Text {
-                visible: pw.hint !== ""
-                width: parent.width
-                text: pw.hint
-                elide: Text.ElideRight
-                color: Kit.dark(0.72)
-                font: Kit.bodyFont(11)
                 textFormat: Text.PlainText
             }
         }
@@ -1003,6 +1029,31 @@ Item {
         border.color: Kit.dark(0.55)
     }
 
+    component PlateButton: Rectangle {
+        id: pb
+        property string label: ""
+        signal activated()
+        height: 26
+        radius: 2
+        color: "#ffffff"
+        border.width: 1
+        border.color: pbMa.containsMouse ? Kit.accent(1) : Kit.dark(0.55)
+        Text {
+            anchors.centerIn: parent
+            text: pb.label
+            color: Kit.ink
+            font: Kit.bodyFont(12)
+            textFormat: Text.PlainText
+        }
+        MouseArea {
+            id: pbMa
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: pb.activated()
+        }
+    }
+
     component Flyout: PopupWindow {
         id: fy
         required property string name
@@ -1017,13 +1068,16 @@ Item {
         anchor.gravity: fy.flushRight ? Edges.Top | Edges.Left : fy.flushLeft ? Edges.Top | Edges.Right : Edges.Top
         anchor.adjustment: PopupAdjustment.Slide
         grabFocus: false
+        property bool holdEscape: false
         onVisibleChanged: {
+            if (fy.visible) root.flyoutShown = fy.name
+            else if (root.flyoutShown === fy.name) root.flyoutShown = ""
             if (fy.visible || root.flyout !== fy.name) return
             root.flyoutGone = fy.name
             root.flyoutGoneAt = Date.now()
             root.flyout = ""
         }
-        Shortcut { sequence: "Escape"; enabled: fy.visible; onActivated: root.flyout = "" }
+        Shortcut { sequence: "Escape"; enabled: fy.visible && !fy.holdEscape; onActivated: root.flyout = "" }
         HyprlandFocusGrab {
             windows: [fy]
             active: fy.visible && fy.backingWindowVisible
@@ -1248,7 +1302,7 @@ Item {
         readonly property var fit: {
             var rows = win.model.rows, wide = 0, slim = 0, keep = 0
             var tail = 13 + 2 + (46 + 2) * win.model.drawers.length + 28
-            var room = riceSlot.x - 6 - Kit.stripLeft
+            var room = more.x - 6 - Kit.stripLeft
             for (var i = 0; i < rows.length; i++) {
                 var w = rows[i].away || rows[i].wins > 0 ? Kit.buttonWidth : Kit.emptyWidth
                 wide += w + 2
@@ -1742,7 +1796,7 @@ Item {
             id: more
             width: root.trayCount > 0 ? 18 : 0
             visible: root.trayCount > 0
-            anchors.right: agents.left
+            anchors.right: riceSlot.left
             lit: root.flyout === "tray"
             onClicked: { root.trayTip = ""; root.toggleFlyout("tray") }
             Icon { x: 4; y: 15; width: 10; height: 10; src: root.trayDir + "tray-more.svg" }
@@ -2258,13 +2312,16 @@ Item {
             cell: orb
             flushLeft: true
             readonly property int rise: 24
-            implicitWidth: Math.max(sm.x + stagePlate.x + stagePlate.width, sm.x + powerPlate.x + powerPlate.width)
+            implicitWidth: Math.max(sm.x + ctxPlate.x + ctxPlate.width, sm.x + powerPlate.x + powerPlate.width)
             implicitHeight: startFly.rise + 560
+            holdEscape: sm.ctxRow !== null
             mask: Region {
                 width: 440; height: startFly.implicitHeight
                 Region { item: sm.stageOpen ? stagePlate : null }
                 Region { item: sm.powerOpen ? powerPlate : null }
+                Region { item: sm.ctxRow !== null ? ctxPlate : null }
             }
+            Shortcut { sequence: "Escape"; enabled: startFly.visible && sm.ctxRow !== null; onActivated: sm.ctxRow = null }
 
             Rim {
                 y: startFly.rise
@@ -2330,6 +2387,7 @@ Item {
                         sm.allMode = false
                         sm.powerOpen = false
                         sm.stageOpen = false
+                        sm.ctxRow = null
                         Qt.callLater(function () { searchField.forceActiveFocus() })
                     }
                     function launch(e) {
@@ -2365,16 +2423,35 @@ Item {
                     }].concat(Rice.draftRows(sm.riceAnswer), [Rice.newDraft(), Rice.saveDraft(root.livery.riceMode)])
                     function stage() {
                         sm.powerOpen = false
+                        sm.ctxRow = null
                         sm.stageOpen = !sm.stageOpen
                         if (!sm.stageOpen) return
-                        var ask = ++sm.riceAsked
                         sm.riceAnswer = null
+                        sm.riceAsk()
+                    }
+                    function riceAsk() {
+                        var ask = ++sm.riceAsked
                         root.bridge.riceMenu(function (a) { if (ask === sm.riceAsked) sm.riceAnswer = a })
                     }
                     function rice(row) {
                         if (Rice.act(root.bridge, row)) sm.ricePending = true
                         root.flyout = ""
                     }
+                    property var ctxRow: null
+                    property real ctxY: 0
+                    property bool ctxConfirm: false
+                    readonly property var dropRow: sm.ctxRow ? Rice.dropDraft(sm.ctxRow) : null
+                    function context(row, item) {
+                        sm.ctxRow = row
+                        sm.ctxConfirm = false
+                        sm.ctxY = item.mapToItem(sm, 0, 0).y - 5
+                    }
+                    function drop() {
+                        Rice.act(root.bridge, sm.dropRow)
+                        sm.ctxRow = null
+                        dropRefresh.restart()
+                    }
+                    Timer { id: dropRefresh; interval: 1000; onTriggered: if (sm.stageOpen) sm.riceAsk() }
 
                     Plate {
                         x: 8; y: 8; width: 276; height: 504
@@ -2566,11 +2643,14 @@ Item {
                             Repeater {
                                 model: sm.stageRows.concat(sm.draftRows)
                                 PaneRow {
+                                    id: stageItem
                                     required property var modelData
                                     plate: true; rh: modelData.head !== undefined ? 30 : 26; textX: 24
                                     label: modelData.label
                                     enabled: modelData.live
+                                    lit: sm.ctxRow !== null && sm.ctxRow.kind === modelData.kind && sm.ctxRow.name === modelData.name
                                     onActivated: sm.rice(modelData)
+                                    onContext: if (modelData.kind === "enter") sm.context(modelData, stageItem)
                                     Rectangle { visible: modelData.head !== undefined; x: 8; y: 5; width: parent.width - 16; height: 1; color: Kit.dark(0.20) }
                                     Text {
                                         visible: modelData.head !== undefined
@@ -2583,6 +2663,56 @@ Item {
                                     }
                                     Text { x: 9; anchors.verticalCenter: parent.verticalCenter; text: modelData.mark; color: Kit.ink; font: Kit.heavyFont(12); textFormat: Text.PlainText }
                                 }
+                            }
+                        }
+                    }
+
+                    MouseArea {
+                        visible: sm.ctxRow !== null
+                        z: 50
+                        x: -sm.x; y: -sm.y - startFly.rise
+                        width: startFly.width; height: startFly.height
+                        acceptedButtons: Qt.AllButtons
+                        onPressed: sm.ctxRow = null
+                    }
+
+                    Plate {
+                        id: ctxPlate
+                        visible: sm.ctxRow !== null
+                        z: 51
+                        width: 220
+                        height: ctxCol.height + 10
+                        x: stagePlate.x + stagePlate.width + 3
+                        y: Math.max(-startFly.rise - sm.y, Math.min(sm.ctxY, sm.height + 1 - height))
+                        MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
+                        Column {
+                            id: ctxCol
+                            x: 1; y: 5; width: parent.width - 2
+                            PaneRow {
+                                visible: !sm.ctxConfirm
+                                height: visible ? rh : 0
+                                plate: true; rh: 26; textX: 24
+                                label: sm.dropRow ? sm.dropRow.label : ""
+                                enabled: !!sm.dropRow && sm.dropRow.live
+                                onActivated: sm.ctxConfirm = true
+                            }
+                            Text {
+                                visible: sm.ctxConfirm
+                                x: 9; width: parent.width - 18
+                                topPadding: 4; bottomPadding: 8
+                                wrapMode: Text.Wrap
+                                text: sm.ctxRow ? "Delete " + sm.ctxRow.name + "? It can't be undone" : ""
+                                color: Kit.ink
+                                font: Kit.bodyFont(12)
+                                textFormat: Text.PlainText
+                            }
+                            Row {
+                                visible: sm.ctxConfirm
+                                x: parent.width - width - 8
+                                height: visible ? 30 : 0
+                                spacing: 8
+                                PlateButton { width: 64; label: "Delete"; onActivated: sm.drop() }
+                                PlateButton { width: 64; label: "Cancel"; onActivated: sm.ctxRow = null }
                             }
                         }
                     }
@@ -2636,7 +2766,7 @@ Item {
                     Plate {
                         id: powerPlate
                         visible: sm.powerOpen
-                        width: 300
+                        width: 220
                         height: powCol.height + 10
                         x: sm.width + 3
                         y: Math.max(-startFly.rise - 1, lockBox.y + lockBox.height - height)
@@ -3104,7 +3234,7 @@ Item {
             bridge: root.bridge
             stagingEngine: root.stagingEngine
             slot: "ricemode"
-            anchors.right: more.left
+            anchors.right: agents.left
             anchors.top: parent.top
         }
     }

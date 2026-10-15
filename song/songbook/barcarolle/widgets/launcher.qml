@@ -36,6 +36,7 @@ PanelWindow {
         top: { cw: 70, ch: 58, cols: 4 },
         apps: { cw: 66, ch: 60, cols: 4 },
         clip: { cw: 88, ch: 60, cols: 3 },
+        clipBig: { cw: 128, ch: 118, cols: 3 },
         pics: { cw: 88, ch: 78, cols: 3 },
         emoji: { cw: 33, ch: 33, cols: 8 },
         kaomoji: { cw: 264, ch: 20, cols: 1 },
@@ -205,6 +206,14 @@ PanelWindow {
         root.show()
         root.openFolder("clip")
     }
+    // Super+W: shows the G3 with Desktop Pictures in front; pressed again while Pictures is in front it hides the G3
+    function openPictures() {
+        if (root.shown && root.view === "pics" && !root.aboutOpen) { root.hide(); return }
+        root.show()
+        root.menuOpen = ""
+        root.aboutOpen = false
+        root.openFolder("pics")
+    }
 
     // ── the Finder: state ──
     property string view: "top"
@@ -229,7 +238,9 @@ PanelWindow {
     readonly property bool canUp: root.inSub || root.searching
     readonly property bool showFolders: !!root.subs[root.view] && !root.inSub && root.query.trim() === ""
     readonly property var parentItems: root.view === "songs" ? root.songItems : (root.subs[root.view] || [])
-    readonly property var geom: root.geoms[root.searching ? "search" : root.showFolders ? "sub" : root.view]
+    readonly property bool clipBig: root.view === "clip" && !!frontWin.unzoom
+    readonly property var geom: root.geoms[root.searching ? "search" : root.showFolders ? "sub" : root.clipBig ? "clipBig" : root.view]
+    onClipBigChanged: Qt.callLater(function () { root.reveal(frontGrid, frontGrid.currentIndex) })
     readonly property var items: root.sorted(root.compute(root.view, root.sub, root.query, root.dataTick))
     readonly property bool listed: root.view === "trash" || root.view === "keys"
     readonly property Item listItem: root.view === "trash" ? trashList : keysList
@@ -473,7 +484,9 @@ PanelWindow {
         ["Ctrl + Up", "Up one folder"],
         ["Ctrl + /", "Zoom the front window"],
         ["Page Up / Page Down", "Move one page"],
-        ["Home / End", "First / last item"]
+        ["Home / End", "First / last item"],
+        ["Left / Right (picture)", "Previous / next picture clipping"],
+        ["Return (picture)", "Copy the picture"]
     ].map(function (k) { return { kind: "bind", group: "Finder", keys: k[0], label: k[1] } })
     function capWord(k) {
         var s = "" + k
@@ -559,11 +572,13 @@ PanelWindow {
         root.menuOpen = ""
         root.aboutOpen = false
         root.keyFocus = "grid"
+        root.viewIt = null
         topGrid.currentIndex = 0
         topGrid.positionViewAtBeginning()
         root.clipboard.refresh()
     }
     function openFolder(key) {
+        root.viewIt = null
         findField.text = ""
         root.sub = ""
         root.view = key
@@ -631,7 +646,8 @@ PanelWindow {
             root.ledger.record(it.entry.id)
             root.hide()
         } else if (it.kind === "clip") {
-            if (root.clipboard.copyById(it.clip.id)) root.hide()
+            if (it.clip.kind === "image") root.openViewer(it)
+            else if (root.clipboard.copyById(it.clip.id)) root.hide()
         } else if (it.kind === "emoji" || it.kind === "kaomoji") {
             Quickshell.execDetached(["wl-copy", "--", it.glyph])
             root.hide()
@@ -653,7 +669,7 @@ PanelWindow {
             var known = true
             switch (e.key) {
             case Qt.Key_O: if (root.canOpen) root.openSel(); break
-            case Qt.Key_W: if (root.frontOpen || root.aboutOpen) root.closeWindow(); break
+            case Qt.Key_W: if (root.frontOpen || root.aboutOpen || root.viewIt) root.closeWindow(); break
             case Qt.Key_F: root.focusFind(); break
             case Qt.Key_C: if (root.canCopy) root.copyPick(); break
             case Qt.Key_V: if (root.canPaste) root.pasteText(); break
@@ -661,7 +677,7 @@ PanelWindow {
             case Qt.Key_Up: if (root.canUp) root.goUp(); break
             case Qt.Key_Slash:
                 if (root.menuOpen === "Position") { root.menuOpen = ""; root.keyFocus = root.band[root.bandAt] !== undefined ? "band" : "grid" }
-                (root.aboutOpen ? aboutWin : root.frontOpen ? frontWin : hdWin).zoom()
+                (root.aboutOpen ? aboutWin : root.viewIt ? viewWin : root.frontOpen ? frontWin : hdWin).zoom()
                 break
             default: known = false
             }
@@ -675,6 +691,13 @@ PanelWindow {
         }
         if (e.key === Qt.Key_Tab || back) {
             root.ring(back ? -1 : 1)
+            e.accepted = true
+            return
+        }
+        // the picture viewer in front keeps the grid's keys: ←/→ step, Return is its default button (Copy)
+        if (root.viewIt && root.keyFocus === "grid" && !command) {
+            if (e.key === Qt.Key_Left || e.key === Qt.Key_Right) root.stepViewer(e.key === Qt.Key_Left ? -1 : 1)
+            else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) root.viewerCopy()
             e.accepted = true
             return
         }
@@ -1062,11 +1085,13 @@ PanelWindow {
         }
         else if (root.keyFocus !== "grid") root.keyFocus = "grid"
         else if (root.aboutOpen) root.aboutOpen = false
+        else if (root.viewIt) root.viewIt = null
         else root.hide()
     }
     function closeWindow() {
         root.menuOpen = ""
         if (root.aboutOpen) root.aboutOpen = false
+        else if (root.viewIt) root.viewIt = null
         else root.goTop()
     }
     function openSel() {
@@ -1154,6 +1179,30 @@ PanelWindow {
         return i >= 0 && d.rows[i].live === true ? d.rows[i] : null
     }
     function openTrash() { root.openFolder("trash") }
+
+    // ── the picture viewer: an image clipping opened in its own window; ←/→ walk the front window's image clippings ──
+    property var viewIt: null
+    readonly property string viewHome: [root.view, root.sub, root.query].join("/")
+    onViewHomeChanged: root.viewIt = null
+    readonly property var viewPics: root.items.filter(function (it) { return it.kind === "clip" && it.clip.kind === "image" })
+    readonly property int viewAt: {
+        for (var i = 0; root.viewIt && i < root.viewPics.length; i++) if (root.viewPics[i].clip.id === root.viewIt.clip.id) return i
+        return -1
+    }
+    readonly property var viewState: root.viewIt ? root.clipboard.imageStates[root.viewIt.clip.id] : undefined
+    function openViewer(it) {
+        root.viewIt = it
+        root.keyFocus = "grid"
+        root.clipboard.requestPreview(it.clip.id)
+        for (var i = 0; i < root.items.length; i++) if (root.items[i].kind === "clip" && root.items[i].clip.id === it.clip.id) root.jump(i)
+    }
+    function stepViewer(dir) {
+        var j = root.viewAt + dir
+        if (root.viewAt >= 0 && j >= 0 && j < root.viewPics.length) root.openViewer(root.viewPics[j])
+    }
+    function viewerCopy() {
+        if (root.viewIt && root.clipboard.copyById(root.viewIt.clip.id)) root.hide()
+    }
 
     // a Platinum menu-bar title; its drop-down is a Drop at window level (below). A press opens it, a drag
     // across the titles moves the menu and a release over a live row runs that row; a click keeps it open.
@@ -1742,6 +1791,8 @@ PanelWindow {
         readonly property bool row: kind === "kaomoji" && !root.searching
         readonly property bool kaoLabel: kind === "kaomoji" && root.searching
         readonly property bool pic: kind === "pic"
+        readonly property bool bigRow: kind === "clip" && root.clipBig
+        readonly property bool big: cell.bigRow && modelData.clip.kind === "image"
         readonly property string mark: kind === "rice" ? modelData.row.mark : ""
         readonly property bool dead: (kind === "rice" && !modelData.row.live) || (cell.pic && root.coverLocked)
         readonly property var fold: (cell.glyphOnly || cell.row) ? ({ text: "", lines: 0, cut: false })
@@ -1761,7 +1812,7 @@ PanelWindow {
             var st = root.clipboard.imageStates[modelData.clip.id]
             return st && st.state === "ready" ? st.source : ""
         }
-        readonly property real labelY: cell.pic ? 55 : cell.bigGlyph ? 41 : 37
+        readonly property real labelY: cell.bigRow ? 92 : cell.pic ? 55 : cell.bigGlyph ? 41 : 37
 
         width: GridView.view ? GridView.view.cellWidth : 66
         height: GridView.view ? GridView.view.cellHeight : 60
@@ -1795,9 +1846,9 @@ PanelWindow {
             id: ic
             visible: !cell.glyphOnly && !cell.bigGlyph && !cell.row
             x: (cell.width - width) / 2
-            y: 3
-            width: cell.pic ? 66 : 32
-            height: cell.pic ? 50 : 32
+            y: cell.bigRow && !cell.big ? 29 : 3
+            width: cell.big ? cell.width - 12 : cell.pic ? 66 : 32
+            height: cell.big ? 84 : cell.pic ? 50 : 32
             opacity: cell.dead ? 0.45 : 1
             layer.enabled: cell.sel
             layer.effect: MultiEffect {
@@ -1806,15 +1857,37 @@ PanelWindow {
                 brightness: -0.08
             }
             Image {
-                anchors.fill: parent
+                visible: !cell.big || cell.thumb === ""
+                anchors.centerIn: parent
+                width: 32; height: 32
                 source: cell.iconUrl
                 sourceSize: Qt.size(32, 32)
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 smooth: true
             }
+            Rectangle {
+                visible: cell.big && bigPic.status === Image.Ready
+                x: Math.round((ic.width - bigPic.paintedWidth) / 2) - 1
+                y: Math.round((ic.height - bigPic.paintedHeight) / 2) - 1
+                width: Math.round(bigPic.paintedWidth) + 2
+                height: Math.round(bigPic.paintedHeight) + 2
+                color: "transparent"
+                border.width: 1
+                border.color: root.pl.line
+            }
             Image {
-                visible: cell.thumb !== ""
+                id: bigPic
+                visible: cell.big
+                anchors.fill: parent
+                source: cell.big ? cell.thumb : ""
+                sourceSize: Qt.size(2 * ic.width, 2 * ic.height)
+                fillMode: Image.PreserveAspectFit
+                asynchronous: true
+                smooth: true
+            }
+            Image {
+                visible: cell.thumb !== "" && !cell.big
                 x: 9; y: 11; width: 14; height: 11
                 source: cell.thumb
                 fillMode: Image.PreserveAspectCrop
@@ -2498,6 +2571,59 @@ PanelWindow {
                         rows: root.positions.map(function (q) {
                             return { label: q[1], check: root.coverPosition === q[0], live: true, act: function () { root.setPosition(q[0]) } }
                         })
+                    }
+                    Win {
+                        id: viewWin
+                        homeX: 30; homeY: 26; z: 19
+                        baseW: 340; baseH: 266
+                        opening: "" + !!root.viewIt
+                        visible: !!root.viewIt
+                        title: root.viewIt ? root.viewIt.name : ""
+                        proxy: root.g3Dir + "finder-clip-picture.svg" + root.bust
+                        hdr: root.viewAt >= 0 ? (root.viewAt + 1) + " of " + root.viewPics.length : ""
+                        scrolls: false
+                        onCloseClicked: root.viewIt = null
+                        readonly property string src: root.viewState && root.viewState.state === "ready" ? root.viewState.source : ""
+                        Item {
+                            id: viewArea
+                            x: 8; y: 8
+                            width: viewWin.width - 2 - 16
+                            height: viewWin.height - 2 - 34 - 8 - 34 - 8
+                            Rectangle {
+                                visible: viewPic.status === Image.Ready
+                                x: Math.round((viewArea.width - viewPic.paintedWidth) / 2) - 1
+                                y: Math.round((viewArea.height - viewPic.paintedHeight) / 2) - 1
+                                width: Math.round(viewPic.paintedWidth) + 2
+                                height: Math.round(viewPic.paintedHeight) + 2
+                                color: "transparent"
+                                border.width: 1
+                                border.color: root.pl.line
+                            }
+                            Image {
+                                id: viewPic
+                                anchors.fill: parent
+                                source: viewWin.src
+                                fillMode: Image.PreserveAspectFit
+                                asynchronous: true
+                                smooth: true
+                                mipmap: true
+                            }
+                            T {
+                                visible: viewPic.status !== Image.Ready
+                                anchors.centerIn: parent
+                                text: root.viewState && root.viewState.state === "error" ? "Can\u2019t show this picture" : "Reading picture\u2026"
+                                color: "#6a6a6a"
+                            }
+                        }
+                        Rectangle {
+                            y: viewWin.height - 2 - 34 - 34
+                            width: viewWin.width - 2
+                            height: 34
+                            color: root.pl.face
+                            Rectangle { width: parent.width; height: 1; color: root.pl.sh }
+                            PBtn { x: parent.width - 22 - 64 - 12 - 64; y: 8; label: "Close"; onChosen: root.viewIt = null }
+                            PBtn { x: parent.width - 22 - 64; y: 8; label: "Copy"; dflt: true; onChosen: root.viewerCopy() }
+                        }
                     }
                     Win {
                         id: aboutWin

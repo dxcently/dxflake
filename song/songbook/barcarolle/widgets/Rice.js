@@ -40,13 +40,19 @@ function draftRows(answer) {
 
 function newDraft() { return { label: "New Draft", mark: "", live: true, kind: "new", name: "", here: false } }
 
+// a draft's delete row (offered from the draft row's context menu); not live on the draft in force
+function dropDraft(draft) {
+    return { label: "Delete " + draft.name, mark: "", live: !draft.here, kind: "drop", name: "" + draft.name, here: false }
+}
+
 function saveDraft(mode) { return { label: "Save as Draft", mark: "", live: mode === "staging", kind: "save", name: "", here: false } }
 
-// runs a row; true when the surface should show "…" until the livery's mode/song/draft changes (or 10 s pass)
+// runs a row; true when the surface should show "…" until the livery's mode/song/draft changes (or 10 s pass);
+// save and drop change none of those, so they never wait
 function act(bridge, row) {
     if (!row.live || row.here || row.kind === "") return false
     if (row.kind === "stage") bridge.riceMode("stage", row.name)
     else if (row.kind === "declarative") bridge.riceMode("declarative")
     else bridge.riceDraft(row.kind, row.name)
-    return row.kind !== "save"
+    return row.kind !== "save" && row.kind !== "drop"
 }
