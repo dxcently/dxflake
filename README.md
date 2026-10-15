@@ -45,8 +45,8 @@ dxflake/
 │   │                        #   the catalogue, one generated entry per package line, `import ./aggregations`
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,
-│   │                                                  #   naming its members
+│   │   └── aoide/ base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,
+│   │                                                         #   naming its members
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
 │   └── dendrites/            # one file per capability: a plain module, plus `habit.home`
@@ -345,6 +345,11 @@ Aoide runtime is wired from the pinned Aoide input through its exports:
 `inputs.aoide.overlays.default` to
 the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
+
+Hosts that run Aoide select the `aoide` aggregation (`modules/aggregations/aoide/`):
+the daemon (`aoided`), the secrets broker (`aoide-secrets`), the Nix settings
+(`aoide-nix`), the binaries (`aoide-packages`) and the Melete adapter
+(`melete-adapter`), all catalogue lanes. `aoide-config` is named nowhere.
 Aoide's `habit` and `nixpkgs` inputs follow dxflake's. dxflake declares no
 `stylix`, `hyprland` or `quickshell` input: those are Aoide's, and reach the
 hosts through its exports.

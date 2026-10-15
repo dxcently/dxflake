@@ -185,6 +185,14 @@ cold.
   deselecting the dendrite there only restores nixpkgs' authentication defaults.
   The package floor is core's members, one catalogue entry each, generated from
   `modules/dendrites/packages.nix`: a plain list of names, not a module.
+- **Aoide** — `modules/aggregations/aoide/` is Aoide's service floor: `aoided`,
+  `aoide-secrets`, `aoide-nix`, `aoide-packages` and `melete-adapter`, all
+  Aoide catalogue lanes. A host that runs Aoide selects it beside `core`
+  (`habit.aggregation.aoide.enable = true`); osaka, chiyo and sakaki do, and
+  yomi-strix does not. `aoide-config` is left out on purpose: selecting it would
+  freeze the host's `config.toml`. The `aoide` aggregation and the `aoide`
+  dendrite share a name and live in separate namespaces (`habit.aggregation`
+  and `habit.dendrites`), so neither shadows the other.
 - **Halves** — a dendrite's two sides: its system half, the module itself
   (services, packages, hardware), and its home half, `habit.home` (one user's
   Home Manager module). Selecting it for the system applies the system half and
@@ -394,6 +402,8 @@ Quickshell are Aoide's inputs and reach hosts only through its exports; dxflake
 declares none of them, and a dendrite that wants one asks Aoide for an export.
 Hosts are built through the Aoide input's exports: `nixosModules.nucleus`,
 `overlays.default`, `lib.livery` and the lanes named in `aoideLanes`. The
+`aoide` aggregation's five members are lanes too, named there beside the rest;
+`aoide-config` is named nowhere.
 registry is dxflake's own and those lanes merged by habit's `mergeRegistries`,
 so a name both define is an error, never a silent winner. Aoide's `stylix` and
 `compositor` clash with dxflake's dendrites of the same names and are selected

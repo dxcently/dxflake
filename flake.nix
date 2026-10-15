@@ -167,6 +167,11 @@
         hyprland = inputs.aoide.nixosModules.hyprland;
         aoide-stylix = inputs.aoide.nixosModules.stylix;
         aoide-compositor = inputs.aoide.nixosModules.compositor;
+        aoided = inputs.aoide.nixosModules.aoided;
+        aoide-secrets = inputs.aoide.nixosModules.aoide-secrets;
+        aoide-nix = inputs.aoide.nixosModules.aoide-nix;
+        aoide-packages = inputs.aoide.nixosModules.aoide-packages;
+        melete-adapter = inputs.aoide.nixosModules.melete-adapter;
       };
 
       registry = (inputs.habit.lib.catalogues { inherit lib; }).mergeRegistries [

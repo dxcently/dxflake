@@ -23,6 +23,7 @@
 
   habit.aggregation = {
     core.enable = true;
+    aoide.enable = true;
     network.enable = true;
     base.enable = true;
     desktop.enable = true;

@@ -4,7 +4,10 @@
 { lib, habit }:
 let
   composition = habit.lib.composition { inherit lib; };
-  registry = import ../../modules { };
+  # The flake's own merged registry, so the cases see the Aoide catalogue
+  # the hosts see (sakaki selects the aoide aggregation, whose members are
+  # Aoide's dendrites).
+  registry = (builtins.getFlake (toString ../..)).registry;
 
   sakaki = composition.evalSelection {
     inherit registry;

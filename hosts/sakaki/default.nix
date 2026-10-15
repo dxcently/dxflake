@@ -3,6 +3,7 @@
 { pkgs, ... }:
 {
   habit.aggregation.core.enable = true;
+  habit.aggregation.aoide.enable = true;
   habit.aggregation.network.enable = true;
   habit.aggregation.base.enable = true;
 

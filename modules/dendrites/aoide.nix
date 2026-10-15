@@ -1,5 +1,6 @@
-# Core Aoide (the aoide/aoided binaries, the A2A door, the secrets broker) —
-# no paint.
+# Core Aoide (the `aoide.enable` switch and the A2A door default) — no paint.
+# The daemon, the secrets broker and the binaries are the `aoide` aggregation's
+# members (modules/aggregations/aoide), selected beside this dendrite.
 #
 # Aoide ships its own complete option contract (modules/nucleus/options.nix in
 # the Aoide input, brought into every host by its `nixosModules.nucleus`):
@@ -19,13 +20,15 @@
 # rather than inventing one.
 #
 # ── What "core" means ────────────────────────────────────────────────────
-#   aoide.enable        — the aoide/aoided binaries + daemon (nucleus/aoided.nix)
-#   aoide.a2a.enable     — the A2A (Agent2Agent) door, loopback by default;
-#                          a default, so a host that fronts a public relay
-#                          (sakaki) turns the door off with a plain `false`
-#   aoide.secrets.enable — the secrets broker (its own uid, group-gated socket;
-#                          empty aoide.secrets.members means nobody can reach
-#                          it yet — a host adds itself explicitly)
+#   aoide.enable     — Aoide is on for this host
+#   aoide.a2a.enable — the A2A (Agent2Agent) door, loopback by default;
+#                      a default, so a host that fronts a public relay
+#                      (sakaki) turns the door off with a plain `false`
+#
+# The services those options drive are catalogue entries of their own:
+# `aoided` declares the A2A door's options, and `aoide-secrets` the broker's
+# (empty aoide.secrets.members means nobody can reach it yet, so a host adds
+# itself).
 #
 # ── Paint is NOT this dendrite's business ──────────────────────────────────
 # Lyra (the rice/paint binary) and the Quickshell render surface come from
@@ -75,6 +78,5 @@
   config = {
     aoide.enable = true;
     aoide.a2a.enable = lib.mkDefault true;
-    aoide.secrets.enable = true;
   };
 }
