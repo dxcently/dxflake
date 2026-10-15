@@ -16,7 +16,25 @@
   # supplies the dynamic loader for that future binary.
   programs.nix-ld.enable = true;
   nixpkgs.overlays = [ inputs.claude-desktop-nix-flake.overlays.default ];
-  environment.systemPackages = [ pkgs.claude-desktop ];
+  # A second account is a second profile directory, which also takes its own
+  # single-instance lock, so both windows can run at once. Signed builds drop
+  # CLAUDE_USER_DATA_DIR, so the profile is chosen with --user-data-dir.
+  environment.systemPackages = [
+    pkgs.claude-desktop
+    (pkgs.writeShellScriptBin "claude-work" ''
+      exec ${pkgs.claude-desktop}/bin/claude-desktop --user-data-dir="$HOME/.config/Claude-work" "$@"
+    '')
+    (pkgs.makeDesktopItem {
+      name = "claude-work";
+      desktopName = "Claude (Work)";
+      exec = "claude-work %U";
+      icon = "claude-desktop";
+      categories = [
+        "Utility"
+        "Development"
+      ];
+    })
+  ];
 
   # Cowork uses KVM and vhost-vsock to run its isolated workspace VM.
   boot.kernelModules = [ "vhost_vsock" ];
