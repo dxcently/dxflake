@@ -165,8 +165,11 @@ cold.
   `system.stateVersion`. A host drops a member with
   `habit.dendrites.<name>.enable = false`, with these caveats: `boot` is the
   bootloader, so the host must declare its own or evaluation fails; `networking`
-  carries the hostName and one authorized key on the login account (deselected,
-  the hostName is `nixos` and that key is gone); `system` carries the time zone,
+  carries the hostName, NetworkManager, the wg0 WireGuard config, the firewall
+  line, one authorized key on the login account, and the network-manager-applet
+  and wireguard-tools packages (deselected, the hostName is `nixos`,
+  NetworkManager and wg0 are gone, that key and both packages are gone, and the
+  firewall stays up because NixOS defaults it on); `system` carries the time zone,
   locale categories, nix settings and substituters, `allowUnfree`, the default
   editor and dconf (deselected, the time zone is unset, unfree packages are
   refused, and the rest fall back to the platform defaults); and `openssh` is the

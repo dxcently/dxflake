@@ -3,10 +3,10 @@
 #
 # NOT a dendrite: there is no catalogue line here, because nothing about this
 # file is selectable as a whole. It is one ordinary NixOS module, imported
-# unconditionally through `extraModules` in flake.nix, that declares `dx.packages.<name>.enable` for
-# every line below — all of them off — and installs the ones something switched
-# on. An aggregation switches its own membership on by name; a host adds one
-# with a single line.
+# unconditionally through `extraModules` in flake.nix, that declares
+# `dx.packages.<name>.enable` for every line below — all of them off — and
+# installs the ones something switched on. An aggregation switches its own
+# membership on by name; a host adds one with a single line.
 #
 # `mkOrder 1400` pins where these land in system.path: after core's package
 # list and a host's own plain definitions (order 1000) and before anything that

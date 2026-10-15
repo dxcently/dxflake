@@ -1,3 +1,8 @@
+# modules/sops.nix — sops-nix, imported on every host through `extraModules` in
+# flake.nix rather than selected by an aggregation. Four dendrites write
+# `sops.*` (tailscale, cloudflared, syncthing and slskd), so the option tree has
+# to exist on every host, even one that selects none of them.
+
 { inputs, ... }: {
   imports = [ inputs.sops-nix.nixosModules.sops ];
 
