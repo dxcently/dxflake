@@ -319,10 +319,10 @@ against Hyprland itself — `hyprland-keybinds`, `hyprland-decoration`,
 `hyprland-autostart`, `hyprglass` — and the `compositor` aggregation names
 exactly those four. The surfaces `waybar`/`rofi`/`satty`/`wlogout` are
 compositor-agnostic, so they sit at the dendrite root like every other
-single-file capability and belong to `shell`, which also switches the Wayland
-tool belt on by name in its `module`. That folder is the hyprland provider's:
-one folder per provider under the `compositor` registry, holding the provider
-entry and everything written against that compositor. Nothing walks it; each
+single-file capability and belong to `shell`, which selects the Wayland tool
+belt as members and installs `dunst` in its own `module`. That folder is the
+hyprland provider's: one folder per provider under the `compositor` registry,
+holding the provider entry and everything written against that compositor. Nothing walks it; each
 file is reachable only through its own catalogue line. (`compositor/` and
 `gpu/` carry a `default.nix` — those are provider registries, the thing the
 folders sit inside.)

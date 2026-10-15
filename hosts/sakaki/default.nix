@@ -344,8 +344,8 @@
     };
   };
 
-  # hugo builds the wiki. Nothing else on this box uses it, and no other
-  # host switches it on, but the line itself lives in the shared list.
+  # hugo builds the wiki. Nothing else on this box uses it, and no other host
+  # selects it. It is a catalogue entry generated from modules/dendrites/packages.nix.
   habit.dendrites.hugo.enable = true;
 
   # Aoide, headless: the CLI + aoided runtime, the A2A door and the mesh's

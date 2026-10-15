@@ -17,13 +17,8 @@
 # is the aggregations' job, so the root stays flat and the catalogue name is the
 # file name.
 let
-  # One line per package, a `pkgs` attribute path. Its catalogue name is the
-  # path's last segment. Builtins only: this file takes no arguments, and
-  # flake.nix imports it as it always has.
-  packages = import ./dendrites/packages.nix;
-  nameOf = path: baseNameOf (builtins.replaceStrings [ "." ] [ "/" ] path);
-  names = map nameOf packages;
-
+  # The hand-written catalogue. The package entries are generated beside it:
+  # see packages-entries.nix and modules/dendrites/packages.nix.
   handWritten = {
     aagl = ./dendrites/aagl.nix;
     aoide = ./dendrites/aoide.nix;
@@ -109,41 +104,15 @@ let
     xserver = ./dendrites/xserver.nix;
     yazi = ./dendrites/yazi.nix;
   };
-
-  packageEntry = path: {
-    _file = "${toString ./dendrites/packages.nix}#${nameOf path}";
-    imports = [
-      (
-        { pkgs, lib, ... }:
-        {
-          environment.systemPackages = lib.mkOrder 1400 [
-            (lib.getAttrFromPath (lib.splitString "." path) pkgs)
-          ];
-        }
-      )
-    ];
-  };
-
-  generated = builtins.listToAttrs (
-    map (path: {
-      name = nameOf path;
-      value = packageEntry path;
-    }) packages
-  );
-
-  clashing = builtins.filter (n: builtins.hasAttr n handWritten) names;
-  repeated = builtins.filter (n: builtins.length (builtins.filter (m: m == n) names) > 1) names;
-
-  checked =
-    if clashing != [ ] then
-      throw "modules/dendrites/packages.nix: '${builtins.head clashing}' names both a package line and a hand-written catalogue entry; rename one, or make the package a dendrite of its own"
-    else if repeated != [ ] then
-      throw "modules/dendrites/packages.nix: '${builtins.head repeated}' is listed twice, or two paths share its last segment; every package needs a distinct catalogue name"
-    else
-      generated;
 in
 {
-  catalogue = handWritten // checked;
+  # Each line of dendrites/packages.nix is a generated entry, merged beside the
+  # hand-written ones; the generator throws on a clash.
+  catalogue = import ./packages-entries.nix {
+    inherit handWritten;
+    packages = import ./dendrites/packages.nix;
+    file = toString ./dendrites/packages.nix;
+  };
 
   # The override records, discovered beside the aggregations: capability-scoped
   # fixes, matched against what a host resolved. Names and paths only here; the

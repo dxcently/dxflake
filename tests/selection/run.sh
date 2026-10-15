@@ -22,6 +22,10 @@ cases=$(cat <<'EOF'
 realRegistryResolvesSakaki          ok      "age,aoide,arduino-ide,autologin,avahi,bat,boot,caddy,claude-code,clinfo,cloudflared,cowsay,curl,eidolon,fastfetch,fd,ffmpeg,file,fzf,godot,gptfdisk,htop,hugo,immich,jellyfin,jq,kimi-cli,lazygit,lm_sensors,lshw,melete,mneme,nas-mounts,neovide,networking,ngrok,nix-tree,nixfmt,nodejs,openssh,poppler,postgresql,python,ripgrep,security,slskd,socat,sops,stylix,syncthing,system,tailscale,tinymist,transmission,typst,unar,unrar,unzip,usbutils,v4l-utils,vim,wget,xdg-utils,yt-dlp"
 realRegistryModulesImport             ok      true
 realRegistryInventory               ok      "base,core,network"
+packageEntriesNamedByLastSegment    ok      "filelight,vim"
+packageEntriesClashWithHandWritten  error   names both a package line and a hand-written catalogue entry
+packageEntriesListedTwice           error   is listed twice
+packageEntriesSharedName            error   share the catalogue name 'hugo'
 EOF
 )
 

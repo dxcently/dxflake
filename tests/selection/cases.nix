@@ -15,6 +15,11 @@ let
     hostName = "sakaki";
     selection = sakaki;
   };
+
+  # The package-entry generator is the one the registry runs (modules/default.nix
+  # calls it too). Forcing the names forces its checks.
+  packageEntries =
+    args: import ../../modules/packages-entries.nix ({ file = "fixture/packages.nix"; } // args);
 in
 {
   # The headless host selects exactly what its file names.
@@ -38,4 +43,37 @@ in
 
   # The groups the host reports.
   realRegistryInventory = builtins.concatStringsSep "," inventory.aggregation;
+
+  packageEntriesNamedByLastSegment = builtins.concatStringsSep "," (
+    builtins.attrNames (packageEntries {
+      packages = [
+        "kdePackages.filelight"
+        "vim"
+      ];
+      handWritten = { };
+    })
+  );
+
+  packageEntriesClashWithHandWritten = builtins.attrNames (packageEntries {
+    packages = [ "bash" ];
+    handWritten = {
+      bash = ./dendrites/none;
+    };
+  });
+
+  packageEntriesListedTwice = builtins.attrNames (packageEntries {
+    packages = [
+      "hugo"
+      "hugo"
+    ];
+    handWritten = { };
+  });
+
+  packageEntriesSharedName = builtins.attrNames (packageEntries {
+    packages = [
+      "hugo"
+      "kdePackages.hugo"
+    ];
+    handWritten = { };
+  });
 }
