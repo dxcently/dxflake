@@ -1,7 +1,9 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Hyprland
 import "Kit.js" as Kit
+import "Rice.js" as Rice
 
 Item {
     id: root
@@ -10,244 +12,204 @@ Item {
     required property var bridge
 
     readonly property string mode: root.livery.riceMode || "declarative"
+    readonly property bool staging: root.mode !== "declarative"
     readonly property string draft: (root.livery.modeRaw && root.livery.modeRaw.draft) || ""
-    readonly property string song: root.livery.songName
+    readonly property string song: root.livery.songName || ""
     readonly property bool canMenu: !!root.bridge && typeof root.bridge.riceMenu === "function"
-    readonly property string word: root.pending ? "…" : (root.mode === "staging" ? "Stage" : (root.mode === "draft" ? "Draft" : "Declared"))
+    readonly property string iconDir: (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/song/songbook/barcarolle/icons/tray/"
+    readonly property string hint: root.staging
+        ? "Staging · " + root.song + (root.draft ? " · " + root.draft : "")
+        : "Declarative · " + (Rice.ready(root.answer) && root.answer.declared ? root.answer.declared : root.song)
 
-    property bool pending: false
     property bool open: false
     property var answer: null
     property int asked: 0
-    property Item hotRow: null
-    readonly property bool ready: !!root.answer && root.answer.ok === true
-    readonly property var songs: root.ready && Array.isArray(root.answer.songs) ? root.answer.songs : []
-    readonly property var drafts: root.ready && Array.isArray(root.answer.drafts) ? root.answer.drafts : []
-    readonly property string note: !root.answer ? "…" : (!root.answer.ok ? "" + (root.answer.message || "no answer") : "")
-
-    onModeChanged: root.pending = false
-    onDraftChanged: root.pending = false
-    onSongChanged: root.pending = false
+    property bool pending: false
+    property real goneAt: 0
+    property bool tipShown: false
+    readonly property string key: root.mode + "/" + root.song + "/" + root.draft
+    onKeyChanged: root.pending = false
     Timer { interval: 10000; running: root.pending; onTriggered: root.pending = false }
 
-    function gesture() {
-        if (root.pending) return
+    readonly property var rows: !root.canMenu
+        ? [{ label: "Switching needs a newer shell", mark: "", live: false, kind: "", name: "", here: false }]
+        : root.pending ? [Rice.waiting(null)] : Rice.switchRows(root.answer, root.livery.riceMode)
+
+    function toggle() {
         if (root.open) { root.open = false; return }
-        root.answer = null
-        var ask = ++root.asked
+        if (Date.now() - root.goneAt <= 250) return
         root.open = true
-        root.bridge.riceMenu(function (reply) { if (ask === root.asked) root.answer = reply })
+        if (!root.canMenu) return
+        var ask = ++root.asked
+        root.answer = null
+        root.bridge.riceMenu(function (a) { if (ask === root.asked) root.answer = a })
     }
-
-    function act(kind, name) {
+    function pick(row) {
+        if (Rice.act(root.bridge, row)) root.pending = true
         root.open = false
-        if (kind !== "save") root.pending = true
-        if (kind === "stage") root.bridge.riceMode("stage", name)
-        else if (kind === "declarative") root.bridge.riceMode("declarative")
-        else root.bridge.riceDraft(kind, name)
     }
 
-    implicitWidth: label.implicitWidth + 50
-    implicitHeight: 32
-    opacity: root.canMenu ? 1 : 0.55
+    implicitWidth: 24
+    implicitHeight: Kit.barHeight
 
     Rectangle {
         anchors.fill: parent
         radius: 2
-        color: Kit.white(root.open ? 0.08 : 0.04)
+        color: "transparent"
         border.width: 1
-        border.color: Kit.white(root.open || cellMa.containsMouse ? 0.32 : 0.20)
+        border.color: Kit.white(0.32)
+        visible: hover.hovered || root.open
     }
-
-    Row {
-        id: cellRow
-        x: 8
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: 4
-        Item {
-            width: 16; height: 16
-            anchors.verticalCenter: parent.verticalCenter
-            Shape {
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    strokeColor: "#ffffff"; strokeWidth: 1.5; fillColor: "transparent"
-                    PathSvg { path: "M6 2.5 v9" }
-                }
-                ShapePath {
-                    strokeColor: "#ffffff"; strokeWidth: 1.4; fillColor: "transparent"
-                    PathSvg { path: Kit.ell(4.2, 11.8, 2.6, 1.9, -20) }
-                }
-                ShapePath {
-                    strokeColor: Kit.cyan; strokeWidth: 1.5; fillColor: "transparent"
-                    PathSvg { path: "M6 2.5 c2.5 0 3 2.5 6 2.5" }
-                }
-            }
-        }
-        Item {
-            width: label.implicitWidth; height: label.implicitHeight
-            anchors.verticalCenter: parent.verticalCenter
-            Text { x: 0; y: 1; text: root.word; font: Kit.boldFont(12); color: Kit.withA("#000000", 0.45); textFormat: Text.PlainText }
-            Text { id: label; text: root.word; font: Kit.boldFont(12); color: "#ffffff"; textFormat: Text.PlainText }
+    Image {
+        x: 4; y: 12; width: 16; height: 16
+        source: "file://" + root.iconDir + (root.staging ? "stage-staging.svg" : "stage-declarative.svg")
+        sourceSize: Qt.size(64, 64)
+        smooth: true
+        asynchronous: true
+        fillMode: Image.PreserveAspectFit
+    }
+    HoverHandler {
+        id: hover
+        onHoveredChanged: {
+            root.tipShown = false
+            if (hovered) tipWait.restart()
+            else tipWait.stop()
         }
     }
-    Item {
-            x: root.width - 18; y: 14.5; width: 10; height: 5
-            Shape {
-                x: 2
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    strokeColor: "#ffffff"; strokeWidth: 1.3; fillColor: "transparent"
-                    PathSvg { path: "M1 1 l3 3 3 -3" }
-                }
-            }
-        }
-
+    Timer { id: tipWait; interval: 500; onTriggered: root.tipShown = true }
     MouseArea {
-        id: cellMa
         anchors.fill: parent
-        hoverEnabled: true
-        enabled: root.canMenu
-        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-        cursorShape: root.canMenu ? Qt.PointingHandCursor : Qt.ArrowCursor
-        onClicked: root.gesture()
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.toggle()
     }
 
-    component PickRow: Item {
-        id: row
-        property string lamp: ""
-        property string name: ""
-        property color nameColor: Kit.dark(1)
-        property bool live: true
-        readonly property bool hot: root.hotRow === row
-        signal activated()
-
-        width: 248
-        height: 26
-
-        Rectangle { anchors.fill: parent; radius: 2; color: Qt.rgba(37 / 255, 187 / 255, 207 / 255, 0.10); visible: row.live && row.hot }
-        Text {
-            x: 8
-            anchors.verticalCenter: parent.verticalCenter
-            text: row.lamp
-            color: Kit.dark(1)
-            font: Kit.heavyFont(12)
-            textFormat: Text.PlainText
+    component Glass: Rectangle {
+        id: gl
+        radius: 3
+        color: Kit.rimTint()
+        border.width: 1
+        border.color: Kit.dark(0.85)
+        Item {
+            anchors.fill: parent
+            anchors.margins: 1
+            clip: true
+            Shape {
+                preferredRendererType: Shape.CurveRenderer
+                ShapePath {
+                    strokeColor: "transparent"
+                    fillColor: Kit.white(0.035)
+                    PathSvg { path: Kit.streaks(gl.width - 2, gl.height - 2) }
+                }
+            }
         }
+        Rectangle {
+            anchors.fill: parent
+            anchors.margins: 1
+            radius: 2
+            color: "transparent"
+            border.width: 1
+            border.color: Kit.white(0.35)
+        }
+        Rectangle {
+            x: 1; y: 1; width: parent.width - 2; height: Math.min(24, parent.height - 2)
+            radius: 2
+            gradient: Gradient {
+                GradientStop { position: 0; color: Kit.white(0.22) }
+                GradientStop { position: 1; color: Kit.white(0.06) }
+            }
+        }
+    }
+
+    component SwitchRow: Item {
+        id: sr
+        required property var modelData
+        width: parent ? parent.width : 218
+        height: 26
+        Rectangle {
+            anchors.fill: parent
+            radius: 2
+            color: srMa.containsMouse ? Kit.accent(0.10) : "transparent"
+        }
+        Text { x: 9; anchors.verticalCenter: parent.verticalCenter; text: sr.modelData.mark; color: Kit.ink; font: Kit.heavyFont(12); textFormat: Text.PlainText }
         Text {
-            x: 28
-            width: parent.width - 36
-            anchors.verticalCenter: parent.verticalCenter
-            text: row.name.replace(/\s+/g, " ")
-            color: row.nameColor
+            x: 24
+            width: sr.width - 24 - 6
             elide: Text.ElideRight
+            anchors.verticalCenter: parent.verticalCenter
+            text: sr.modelData.label
+            color: sr.modelData.live ? Kit.ink : Kit.dark(0.40)
             font: Kit.bodyFont(12)
             textFormat: Text.PlainText
         }
-        HoverHandler {
-            enabled: row.live
-            onHoveredChanged: {
-                if (hovered) root.hotRow = row
-                else if (root.hotRow === row) root.hotRow = null
-            }
-        }
-        TapHandler {
-            enabled: row.live
-            onTapped: row.activated()
+        MouseArea {
+            id: srMa
+            anchors.fill: parent
+            enabled: sr.modelData.live
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: root.pick(sr.modelData)
         }
     }
 
-    component Head: Item {
-        property string name: ""
-        width: 248
-        height: 24
-        Text {
-            x: 8
-            anchors.verticalCenter: parent.verticalCenter
-            text: parent.name
-            color: Kit.dark(0.72)
-            font: Kit.boldFont(12)
-            textFormat: Text.PlainText
+    PopupWindow {
+        visible: root.tipShown && hover.hovered && !root.open
+        color: "transparent"
+        anchor.item: root
+        anchor.edges: Edges.Top
+        anchor.gravity: Edges.Top
+        anchor.adjustment: PopupAdjustment.Slide
+        implicitWidth: tipText.implicitWidth + 16
+        implicitHeight: 24 + 6
+        mask: Region {}
+        Glass {
+            width: parent.width
+            height: 24
+            Text { x: 8; y: 6; height: 15; verticalAlignment: Text.AlignVCenter; text: root.hint; font: Kit.bodyFont(12); color: Kit.withA("#000000", 0.45); textFormat: Text.PlainText }
+            Text { id: tipText; x: 8; y: 4.5; height: 15; verticalAlignment: Text.AlignVCenter; text: root.hint; font: Kit.bodyFont(12); color: "#ffffff"; textFormat: Text.PlainText }
         }
     }
 
-    Component {
-        id: pickBody
-        Column {
-            Head { name: "songs" }
-            PickRow { visible: !root.ready; live: false; name: root.note; nameColor: Kit.dark(0.55) }
-            Repeater {
-                model: root.songs
-                PickRow {
-                    required property var modelData
-                    readonly property bool here: root.ready && root.mode === "staging" && modelData.name === root.answer.song
-                    readonly property bool last: root.ready && root.mode === "declarative" && modelData.name === root.answer.stagingSong
-                    live: !!modelData.ok
-                    lamp: here ? "✓" : (last ? "○" : "")
-                    name: modelData.ok ? "" + modelData.name : modelData.name + " · unreadable"
-                    nameColor: modelData.ok ? Kit.dark(1) : Kit.dark(0.55)
-                    onActivated: {
-                        if (here) root.open = false
-                        else root.act("stage", "" + modelData.name)
-                    }
-                }
+    PopupWindow {
+        id: fly
+        visible: root.open
+        color: "transparent"
+        anchor.item: root
+        anchor.edges: Edges.Top
+        anchor.gravity: Edges.Top
+        anchor.adjustment: PopupAdjustment.Slide
+        grabFocus: false
+        implicitWidth: rim.width
+        implicitHeight: Math.max(446, rim.height + 6)
+        mask: Region { item: rim }
+        Shortcut { sequence: "Escape"; enabled: fly.visible; onActivated: root.open = false }
+        HyprlandFocusGrab {
+            windows: [fly]
+            active: fly.visible && fly.backingWindowVisible
+            onCleared: {
+                root.goneAt = Date.now()
+                root.open = false
             }
-            PickRow {
-                lamp: root.mode === "declarative" ? "✓" : ""
-                name: root.ready && root.answer.declared ? "[declarative] " + root.answer.declared : "[declarative]"
-                onActivated: {
-                    if (root.mode === "declarative") root.open = false
-                    else root.act("declarative")
-                }
-            }
-            Head { name: root.ready && root.answer.draftsSong ? "drafts · " + root.answer.draftsSong : "drafts" }
-            PickRow { visible: root.ready && root.drafts.length === 0; live: false; name: "no saved drafts"; nameColor: Kit.dark(0.55) }
-            Repeater {
-                model: root.drafts
-                PickRow {
-                    required property var modelData
-                    lamp: modelData.current ? "✓" : ""
-                    name: "" + modelData.name
-                    onActivated: {
-                        if (modelData.current) root.open = false
-                        else root.act("enter", "" + modelData.name)
-                    }
-                }
-            }
-            PickRow { name: "[+ new draft]"; onActivated: root.act("new") }
-            PickRow { visible: root.mode === "staging"; name: "[save as draft]"; onActivated: root.act("save") }
         }
-    }
-
-    LazyLoader {
-        active: root.open
-
-        PopupWindow {
-            visible: true
-            color: "transparent"
-            anchor.item: root
-            anchor.edges: Edges.Top | Edges.Left
-            anchor.gravity: Edges.Top | Edges.Right
-            anchor.adjustment: PopupAdjustment.FlipY | PopupAdjustment.Slide
-            implicitWidth: 250
-            implicitHeight: body.implicitHeight + 8
-
-            Timer {
-                interval: 600
-                running: !cellMa.containsMouse && !paneHover.hovered && root.hotRow === null
-                onTriggered: root.open = false
-            }
-
+        Glass {
+            id: rim
+            y: fly.implicitHeight - 6 - height
+            width: 234
+            height: plate.height + 14
             Rectangle {
-                anchors.fill: parent
-                radius: 3
-                color: Qt.rgba(245 / 255, 251 / 255, 251 / 255, 0.97)
+                id: plate
+                x: 7; y: 7; width: 220
+                height: col.height + 10
+                radius: 2
+                color: Kit.plate()
                 border.width: 1
                 border.color: Kit.dark(0.55)
-                HoverHandler { id: paneHover }
-                Loader {
-                    id: body
-                    x: 1; y: 4
-                    sourceComponent: pickBody
+                Column {
+                    id: col
+                    x: 1; y: 5; width: parent.width - 2
+                    Repeater {
+                        model: root.rows
+                        SwitchRow {}
+                    }
                 }
             }
         }

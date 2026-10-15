@@ -11,6 +11,7 @@ import Quickshell.Services.SystemTray
 import "../.."
 import "Kit.js" as Kit
 import "Rice.js" as Rice
+import "Power.js" as Power
 
 Item {
     id: root
@@ -910,6 +911,58 @@ Item {
             hoverEnabled: pr.enabled
             cursorShape: pr.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
             onClicked: pr.activated()
+        }
+    }
+
+    component PowerRow: Item {
+        id: pw
+        property string action: ""
+        property string label: Power.find(pw.action) ? Power.find(pw.action).name + (pw.more ? "\u2026" : "") : ""
+        property string pic: pw.action
+        property bool more: false
+        readonly property string hint: Power.find(pw.action) ? Power.find(pw.action).hint : ""
+        signal activated()
+        width: parent ? parent.width : 298
+        height: 40
+        Rectangle {
+            anchors.fill: parent
+            radius: 2
+            color: pwMa.containsMouse ? Kit.accent(0.10) : "transparent"
+        }
+        Icon {
+            x: 9; y: 10; width: 20; height: 20
+            sourceSize: Qt.size(20, 20)
+            opacity: pw.enabled ? 1 : 0.4
+            src: root.iconDir + "power/" + pw.pic + ".svg"
+        }
+        Column {
+            x: 38
+            width: pw.width - 38 - 6
+            anchors.verticalCenter: parent.verticalCenter
+            Text {
+                width: parent.width
+                text: pw.label
+                elide: Text.ElideRight
+                color: pw.enabled ? Kit.ink : Kit.dark(0.40)
+                font: Kit.bodyFont(12)
+                textFormat: Text.PlainText
+            }
+            Text {
+                visible: pw.hint !== ""
+                width: parent.width
+                text: pw.hint
+                elide: Text.ElideRight
+                color: Kit.dark(0.72)
+                font: Kit.bodyFont(11)
+                textFormat: Text.PlainText
+            }
+        }
+        MouseArea {
+            id: pwMa
+            anchors.fill: parent
+            hoverEnabled: pw.enabled
+            cursorShape: pw.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+            onClicked: pw.activated()
         }
     }
 
@@ -2205,9 +2258,13 @@ Item {
             cell: orb
             flushLeft: true
             readonly property int rise: 24
-            implicitWidth: sm.stageOpen ? sm.x + stagePlate.x + stagePlate.width : 440
+            implicitWidth: Math.max(sm.x + stagePlate.x + stagePlate.width, sm.x + powerPlate.x + powerPlate.width)
             implicitHeight: startFly.rise + 560
-            mask: Region { width: 440; height: startFly.implicitHeight; Region { item: stagePlate } }
+            mask: Region {
+                width: 440; height: startFly.implicitHeight
+                Region { item: sm.stageOpen ? stagePlate : null }
+                Region { item: sm.powerOpen ? powerPlate : null }
+            }
 
             Rim {
                 y: startFly.rise
@@ -2302,6 +2359,10 @@ Item {
                     onRiceKeyChanged: sm.ricePending = false
                     Timer { interval: 10000; running: sm.ricePending; onTriggered: sm.ricePending = false }
                     readonly property var stageRows: sm.ricePending ? [Rice.waiting(null)] : Rice.switchRows(sm.riceAnswer, root.livery.riceMode)
+                    readonly property var draftRows: sm.ricePending || !Rice.ready(sm.riceAnswer) ? [] : [{
+                        head: "drafts" + (sm.riceAnswer.draftsSong ? " · " + sm.riceAnswer.draftsSong : ""),
+                        label: "", mark: "", live: false, kind: "", name: "", here: false
+                    }].concat(Rice.draftRows(sm.riceAnswer), [Rice.newDraft(), Rice.saveDraft(root.livery.riceMode)])
                     function stage() {
                         sm.powerOpen = false
                         sm.stageOpen = !sm.stageOpen
@@ -2503,13 +2564,23 @@ Item {
                             id: stageCol
                             x: 1; y: 5; width: parent.width - 2
                             Repeater {
-                                model: sm.stageRows
+                                model: sm.stageRows.concat(sm.draftRows)
                                 PaneRow {
                                     required property var modelData
-                                    plate: true; rh: 26; textX: 24
+                                    plate: true; rh: modelData.head !== undefined ? 30 : 26; textX: 24
                                     label: modelData.label
                                     enabled: modelData.live
                                     onActivated: sm.rice(modelData)
+                                    Rectangle { visible: modelData.head !== undefined; x: 8; y: 5; width: parent.width - 16; height: 1; color: Kit.dark(0.20) }
+                                    Text {
+                                        visible: modelData.head !== undefined
+                                        x: 9; y: 10; height: 20
+                                        verticalAlignment: Text.AlignVCenter
+                                        text: modelData.head || ""
+                                        color: Kit.dark(0.72)
+                                        font: Kit.boldFont(12)
+                                        textFormat: Text.PlainText
+                                    }
                                     Text { x: 9; anchors.verticalCenter: parent.verticalCenter; text: modelData.mark; color: Kit.ink; font: Kit.heavyFont(12); textFormat: Text.PlainText }
                                 }
                             }
@@ -2563,22 +2634,26 @@ Item {
                     }
 
                     Plate {
+                        id: powerPlate
                         visible: sm.powerOpen
-                        x: 296; y: 514 - height; width: 132
+                        width: 300
                         height: powCol.height + 10
+                        x: sm.width + 3
+                        y: Math.max(-startFly.rise - 1, lockBox.y + lockBox.height - height)
                         Column {
                             id: powCol
-                            x: 1; y: 5; width: 130
-                            PaneRow { plate: true; rh: 26; label: "Switch user"; enabled: false }
-                            PaneRow { plate: true; rh: 26; label: "Log off"; onActivated: sm.shutdownDialog("logout") }
-                            PaneRow { plate: true; rh: 26; label: "Sleep"; onActivated: sm.power("suspend") }
-                            PaneRow { plate: true; rh: 26; label: "Hibernate"; onActivated: sm.power("hibernate") }
-                            PaneRow { plate: true; rh: 26; label: "Restart"; onActivated: sm.shutdownDialog("reboot") }
-                            PaneRow { plate: true; rh: 26; label: "Shut down…"; onActivated: sm.shutdownDialog() }
+                            x: 1; y: 5; width: parent.width - 2
+                            PowerRow { label: "Switch user"; pic: "switch-user"; enabled: false }
+                            PowerRow { action: "logout"; onActivated: sm.shutdownDialog("logout") }
+                            PowerRow { action: "suspend"; onActivated: sm.power("suspend") }
+                            PowerRow { action: "hibernate"; onActivated: sm.power("hibernate") }
+                            PowerRow { action: "reboot"; onActivated: sm.shutdownDialog("reboot") }
+                            PowerRow { action: "shutdown"; more: true; onActivated: sm.shutdownDialog() }
                         }
                     }
 
                     Item {
+                        id: lockBox
                         x: 296; y: 520; width: 132; height: 32
                         Rectangle { x: -1; y: -1; width: 134; height: 34; radius: 4; color: "transparent"; border.width: 1; border.color: Kit.dark(0.85) }
                         Rectangle {
@@ -3030,7 +3105,6 @@ Item {
             stagingEngine: root.stagingEngine
             slot: "ricemode"
             anchors.right: more.left
-            anchors.rightMargin: 6
             anchors.top: parent.top
         }
     }

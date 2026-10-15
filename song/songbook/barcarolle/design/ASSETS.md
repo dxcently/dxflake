@@ -45,6 +45,10 @@
   overflow glyphs, the audio device icons and `apps/fcitx.svg`, a keyboard)
   are original drawings made here in the manner of the Aero tray; no
   Microsoft artwork is copied.
+- `../icons/power/*.svg` (switch user, log off, sleep, hibernate, restart,
+  shut down) are original drawings made here for the Start menu's power
+  flyout, in the manner of the Aero tray glyphs; no Microsoft artwork is
+  copied.
 - `../icons/user/*.svg` are the Start menu's user pictures, drawn here:
   `chrome-sash.svg`, the default when there is no `~/.face`, is a chrome
   figure taken from the person in `barcarolle-logon.jpg` with a folded

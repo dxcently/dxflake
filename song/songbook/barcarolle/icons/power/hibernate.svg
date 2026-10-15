@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+<defs>
+<linearGradient id="sf" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="18"><stop offset="0" stop-color="#b4f0ff"/><stop offset="0.48" stop-color="#46b8f2"/><stop offset="0.52" stop-color="#1a86da"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+</defs>
+<path d="M10 10L10 2M10 5L11.67 3.01M10 5L8.33 3.01M10 10L3.07 6M5.67 7.5L4.78 5.06M5.67 7.5L3.11 7.95M10 10L3.07 14M5.67 12.5L3.11 12.05M5.67 12.5L4.78 14.94M10 10L10 18M10 15L8.33 16.99M10 15L11.67 16.99M10 10L16.93 14M14.33 12.5L15.22 14.94M14.33 12.5L16.89 12.05M10 10L16.93 6M14.33 7.5L16.89 7.95M14.33 7.5L15.22 5.06" fill="none" stroke="#0b4f8c" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M10 10L10 2M10 5L11.67 3.01M10 5L8.33 3.01M10 10L3.07 6M5.67 7.5L4.78 5.06M5.67 7.5L3.11 7.95M10 10L3.07 14M5.67 12.5L3.11 12.05M5.67 12.5L4.78 14.94M10 10L10 18M10 15L8.33 16.99M10 15L11.67 16.99M10 10L16.93 14M14.33 12.5L15.22 14.94M14.33 12.5L16.89 12.05M10 10L16.93 6M14.33 7.5L16.89 7.95M14.33 7.5L15.22 5.06" fill="none" stroke="url(#sf)" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="10" cy="10" r="1.6" fill="#ffffff" stroke="#0b4f8c" stroke-width=".8"/>
+</svg>

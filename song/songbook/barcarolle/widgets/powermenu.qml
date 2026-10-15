@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Hyprland
 import "Kit.js" as Kit
+import "Power.js" as Power
 
 PanelWindow {
     id: root
@@ -11,20 +12,7 @@ PanelWindow {
     required property var livery
     required property var bridge
 
-    readonly property var actions: [
-        { name: "Log off", action: "logout",
-          hint: "Closes your programs and ends your session so that someone else can log in." },
-        { name: "Lock", action: "lock",
-          hint: "Locks the screen. Your programs keep running and your password brings them back." },
-        { name: "Restart", action: "reboot",
-          hint: "Closes all programs, shuts down, and then starts the computer again." },
-        { name: "Sleep", action: "suspend",
-          hint: "Keeps your session in memory and puts the computer in a low-power state so that you can resume quickly." },
-        { name: "Hibernate", action: "hibernate",
-          hint: "Saves your session to disk and turns the computer off. It comes back where you left it." },
-        { name: "Shut down", action: "shutdown",
-          hint: "Closes all programs and turns the computer off so that you can safely cut the power." }
-    ]
+    readonly property var actions: Power.actions
     readonly property int defaultSel: 5
 
     property int sel: root.defaultSel
