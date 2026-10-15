@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+<defs>
+<linearGradient id="bk" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="15"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#d6e0e8"/><stop offset="0.55" stop-color="#9fb1bf"/><stop offset="1" stop-color="#e4ebf0"/></linearGradient>
+<linearGradient id="fr" gradientUnits="userSpaceOnUse" x1="0" y1="9" x2="0" y2="19"><stop offset="0" stop-color="#b4f0ff"/><stop offset="0.48" stop-color="#46b8f2"/><stop offset="0.52" stop-color="#1a86da"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+<linearGradient id="fh" gradientUnits="userSpaceOnUse" x1="0" y1="4.5" x2="0" y2="11"><stop offset="0" stop-color="#b4f0ff"/><stop offset="0.48" stop-color="#46b8f2"/><stop offset="0.52" stop-color="#1a86da"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+</defs>
+<path d="M1.5 15.5C1.5 11.6 3.8 9.6 7 9.6S12.5 11.6 12.5 15.5Z" fill="url(#bk)" stroke="#2f4353" stroke-linejoin="round"/>
+<circle cx="7" cy="5.6" r="3" fill="url(#bk)" stroke="#2f4353"/>
+<path d="M6.5 18.5C6.5 14.4 9 12.4 12.5 12.4S18.5 14.4 18.5 18.5Z" fill="url(#fr)" stroke="#0b4f8c" stroke-linejoin="round"/>
+<circle cx="12.5" cy="8" r="3.3" fill="url(#fh)" stroke="#0b4f8c"/>
+<path d="M10.6 6.9C10.9 6 11.6 5.6 12.4 5.6" fill="none" stroke="#ffffff" stroke-opacity=".85" stroke-linecap="round"/>
+<path d="M8.4 16.2C8.8 14.8 10 13.9 11.4 13.8" fill="none" stroke="#ffffff" stroke-opacity=".6" stroke-linecap="round"/>
+</svg>

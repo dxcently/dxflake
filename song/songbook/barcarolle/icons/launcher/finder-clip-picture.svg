@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#023340" stop-opacity="0.42"/><stop offset="1" stop-color="#023340" stop-opacity="0"/></radialGradient>
+<linearGradient id="pp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3f0f3"/></linearGradient>
+<linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8f7fc"/><stop offset="1" stop-color="#4fc9e1"/></linearGradient>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fc9e1"/><stop offset="1" stop-color="#d6f8fc"/></linearGradient>
+<linearGradient id="hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fe0a4"/><stop offset="1" stop-color="#16946a"/></linearGradient>
+<radialGradient id="sun" cx="0.4" cy="0.35" r="0.6"><stop offset="0" stop-color="#fffbe0"/><stop offset="0.6" stop-color="#ffd84a"/><stop offset="1" stop-color="#e09a10"/></radialGradient>
+</defs>
+<ellipse cx="16" cy="29.5" rx="11" ry="1.8" fill="url(#sh)"/>
+<path d="M6.5 2.5H19.5L25.5 8.5V25.5L23 28L20.5 25.5L18 28L15.5 25.5L13 28L10.5 25.5L8 28L6.5 26.5Z" fill="url(#pp)" stroke="#3f7f8f" stroke-linejoin="round"/>
+<path d="M7.5 25.5V3.5H19" fill="none" stroke="#fff"/>
+<path d="M19.5 2.5V8.5H25.5Z" fill="url(#ear)" stroke="#3f7f8f" stroke-linejoin="round"/>
+<rect x="8.5" y="10.5" width="15" height="12" fill="url(#sky)" stroke="#3f7f8f"/>
+<path d="M9 22L13 17.2L16 19.8L18.4 17.6L23 21.4V22Z" fill="url(#hill)"/>
+<path d="M9 22L13 17.2L16 19.8L18.4 17.6L23 21.4" fill="none" stroke="#c9ffe6" stroke-opacity=".8"/>
+<circle cx="19.5" cy="13.8" r="1.8" fill="url(#sun)"/>
+<path d="M9.5 11.5H22.5" stroke="#fff" stroke-opacity=".7"/>
+</svg>

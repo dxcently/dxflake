@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "0",
+  "polarity": "dark",
+  "palette": {
+    "bg":     "#0c2130",
+    "fg":     "#ffffff",
+    "accent": "#77fffc",
+    "urgent": "#f47a72",
+    "hot":    "#3bdcac"
+  },
+  "base16": {
+    "base00": "#0c2130",
+    "base01": "#1a3d4d",
+    "base02": "#2a5a6d",
+    "base03": "#6a8f9c",
+    "base04": "#8db0ba",
+    "base05": "#ffffff",
+    "base06": "#ffffff",
+    "base07": "#f5fbfb",
+    "base08": "#f47a72",
+    "base09": "#f2a65e",
+    "base0A": "#e8cf6a",
+    "base0B": "#3bdcac",
+    "base0C": "#4fd8e6",
+    "base0D": "#25bbcf",
+    "base0E": "#a99cf6",
+    "base0F": "#a68861"
+  },
+  "bar": {
+    "bg":     "#0c2130",
+    "fg":     "#ffffff",
+    "accent": "#77fffc"
+  },
+  "notif": {
+    "bg":     "#f5fbfb",
+    "fg":     "#0c2130",
+    "urgent": "#f47a72"
+  },
+  "window": {
+    "border":         "#2aa3b8",
+    "borderInactive": "#1a4a5a"
+  },
+  "geometry": {
+    "gapsOut": 8,
+    "gapsIn": 4,
+    "borderSize": 1,
+    "rounding": 10,
+    "blurEnabled": true,
+    "terminalOpacity": 0.95
+  }
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1"><stop offset="0" stop-color="#03243f" stop-opacity="0.45"/><stop offset="1" stop-color="#03243f" stop-opacity="0"/></radialGradient>
+<linearGradient id="cap" gradientUnits="userSpaceOnUse" x1="11" y1="0" x2="21" y2="0"><stop offset="0" stop-color="#7d91a1"/><stop offset="0.3" stop-color="#ffffff"/><stop offset="0.62" stop-color="#cbd6df"/><stop offset="1" stop-color="#6f8495"/></linearGradient>
+<linearGradient id="hold" gradientUnits="userSpaceOnUse" x1="0" y1="12" x2="0" y2="24"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#8a9cab"/></linearGradient>
+<linearGradient id="stem" gradientUnits="userSpaceOnUse" x1="14" y1="0" x2="18" y2="0"><stop offset="0" stop-color="#8a9cab"/><stop offset="0.4" stop-color="#ffffff"/><stop offset="1" stop-color="#7d91a1"/></linearGradient>
+<linearGradient id="base" gradientUnits="userSpaceOnUse" x1="0" y1="26" x2="0" y2="29"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="#c3cfd9"/><stop offset="1" stop-color="#7d91a1"/></linearGradient>
+<linearGradient id="ring" gradientUnits="userSpaceOnUse" x1="0" y1="13" x2="0" y2="15"><stop offset="0" stop-color="#b9f3ff"/><stop offset="0.5" stop-color="#2aa6ee"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+</defs>
+<ellipse cx="0" cy="0" rx="1" ry="1" fill="url(#sh)" transform="matrix(9.5 0 0 1.8 16 29.4)"/>
+<rect x="14.5" y="20.5" width="3" height="6.5" fill="url(#stem)" stroke="#2f4353" stroke-width=".8"/>
+<rect x="9.5" y="26.5" width="13" height="2.5" rx="1.25" fill="url(#base)" stroke="#2f4353"/>
+<path d="M7.5 12.5A8.5 8.5 0 0 0 24.5 12.5" fill="none" stroke="#2f4353" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M7.5 12.5A8.5 8.5 0 0 0 24.5 12.5" fill="none" stroke="url(#hold)" stroke-width="1.6" stroke-linecap="round"/>
+<rect x="11.5" y="2.5" width="9" height="16" rx="4.5" fill="url(#cap)" stroke="#2f4353"/>
+<path d="M13 6.5H19M12.5 8.5H19.5M12.5 10.5H19.5" stroke="#3d5468" stroke-opacity=".6"/>
+<rect x="12" y="13" width="8" height="2" fill="url(#ring)"/>
+<path d="M13.6 4.5V12M13.6 15.5V17" stroke="#fff" stroke-width="1.1" stroke-linecap="round" stroke-opacity=".9"/>
+</svg>

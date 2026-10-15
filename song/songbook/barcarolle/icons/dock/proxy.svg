@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<defs>
+<linearGradient id="px-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6f8ff" stop-opacity=".75"/><stop offset="1" stop-color="#7cc4e6" stop-opacity=".45"/></linearGradient>
+<linearGradient id="px-t" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e2f6ff"/><stop offset=".5" stop-color="#7ccaf0"/><stop offset="1" stop-color="#2f8ccc"/></linearGradient>
+<linearGradient id="px-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#244a5e"/><stop offset="1" stop-color="#06121a"/></linearGradient>
+</defs>
+<rect x="1.5" y="4.5" width="10" height="10" rx="1" fill="url(#px-g)" stroke="#d6f2ff" stroke-opacity=".85"/>
+<rect x="4.5" y="1.5" width="10" height="10" rx="1" fill="url(#px-b)" stroke="#f2fbff"/>
+<rect x="5" y="2" width="9" height="3" fill="url(#px-t)"/>
+<path d="M5 2.5H14" stroke="#fff"/>
+<path d="M6 6h1v1h1v1h1v1h-1v1h-1v1h-1v-1h1v-1h1v-1h-1v-1h-1z" fill="#4ff0b8"/>
+</svg>

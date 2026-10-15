@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10">
+<defs><linearGradient id="trd-f" gradientUnits="userSpaceOnUse" x1="0" y1="2" x2="0" y2="8"><stop offset="0" stop-color="#8bdaf9"/><stop offset="1" stop-color="#1a6fa8"/></linearGradient></defs>
+<path d="M1.5 2.5H8.5L5 7.5Z" fill="url(#trd-f)" stroke="#143f58" stroke-linejoin="round"/>
+<path d="M2.9 3.5H7.1" stroke="#fff" stroke-opacity=".8"/>
+</svg>

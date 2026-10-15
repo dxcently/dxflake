@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+<defs>
+<radialGradient id="g3-vignette" cx="252" cy="214" r="260" gradientTransform="translate(0 214) scale(1 .78) translate(0 -214)" gradientUnits="userSpaceOnUse"><stop offset=".72" stop-color="#021219" stop-opacity="0"/><stop offset="1" stop-color="#021219" stop-opacity=".5"/></radialGradient>
+<linearGradient id="g3-sheen" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".26"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<path d="M70 58Q252 52 434 58Q458 59 459 84Q463 214 459 344Q458 369 434 370Q252 376 70 370Q46 369 45 344Q41 214 45 84Q46 59 70 58Z" fill="url(#g3-vignette)"/>
+<path d="M72 62Q160 58 262 59L120 366L70 366Q50 364 49 344Q45 214 49 86Q50 64 72 62Z" fill="url(#g3-sheen)"/>
+<path d="M76 64Q252 57 428 64" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+<defs>
+<radialGradient id="g3-beam-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".4" stop-color="#b8fdfd" stop-opacity=".7"/><stop offset="1" stop-color="#77fffc" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="252" cy="214" rx="232" ry="26" fill="url(#g3-beam-glow)"/>
+<rect x="48" y="211" width="408" height="6" rx="3" fill="#fff"/>
+<ellipse cx="252" cy="214" rx="50" ry="8" fill="#fff"/>
+</svg>

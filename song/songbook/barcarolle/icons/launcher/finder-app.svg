@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#023340" stop-opacity="0.42"/><stop offset="1" stop-color="#023340" stop-opacity="0"/></radialGradient>
+<linearGradient id="hi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.95"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/></linearGradient>
+<radialGradient id="gel" cx="0.5" cy="0.88" r="0.86"><stop offset="0" stop-color="#d6fbff" stop-opacity="0.97"/><stop offset="0.5" stop-color="#1cb2d2" stop-opacity="0.95"/><stop offset="1" stop-color="#05607a"/></radialGradient>
+</defs>
+<ellipse cx="16" cy="29.6" rx="9" ry="1.8" fill="url(#sh)"/>
+<path d="M14.6 3.9Q16 2.5 17.4 3.9L28.1 14.6Q29.5 16 28.1 17.4L17.4 28.1Q16 29.5 14.6 28.1L3.9 17.4Q2.5 16 3.9 14.6Z" fill="url(#gel)" stroke="#04566c"/>
+<path d="M5.2 16.6L15.2 26.6Q16 27.4 16.8 26.6L26.8 16.6" fill="none" stroke="#c9f7ff" stroke-opacity=".7"/>
+<path d="M15.2 4.9Q16 4.1 16.8 4.9L26.4 14.5Q16 11.2 5.6 14.5Z" fill="url(#hi)"/>
+<g fill="none" stroke-linecap="round" stroke-linejoin="round">
+<path d="M12 22L16 11.5L20 22M13.5 18.4H18.5" stroke="#03485a" stroke-opacity=".75" stroke-width="3.6"/>
+<path d="M12 22L16 11.5L20 22M13.5 18.4H18.5" stroke="#fff" stroke-width="1.8"/></g>
+</svg>

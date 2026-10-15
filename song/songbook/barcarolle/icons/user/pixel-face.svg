@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<defs>
+<linearGradient id="pf-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1590e0"/><stop offset=".55" stop-color="#7fd4ff"/><stop offset="1" stop-color="#e2f7ff"/></linearGradient>
+<linearGradient id="pf-hill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c4f764"/><stop offset="1" stop-color="#2c962a"/></linearGradient>
+<linearGradient id="pf-hill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fe04a"/><stop offset="1" stop-color="#1f7a24"/></linearGradient>
+<radialGradient id="pf-bub" cx=".35" cy=".3" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="#fff" stop-opacity=".1"/><stop offset=".85" stop-color="#c8f2ff" stop-opacity=".3"/><stop offset="1" stop-color="#fff" stop-opacity=".85"/></radialGradient>
+<radialGradient id="pf-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".6" stop-color="#fff" stop-opacity=".45"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<linearGradient id="pf-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".8"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></linearGradient>
+</defs>
+<rect x="5" y="7" width="120" height="120" rx="20" fill="#06345c" opacity=".3"/>
+<rect x="4" y="4" width="120" height="120" rx="20" fill="url(#pf-sky)"/>
+<path d="M4 100C30 90 52 94 70 100S110 98 124 90V104A20 20 0 0 1 104 124H24A20 20 0 0 1 4 104Z" fill="url(#pf-hill2)"/>
+<path d="M4 104C34 98 62 104 84 110S114 106 124 102V104A20 20 0 0 1 104 124H24A20 20 0 0 1 4 104Z" fill="url(#pf-hill)"/>
+<circle cx="108" cy="22" r="9" fill="url(#pf-bub)"/>
+<circle cx="18" cy="28" r="5" fill="url(#pf-bub)"/>
+<circle cx="114" cy="46" r="3.5" fill="url(#pf-bub)"/>
+<ellipse cx="64" cy="64" rx="52" ry="40" fill="url(#pf-halo)"/>
+<g shape-rendering="crispEdges">
+<rect x="32" y="40" width="16" height="24" fill="#0c2130"/>
+<rect x="80" y="40" width="16" height="24" fill="#0c2130"/>
+<rect x="32" y="40" width="8" height="8" fill="#f5fbfb"/>
+<rect x="80" y="40" width="8" height="8" fill="#f5fbfb"/>
+<rect x="40" y="72" width="8" height="8" fill="#0c2130"/>
+<rect x="56" y="72" width="16" height="8" fill="#0c2130"/>
+<rect x="80" y="72" width="8" height="8" fill="#0c2130"/>
+<rect x="48" y="80" width="8" height="8" fill="#0c2130"/>
+<rect x="72" y="80" width="8" height="8" fill="#0c2130"/>
+<rect x="16" y="64" width="16" height="8" fill="#ff9fc0"/>
+<rect x="96" y="64" width="16" height="8" fill="#ff9fc0"/>
+</g>
+<path d="M4 52V24A20 20 0 0 1 24 4H104A20 20 0 0 1 124 24V52Q64 64 4 52Z" fill="url(#pf-gloss)"/>
+<rect x="5" y="5" width="118" height="118" rx="19" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2"/>
+<rect x="4" y="4" width="120" height="120" rx="20" fill="none" stroke="#0a4f86" stroke-opacity=".55"/>
+</svg>

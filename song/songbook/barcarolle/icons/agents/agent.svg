@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+<defs>
+<radialGradient id="ag-sh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#03243f" stop-opacity=".45"/><stop offset="1" stop-color="#03243f" stop-opacity="0"/></radialGradient>
+<radialGradient id="ag-orb" cx=".5" cy=".78" r=".78"><stop offset="0" stop-color="#c2fcff"/><stop offset=".45" stop-color="#2fb4ee"/><stop offset="1" stop-color="#0a4f9c"/></radialGradient>
+<radialGradient id="ag-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#e0ffff" stop-opacity=".75"/><stop offset="1" stop-color="#e0ffff" stop-opacity="0"/></radialGradient>
+<linearGradient id="ag-hi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity=".06"/></linearGradient>
+</defs>
+<ellipse cx="24" cy="45.3" rx="16" ry="2.6" fill="url(#ag-sh)"/>
+<circle cx="24" cy="23" r="21.5" fill="url(#ag-orb)" stroke="#073f7a" stroke-opacity=".8"/>
+<ellipse cx="24" cy="37" rx="15" ry="6" fill="url(#ag-glow)"/>
+<g transform="translate(.8 1.6)" stroke="#063d73" fill="#063d73" opacity=".4"><path d="M24 25V13M24 25l-10.5 6.5M24 25l10.5 6.5" stroke-width="4.6" stroke-linecap="round"/><circle cx="24" cy="25" r="6.2"/><circle cx="24" cy="12" r="4.6"/><circle cx="13" cy="32" r="4.6"/><circle cx="35" cy="32" r="4.6"/></g>
+<g stroke="#063d73" fill="#063d73" stroke-opacity=".6" fill-opacity=".6" stroke-width="2.6"><path d="M24 25V13M24 25l-10.5 6.5M24 25l10.5 6.5" stroke-width="7.2" stroke-linecap="round"/><circle cx="24" cy="25" r="6.2"/><circle cx="24" cy="12" r="4.6"/><circle cx="13" cy="32" r="4.6"/><circle cx="35" cy="32" r="4.6"/></g>
+<g stroke="#fff" fill="#fff"><path d="M24 25V13M24 25l-10.5 6.5M24 25l10.5 6.5" stroke-width="4.6" stroke-linecap="round"/><circle cx="24" cy="25" r="6.2"/><circle cx="24" cy="12" r="4.6"/><circle cx="13" cy="32" r="4.6"/><circle cx="35" cy="32" r="4.6"/></g>
+<ellipse cx="24" cy="11.5" rx="15.5" ry="8.5" fill="url(#ag-hi)"/>
+<circle cx="24" cy="23" r="20.3" fill="none" stroke="#fff" stroke-opacity=".35"/>
+</svg>

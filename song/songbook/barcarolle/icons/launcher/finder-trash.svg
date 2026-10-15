@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#023340" stop-opacity="0.42"/><stop offset="1" stop-color="#023340" stop-opacity="0"/></radialGradient>
+<linearGradient id="cl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#bfe9f1" stop-opacity="0.92"/><stop offset="0.3" stop-color="#f4fbfd" stop-opacity="0.6"/><stop offset="0.7" stop-color="#f4fbfd" stop-opacity="0.55"/><stop offset="1" stop-color="#a6dde8" stop-opacity="0.92"/></linearGradient>
+<linearGradient id="in" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#05708a" stop-opacity="0.9"/><stop offset="1" stop-color="#3cc3dc" stop-opacity="0.7"/></linearGradient>
+<linearGradient id="gel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a6f0fa"/><stop offset="0.5" stop-color="#0aa2c4"/><stop offset="1" stop-color="#6fdcef"/></linearGradient>
+</defs>
+<ellipse cx="16" cy="29.3" rx="10.5" ry="2" fill="url(#sh)"/>
+
+<path d="M6.5 9.5L9 27Q9.2 28.5 10.7 28.5H21.3Q22.8 28.5 23 27L25.5 9.5Z" fill="url(#cl)" stroke="#0a8aa8"/>
+<g fill="#0a8aa8" fill-opacity=".4"><rect x="11" y="13" width="1" height="1"/><rect x="14" y="13" width="1" height="1"/><rect x="17" y="13" width="1" height="1"/><rect x="20" y="13" width="1" height="1"/><rect x="11" y="16" width="1" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="17" y="16" width="1" height="1"/><rect x="20" y="16" width="1" height="1"/><rect x="11" y="19" width="1" height="1"/><rect x="14" y="19" width="1" height="1"/><rect x="17" y="19" width="1" height="1"/><rect x="20" y="19" width="1" height="1"/><rect x="11" y="22" width="1" height="1"/><rect x="14" y="22" width="1" height="1"/><rect x="17" y="22" width="1" height="1"/><rect x="20" y="22" width="1" height="1"/><rect x="11" y="25" width="1" height="1"/><rect x="14" y="25" width="1" height="1"/><rect x="17" y="25" width="1" height="1"/><rect x="20" y="25" width="1" height="1"/></g>
+<path d="M8.3 12L10.2 26.4H11.2L9.6 12Z" fill="#fff" fill-opacity=".85"/>
+<ellipse cx="16" cy="9.3" rx="10" ry="2.8" fill="url(#gel)" stroke="#04607a"/>
+<ellipse cx="16" cy="9.2" rx="7.9" ry="1.5" fill="url(#in)"/>
+
+<path d="M6.6 9.6Q7.2 11.8 16 11.9Q24.8 11.8 25.4 9.6" fill="none" stroke="url(#gel)" stroke-width="1.6"/>
+<path d="M6.8 10.2Q8 12.5 16 12.6Q24 12.5 25.2 10.2" fill="none" stroke="#04607a" stroke-opacity=".7"/>
+<path d="M8.4 7.9Q11 6.9 15 6.8" fill="none" stroke="#fff" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16">
+<defs>
+<linearGradient id="gel" gradientUnits="userSpaceOnUse" x1="0" y1="1" x2="0" y2="15"><stop offset="0" stop-color="#5fd3ea"/><stop offset=".55" stop-color="#0893b5"/><stop offset="1" stop-color="#6fe0f2"/></linearGradient>
+</defs>
+<g fill="#035569" stroke="#035569" stroke-width="1.8" stroke-linejoin="round"><ellipse cx="3.2" cy="12.6" rx="2.5" ry="1.9" transform="rotate(-22 3.2 12.6)"/><ellipse cx="10.4" cy="11.2" rx="2.5" ry="1.9" transform="rotate(-22 10.4 11.2)"/><path d="M5 12.2V3.4L12.2 1.8V10.8" fill="none"/><path d="M5 4.6L12.2 3"/></g>
+<g fill="url(#gel)"><ellipse cx="3.2" cy="12.6" rx="2.5" ry="1.9" transform="rotate(-22 3.2 12.6)"/><ellipse cx="10.4" cy="11.2" rx="2.5" ry="1.9" transform="rotate(-22 10.4 11.2)"/></g>
+<path d="M5 12.2V3.4L12.2 1.8V10.8" fill="none" stroke="url(#gel)" stroke-width="1.1" stroke-linejoin="round"/>
+<path d="M5 4.6L12.2 3" stroke="url(#gel)" stroke-width="1.8"/>
+<ellipse cx="2.4" cy="12" rx="1.1" ry=".55" transform="rotate(-22 2.4 12)" fill="#fff" fill-opacity=".9"/>
+</svg>

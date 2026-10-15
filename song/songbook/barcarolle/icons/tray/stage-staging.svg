@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<defs>
+<linearGradient id="chip" gradientUnits="userSpaceOnUse" x1="0" y1="1" x2="0" y2="15"><stop offset="0" stop-color="#b4f0ff"/><stop offset="0.48" stop-color="#46b8f2"/><stop offset="0.52" stop-color="#1a86da"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+<linearGradient id="gls" gradientUnits="userSpaceOnUse" x1="0" y1="1.5" x2="0" y2="8"><stop offset="0" stop-color="#ffffff" stop-opacity=".7"/><stop offset="1" stop-color="#ffffff" stop-opacity=".12"/></linearGradient>
+</defs>
+<rect x="1.5" y="1.5" width="13" height="13" rx="3" fill="url(#chip)" fill-opacity=".85" stroke="#0b4f8c"/>
+<path d="M2 4.5A2.5 2.5 0 0 1 4.5 2H11.5A2.5 2.5 0 0 1 14 4.5V7.6H2Z" fill="url(#gls)"/>
+<ellipse cx="6.3" cy="11" rx="2.3" ry="1.7" transform="rotate(-22 6.3 11)" fill="#0b3c6a" fill-opacity=".55"/>
+<ellipse cx="6.1" cy="10.6" rx="2.3" ry="1.7" transform="rotate(-22 6.1 10.6)" fill="#ffffff"/>
+<path d="M8.1 10.2V3.6C9.6 4.1 11.4 5 11 7.4" fill="none" stroke="#ffffff" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

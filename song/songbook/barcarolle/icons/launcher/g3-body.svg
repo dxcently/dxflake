@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+<defs>
+<linearGradient id="g3-ice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".72"/><stop offset=".6" stop-color="#e8f5f7" stop-opacity=".5"/><stop offset="1" stop-color="#c4dde4" stop-opacity=".62"/></linearGradient>
+<linearGradient id="g3-ice-gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity=".1"/></linearGradient>
+<linearGradient id="g3-well" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5964"/><stop offset="1" stop-color="#15252d"/></linearGradient>
+<radialGradient id="g3-glass" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#1f4c58"/><stop offset=".6" stop-color="#0a2630"/><stop offset="1" stop-color="#030e13"/></radialGradient>
+<linearGradient id="g3-speaker" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78e6ee" stop-opacity=".78"/><stop offset="1" stop-color="#147f95" stop-opacity=".7"/></linearGradient>
+<linearGradient id="g3-slot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c6dce2"/><stop offset="1" stop-color="#f4fafb"/></linearGradient>
+</defs>
+<rect x="40" y="440" width="34" height="10" rx="3" fill="#8fb0b9" fill-opacity=".6" stroke="#5f8995" stroke-width="1"/><rect x="430" y="440" width="34" height="10" rx="3" fill="#8fb0b9" fill-opacity=".6" stroke="#5f8995" stroke-width="1"/>
+<path d="M58 26L446 26Q492 26 494 70L502 402Q502 446 460 446L44 446Q2 446 2 402L10 70Q12 26 58 26Z" fill="url(#g3-ice)" stroke="#5f8995" stroke-width="2"/>
+<path d="M58 29L446 29Q489 29 491 70L492 100Q252 88 13 100L13 70Q15 29 58 29Z" fill="url(#g3-ice-gloss)" fill-opacity=".6"/>
+<path d="M58 29.5L446 29.5Q489.5 29.5 491 70L498.5 402Q498.5 442.5 460 442.5L44 442.5Q5.5 442.5 5.5 402L13.5 70Q15 29.5 58 29.5Z" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
+<path d="M60 31L444 31" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+<rect x="30" y="42" width="444" height="344" rx="26" fill="url(#g3-well)" stroke="#a9c6ce" stroke-width="2"/>
+<path d="M70 58Q252 52 434 58Q458 59 459 84Q463 214 459 344Q458 369 434 370Q252 376 70 370Q46 369 45 344Q41 214 45 84Q46 59 70 58Z" fill="url(#g3-glass)" stroke="#02090d" stroke-width="2"/>
+<rect x="30" y="402" width="72" height="32" rx="16" fill="url(#g3-speaker)" stroke="#0a5566" stroke-width="1.5"/>
+<rect x="402" y="402" width="72" height="32" rx="16" fill="url(#g3-speaker)" stroke="#0a5566" stroke-width="1.5"/>
+<g fill="#08505f" fill-opacity=".6"><circle cx="44" cy="410" r="2.1"/><circle cx="51" cy="410" r="2.1"/><circle cx="58" cy="410" r="2.1"/><circle cx="65" cy="410" r="2.1"/><circle cx="72" cy="410" r="2.1"/><circle cx="79" cy="410" r="2.1"/><circle cx="86" cy="410" r="2.1"/><circle cx="47.5" cy="418" r="2.1"/><circle cx="54.5" cy="418" r="2.1"/><circle cx="61.5" cy="418" r="2.1"/><circle cx="68.5" cy="418" r="2.1"/><circle cx="75.5" cy="418" r="2.1"/><circle cx="82.5" cy="418" r="2.1"/><circle cx="89.5" cy="418" r="2.1"/><circle cx="44" cy="426" r="2.1"/><circle cx="51" cy="426" r="2.1"/><circle cx="58" cy="426" r="2.1"/><circle cx="65" cy="426" r="2.1"/><circle cx="72" cy="426" r="2.1"/><circle cx="79" cy="426" r="2.1"/><circle cx="86" cy="426" r="2.1"/><circle cx="416" cy="410" r="2.1"/><circle cx="423" cy="410" r="2.1"/><circle cx="430" cy="410" r="2.1"/><circle cx="437" cy="410" r="2.1"/><circle cx="444" cy="410" r="2.1"/><circle cx="451" cy="410" r="2.1"/><circle cx="458" cy="410" r="2.1"/><circle cx="419.5" cy="418" r="2.1"/><circle cx="426.5" cy="418" r="2.1"/><circle cx="433.5" cy="418" r="2.1"/><circle cx="440.5" cy="418" r="2.1"/><circle cx="447.5" cy="418" r="2.1"/><circle cx="454.5" cy="418" r="2.1"/><circle cx="461.5" cy="418" r="2.1"/><circle cx="416" cy="426" r="2.1"/><circle cx="423" cy="426" r="2.1"/><circle cx="430" cy="426" r="2.1"/><circle cx="437" cy="426" r="2.1"/><circle cx="444" cy="426" r="2.1"/><circle cx="451" cy="426" r="2.1"/><circle cx="458" cy="426" r="2.1"/></g>
+<path d="M36 410Q66 403 96 410" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/><path d="M408 410Q438 403 468 410" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+<rect x="186" y="400" width="132" height="20" rx="10" fill="url(#g3-slot)" stroke="#9ab8c0" stroke-width="1.5"/>
+<path d="M200 410H304" stroke="#4d6d77" stroke-width="2.5" stroke-linecap="round"/>
+<circle cx="252" cy="434" r="4.5" fill="#8fb0b9" stroke="#5f8995" stroke-width="1"/>
+</svg>

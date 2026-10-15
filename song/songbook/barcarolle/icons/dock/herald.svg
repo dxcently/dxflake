@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+<defs>
+<linearGradient id="hr-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c9dfec"/></linearGradient>
+<linearGradient id="hr-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6fbff"/><stop offset="1" stop-color="#a9cde2"/></linearGradient>
+<radialGradient id="hr-d" cx=".38" cy=".32" r=".75"><stop offset="0" stop-color="#ffe7bf"/><stop offset=".45" stop-color="#f7952e"/><stop offset="1" stop-color="#b7480a"/></radialGradient>
+</defs>
+<rect x=".5" y="3.5" width="10" height="7" fill="url(#hr-b)" stroke="#2d5b75"/>
+<path d="M1 4L5.5 7.5 10 4Z" fill="url(#hr-f)" stroke="#2d5b75" stroke-linejoin="round"/>
+<path d="M1.5 9.5H9.5" stroke="#fff" stroke-opacity=".8"/>
+<circle cx="9.5" cy="2.5" r="2.1" fill="url(#hr-d)" stroke="#8a3504" stroke-width=".8"/>
+<circle cx="8.9" cy="1.9" r=".6" fill="#fff" fill-opacity=".9"/>
+</svg>

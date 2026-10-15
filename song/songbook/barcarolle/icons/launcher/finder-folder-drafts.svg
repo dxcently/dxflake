@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#023340" stop-opacity="0.42"/><stop offset="1" stop-color="#023340" stop-opacity="0"/></radialGradient>
+<linearGradient id="hi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.95"/><stop offset="1" stop-color="#fff" stop-opacity="0.12"/></linearGradient>
+<linearGradient id="bk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3cc6e0"/><stop offset="1" stop-color="#056f8a"/></linearGradient>
+<linearGradient id="pp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e4f1f4"/></linearGradient>
+<linearGradient id="fr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ae6f4" stop-opacity="0.6"/><stop offset="0.55" stop-color="#0aa2c4" stop-opacity="0.6"/><stop offset="1" stop-color="#5fd6ec" stop-opacity="0.8"/></linearGradient>
+</defs>
+<ellipse cx="16" cy="28.6" rx="14" ry="2.3" fill="url(#sh)"/>
+<path d="M3.5 25.5V7.5Q3.5 6.5 4.5 6.5H11L12.5 8.5H27.5Q28.5 8.5 28.5 9.5V25.5Z" fill="url(#bk)" stroke="#04607a"/>
+<path d="M4.5 7.5H10.5M13 9.5H27.5" stroke="#b6f3fb" stroke-opacity=".8"/>
+<rect x="6" y="10" width="20" height="13" fill="url(#pp)"/>
+<path d="M8 12.5H22M8 15.5H24M8 18.5H21" stroke="#a9ccd5"/>
+<path d="M2.5 13.5H29.5L28.2 26.6Q28.1 27.5 27.2 27.5H4.8Q3.9 27.5 3.8 26.6Z" fill="url(#fr)" stroke="#04607a"/>
+<path d="M3.6 14.5H28.4L28.1 18.2Q16 16.6 3.9 18.2Z" fill="url(#hi)"/>
+<path d="M5 26.5H27" stroke="#fff" stroke-opacity=".7"/>
+<g transform="rotate(-38 16 21)"><path d="M9.5 19.4H20.6L23.4 21L20.6 22.6H9.5Z" fill="#035569" fill-opacity=".85" stroke="#035569" stroke-opacity=".85" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.5 19.4H20.6L23.4 21L20.6 22.6H9.5Z" fill="#fff"/><path d="M20.6 19.4V22.6" stroke="#035569" stroke-width=".8"/><path d="M22.2 20.3L23.4 21L22.2 21.7Z" fill="#035569"/><path d="M11.4 19.4V22.6" stroke="#5fd6ec" stroke-width="1.4"/></g>
+</svg>

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10">
+<defs><linearGradient id="trr-f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#93cfe4"/></linearGradient></defs>
+<path d="M3.5 1.5V8.5L7 5Z" fill="url(#trr-f)" stroke="#3a6b80" stroke-linejoin="round"/>
+</svg>

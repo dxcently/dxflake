@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+<defs>
+<radialGradient id="sh" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#023340" stop-opacity="0.42"/><stop offset="1" stop-color="#023340" stop-opacity="0"/></radialGradient>
+<linearGradient id="pp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e3f0f3"/></linearGradient>
+<linearGradient id="ear" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8f7fc"/><stop offset="1" stop-color="#4fc9e1"/></linearGradient>
+<radialGradient id="gel" cx="0.4" cy="0.3" r="0.75"><stop offset="0" stop-color="#bff4fb"/><stop offset="0.5" stop-color="#14a9c9"/><stop offset="1" stop-color="#05708a"/></radialGradient>
+</defs>
+<ellipse cx="16" cy="29.5" rx="11" ry="1.8" fill="url(#sh)"/>
+<path d="M7.5 2.5H19.5L25.5 8.5V28.5H7.5Z" fill="url(#pp)" stroke="#3f7f8f" stroke-linejoin="round"/>
+<path d="M8.5 27.5V3.5H19" fill="none" stroke="#fff"/>
+<path d="M19.5 2.5V8.5H25.5Z" fill="url(#ear)" stroke="#3f7f8f" stroke-linejoin="round"/>
+<path d="M10.5 6.5H16.5M10.5 11.5H22.5M10.5 14.5H17.5" stroke="#82b2bf" stroke-dasharray="2 1"/>
+<circle cx="21" cy="22" r="6.3" fill="url(#gel)" stroke="#035569"/>
+<path d="M17.4 19.2Q21 16.6 24.6 19.2" fill="none" stroke="#fff" stroke-opacity=".7"/>
+<path d="M21 18.6V25.4M17.6 22H24.4" stroke="#035569" stroke-opacity=".6" stroke-width="3" stroke-linecap="round"/>
+<path d="M21 18.6V25.4M17.6 22H24.4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

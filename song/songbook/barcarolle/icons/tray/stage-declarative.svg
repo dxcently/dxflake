@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+<defs>
+<linearGradient id="disc" gradientUnits="userSpaceOnUse" x1="0" y1="1" x2="0" y2="14"><stop offset="0" stop-color="#ffffff"/><stop offset="0.45" stop-color="#d6e0e8"/><stop offset="0.55" stop-color="#9fb1bf"/><stop offset="1" stop-color="#e4ebf0"/></linearGradient>
+<linearGradient id="lab" gradientUnits="userSpaceOnUse" x1="0" y1="5.5" x2="0" y2="10.5"><stop offset="0" stop-color="#b4f0ff"/><stop offset="0.48" stop-color="#46b8f2"/><stop offset="0.52" stop-color="#1a86da"/><stop offset="1" stop-color="#0b5aa6"/></linearGradient>
+<linearGradient id="lk" gradientUnits="userSpaceOnUse" x1="0" y1="9" x2="0" y2="15.5"><stop offset="0" stop-color="#fff6c8"/><stop offset="0.5" stop-color="#f1c75a"/><stop offset="1" stop-color="#c8901a"/></linearGradient>
+</defs>
+<circle cx="7" cy="7.5" r="6.5" fill="url(#disc)" stroke="#2f4353"/>
+<circle cx="7" cy="7.5" r="4.4" fill="none" stroke="#9fb1bf" stroke-width=".6"/>
+<circle cx="7" cy="7.5" r="2.4" fill="url(#lab)" stroke="#0b4f8c" stroke-width=".8"/>
+<circle cx="7" cy="7.5" r=".7" fill="#2f4353"/>
+<path d="M2.6 5.2A5 5 0 0 1 5.2 2.6" fill="none" stroke="#ffffff" stroke-linecap="round"/>
+<path d="M10.6 10.5V9.2A1.9 1.9 0 0 1 14.4 9.2V10.5" fill="none" stroke="#7a5a08" stroke-width="1.6"/>
+<path d="M10.6 10.5V9.2A1.9 1.9 0 0 1 14.4 9.2V10.5" fill="none" stroke="#e4ebf0" stroke-width=".7"/>
+<rect x="9.5" y="10.5" width="6" height="5" rx="1" fill="url(#lk)" stroke="#7a5a08"/>
+<path d="M12.5 12.4V13.6" stroke="#7a5a08" stroke-width="1.1" stroke-linecap="round"/>
+</svg>

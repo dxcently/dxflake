@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>barcarolle · G3 launcher</title>
+<style>
+:root{--bar-accent:#77fffc;--accent:#25bbcf;--plate:#f5fbfb;--ink:#0c2130;--ink-2:rgba(12,33,48,.72);--ink-3:rgba(12,33,48,.55);
+--ui:"Segoe UI","Selawik","Noto Sans","Open Sans","DejaVu Sans",sans-serif;
+--gloss:linear-gradient(180deg,rgba(255,255,255,.10) 0,rgba(255,255,255,.04) 50%,rgba(255,255,255,0) 50%);
+--streaks:repeating-linear-gradient(110deg,rgba(255,255,255,0) 0 60px,rgba(255,255,255,.035) 60px 120px,rgba(255,255,255,0) 120px 320px);}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#081e2b}
+body{font:12px/1.35 var(--ui);color:#fff}
+.frame{position:relative;width:1920px;height:1080px;overflow:hidden;background:#081e2b url(../cover/barcarolle-desktop.jpg) center/cover no-repeat}
+.abs{position:absolute}
+.glass{background:rgba(12,33,48,.64);backdrop-filter:blur(14px) saturate(1.35)}
+.glass::before{content:"";position:absolute;inset:0;background:var(--gloss),var(--streaks);pointer-events:none}
+.bar{left:0;bottom:0;width:1920px;height:40px;box-shadow:inset 0 1px 0 rgba(12,33,48,.85),inset 0 2px 0 rgba(255,255,255,.30)}
+.orb{left:0;top:0;width:54px;height:40px}
+.orb svg{position:absolute;left:7px;top:0;filter:drop-shadow(0 0 4px rgba(119,255,252,.45))}
+.ws{position:absolute;top:2px;width:56px;height:36px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.20),0 0 0 1px rgba(12,33,48,.60);background:linear-gradient(180deg,rgba(255,255,255,.10) 0,rgba(255,255,255,.03) 50%,rgba(255,255,255,0) 50%)}
+.ws.empty{width:38px;background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.ws svg{position:absolute;left:14px;top:4px}
+.ws .chip{position:absolute;left:1px;top:22px;min-width:15px;height:13px;padding:0 2px;border-radius:2px;background:rgba(12,33,48,.90);font:600 11px/13px var(--ui);text-align:center}
+.clock{left:1829px;top:0;width:76px;height:40px;display:flex;flex-direction:column;justify-content:center;text-align:center;line-height:15px;text-shadow:0 1px 1px rgba(0,0,0,.45)}
+.panel{border-radius:4px;border:1px solid rgba(12,33,48,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);padding:12px 14px}
+.panel h1{font-size:18px;font-weight:400;margin-bottom:6px}
+.panel h2{font-size:13px;font-weight:600;margin-bottom:6px}
+.panel code{font:11px "Consolas","Noto Sans Mono",monospace;color:var(--bar-accent)}
+.panel li{margin-left:16px}
+
+/* the G3: every layer shares the 760x480 viewBox */
+.g3{position:absolute;width:760px;height:480px}
+.g3>img,.g3>.content,.g3>.frost{position:absolute;left:0;top:0}
+/* the plastic is translucent: hyprglass blurs and tints what is behind every pixel above 0.05 alpha; mocked with a backdrop blur masked to the body */
+.g3>.frost{width:760px;height:480px;background:rgba(8,30,43,.22);backdrop-filter:blur(14px) saturate(1.35);-webkit-mask:url(../icons/launcher/g3-body.svg) 0 0/760px 480px no-repeat;mask:url(../icons/launcher/g3-body.svg) 0 0/760px 480px no-repeat}
+.g3 .scr,.g3 .note,.g3 .beam{transform-origin:252px 214px}
+/* the screen rect 62,72 380x284: the Finder's top level, cut from launcher-finder.png (its tile 1 screen sits at 78,143).
+   That render already carries the glare and scanlines, so here it sits above g3-glare; in the QML the content sits under it. */
+.content{left:62px!important;top:72px!important;width:380px;height:284px;border-radius:10px;overflow:hidden;background:url(launcher-finder.png) no-repeat -78px -143px}
+.cell{position:relative;width:124px;height:100px;overflow:hidden;border-radius:3px;background:rgba(2,18,25,.25)}
+.strip{flex-wrap:wrap;row-gap:8px}
+.key{left:810px;top:786px;width:300px;height:30px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:600;text-shadow:0 1px 1px rgba(0,0,0,.5);border:1px solid rgba(12,33,48,.85);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}
+.key:hover{background-color:rgba(42,163,184,.55)}
+.key kbd{font:600 11px var(--ui);padding:1px 6px;border-radius:3px;background:rgba(245,251,251,.92);color:var(--ink);box-shadow:0 1px 0 rgba(12,33,48,.6)}
+.lab{font-size:11px;text-align:center;margin-top:3px;color:rgba(255,255,255,.85)}
+.strip{display:flex;gap:10px;margin-top:4px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute">
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset=".5" stop-color="#fff" stop-opacity=".12"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <radialGradient id="orbBody" cx=".5" cy=".62" r=".6"><stop offset="0" stop-color="#2aa3b8"/><stop offset=".55" stop-color="#0f4a5e"/><stop offset="1" stop-color="#081e2b"/></radialGradient>
+    <radialGradient id="orbBounce" cx=".5" cy="1" r=".5"><stop offset="0" stop-color="#77fffc" stop-opacity=".6"/><stop offset="1" stop-color="#77fffc" stop-opacity="0"/></radialGradient>
+    <linearGradient id="orbGloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".6"/><stop offset="1" stop-color="#fff" stop-opacity=".04"/></linearGradient>
+    <radialGradient id="dialFace" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#17384a"/><stop offset="1" stop-color="#081e2b"/></radialGradient>
+    <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f5fbfb"/><stop offset=".35" stop-color="#8db0ba"/><stop offset=".6" stop-color="#f5fbfb"/><stop offset="1" stop-color="#6a8f9c"/></linearGradient>
+    <linearGradient id="arcBand" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3bdcac"/><stop offset=".5" stop-color="#e8cf6a"/><stop offset="1" stop-color="#f47a72"/></linearGradient>
+
+    <symbol id="i-term" viewBox="0 0 32 32"><rect x="2" y="4" width="28" height="24" rx="3" fill="#0c2130" stroke="#8db0ba"/><rect x="2" y="4" width="28" height="6" rx="3" fill="#2aa3b8"/><path d="M7 15l4 3-4 3" fill="none" stroke="#3bdcac" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 22h7" stroke="#d4eaec" stroke-width="2" stroke-linecap="round"/><rect x="2" y="4" width="28" height="12" rx="3" fill="url(#gl)"/></symbol>
+    <symbol id="i-web" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#1d6fb8"/><circle cx="16" cy="16" r="13" fill="none" stroke="#0c2130" stroke-opacity=".5"/><path d="M5 13c5 2 17 2 22 0M5 19c5-2 17-2 22 0M16 3c-6 7-6 19 0 26M16 3c6 7 6 19 0 26" fill="none" stroke="#9fe3f0" stroke-width="1.2"/><path d="M3 22c8-12 20-14 27-10" fill="none" stroke="#f2a65e" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="11" r="10" fill="url(#gl)"/></symbol>
+    <symbol id="i-code" viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" rx="5" fill="#1a7fc2"/><path d="M12 11l-5 5 5 5M20 11l5 5-5 5M17.5 9l-3 14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="3" width="26" height="13" rx="5" fill="url(#gl)"/></symbol>
+    <symbol id="i-notes" viewBox="0 0 32 32"><path d="M16 2l11 8-4 18H9L5 10z" fill="#7b5cd6"/><path d="M16 2l-4 13 4 13M16 2l4 13-4 13M5 10l7 5h8l7-5" fill="none" stroke="#c9bcff" stroke-width="1"/><path d="M16 2l11 8-11 6-11-6z" fill="url(#gl)"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" rx="7" fill="#5865c8"/><path d="M9 11h14a2 2 0 012 2v6a2 2 0 01-2 2h-7l-5 4v-4H9a2 2 0 01-2-2v-6a2 2 0 012-2z" fill="#fff"/><rect x="3" y="3" width="26" height="13" rx="7" fill="url(#gl)"/></symbol>
+    <symbol id="i-music" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#e2574c"/><path d="M13 21V9l9-2v12" fill="none" stroke="#fff" stroke-width="2"/><circle cx="11" cy="21" r="2.6" fill="#fff"/><circle cx="20" cy="19" r="2.6" fill="#fff"/><circle cx="16" cy="11" r="10" fill="url(#gl)"/></symbol>
+    <symbol id="i-files" viewBox="0 0 32 32"><path d="M3 8a2 2 0 012-2h7l3 3h12a2 2 0 012 2v15a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="#e8b84a"/><path d="M3 13h26v13a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="#f6d77a"/><rect x="3" y="13" width="26" height="7" fill="url(#gl)"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="#5f7d8a"/><path d="M16 7v4M16 21v4M7 16h4M21 16h4M9.6 9.6l2.8 2.8M19.6 19.6l2.8 2.8M9.6 22.4l2.8-2.8M19.6 12.4l2.8-2.8" stroke="#eef6f7" stroke-width="2.4" stroke-linecap="round"/><circle cx="16" cy="16" r="4" fill="#eef6f7"/><circle cx="16" cy="11" r="10" fill="url(#gl)"/></symbol>
+    <symbol id="i-mixer" viewBox="0 0 32 32"><rect x="3" y="3" width="26" height="26" rx="5" fill="#2aa3b8"/><path d="M10 8v16M16 8v16M22 8v16" stroke="#0c2130" stroke-width="2"/><rect x="7" y="17" width="6" height="3" rx="1" fill="#fff"/><rect x="13" y="11" width="6" height="3" rx="1" fill="#fff"/><rect x="19" y="20" width="6" height="3" rx="1" fill="#fff"/><rect x="3" y="3" width="26" height="13" rx="5" fill="url(#gl)"/></symbol>
+    <symbol id="i-drawer" viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="11" height="9" rx="1.5" fill="none" stroke="#fff" stroke-opacity=".7"/><rect x="3.5" y="1.5" width="11" height="9" rx="1.5" fill="#0c2130" fill-opacity=".6" stroke="#fff"/></symbol>
+    <symbol id="g-mag" viewBox="0 0 16 16"><circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 10l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+</svg>
+<div class="frame" id="frame">
+  <div class="abs glass panel" style="left:24px;top:24px;width:700px">
+    <h1>barcarolle · the SUPER+Space launcher is an iMac G3</h1>
+    <ul>
+      <li>SUPER+Space (or the key below): the G3 pops in at the centre of the focused monitor, its CRT powers on, a Happy Mac with a ♪ face shows, then the Finder fades in on the screen. Again to power off. The ♪ orb opens the Win7 Start menu instead (not shown).</li>
+      <li>Layers (<code>icons/launcher/g3-*.svg</code>, one 760×480 viewBox, bottom → top): <code>body · screen · note · [Finder] · beam · glare · led</code>. Front-facing, its plastic translucent so the glass blurs and warps the desktop through it; the drawing fills <code>x 0–504, y 24–480</code>, the window's crop box, centred on the output; the G3 pops about its own centre <code>(252, 252)</code>.</li>
+      <li>Screen rect for the Finder: <code>x 62, y 72, 380×284</code> in G3 units. Shown here at its top level, cut from <code>launcher-finder.png</code>, which has every state.</li>
+      <li>Original drawing, inspired by the iMac G3; no Apple logo.</li>
+    </ul>
+  </div>
+  <div class="abs glass panel" style="left:24px;top:440px;width:584px;height:300px">
+    <h2>pop-in + power-on, 460 ms (t in ms)</h2><div class="strip" id="sOpen"></div>
+  </div>
+  <div class="abs glass panel" style="left:1312px;top:440px;width:584px;height:300px">
+    <h2>close, 320 ms</h2><div class="strip" id="sClose"></div>
+  </div>
+  <div class="abs glass key" id="key" title="Replay"><kbd>SUPER</kbd>+<kbd>Space</kbd> replay</div>
+  <div class="g3" id="g3" style="left:708px;top:288px"></div>
+  <div class="abs bar glass" id="bar">
+    <div class="abs orb" id="orb" title="Start">
+      <svg width="40" height="40" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="18" fill="url(#orbBody)"/>
+        <ellipse cx="20" cy="33" rx="11" ry="4" fill="url(#orbBounce)"/>
+        <circle cx="20" cy="20" r="17.5" fill="none" stroke="#fff" stroke-opacity=".35"/>
+        <circle cx="20" cy="20" r="18.5" fill="none" stroke="#0c2130" stroke-opacity=".85"/>
+        <g transform="translate(13.5 9)">
+          <path d="M5 2v15" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+          <ellipse cx="3" cy="17.5" rx="3.6" ry="2.7" transform="rotate(-20 3 17.5)" fill="#fff" stroke="#081e2b" stroke-opacity=".45"/>
+          <path d="M6 2c3 0 3 2.2 6 2.2" fill="none" stroke="#4fd8e6" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M6 5c3 0 3 2.2 6 2.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M6 8c3 0 3 2.2 6 2.2" fill="none" stroke="#2aa3b8" stroke-width="1.8" stroke-linecap="round"/>
+        </g>
+        <ellipse cx="20" cy="10" rx="14" ry="7.5" fill="url(#orbGloss)"/>
+      </svg>
+    </div>
+    <div class="ws" style="left:58px"><svg width="28" height="28"><use href="#i-term"/></svg><span class="chip">1</span></div>
+    <div class="ws" style="left:122px"><svg width="28" height="28"><use href="#i-web"/></svg><span class="chip">2</span></div>
+    <div class="ws" style="left:186px"><svg width="28" height="28"><use href="#i-code"/></svg><span class="chip">3</span></div>
+    <div class="ws empty" style="left:250px"><span class="chip">4</span></div>
+    <div class="abs clock"><span>3:42 PM</span><span>10/9/2026</span></div>
+  </div>
+</div>
+<script>
+const L = "../icons/launcher/";
+const E = { lin: t => t, step: t => 1, outCubic: t => 1 - (1 - t) ** 3, inCubic: t => t ** 3, outQuad: t => 1 - (1 - t) ** 2, inQuad: t => t * t, inOutQuad: t => t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2 };
+// [property, t0, v0, t1, v1, easing] — the same tables as intent.md
+const OPEN = [
+  ["g3.opacity", 0, 0, 60, 1, "lin"], ["g3.scale", 0, .12, 170, 1.04, "outCubic"], ["g3.scale", 170, 1.04, 230, 1, "inOutQuad"],
+  ["led.opacity", 180, 0, 180, 1, "step"], ["led.opacity", 205, 1, 205, .25, "step"], ["led.opacity", 230, .25, 230, 1, "step"],
+  ["beam.opacity", 200, 0, 230, 1, "outQuad"], ["beam.xScale", 200, .1, 250, 1, "outCubic"],
+  ["screen.opacity", 250, 0, 250, 1, "step"], ["note.opacity", 250, 0, 250, 1, "step"], ["screen.yScale", 250, .02, 330, 1, "outCubic"],
+  ["beam.opacity", 250, 1, 300, 0, "lin"],
+  ["screen.brightness", 250, .6, 330, .25, "lin"], ["screen.brightness", 330, .25, 460, 0, "outQuad"],
+  ["note.opacity", 340, 1, 420, 0, "lin"], ["content.opacity", 340, 0, 440, 1, "outQuad"]];
+const CLOSE = [
+  ["content.opacity", 0, 1, 70, 0, "inQuad"],
+  ["screen.brightness", 40, 0, 80, .5, "lin"], ["screen.yScale", 60, 1, 140, .02, "inCubic"],
+  ["screen.opacity", 140, 1, 140, 0, "step"], ["beam.opacity", 140, 0, 140, 1, "step"], ["beam.xScale", 140, 1, 190, .03, "inCubic"],
+  ["beam.opacity", 190, 1, 230, 0, "lin"], ["led.opacity", 190, 1, 190, 0, "step"],
+  ["g3.scale", 200, 1, 320, .12, "inCubic"], ["g3.opacity", 260, 1, 320, 0, "lin"]];
+const SHUT = { "g3.opacity": 0, "g3.scale": .12, "led.opacity": 0, "beam.opacity": 0, "beam.xScale": .1, "screen.opacity": 0, "screen.yScale": .02, "screen.brightness": 0, "note.opacity": 0, "content.opacity": 0 };
+const OPENED = Object.assign({}, SHUT, { "g3.opacity": 1, "g3.scale": 1, "led.opacity": 1, "beam.xScale": 1, "screen.opacity": 1, "screen.yScale": 1, "content.opacity": 1 });
+function at(tracks, t, from) {
+  const s = Object.assign({}, from);
+  for (const [p, t0, v0, t1, v1, e] of tracks) { if (t < t0) continue; const k = t1 > t0 ? Math.min(1, (t - t0) / (t1 - t0)) : 1; s[p] = v0 + (v1 - v0) * E[e](k); }
+  return s;
+}
+function build(el) {
+  el.innerHTML = `<div class="frost"></div><img src="${L}g3-body.svg"><img class="scr" src="${L}g3-screen.svg"><img class="note" src="${L}g3-note.svg">
+    <img class="beam" src="${L}g3-beam.svg"><img src="${L}g3-glare.svg"><div class="content"></div><img class="led" src="${L}g3-led.svg">`;
+}
+// the G3 pops in about its own centre, (252,252) in G3 units
+function paint(el, s, k = 1) {
+  el.style.transformOrigin = "252px 252px";
+  el.style.transform = `scale(${k * s["g3.scale"]})`;
+  el.style.opacity = s["g3.opacity"];
+  const q = c => el.querySelector(c);
+  const sy = `scale(1,${s["screen.yScale"]})`, br = `brightness(${1 + s["screen.brightness"]})`;
+  Object.assign(q(".scr").style, { opacity: s["screen.opacity"], transform: sy, filter: br });
+  Object.assign(q(".note").style, { opacity: s["note.opacity"] * s["screen.opacity"], transform: sy, filter: br });
+  q(".content").style.opacity = s["content.opacity"];
+  Object.assign(q(".beam").style, { opacity: s["beam.opacity"], transform: `scale(${s["beam.xScale"]},1)` });
+  q(".led").style.opacity = s["led.opacity"];
+}
+const big = document.getElementById("g3"); build(big); paint(big, OPENED);
+function strip(id, tracks, from, times) {
+  const host = document.getElementById(id);
+  for (const t of times) {
+    const wrap = document.createElement("div");
+    const cell = document.createElement("div"); cell.className = "cell";
+    const g = document.createElement("div"); g.className = "g3"; build(g);
+    // the G3 centre (252,252) on the cell centre (62,50), at 0.19
+    g.style.left = "-190px"; g.style.top = "-202px";
+    paint(g, at(tracks, t, from), .19);
+    cell.appendChild(g); wrap.appendChild(cell);
+    const l = document.createElement("div"); l.className = "lab"; l.textContent = "t " + t; wrap.appendChild(l);
+    host.appendChild(wrap);
+  }
+}
+strip("sOpen", OPEN, SHUT, [40, 120, 200, 235, 270, 310, 380, 460]);
+strip("sClose", CLOSE, OPENED, [0, 50, 100, 150, 200, 250, 290, 320]);
+// SUPER+Space (Space here, or the key) replays
+let open = true, t0 = 0, run = null;
+function toggle() {
+  open = !open;
+  const tracks = open ? OPEN : CLOSE, from = open ? SHUT : OPENED, total = open ? 460 : 320;
+  t0 = performance.now(); cancelAnimationFrame(run);
+  const step = now => { const t = now - t0; paint(big, at(tracks, Math.min(t, total), from)); if (t < total) run = requestAnimationFrame(step); };
+  run = requestAnimationFrame(step);
+}
+document.getElementById("key").onclick = toggle;
+document.addEventListener("keydown", ev => { if (ev.code === "Space") { ev.preventDefault(); toggle(); } });
+</script>
+</body></html>

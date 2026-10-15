@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16">
+<defs>
+<linearGradient id="gel" gradientUnits="userSpaceOnUse" x1="0" y1="1" x2="0" y2="15"><stop offset="0" stop-color="#5fd3ea"/><stop offset=".55" stop-color="#0893b5"/><stop offset="1" stop-color="#6fe0f2"/></linearGradient>
+</defs>
+<g fill="#035569" stroke="#035569" stroke-width="2" stroke-linejoin="round"><ellipse cx="4.5" cy="12.4" rx="3.4" ry="2.5" transform="rotate(-22 4.5 12.4)"/><rect x="6.8" y="1" width="2" height="11.4"/><path d="M7.8 1Q8.6 3.6 11 4.8Q13.3 6 12.5 9.8Q11.7 7.7 8.4 7.3Z"/></g>
+<g fill="url(#gel)"><ellipse cx="4.5" cy="12.4" rx="3.4" ry="2.5" transform="rotate(-22 4.5 12.4)"/><rect x="6.8" y="1" width="2" height="11.4"/><path d="M7.8 1Q8.6 3.6 11 4.8Q13.3 6 12.5 9.8Q11.7 7.7 8.4 7.3Z"/></g>
+<ellipse cx="3.5" cy="11.6" rx="1.6" ry=".8" transform="rotate(-22 3.5 11.6)" fill="#fff" fill-opacity=".9"/>
+<path d="M7.5 2V10.5" stroke="#c9f7ff" stroke-opacity=".75"/>
+</svg>

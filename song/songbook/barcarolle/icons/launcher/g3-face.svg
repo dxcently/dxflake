@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+<defs>
+<radialGradient id="g3-face-halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+</defs>
+<ellipse cx="252" cy="214" rx="110" ry="100" fill="url(#g3-face-halo)"/>
+<g shape-rendering="crispEdges">
+<rect x="226" y="186" width="4" height="4" fill="#0c2130"/>
+<rect x="274" y="186" width="4" height="4" fill="#0c2130"/>
+<rect x="222" y="190" width="4" height="4" fill="#0c2130"/>
+<rect x="278" y="190" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="194" width="4" height="4" fill="#0c2130"/>
+<rect x="282" y="194" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="198" width="4" height="4" fill="#0c2130"/>
+<rect x="234" y="198" width="8" height="4" fill="#0c2130"/>
+<rect x="262" y="198" width="8" height="4" fill="#0c2130"/>
+<rect x="282" y="198" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="202" width="4" height="4" fill="#0c2130"/>
+<rect x="230" y="202" width="4" height="4" fill="#0c2130"/>
+<rect x="234" y="202" width="4" height="4" fill="#f5fbfb"/>
+<rect x="238" y="202" width="8" height="4" fill="#0c2130"/>
+<rect x="258" y="202" width="8" height="4" fill="#0c2130"/>
+<rect x="266" y="202" width="4" height="4" fill="#f5fbfb"/>
+<rect x="270" y="202" width="4" height="4" fill="#0c2130"/>
+<rect x="282" y="202" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="206" width="4" height="4" fill="#0c2130"/>
+<rect x="230" y="206" width="16" height="4" fill="#0c2130"/>
+<rect x="258" y="206" width="16" height="4" fill="#0c2130"/>
+<rect x="282" y="206" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="210" width="4" height="4" fill="#0c2130"/>
+<rect x="234" y="210" width="8" height="4" fill="#0c2130"/>
+<rect x="262" y="210" width="8" height="4" fill="#0c2130"/>
+<rect x="282" y="210" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="214" width="4" height="4" fill="#0c2130"/>
+<rect x="282" y="214" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="218" width="4" height="4" fill="#0c2130"/>
+<rect x="238" y="218" width="4" height="4" fill="#0c2130"/>
+<rect x="250" y="218" width="4" height="4" fill="#0c2130"/>
+<rect x="262" y="218" width="4" height="4" fill="#0c2130"/>
+<rect x="282" y="218" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="222" width="4" height="4" fill="#0c2130"/>
+<rect x="242" y="222" width="8" height="4" fill="#0c2130"/>
+<rect x="254" y="222" width="8" height="4" fill="#0c2130"/>
+<rect x="282" y="222" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="226" width="4" height="4" fill="#0c2130"/>
+<rect x="282" y="226" width="4" height="4" fill="#0c2130"/>
+<rect x="218" y="230" width="4" height="4" fill="#0c2130"/>
+<rect x="282" y="230" width="4" height="4" fill="#0c2130"/>
+<rect x="222" y="234" width="4" height="4" fill="#0c2130"/>
+<rect x="278" y="234" width="4" height="4" fill="#0c2130"/>
+<rect x="226" y="238" width="4" height="4" fill="#0c2130"/>
+<rect x="274" y="238" width="4" height="4" fill="#0c2130"/>
+</g>
+</svg>
