@@ -17,15 +17,7 @@ let
   # Not a service: Eidolon is an interactive terminal harness, so this is a
   # package on PATH, not a systemd unit like melete.nix/mneme.nix. The dev
   # worktree at ~/eidolon is for editing it, and never what this installs.
-  #
-  # The features carry the backend `[claude_cli]` below names; upstream
-  # gates it default-off and its flake exposes no build with it on. Drop
-  # them once it does. buildRustPackage copies `buildFeatures` into these at
-  # call time, so overriding `buildFeatures` would not reach cargo.
-  eidolonPkg = inputs.eidolon.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs {
-    cargoBuildFeatures = [ "eidolon-cli/claude-cli" ];
-    cargoCheckFeatures = [ "eidolon-cli/claude-cli" ];
-  };
+  eidolonPkg = inputs.eidolon.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   config = {
@@ -46,11 +38,6 @@ in
     # apparatus — these tools hold their own credentials.
     habit.home.xdg.configFile."eidolon/config.toml".text = ''
       default_model = "ollama:deepseek-v4.1-flash"
-
-      # The Claude Code CLI as a backend, reachable as claude-cli:<model>.
-      # Billed to the existing subscription, not to the ollama key.
-      [claude_cli]
-      models = [ "claude-*", "sonnet", "opus", "haiku" ]
     '';
   };
 }
