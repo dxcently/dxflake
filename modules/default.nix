@@ -84,6 +84,7 @@
     security = ./dendrites/security.nix;
     slskd = ./dendrites/slskd.nix;
     snowglobe = ./dendrites/snowglobe.nix;
+    sops = ./dendrites/sops.nix;
     starship = ./dendrites/starship.nix;
     steam = ./dendrites/steam.nix;
     stylix = ./dendrites/stylix.nix;

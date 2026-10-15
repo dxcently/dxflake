@@ -43,7 +43,6 @@ dxflake/
 ├── modules/
 │   ├── default.nix           # THE REGISTRY. the catalogue, plus `import ./aggregations`
 │   ├── packages.nix          # the dx.packages switch contract. no catalogue line; flake.nix imports it
-│   ├── sops.nix              # sops-nix. no catalogue line; flake.nix imports it, every host needs it
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
 │   │   └── base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,
@@ -341,8 +340,8 @@ lock             # hyprlock
 
 Aoide runtime is wired from the pinned Aoide input through its exports:
 `flake.nix` composes every host with `inputs.habit.lib.composition`, adds
-`inputs.aoide.nixosModules.nucleus`, `./modules/packages.nix` and
-`./modules/sops.nix` in `extraModules`, and `inputs.aoide.overlays.default` to
+`inputs.aoide.nixosModules.nucleus` and `./modules/packages.nix` in `extraModules`, and
+`inputs.aoide.overlays.default` to
 the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
 Aoide's `habit` and `nixpkgs` inputs follow dxflake's. dxflake declares no

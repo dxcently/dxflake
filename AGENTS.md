@@ -159,7 +159,7 @@ cold.
   naming the record — a broken record cannot hide on the machines it would not
   have applied to.
 - **Core and network** — the two aggregations every host selects.
-  `modules/aggregations/core/` is boot, networking, packages, security and
+  `modules/aggregations/core/` is boot, networking, packages, security, sops and
   system; `modules/aggregations/network/` is avahi, openssh and tailscale. Each
   host also selects the `postgresql` dendrite by name and sets its own
   `system.stateVersion`. A host drops a member with
@@ -173,13 +173,14 @@ cold.
   locale categories, nix settings and substituters, `allowUnfree`, the default
   editor and dconf (deselected, the time zone is unset, unfree packages are
   refused, and the rest fall back to the platform defaults); and `openssh` is the
-  only sshd, which a host routing ssh through `dx.cloudflared` needs. `postgresql`
+  only sshd, which a host routing ssh through `dx.cloudflared` needs. `sops` is
+  sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing` and
+  `slskd` dendrites write: deselected, the module is not imported, so a host that
+  keeps any of those four fails evaluation with "The option `sops' does not exist". `postgresql`
   is not the only thing that starts postgres: on sakaki immich does, so
   deselecting the dendrite there only restores nixpkgs' authentication defaults.
-  `modules/packages.nix` and `modules/sops.nix` are not members: the first is the
-  contract behind every `dx.packages.<name>.enable` switch, the second is
-  sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing`
-  and `slskd` dendrites write. Both are imported on every host through
+  `modules/packages.nix` is not a member: it is the contract behind every
+  `dx.packages.<name>.enable` switch, and it is imported on every host through
   `extraModules`.
 - **Halves** — a dendrite's two sides: its system half, the module itself
   (services, packages, hardware), and its home half, `habit.home` (one user's
@@ -423,7 +424,7 @@ to.
 
 ## Secrets (sops-nix)
 
-`modules/sops.nix` wires it: each host decrypts with its **own SSH host
+`modules/dendrites/sops.nix` wires it: each host decrypts with its **own SSH host
 key** (`ssh-to-age`), so no private key is ever copied around. To use a secret:
 
 1. Ensure the host's `ssh-to-age` pubkey is a recipient in `.sops.yaml` (already
