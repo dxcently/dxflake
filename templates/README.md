@@ -27,7 +27,7 @@ files nobody selected stayed unread.
 | a machine | `example-host.nix` | `hosts/<host>/default.nix` | add `"<host>"` to the host list in `flake.nix` |
 | a headless machine | `example-host-headless.nix` | `hosts/<host>/default.nix` | same |
 | a person | `example-user.nix` | `users/<name>.nix` | attach from each host that wants them |
-| something every host gets | `example-nucleus-module.nix` | `modules/nucleus/<topic>.nix` | one import line in `modules/nucleus/default.nix` |
+| something every host gets | `example-dendrite.nix` | `modules/dendrites/<name>.nix` | one catalogue line, then name it in `modules/aggregations/core/default.nix` or `network/default.nix` |
 | a package nixpkgs lacks | `example-package.nix` | `pkgs/<name>/default.nix` | `pkgs.callPackage` it from the dendrite that wants it |
 | a fix a capability needs everywhere | `example-override.nix` | `modules/overrides/<name>.nix` | nothing — discovery finds it; it applies where a target was selected |
 | a whole new tree | `example-default-registry.nix`, `example-default-aggregations.nix`, `example-default-overrides.nix` | `modules/default.nix`, `modules/aggregations/default.nix`, `modules/overrides/default.nix` | these three are the floor everything else plugs into |

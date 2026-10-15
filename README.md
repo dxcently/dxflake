@@ -8,7 +8,7 @@
 
 ## Architecture overview
 
-> _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **nucleus** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
+> _Nyaa._ A snowflake does not _decide_ to become a snowflake ❄︎ no more than I decided to become a cat! (I did not. I am Chiyo-chan's father.) It begins at one frozen point — the **core** — and from there it grows arms it never planned. This flake is the same. Do not be afraid. …Won't you stay for dinner? There will be red things. ฅ^•ﻌ•^ฅ
 
 ### Why
 
@@ -42,12 +42,11 @@ dxflake/
 │   └── khoa.nix              # ONE shared account — a module + `habit.home`
 ├── modules/
 │   ├── default.nix           # THE REGISTRY. the catalogue, plus `import ./aggregations`
-│   ├── nucleus/              # the floor. no flag — so it applies always, everywhere.
-│   │   ├── system.nix · networking.nix · security.nix · boot.nix
-│   │   └── packages.nix · openssh.nix · sops.nix · tailscale.nix · postgresql.nix · avahi.nix
+│   ├── packages.nix          # the dx.packages switch contract. no catalogue line; flake.nix imports it
+│   ├── sops.nix              # sops-nix. no catalogue line; flake.nix imports it, every host needs it
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── base/ compositor/ desktop/ gaming/ shell/  # each default.nix is DATA,
+│   │   └── base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,
 │   │                                                  #   naming what it installs by switch
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
@@ -57,7 +56,8 @@ dxflake/
 │       ├── openai.nix                         #   a plain module
 │       ├── compositor/ gpu/                   #   a provider registry each; compositor/hyprland/
 │       │                                      #     holds the Hyprland provider and its dendrites
-│       ├── packages.nix                       #   the flat list: one line = one switch
+│       ├── boot.nix · networking.nix · packages.nix …  #   plain modules; the `core` aggregation selects them
+│       ├── openssh.nix · avahi.nix · tailscale.nix     #   plain modules; the `network` aggregation selects them
 │       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── song/                     # rices, shared cover art; mirrors ~/.aoide/song/
@@ -216,7 +216,7 @@ Adding a rice is a directory beside `transience/` and one line in the registry; 
 
 A capability-scoped fix — a package upstream broke, a setting everyone running the thing needs — is an **override record** under `modules/overrides/`, not a repeat across hosts. It names its dendrites, optionally the hosts it is confined to, and carries an `overlay`, a `system` module, a `home` module, or any combination; discovery finds it, so there is no catalogue line.
 
-> _To give a thing to every machine, drop it in the **nucleus** and give it no flag. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._
+> _To give a thing to every machine, name it in an aggregation every host selects — `core` or `network` — and it is everywhere. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._
 
 ---
 
@@ -224,7 +224,8 @@ A capability-scoped fix — a package upstream broke, a setting everyone running
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
-A host is a folder under `hosts/<name>/`: a generated `hardware.nix` and a `default.nix` holding this machine's selection. The nucleus reaches every host with nothing named; everything else is reached only when the host — or a user attached to it — selects it by catalogue name.
+A host is a folder under `hosts/<name>/`: a generated `hardware.nix` and a `default.nix` holding this machine's selection. Every host selects `core`, `network` and the `postgresql` dendrite, and sets its own `system.stateVersion`; everything else is reached only when the host — or a user attached to it — selects it by catalogue name.
+A host may drop a member of `core` with `habit.dendrites.<name>.enable = false`, with three caveats: `boot` leaves no bootloader unless the host declares one; `networking` carries the hostName and the login account's authorized key, so without it the host is named `nixos` and that account is not declared; and `system` carries the time zone, locale, nix settings and substituters, `allowUnfree`, the default editor and dconf, so without it all of those fall back to the platform defaults.
 Swap `<name>` for your host — it becomes the flake target.
 
 1. Clone the repo:
@@ -340,7 +341,7 @@ lock             # hyprlock
 
 Aoide runtime is wired from the pinned Aoide input through its exports:
 `flake.nix` composes every host with `inputs.habit.lib.composition`, adds
-`inputs.aoide.nixosModules.nucleus` beside `./modules/nucleus` in `extraModules`, and
+`inputs.aoide.nixosModules.nucleus`, `./modules/packages.nix` and `./modules/sops.nix` in `extraModules`, and
 `inputs.aoide.overlays.default` to the overlays. The registry merges dxflake's catalogue with the Aoide lanes
 named in `aoideLanes`; a name both define fails evaluation.
 Aoide's `habit` and `nixpkgs` inputs follow dxflake's. dxflake declares no
@@ -399,7 +400,7 @@ Host-only tests are still done as eval-only overrides (no file changes): use an
 
 Write the file under `modules/dendrites/`, add one line to the catalogue in `modules/default.nix`, and select it. The whole job: **write the file → catalogue it → select it.** You never edit `flake.nix`.
 
-`templates/` holds one copyable `example-*.nix` per authoring role — dendrite, provider registry, provider, aggregation, host, user, nucleus file, package — with a table in `templates/README.md` saying where each copy goes and what the one follow-up line is. `./tests/templates/run.sh` assembles a whole tree out of that directory and resolves it against habit's composition, so the examples stay true.
+`templates/` holds one copyable `example-*.nix` per authoring role — dendrite, provider registry, provider, aggregation, host, user, package — with a table in `templates/README.md` saying where each copy goes and what the one follow-up line is. `./tests/templates/run.sh` assembles a whole tree out of that directory and resolves it against habit's composition, so the examples stay true.
 
 A dendrite is a plain NixOS module, and habit splits it in two. The module as written is its **system** half. Its `habit.home` is its **home** half: one user's Home Manager module. A **system** capability:
 
@@ -463,7 +464,7 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
 
 Discovery finds it by directory name; nothing imports it until a host or a user selects it. Members are catalogue names, so they stay where they live under `modules/dendrites/` rather than moving under the group. Each `providers` key becomes a `<name>.provider` option on this aggregation, in that scope — `null` demands a choice, a string is a default a host may override. A half that does not apply is left out; `gaming` has no `home` at all.
 
-What an aggregation **installs** goes in its own half's `module`, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. The lines themselves live once, in `modules/packages.nix` — one flat list of packages that need no configuration, where every line declares a `dx.packages.<name>.enable` switch of its own, all off. `desktop`, `shell` and `gaming` each switch their own membership on by name, and a host does the same for anything it alone wants. Nothing outside that file writes `environment.systemPackages` for a package that is only a package. The nucleus floor stays a plain list in `modules/nucleus/packages.nix`, because a host does not get to answer that one differently either, and a dendrite keeps its own package lines, because those must leave with the capability that brought them.
+What an aggregation **installs** goes in its own half's `module`, not in a member: a package list answers no question a host could answer differently, so there is nothing to select and it gets no catalogue line. The lines themselves live once, in `modules/packages.nix` — one flat list of packages that need no configuration, where every line declares a `dx.packages.<name>.enable` switch of its own, all off. `desktop`, `shell` and `gaming` each switch their own membership on by name, and a host does the same for anything it alone wants. Nothing outside that file writes `environment.systemPackages` for a package that is only a package. `core`'s base list stays a plain list in `modules/dendrites/packages.nix`: a host takes it whole or deselects `packages`, and does not answer it line by line. A dendrite keeps its own package lines, because those must leave with the capability that brought them.
 
 A host that wants one of those packages writes one line, and that is the only place a host says anything about packages at all:
 

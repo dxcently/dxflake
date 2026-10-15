@@ -33,7 +33,7 @@ modules/default.nix (catalogue)  modules/aggregations/ (discovery)  hosts/<host>
                               |
       platform import ONLY the dendrite and provider files selection kept
                               |
-        nucleus + accounts + system halves + per-user home halves
+        dendrite system halves + accounts + per-user home halves
             + the overlays and modules the matched records carried
                               |
                      nixpkgs.lib.nixosSystem
@@ -158,8 +158,23 @@ cold.
   Unknown fields, unknown targets and unknown host names fail on *every* host,
   naming the record — a broken record cannot hide on the machines it would not
   have applied to.
-- **Nucleus** — `modules/nucleus/`, imported unconditionally on every host
-  through `extraModules` in `flake.nix`.
+- **Core and network** — the two aggregations every host selects.
+  `modules/aggregations/core/` is boot, networking, packages, security and
+  system; `modules/aggregations/network/` is avahi, openssh and tailscale. Each
+  host also selects the `postgresql` dendrite by name and sets its own
+  `system.stateVersion`. A host drops a member with
+  `habit.dendrites.<name>.enable = false`, with these caveats: `boot` leaves no
+  bootloader unless the host declares one; `networking` carries the hostName and
+  the login account's authorized key (deselected, the host is named `nixos` and
+  that account is not declared); `system` carries the time zone, locale, nix
+  settings and substituters, `allowUnfree`, the default editor and dconf
+  (deselected, they fall back to the platform defaults); and `openssh` is the
+  only sshd, which a host routing ssh through `dx.cloudflared` needs.
+  `modules/packages.nix` and `modules/sops.nix` are not members: the first is the
+  contract behind every `dx.packages.<name>.enable` switch, the second is
+  sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing`
+  and `slskd` dendrites write. Both are imported on every host through
+  `extraModules`.
 - **Halves** — a dendrite's two sides: its system half, the module itself
   (services, packages, hardware), and its home half, `habit.home` (one user's
   Home Manager module). Selecting it for the system applies the system half and
@@ -402,7 +417,7 @@ to.
 
 ## Secrets (sops-nix)
 
-`modules/nucleus/sops.nix` wires it: each host decrypts with its **own SSH host
+`modules/sops.nix` wires it: each host decrypts with its **own SSH host
 key** (`ssh-to-age`), so no private key is ever copied around. To use a secret:
 
 1. Ensure the host's `ssh-to-age` pubkey is a recipient in `.sops.yaml` (already
