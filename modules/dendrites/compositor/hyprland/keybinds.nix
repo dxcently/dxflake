@@ -9,6 +9,9 @@
 # brightness XF86 keys. Those are the desktop aggregation's and the laptop
 # dendrite's respectively, because which of them exists is a property of the
 # hardware, not of the compositor.
+#
+# Reads dx.hyprland.workspaces, which the hyprland provider declares, so this
+# file is selected only alongside that provider.
 {
   habit.home =
     {
@@ -84,7 +87,6 @@
             # The binary is the cheatsheet dendrite's, by NAME; a host that does
             # not select it gets an inert key.
             "SUPER, B, exec, cheatsheet"
-            "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
             "SUPER, Q, killactive"
             "SUPER, V, togglefloating"
             "SUPER, F, fullscreen"

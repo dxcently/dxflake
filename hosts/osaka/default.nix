@@ -231,6 +231,11 @@
   # default of ~/.aoide — retarget both together if that option ever moves.
   home-manager.users.${username} = {
     home.file.".aoide/song/covers".source = ../../song/covers;
+    # SUPER+D sends vesktop to workspace 3 on the vertical HDMI-A-1 panel, which
+    # only osaka has.
+    wayland.windowManager.hyprland.settings.bind = [
+      "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
+    ];
     # ANSI bright black is secondary text (e.g. nom's elapsed-time labels).
     # Override the template's base02 surface shade with muted ink. Ordered
     # after the kitty dendrite's include block, whose staged file carries that

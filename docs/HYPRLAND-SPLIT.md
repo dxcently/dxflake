@@ -30,12 +30,12 @@ imports the single dendrite (`hyprlock`) it still wants.
 | `monitor` (catch-all)                             | 134-141 | `compositor/hyprland/hyprland.nix`           |
 | `monitor` (a host's panels)                       | 134-141 | `hosts/<host>/default.nix`, `dx.hyprland.monitors` |
 | `env`                                             | 143-148 | `compositor/hyprland/hyprland.nix`           |
-| `exec-once` (user programs)                       | 164-183 | `compositor/hyprland/autostart.nix`  |
+| `exec-once` (user programs)                       | 164-183 | `compositor/hyprland/autostart.nix`; no per-panel wallpaper line (osaka's quickshell lane draws it) |
 | `hyprpolkitagent` package                         | 77      | `compositor/hyprland/autostart.nix`  |
 | `settings.extraConfig` windowrules 1-6            | 186-233 | `compositor/hyprland/keybinds.nix`   |
 | `workspace` (shared rules)                        | 235-262 | `compositor/hyprland/keybinds.nix`   |
 | `workspace` (a host's rules)                      | 235-262 | `hosts/<host>/default.nix`, `dx.hyprland.workspaces` |
-| `bind`, `bindm`                                   | 264-344 | `compositor/hyprland/keybinds.nix`   |
+| `bind`, `bindm`                                   | 264-344 | `compositor/hyprland/keybinds.nix`; the SUPER+D vesktop bind is `hosts/osaka/default.nix` |
 | `input`                                           | 346-358 | `compositor/hyprland/keybinds.nix`   |
 | `hyprshot`, `hyprpicker` packages                 | 78-79   | `compositor/hyprland/keybinds.nix`   |
 | `general` (incl. livery borders)                  | 360-368 | `compositor/hyprland/decoration.nix` |
