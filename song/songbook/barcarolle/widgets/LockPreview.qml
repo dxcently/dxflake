@@ -1,10 +1,20 @@
-// LockPreview.qml — the Aero logon and lock picture, drawn. Visual mock only.
+// LockPreview.qml — the Aero logon and lock picture, drawn, with a live
+// password field.
 //
-// A helper (uppercase, not a slot). Paint only: no TextInput, no MouseArea, no
-// Process, no session or PAM call. The password field is drawn with a static
-// caret. `mode`: "lock" shows Locked and Switch User, "logon" shows neither.
-// The name sits above the field in both. Layout is anchors and fractions of the
-// output; the pixel sizes are the Aero logon's own.
+// A helper (uppercase, not a slot), shared by `lockscreen.qml` and
+// `greeter.qml`. Paint and input only: no Process, no session or PAM call. What
+// the user types leaves through `submitted(text)`, and the slot hands it to the
+// host's `auth.respond`; the buttons only raise signals. The two corner
+// icons (ease of access, power) are dead paint: no handler, no hover, so no
+// power action is reachable from a lock or logon screen.
+//
+// `mode`: "lock" shows Locked under the name, "logon" does not. `page`:
+// "attention" (the secure-attention banner, no tile), "password" (tile, name,
+// field and arrow), "failure" (tile, name, `failureText` and an OK button) or
+// "ground" (the background alone, for a page the slot draws itself).
+// `showSwitchUser` adds the Switch User button under the field. `userName`
+// comes from the host. Layout is anchors and fractions of the output; the pixel
+// sizes are the Aero logon's own.
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Shapes
@@ -16,7 +26,20 @@ Item {
     id: root
 
     property string mode: "lock"
+    property string page: "password"
+    // No page keeps what was typed on another: Switch User, the failure's OK
+    // and the way back to the banner all start from an empty field.
+    onPageChanged: input.text = ""
     property var livery: null
+    property string userName: ""
+    property string failureText: ""
+    property bool showSwitchUser: false
+    property bool inputEnabled: true
+    readonly property alias field: input
+
+    signal submitted(string text)
+    signal switchUser()
+    signal dismissFailure()
 
     implicitWidth: 1920
     implicitHeight: 1080
@@ -24,8 +47,14 @@ Item {
     readonly property bool lockMode: root.mode !== "logon"
     readonly property string home: Quickshell.env("HOME") || ""
     readonly property string aoideRoot: Quickshell.env("AOIDE_ROOT") || (root.home + "/.aoide")
-    readonly property string userName: Quickshell.env("USER") || "khoa"
     readonly property string bust: "?v=" + Date.now()
+
+    function _submit() {
+        if (!root.inputEnabled) return
+        var text = input.text
+        input.text = ""
+        root.submitted(text)
+    }
     readonly property string tileRel: "/song/songbook/barcarolle/icons/user/silhouette.svg"
     readonly property string fSys: ["Segoe UI", "Selawik", "Noto Sans", "Open Sans", "DejaVu Sans"]
         .find(function (f) { return Qt.fontFamilies().indexOf(f) >= 0 }) || "sans-serif"
@@ -101,8 +130,20 @@ Item {
         }
     }
 
+    Text {
+        visible: root.page === "attention"
+        anchors.centerIn: parent
+        text: root.mode === "lock" ? "Press CTRL + ALT + DELETE to unlock" : "Press CTRL + ALT + DELETE to log on"
+        color: "#ffffff"
+        font.family: root.fSys
+        font.pixelSize: 24
+        style: Text.Raised
+        styleColor: "#99000000"
+    }
+
     Item {
         id: stack
+        visible: root.page === "password" || root.page === "failure"
         width: 256
         anchors.horizontalCenter: parent.horizontalCenter
         y: Math.round(root.height * 0.30)
@@ -142,6 +183,19 @@ Item {
             source: candidates[tryIndex]
             onStatusChanged: if (status === Image.Error && tryIndex < candidates.length - 1) tryIndex++
         }
+        // No picture anywhere (a greeter reads no home): a drawn silhouette.
+        Shape {
+            visible: picture.status === Image.Error && picture.tryIndex === picture.candidates.length - 1
+            x: picture.x
+            y: picture.y
+            width: 126
+            height: 126
+            ShapePath {
+                strokeColor: "transparent"
+                fillColor: "#d9e8f2"
+                PathSvg { path: "M 63 26 A 22 22 0 1 1 62.99 26 Z M 22 120 C 22 88 40 74 63 74 C 86 74 104 88 104 120 Z" }
+            }
+        }
         Rectangle {
             x: frame.x + 1
             y: frame.y + 1
@@ -180,23 +234,33 @@ Item {
 
         Rectangle {
             id: field
+            visible: root.page === "password"
             x: 0
             y: (root.lockMode ? lockedText.y + lockedText.height : nameText.y + nameText.height) + 12
             width: 225
             height: 25
             radius: 2
-            color: "#ffffff"
+            color: root.inputEnabled ? "#ffffff" : "#e6eef5"
             border.width: 2
             border.color: "#7eb4ea"
-            Rectangle {
-                x: 6
-                anchors.verticalCenter: parent.verticalCenter
-                width: 1
-                height: 13
+            TextInput {
+                id: input
+                anchors.fill: parent
+                anchors.leftMargin: 6
+                anchors.rightMargin: 6
+                verticalAlignment: TextInput.AlignVCenter
+                echoMode: TextInput.Password
+                passwordCharacter: "\u25cf"
+                enabled: root.inputEnabled && root.page === "password"
                 color: "#000000"
+                font.family: root.fSys
+                font.pixelSize: 13
+                clip: true
+                onAccepted: root._submit()
             }
             Text {
                 x: 11
+                visible: input.text === ""
                 anchors.verticalCenter: parent.verticalCenter
                 text: "Password"
                 color: "#8c8c8c"
@@ -204,7 +268,51 @@ Item {
                 font.pixelSize: 13
             }
         }
+        Text {
+            id: failure
+            visible: root.page === "failure"
+            width: 256
+            x: 0
+            y: field.y - 4
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.Wrap
+            text: root.failureText
+            color: "#ffffff"
+            font.family: root.fSys
+            font.pixelSize: 15
+            style: Text.Raised
+            styleColor: "#99000000"
+        }
         Rectangle {
+            id: okButton
+            visible: root.page === "failure"
+            x: (stack.width - width) / 2
+            y: failure.y + failure.height + 14
+            width: 90
+            height: 28
+            radius: 4
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#5cffffff" }
+                GradientStop { position: 1.0; color: "#12ffffff" }
+            }
+            border.width: 1
+            border.color: "#a8ffffff"
+            Text {
+                anchors.centerIn: parent
+                text: "OK"
+                color: "#ffffff"
+                font.family: root.fSys
+                font.pixelSize: 13
+                style: Text.Raised
+                styleColor: "#99000000"
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.dismissFailure()
+            }
+        }
+        Rectangle {
+            visible: root.page === "password"
             x: field.x + field.width + 6
             y: field.y
             width: 25
@@ -228,9 +336,14 @@ Item {
                     PathSvg { path: "M 8.5 12.5 H 16 M 12.5 8.5 L 16.5 12.5 L 12.5 16.5" }
                 }
             }
+            MouseArea {
+                anchors.fill: parent
+                enabled: root.inputEnabled
+                onClicked: root._submit()
+            }
         }
         Rectangle {
-            visible: root.lockMode
+            visible: root.showSwitchUser && root.page === "password"
             x: (stack.width - width) / 2
             y: field.y + field.height + 16
             width: 150
@@ -250,6 +363,10 @@ Item {
                 font.pixelSize: 13
                 style: Text.Raised
                 styleColor: "#99000000"
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: root.switchUser()
             }
         }
     }
