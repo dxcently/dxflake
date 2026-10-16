@@ -1,7 +1,26 @@
 # sakaki — the server. Headless: Aoide runs here with no paint lanes and nothing
 # paints, so no desktop or shell aggregation and no graphical dendrite.
-{ pkgs, ... }:
+{ pkgs, habitGuest, ... }:
 {
+  # Spike: one mneme instance as a NixOS container, composed by habit like a host.
+  sops.secrets."mneme-a.env" = {
+    sopsFile = ../../secrets/mneme-a.yaml;
+    key = "env";
+  };
+  containers.mneme-a =
+    let
+      g = habitGuest "mneme-a" ./guests/mneme-a.nix;
+    in
+    {
+      inherit (g) specialArgs;
+      config.imports = g.modules;
+      privateNetwork = true;
+      hostAddress = "10.233.1.1";
+      localAddress = "10.233.1.2";
+      # Decrypted by sops on the host; the container's systemd reads it as root.
+      bindMounts."/run/secrets/mneme.env".hostPath = "/run/secrets/mneme-a.env";
+    };
+
   habit.aggregation.core.enable = true;
   habit.aggregation.aoide.enable = true;
   habit.aggregation.network.enable = true;
