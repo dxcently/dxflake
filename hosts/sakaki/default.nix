@@ -3,6 +3,10 @@
 { pkgs, habitGuest, ... }:
 {
   # Spike: one mneme instance as a NixOS container, composed by habit like a host.
+  sops.secrets."mneme-a.env" = {
+    sopsFile = ../../secrets/mneme-a.yaml;
+    key = "env";
+  };
   containers.mneme-a =
     let
       g = habitGuest "mneme-a" ./guests/mneme-a.nix;
