@@ -150,6 +150,7 @@ in
           ];
           WorkingDirectory = "/var/lib/mneme/vault";
           Environment = [
+            "HOME=/var/lib/mneme"
             "MNEME_VAULT_DIR=/var/lib/mneme/vault"
             "MNEME_BIND_ADDR=0.0.0.0:8000"
           ];
