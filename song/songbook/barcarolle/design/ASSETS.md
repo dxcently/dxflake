@@ -4,6 +4,7 @@
 |---|---|---|---|
 | `../cover/barcarolle-desktop.jpg` (3840×2160) | `frutigerAero_Wallpaper_Green_NoPerson_4k.jpg` | KnightAnNi | CC0 1.0 Universal |
 | `../cover/barcarolle-logon.jpg` (3840×2160) | `frutigerAero_Wallpaper_Green_Person_4k.jpg` | KnightAnNi | CC0 1.0 Universal |
+| `../icons/brand/nix-snowflake.svg` | NixOS logo (`nix-snowflake-white.svg`, nixos-icons), <https://github.com/NixOS/nixos-artwork> | NixOS/nixos-artwork | [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 - Source: "Frutiger Aero Wallpapers" by KnightAnNi,
   <https://knightanni.itch.io/frutiger-aero-wallpapers>, archive

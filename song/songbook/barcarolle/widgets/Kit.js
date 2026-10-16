@@ -31,6 +31,27 @@ function accent(a) { return Qt.rgba(37 / 255, 187 / 255, 207 / 255, a) }
 function plate() { return Qt.rgba(245 / 255, 251 / 255, 251 / 255, 0.97) }
 function rimTint() { return Qt.rgba(42 / 255, 163 / 255, 184 / 255, 0.58) }
 
+// A keyboard layout as one short code, from either source: an xkb code
+// ("us", "de") as it is, or Hyprland's layout name ("English (US)",
+// "German") through its country code or its language's xkb code.
+var layoutLanguages = {
+    arabic: "ARA", bulgarian: "BG", chinese: "CN", croatian: "HR", czech: "CZ", danish: "DK",
+    dutch: "NL", estonian: "EE", finnish: "FI", french: "FR", german: "DE", greek: "GR",
+    hebrew: "IL", hungarian: "HU", icelandic: "IS", italian: "IT", japanese: "JP", korean: "KR",
+    latvian: "LV", lithuanian: "LT", norwegian: "NO", persian: "IR", polish: "PL", portuguese: "PT",
+    romanian: "RO", russian: "RU", serbian: "RS", slovak: "SK", slovenian: "SI", spanish: "ES",
+    swedish: "SE", thai: "TH", turkish: "TR", ukrainian: "UA", vietnamese: "VN"
+}
+function layoutCode(s) {
+    s = ("" + (s || "")).trim()
+    if (s === "") return ""
+    if (/^[a-z]{2,3}$/i.test(s)) return s.toUpperCase()
+    var country = s.match(/\(([A-Z]{2,3})\)/)
+    if (country) return country[1] === "UK" ? "GB" : country[1]
+    var language = s.split(/[\s(,]/)[0].toLowerCase()
+    return layoutLanguages[language] || s.substring(0, 2).toUpperCase()
+}
+
 function className(w) { return (w && ((w.lastIpcObject && w.lastIpcObject["class"]) || (w.wayland && w.wayland.appId))) || "" }
 
 function scopeArgv(e) {
@@ -39,6 +60,24 @@ function scopeArgv(e) {
     argv.push("--")
     for (var i = 0; i < e.command.length; i++) argv.push(e.command[i])
     return argv
+}
+
+// The host's PAM/greetd words, sorted for a face: a plain password prompt
+// says nothing the field does not; any other question becomes the field's
+// placeholder; anything else is a note under the field.
+function plainPrompt(m) {
+    return /^\s*(password|passphrase)\s*:?\s*$/i.test(m || "")
+}
+
+function hostPrompt(auth) {
+    if (!auth || !auth.responseRequired || auth.messageIsError || !auth.message || plainPrompt(auth.message)) return "Password"
+    return auth.message.replace(/\s*:\s*$/, "")
+}
+
+function hostNote(auth) {
+    if (!auth || !auth.message || plainPrompt(auth.message)) return ""
+    if (auth.responseRequired && !auth.messageIsError) return ""
+    return auth.message
 }
 
 function make(livery) {
