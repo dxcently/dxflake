@@ -239,6 +239,26 @@
         "url": "https://github.com/noah427/eidolon.git"
       }
     },
+    "eidolon-plugins": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792037310,
+        "narHash": "sha256-IRtteHKWth99lM8R5sItZSLaSdGdZb0jIIMG1np7NY4=",
+        "owner": "dxcently",
+        "repo": "eidolon-plugins",
+        "rev": "67af40b732d809fd334c7a13e62c842476aba922",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dxcently",
+        "repo": "eidolon-plugins",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -1187,6 +1207,7 @@
         "claude-desktop-nix-flake": "claude-desktop-nix-flake",
         "disko": "disko",
         "eidolon": "eidolon",
+        "eidolon-plugins": "eidolon-plugins",
         "habit": "habit",
         "home-manager": "home-manager_2",
         "melete-src": "melete-src",

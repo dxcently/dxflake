@@ -56,7 +56,7 @@
     # cannot move, so every upstream commit would mean hand-editing this
     # file. With just `ref=master` the rev lives in flake.lock and one
     # command picks up new commits for the whole stack:
-    #   nix flake update melete-src mneme-src eidolon aoide
+    #   nix flake update melete-src mneme-src eidolon eidolon-plugins aoide
     # `dxbump` (modules/dendrites/bash.nix) runs exactly that, then switches.
     #
     # To build a DIRTY local worktree without pushing, override for that one
@@ -90,6 +90,16 @@
       # is the harnox bump too. It is `github:` (private, tarball fetcher),
       # which is why it reads the token bash.nix exports into NIX_CONFIG from
       # khoa's gh login.
+    };
+    # Eidolon's plugins (github.com/dxcently/eidolon-plugins, PUBLIC): a flake
+    # whose packages are the plugin daemons. `github:`, not git+https:, because
+    # the repo needs no credential. The private noah427 repos above need the git
+    # fetcher for theirs. Its nixpkgs follows ours so the daemons build against
+    # the pin the hosts run. modules/dendrites/eidolon.nix reads its `rev` for
+    # the plugin refs, so the plugin directory and the binaries are one commit.
+    eidolon-plugins = {
+      url = "github:dxcently/eidolon-plugins";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # uv2nix stack: builds the kimi-cli agent (pkgs/kimi-cli) from its uv.lock.
