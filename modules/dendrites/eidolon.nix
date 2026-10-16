@@ -119,6 +119,13 @@ in
             ref = "${pluginRef}"
             trust = true
             grants = [ "file:~/.config/eidolon/coordinator.token" ]
+
+            # Shares the ollama provider's key from eidolon's secret store.
+            [plugins.websearch]
+            repo = "dxcently/eidolon-plugins"
+            ref = "${pluginRef}"
+            trust = true
+            grants = [ "secret:ollama" ]
           ''
           + hyprlandPlugin
           + claudeDriver

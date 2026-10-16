@@ -246,11 +246,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792037310,
-        "narHash": "sha256-IRtteHKWth99lM8R5sItZSLaSdGdZb0jIIMG1np7NY4=",
+        "lastModified": 1792128000,
+        "narHash": "sha256-aj9a3TAIDjlYRuNVyGbAYN0YGIIX7mdFK+miUWmFZPc=",
         "owner": "dxcently",
         "repo": "eidolon-plugins",
-        "rev": "67af40b732d809fd334c7a13e62c842476aba922",
+        "rev": "8dd6eb1cc4b098eeeaf23273c778c709f30c6610",
         "type": "github"
       },
       "original": {
