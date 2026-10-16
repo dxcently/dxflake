@@ -1,8 +1,8 @@
 # eidolon — the interactive Rust coding harness (github.com/noah427/eidolon),
 # installed from its OWN flake (the `eidolon` input — see flake.nix). The CLI is
 # a package on PATH. The plugins it loads (github.com/dxcently/eidolon-plugins)
-# are declared in its config.toml, and the three daemons among them are user
-# units here.
+# are declared in its config.toml, and the daemons among them are user units
+# here.
 {
   pkgs,
   lib,
@@ -27,116 +27,198 @@ let
   # and the binaries below come from one commit.
   plugins = inputs.eidolon-plugins.packages.${pkgs.stdenv.hostPlatform.system};
   pluginRef = inputs.eidolon-plugins.rev;
-
-  # Eidolon reads this file and never writes one back, so Nix owns it. It carries
-  # the defaults a missing file would also get, and the [plugins.*] declarations
-  # that `eidolon plugins sync` reconciles against.
-  #
-  # Only config.toml is managed. secrets/, policy.rn, ui.rn and tools/ are
-  # seeded and rewritten by Eidolon itself and must stay writable.
-  #
-  # The ollama key is deliberately absent: it lives in Eidolon's custodied
-  # store (`eidolon secret set ollama`), which the built-in provider names as
-  # `token_secret = "ollama"`. Same reasoning that retired melete.nix's sops
-  # apparatus — these tools hold their own credentials.
-  configToml = pkgs.writeText "eidolon-config.toml" ''
-    default_model = "ollama:deepseek-v4.1-flash"
-    default_persona = "Rook ♜"
-
-    # Both MCP servers bind loopback on sakaki (mneme :8000, melete :8787);
-    # the user unit eidolon-mcp-forward.service forwards them onto this host's
-    # loopback. Passphrases the harness exchanges for a bearer token.
-    [mneme]
-    mcp_url = "http://127.0.0.1:8000/mcp"
-    passphrase_file = "~/.config/eidolon/mneme-password"
-
-    [melete]
-    mcp_url = "http://127.0.0.1:8787/mcp"
-    passphrase_file = "~/.config/eidolon/melete-password"
-
-    [plugins.browser]
-    repo = "dxcently/eidolon-plugins"
-    ref = "${pluginRef}"
-    trust = true
-    grants = [ "file:~/.config/eidolon/browser.token" ]
-
-    [plugins.subagent]
-    repo = "dxcently/eidolon-plugins"
-    ref = "${pluginRef}"
-    trust = true
-
-    [plugins.claude]
-    repo = "dxcently/eidolon-plugins"
-    ref = "${pluginRef}"
-
-    [plugins.coordinator]
-    repo = "dxcently/eidolon-plugins"
-    ref = "${pluginRef}"
-    trust = true
-    grants = [ "file:~/.config/eidolon/coordinator.token" ]
-
-    [plugins.hyprland]
-    repo = "dxcently/eidolon-plugins"
-    ref = "${pluginRef}"
-    trust = true
-  '';
 in
 {
   config = {
     environment.systemPackages = [ eidolonPkg ];
 
-    habit.home = {
-      xdg.configFile."eidolon/config.toml".source = configToml;
+    habit.home =
+      { osConfig, ... }:
+      let
+        # A graphical session is what the browser and hyprland plugins drive.
+        # These gates read the host's own written habit.* keys. A dendrite
+        # selected only through an aggregation's membership reads as null here,
+        # so each gate must stay host-written.
+        # An unselected dendrite's enable is null, not false, so each fact is
+        # compared rather than used as a boolean.
+        graphical = osConfig.habit.aggregation.desktop.enable == true;
+        claudeCode = osConfig.habit.dendrites.claude-code.enable == true;
+        # Mneme and Melete run on sakaki, the one host that carries them; every
+        # other host reaches them through the forward below.
+        mcpLocal =
+          osConfig.habit.dendrites.mneme.enable == true || osConfig.habit.dendrites.melete.enable == true;
 
-      # grim, wlrctl and wtype: the hyprland plugin's verbs run them from PATH.
-      home.packages = [ plugins.hyprland ];
+        # Eidolon reads this file and never writes one back, so Nix owns it. It
+        # carries the defaults a missing file would also get, and the [plugins.*]
+        # declarations that `eidolon plugins sync` reconciles against.
+        #
+        # Only config.toml is managed. secrets/, policy.rn, ui.rn and tools/ are
+        # seeded and rewritten by Eidolon itself and must stay writable.
+        #
+        # The ollama key is deliberately absent: it lives in Eidolon's custodied
+        # store (`eidolon secret set ollama`), which the built-in provider names as
+        # `token_secret = "ollama"`. Same reasoning that retired melete.nix's sops
+        # apparatus — these tools hold their own credentials.
+        browserPlugin = lib.optionalString graphical ''
+          [plugins.browser]
+          repo = "dxcently/eidolon-plugins"
+          ref = "${pluginRef}"
+          trust = true
+          grants = [ "file:~/.config/eidolon/browser.token" ]
 
-      systemd.user.services = {
-        eidolon-plugins-sync = {
-          Unit = {
-            Description = "Install, update and trust eidolon plugins to match config.toml";
-            # A switch that changes the declarations restarts this oneshot.
-            X-Restart-Triggers = [ "${configToml}" ];
-          };
-          Service = {
-            Type = "oneshot";
-            # Stays active after exiting, so a switch sees it as running and
-            # restarts it when X-Restart-Triggers changes.
-            RemainAfterExit = true;
-            ExecStart = "${eidolonPkg}/bin/eidolon plugins sync";
-            Environment = [ "PATH=${lib.makeBinPath [ pkgs.git pkgs.openssh ]}" ];
-            # A failed sync (no network yet, a clone that fails) retries.
-            Restart = "on-failure";
-            RestartSec = "30s";
-          };
-          Install.WantedBy = [ "default.target" ];
-        };
+        '';
+        hyprlandPlugin = lib.optionalString graphical ''
 
-        eidolon-browser = {
-          Unit = {
-            Description = "eidolon browser plugin daemon";
-            After = [ "eidolon-plugins-sync.service" ];
-          };
-          Service = {
-            ExecStart = lib.getExe' plugins.browser "eidolon-browser";
-            Restart = "on-failure";
-          };
-          Install.WantedBy = [ "default.target" ];
-        };
+          [plugins.hyprland]
+          repo = "dxcently/eidolon-plugins"
+          ref = "${pluginRef}"
+          trust = true
+        '';
+        # eidolon does not expand ~ or $XDG_RUNTIME_DIR in a [[driver]] socket, so
+        # the path is literal. 1000 is khoa's uid on osaka and sakaki; the account
+        # sets none, so this is the one place that assumes it.
+        driverSocket = "/run/user/1000/eidolon-claude.sock";
+        claudeDriver = lib.optionalString claudeCode ''
 
-        eidolon-coordinator = {
-          Unit = {
-            Description = "eidolon coordinator plugin daemon";
-            After = [ "eidolon-plugins-sync.service" ];
+          # --real spawns the real CLI, and each turn spends that account's usage.
+          [[driver]]
+          backend = "claude-cli"
+          socket  = "${driverSocket}"
+          mode    = "registry"
+          models  = ["claude-*"]
+        '';
+
+        configToml = pkgs.writeText "eidolon-config.toml" (
+          ''
+            default_model = "ollama:deepseek-v4.1-flash"
+            default_persona = "Rook ♜"
+
+            # Both MCP servers bind loopback on sakaki (mneme :8000, melete :8787).
+            # Off sakaki, the user unit eidolon-mcp-forward.service forwards them
+            # onto this host's loopback. Passphrases the harness exchanges for a
+            # bearer token.
+            [mneme]
+            mcp_url = "http://127.0.0.1:8000/mcp"
+            passphrase_file = "~/.config/eidolon/mneme-password"
+
+            [melete]
+            mcp_url = "http://127.0.0.1:8787/mcp"
+            passphrase_file = "~/.config/eidolon/melete-password"
+
+            ${browserPlugin}[plugins.subagent]
+            repo = "dxcently/eidolon-plugins"
+            ref = "${pluginRef}"
+            trust = true
+
+            [plugins.claude]
+            repo = "dxcently/eidolon-plugins"
+            ref = "${pluginRef}"
+
+            [plugins.coordinator]
+            repo = "dxcently/eidolon-plugins"
+            ref = "${pluginRef}"
+            trust = true
+            grants = [ "file:~/.config/eidolon/coordinator.token" ]
+          ''
+          + hyprlandPlugin
+          + claudeDriver
+          + "\n"
+        );
+      in
+      {
+        xdg.configFile."eidolon/config.toml".source = configToml;
+
+        # grim, wlrctl and wtype: the hyprland plugin's verbs run them from PATH.
+        home.packages = lib.optional graphical plugins.hyprland;
+
+        systemd.user.services = {
+          eidolon-plugins-sync = {
+            Unit = {
+              Description = "Install, update and trust eidolon plugins to match config.toml";
+              # A switch that changes the declarations restarts this oneshot.
+              X-Restart-Triggers = [ "${configToml}" ];
+            };
+            Service = {
+              Type = "oneshot";
+              # Stays active after exiting, so a switch sees it as running and
+              # restarts it when X-Restart-Triggers changes.
+              RemainAfterExit = true;
+              ExecStart = "${eidolonPkg}/bin/eidolon plugins sync";
+              Environment = [
+                "PATH=${
+                  lib.makeBinPath [
+                    pkgs.git
+                    pkgs.openssh
+                  ]
+                }"
+              ];
+              # A failed sync (no network yet, a clone that fails) retries.
+              Restart = "on-failure";
+              RestartSec = "30s";
+            };
+            Install.WantedBy = [ "default.target" ];
           };
-          Service = {
-            ExecStart = lib.getExe' plugins.coordinator "eidolon-coordinator";
-            Environment = [ "EIDOLON_COORDINATOR_BIN=${eidolonPkg}/bin/eidolon" ];
-            Restart = "on-failure";
+
+          eidolon-coordinator = {
+            Unit = {
+              Description = "eidolon coordinator plugin daemon";
+              After = [ "eidolon-plugins-sync.service" ];
+            };
+            Service = {
+              ExecStart = lib.getExe' plugins.coordinator "eidolon-coordinator";
+              Environment = [ "EIDOLON_COORDINATOR_BIN=${eidolonPkg}/bin/eidolon" ];
+              Restart = "on-failure";
+            };
+            Install.WantedBy = [ "default.target" ];
           };
-          Install.WantedBy = [ "default.target" ];
+        }
+        // lib.optionalAttrs graphical {
+          eidolon-browser = {
+            Unit = {
+              Description = "eidolon browser plugin daemon";
+              After = [ "eidolon-plugins-sync.service" ];
+            };
+            Service = {
+              ExecStart = lib.getExe' plugins.browser "eidolon-browser";
+              Restart = "on-failure";
+            };
+            Install.WantedBy = [ "default.target" ];
+          };
+        }
+        // lib.optionalAttrs claudeCode {
+          eidolon-claude = {
+            Unit = {
+              Description = "eidolon claude driver host (runs turns on the real Claude CLI)";
+              After = [ "eidolon-plugins-sync.service" ];
+            };
+            Service = {
+              ExecStart = "${lib.getExe' plugins.claude "eidolon-claude"} --real --cli ${pkgs.claude-code}/bin/claude --socket %t/eidolon-claude.sock";
+              Restart = "on-failure";
+            };
+            Install.WantedBy = [ "default.target" ];
+          };
+        }
+        // lib.optionalAttrs (!mcpLocal) {
+          eidolon-mcp-forward = {
+            Unit = {
+              Description = "SSH forward to sakaki for the Mneme and Melete MCP servers";
+              Documentation = "file:%h/.config/eidolon/config.toml";
+            };
+            Service = {
+              Type = "simple";
+              # Both servers bind loopback on sakaki, so the harness reaches them
+              # through this tunnel rather than the Cloudflare route. The target is
+              # sakaki's LAN address: it is not in the current tailnet, and the old
+              # name sakaki.tailc27b51.ts.net no longer resolves.
+              ExecStart = "${pkgs.openssh}/bin/ssh -N -o BatchMode=yes -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -L 8000:127.0.0.1:8000 -L 8787:127.0.0.1:8787 192.168.1.202";
+              # A roaming laptop drops the route often; the forward is the whole point
+              # of the unit, so it comes back on its own.
+              Restart = "always";
+              RestartSec = 5;
+            };
+            Install.WantedBy = [ "default.target" ];
+          };
         };
       };
-    };
   };
 }

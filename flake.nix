@@ -64,8 +64,8 @@
     #   nh os switch -- --override-input melete-src path:/home/khoa/melete
     #
     # Only sakaki enables these (habit.dendrites.melete /
-    # habit.dendrites.mneme / habit.dendrites.eidolon are false elsewhere and
-    # module args are lazy), but the inputs are fetched at LOCK time on
+    # habit.dendrites.mneme / habit.dendrites.eidolon are unwritten, so null,
+    # elsewhere and module args are lazy), but the inputs are fetched at LOCK time on
     # whatever host runs `nix flake update`, so run it as khoa.
     melete-src = {
       url = "git+https://github.com/noah427/melete.git?ref=master";
