@@ -13,6 +13,8 @@
       privateNetwork = true;
       hostAddress = "10.233.1.1";
       localAddress = "10.233.1.2";
+      # Decrypted by sops on the host; the container's systemd reads it as root.
+      bindMounts."/run/secrets/mneme.env".hostPath = "/run/secrets/mneme-a.env";
     };
 
   habit.aggregation.core.enable = true;

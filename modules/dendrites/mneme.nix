@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   inputs,
@@ -20,104 +21,144 @@ let
   };
 in
 {
-  config = {
-    # Pinned-upstream baseline, mirrors melete.nix's meleteSeed. Nix builds from
-    # the mneme-src input. Unlike melete, mneme has no
-    # self-update of its own, so this is the ONLY thing that ever moves the
-    # binary. The stamp holds the store path rather than the version, so a
-    # source change reseeds even when Cargo.toml's version stands still.
-    system.activationScripts.mnemeSeed = {
-      deps = [ "users" ];
-      text = ''
-        bindir="/home/${username}/.local/bin"
-        bin="$bindir/mneme"
-        stamp="$bindir/.mneme-pinned"
-        want="${mnemePkg}"
-        if [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || [ ! -e "$bin" ]; then
-          install -Dm755 ${mnemePkg}/bin/mneme "$bin"
-          printf '%s' "$want" > "$stamp"
-          chown -R ${username}:users "$bindir"
-        fi
-      '';
-    };
+  # A guest (container or microVM) runs one plain instance: from the store, as its own user, with no host seeding
+  # or host controls. The vault and env file sit at fixed paths; whoever hosts the guest decides what is there.
+  options.dx.mneme.guest = lib.mkEnableOption "mneme as a guest instance";
 
-    # Allow khoa to restart mneme.service without auth — so config/env
-    # changes (e.g. MNEME_PUBLIC_URL) can be applied without root. Mirrors
-    # melete.
-    security.polkit.extraConfig = ''
-      polkit.addRule(function(action, subject) {
-        if (action.id === "org.freedesktop.systemd1.manage-units" &&
-            action.lookup("unit") === "mneme.service" &&
-            subject.user === "${username}") {
-          return polkit.Result.YES;
-        }
-      });
-    '';
-
-    # Polkit only covers D-Bus-mediated calls; a `sudo systemctl ...` from
-    # Melete's TTY-less shell still prompts for a password. Same rationale as
-    # immich/jellyfin: scoped to lifecycle verbs on the mneme unit only,
-    # not a general systemctl grant.
-    security.sudo.extraRules = [
-      {
-        users = [ username ];
-        commands =
-          let
-            systemctl = "/run/current-system/sw/bin/systemctl";
-            verbs = [
-              "start"
-              "stop"
-              "restart"
-              "reload"
-            ];
-          in
-          lib.flatten (
-            map (verb: {
-              command = "${systemctl} ${verb} mneme.service";
-              options = [ "NOPASSWD" ];
-            }) verbs
-          );
-      }
-    ];
-
-    # Mneme's own tailscale node was removed 2026-08-15: the claude.ai
-    # connector reached it via the tailscaled-mneme :443 funnel
-    # (mneme.tailc27b51.ts.net), but the Tailscale 1.102.x peerapi-ingress
-    # bug (tailscale#20746) degraded that path and both MCP servers now ride
-    # the Cloudflare tunnel instead (mneme.necoconeco.net). If a public MCP
-    # path is ever needed again, prefer adding a hostname to
-    # dx.cloudflared/dx.caddy in hosts/sakaki/default.nix.
-
-    # Binary is now Nix-seeded (mnemeSeed above), not hand-placed -- but
-    # ConditionPathExists is kept as a defensive guard regardless. Env file
-    # at ~/.config/melete/mneme.env (user-managed, not in the Nix store,
-    # unaffected by the seed).
-    systemd.services.mneme = {
-      description = "Mneme — Obsidian vault MCP server";
-      after = [ "network-online.target" ];
-      wants = [ "network-online.target" ];
-      wantedBy = [ "multi-user.target" ];
-      # Same start-limit fix as melete.nix -- don't let repeated early
-      # failures permanently latch this unit into "failed".
-      unitConfig.StartLimitIntervalSec = 0;
-      unitConfig.ConditionPathExists = [
-        "/home/${username}/.local/bin/mneme"
-        "/home/${username}/Magi"
-        "/home/${username}/.config/melete/mneme.env"
-      ];
-      serviceConfig = {
-        Type = "simple";
-        User = username;
-        Environment = [
-          "HOME=/home/${username}"
-          "PATH=/home/${username}/.local/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin"
-        ];
-        EnvironmentFile = "/home/${username}/.config/melete/mneme.env";
-        WorkingDirectory = "/home/${username}/Magi";
-        ExecStart = "/home/${username}/.local/bin/mneme";
-        Restart = "on-failure";
-        RestartSec = 10;
+  config = lib.mkMerge [
+    (lib.mkIf (!config.dx.mneme.guest) {
+      # Pinned-upstream baseline, mirrors melete.nix's meleteSeed. Nix builds from
+      # the mneme-src input. Unlike melete, mneme has no
+      # self-update of its own, so this is the ONLY thing that ever moves the
+      # binary. The stamp holds the store path rather than the version, so a
+      # source change reseeds even when Cargo.toml's version stands still.
+      system.activationScripts.mnemeSeed = {
+        deps = [ "users" ];
+        text = ''
+          bindir="/home/${username}/.local/bin"
+          bin="$bindir/mneme"
+          stamp="$bindir/.mneme-pinned"
+          want="${mnemePkg}"
+          if [ "$(cat "$stamp" 2>/dev/null)" != "$want" ] || [ ! -e "$bin" ]; then
+            install -Dm755 ${mnemePkg}/bin/mneme "$bin"
+            printf '%s' "$want" > "$stamp"
+            chown -R ${username}:users "$bindir"
+          fi
+        '';
       };
-    };
-  };
+
+      # Allow khoa to restart mneme.service without auth — so config/env
+      # changes (e.g. MNEME_PUBLIC_URL) can be applied without root. Mirrors
+      # melete.
+      security.polkit.extraConfig = ''
+        polkit.addRule(function(action, subject) {
+          if (action.id === "org.freedesktop.systemd1.manage-units" &&
+              action.lookup("unit") === "mneme.service" &&
+              subject.user === "${username}") {
+            return polkit.Result.YES;
+          }
+        });
+      '';
+
+      # Polkit only covers D-Bus-mediated calls; a `sudo systemctl ...` from
+      # Melete's TTY-less shell still prompts for a password. Same rationale as
+      # immich/jellyfin: scoped to lifecycle verbs on the mneme unit only,
+      # not a general systemctl grant.
+      security.sudo.extraRules = [
+        {
+          users = [ username ];
+          commands =
+            let
+              systemctl = "/run/current-system/sw/bin/systemctl";
+              verbs = [
+                "start"
+                "stop"
+                "restart"
+                "reload"
+              ];
+            in
+            lib.flatten (
+              map (verb: {
+                command = "${systemctl} ${verb} mneme.service";
+                options = [ "NOPASSWD" ];
+              }) verbs
+            );
+        }
+      ];
+
+      # Mneme's own tailscale node was removed 2026-08-15: the claude.ai
+      # connector reached it via the tailscaled-mneme :443 funnel
+      # (mneme.tailc27b51.ts.net), but the Tailscale 1.102.x peerapi-ingress
+      # bug (tailscale#20746) degraded that path and both MCP servers now ride
+      # the Cloudflare tunnel instead (mneme.necoconeco.net). If a public MCP
+      # path is ever needed again, prefer adding a hostname to
+      # dx.cloudflared/dx.caddy in hosts/sakaki/default.nix.
+
+      # Binary is now Nix-seeded (mnemeSeed above), not hand-placed -- but
+      # ConditionPathExists is kept as a defensive guard regardless. Env file
+      # at ~/.config/melete/mneme.env (user-managed, not in the Nix store,
+      # unaffected by the seed).
+      systemd.services.mneme = {
+        description = "Mneme — Obsidian vault MCP server";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+        # Same start-limit fix as melete.nix -- don't let repeated early
+        # failures permanently latch this unit into "failed".
+        unitConfig.StartLimitIntervalSec = 0;
+        unitConfig.ConditionPathExists = [
+          "/home/${username}/.local/bin/mneme"
+          "/home/${username}/Magi"
+          "/home/${username}/.config/melete/mneme.env"
+        ];
+        serviceConfig = {
+          Type = "simple";
+          User = username;
+          Environment = [
+            "HOME=/home/${username}"
+            "PATH=/home/${username}/.local/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin"
+          ];
+          EnvironmentFile = "/home/${username}/.config/melete/mneme.env";
+          WorkingDirectory = "/home/${username}/Magi";
+          ExecStart = "/home/${username}/.local/bin/mneme";
+          Restart = "on-failure";
+          RestartSec = 10;
+        };
+      };
+    })
+    (lib.mkIf config.dx.mneme.guest {
+      users.users.mneme = {
+        isSystemUser = true;
+        group = "mneme";
+      };
+      users.groups.mneme = { };
+      networking.firewall.allowedTCPPorts = [ 8000 ];
+      systemd.services.mneme = {
+        description = "Mneme — Obsidian vault MCP server";
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
+        unitConfig.StartLimitIntervalSec = 0;
+        # MNEME_PUBLIC_URL and MNEME_AUTH_PASSWORD; mneme refuses to start without them.
+        unitConfig.ConditionPathExists = [ "/run/secrets/mneme.env" ];
+        serviceConfig = {
+          User = "mneme";
+          Group = "mneme";
+          StateDirectory = [
+            "mneme"
+            "mneme/vault"
+          ];
+          WorkingDirectory = "/var/lib/mneme/vault";
+          Environment = [
+            "MNEME_VAULT_DIR=/var/lib/mneme/vault"
+            "MNEME_BIND_ADDR=0.0.0.0:8000"
+          ];
+          EnvironmentFile = "/run/secrets/mneme.env";
+          ExecStart = "${mnemePkg}/bin/mneme";
+          Restart = "on-failure";
+          RestartSec = 10;
+        };
+      };
+    })
+  ];
 }
