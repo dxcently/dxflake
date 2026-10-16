@@ -195,6 +195,17 @@
         "yomi-strix"
       ];
 
+      # A NixOS guest (container or microVM) composed from the same registry as the hosts.
+      habitGuest =
+        name: host:
+        composition.mkNixosModules {
+          hostName = name;
+          inherit registry host;
+          knownHosts = hostNames ++ [ name ];
+          homeManagerModule = inputs.home-manager.nixosModules.home-manager;
+          specialArgs = { inherit username nixpkgs-stable inputs; };
+        };
+
       hosts = lib.genAttrs hostNames (
         name:
         composition.mkNixosHost {
@@ -240,7 +251,7 @@
               }
             ];
           specialArgs = {
-            inherit username nixpkgs-stable inputs;
+            inherit username nixpkgs-stable inputs habitGuest;
             resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
           };
         }
