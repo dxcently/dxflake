@@ -112,6 +112,8 @@
       # (mneme.tailc27b51.ts.net -> 127.0.0.1:8000) is on the same buggy
       # tailscale path, so give it a Cloudflare route too.
       "mneme.necoconeco.net"
+      # mneme-a: a second mneme, the NixOS container below (its own vault and passphrase).
+      "mneme-a.necoconeco.net"
       # weedaq, read-only to the public, on its own registered domain rather
       # than a fold under the melete gateway: the gateway is all-or-nothing
       # (one apps/gate_token for every app it fronts; app.toml has no per-app
@@ -179,6 +181,7 @@
       # Mneme's MCP server — same reasoning, same bare-proxy shape (mneme
       # also does its own OAuth, issuer derived from the request host).
       "mneme.necoconeco.net".proxy = "http://127.0.0.1:8000";
+      "mneme-a.necoconeco.net".proxy = "http://10.233.1.2:8000";
 
       # Aoide's mail adapter, bare proxy: requests carry their own signature.
       "aoide.necoconeco.net".proxy = "http://127.0.0.1:8712";
