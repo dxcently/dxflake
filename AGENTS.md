@@ -135,7 +135,7 @@ cold.
   chosen. So a member only one implementation can run — a compositor plugin, a
   config written in that compositor's own language — belongs to an aggregation
   of its own, beside the provider-bearing one. `shell` holds what any wlroots
-  compositor can run and owns `compositor.provider`; `compositor` holds what
+  compositor can run and owns `compositor.provider`; `hyprland` holds what
   only Hyprland can, and a host on another compositor selects `shell` alone.
 - **Override record** — a fix that belongs to a capability rather than to a
   host: `modules/overrides/<name>.nix`. It names the dendrites it is about,
@@ -215,7 +215,7 @@ to destination.
   holds the data above. Discovery finds it; there is no import line anywhere.
 - **A backend-specific member** — one an aggregation cannot name because only
   one provider can run it. Its own group beside the provider-bearing one
-  (`modules/aggregations/compositor/` beside `shell/`), so choosing another
+  (`modules/aggregations/hyprland/` beside `shell/`), so choosing another
   provider leaves it unselected and unevaluated.
 - **A package** — one line in `modules/dendrites/packages.nix`, then a group or
   host selects it by name. A package that needs configuration is a dendrite of
@@ -328,7 +328,7 @@ session handoff below. It installs nothing.
 Everything opinionated is a dendrite selected by name.
 `modules/dendrites/compositor/hyprland/` holds only what is written or compiled
 against Hyprland itself — `hyprland-keybinds`, `hyprland-decoration`,
-`hyprland-autostart`, `hyprglass` — and the `compositor` aggregation names
+`hyprland-autostart`, `hyprglass` — and the `hyprland` aggregation names
 exactly those four. The surfaces `waybar`/`rofi`/`satty`/`wlogout` are
 compositor-agnostic, so they sit at the dendrite root like every other
 single-file capability and belong to `shell`, which selects the Wayland tool

@@ -1,5 +1,5 @@
-# compositor — the compositor's own session: keybinds, decoration, autostart,
-# lock and idle glass. Hyprland is what runs it today.
+# hyprland — the Hyprland session: keybinds, decoration, autostart,
+# lock and idle glass.
 #
 # Separate from `shell` on purpose, and the separation is load-bearing rather
 # than tidy. Everything `shell` groups works on any wlroots compositor: waybar,
@@ -19,10 +19,10 @@
 # written against. A host on another compositor never imports that folder.
 #
 # Every member is home-only, so a host selects this on its user:
-# `habit.users.khoa.aggregation.compositor.enable = true;` Selected on the host
+# `habit.users.khoa.aggregation.hyprland.enable = true;` Selected on the host
 # instead, the same home halves would reach every user with `home.enable`.
 {
-  description = "The compositor's own session: keybinds, decoration, autostart, lock and idle glass.";
+  description = "The Hyprland session: keybinds, decoration, autostart, lock and idle glass.";
 
   home.members = [
     "hyprglass"

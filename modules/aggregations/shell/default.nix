@@ -21,7 +21,7 @@
 # are usually met.
 #
 # The Hyprland-ONLY pieces — keybinds, decoration, autostart, hyprglass — are
-# the `compositor` aggregation's, precisely so that answering
+# the `hyprland` aggregation's, precisely so that answering
 # `compositor.provider` with something else leaves them unselected and
 # unevaluated. docs/HYPRLAND-SPLIT.md is the old-block → new-owner map.
 {

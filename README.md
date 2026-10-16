@@ -45,7 +45,7 @@ dxflake/
 │   │                        #   the catalogue, one generated entry per package line, `import ./aggregations`
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── aoide/ base/ compositor/ core/ desktop/ gaming/ network/ shell/  # each default.nix is DATA,
+│   │   └── aoide/ base/ core/ desktop/ gaming/ hyprland/ network/ shell/    # each default.nix is DATA,
 │   │                                                         #   naming its members
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
@@ -133,7 +133,7 @@ platform import the chosen dendrite files and the chosen provider files.
     aggregation = {
       base.enable = true;
       desktop.enable = true;
-      compositor.enable = true;
+      hyprland.enable = true;
       shell.enable = true;
     };
     dendrites.pi-coding-agent.enable = true;

@@ -16,7 +16,7 @@ against Hyprland itself lives in the provider's own folder —
 written against; the compositor-agnostic surfaces sit at the dendrite root.
 Each one is independently selectable because each
 answers a question a host can answer differently — chiyo answers all of them
-with Aoide's lanes instead, selects neither `shell` nor `compositor`, and
+with Aoide's lanes instead, selects neither `shell` nor `hyprland`, and
 imports the single dendrite (`hyprlock`) it still wants.
 
 ## Old block → new owner
@@ -67,10 +67,10 @@ by exactly one aggregation:
 | ---------------------- | --------------------------------------------- | ----------- | ------------ |
 | `compositor`           | `dendrites/compositor` (provider)             | system+home | `shell`      |
 | `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`             | home        | `shell`      |
-| `hyprland-autostart`   | `dendrites/compositor/hyprland/autostart.nix` | home        | `compositor` |
-| `hyprland-decoration`  | `dendrites/compositor/hyprland/decoration.nix`| home        | `compositor` |
-| `hyprland-keybinds`    | `dendrites/compositor/hyprland/keybinds.nix`  | home        | `compositor` |
-| `hyprglass`            | `dendrites/compositor/hyprland/hyprglass.nix` | home        | `compositor` |
+| `hyprland-autostart`   | `dendrites/compositor/hyprland/autostart.nix` | home        | `hyprland`   |
+| `hyprland-decoration`  | `dendrites/compositor/hyprland/decoration.nix`| home        | `hyprland`   |
+| `hyprland-keybinds`    | `dendrites/compositor/hyprland/keybinds.nix`  | home        | `hyprland`   |
+| `hyprglass`            | `dendrites/compositor/hyprland/hyprglass.nix` | home        | `hyprland`   |
 
 Private helpers — no catalogue line, reachable only from the file that imports
 them by relative path:
@@ -88,7 +88,7 @@ one of three things. `fastfetch/` is a capability that needs several files.
 only the chosen provider. Inside such a registry, each implementation gets a
 folder of its own — `compositor/hyprland/` — holding the provider entry plus
 everything written or compiled against that compositor: the four members the
-`compositor` aggregation names, and nothing else. A host that answers with
+`hyprland` aggregation names, and nothing else. A host that answers with
 another provider never imports the folder, so none of it is evaluated. Nothing
 walks the folder, and every dendrite in it is reachable only through its own
 catalogue line. The surfaces (`rofi`, `satty`, `waybar`, `wlogout`) predate the
@@ -106,7 +106,7 @@ not free-floating membership, so the three `hypr*` tools travel with the file
 that invokes them: `hyprpolkitagent` → `hyprland-autostart` (it runs
 `systemctl --user start` on it), `hyprshot` + `hyprpicker` →
 `hyprland-keybinds` (its binds shell out to both). Both dendrites are the
-`compositor` aggregation's, so a host on another compositor installs neither.
+`hyprland` aggregation's, so a host on another compositor installs neither.
 
 **A package nothing in particular calls is an ordinary package entry.** It is one
 line of `modules/dendrites/packages.nix`, and the aggregation that wants it names
@@ -143,7 +143,7 @@ else. Putting it in a *sibling aggregation* is what actually gates it, because
 selection happens one level up:
 
 1. the provider registry imports only the chosen implementation, and
-2. every Hyprland-only dendrite is named by `modules/aggregations/compositor/`,
+2. every Hyprland-only dendrite is named by `modules/aggregations/hyprland/`,
    which a non-Hyprland host simply does not select.
 
 habit's suite proves both against a backend aggregation whose only member
