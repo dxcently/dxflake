@@ -79,7 +79,6 @@ let
     bonsai = ./dendrites/bonsai.nix;
     boot = ./dendrites/boot.nix;
     btop = ./dendrites/btop.nix;
-    caddy = ./dendrites/caddy.nix;
     cheatsheet = ./dendrites/cheatsheet;
     claude-code = ./dendrites/claude-code.nix;
     claude-desktop = ./dendrites/claude-desktop.nix;

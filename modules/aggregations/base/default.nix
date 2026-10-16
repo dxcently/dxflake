@@ -11,11 +11,6 @@
 {
   description = "The command line every host carries: prompt, editor, fuzzy history, file and process browsers.";
 
-  # stylix rides base on every host, including hosts that leave
-  # `dx.stylix.enable` false: Aoide probes `options ? stylix`, so the option
-  # tree has to exist even where nothing paints with it.
-  system.members = [ "stylix" ];
-
   home.members = [
     "bash"
     "btop"

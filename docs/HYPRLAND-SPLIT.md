@@ -28,13 +28,13 @@ imports the single dendrite (`hyprlock`) it still wants.
 | `hyprland.{enable,systemd.enable,xwayland}`       | 85-104  | `compositor/hyprland/hyprland.nix`           |
 | session handoff + `hyprland-session.target`       | 70-72, 161-163, 184, 512-537 | `compositor/hyprland/hyprland.nix` |
 | `monitor` (catch-all)                             | 134-141 | `compositor/hyprland/hyprland.nix`           |
-| `monitor` (a host's panels)                       | 134-141 | `hosts/<host>/default.nix`, `dx.hyprland.monitors` |
+| `monitor` (a host's panels)                       | 134-141 | `hosts/<host>/default.nix`, after the catch-all |
 | `env`                                             | 143-148 | `compositor/hyprland/hyprland.nix`           |
 | `exec-once` (user programs)                       | 164-183 | `compositor/hyprland/autostart.nix`; no per-panel wallpaper line (osaka's quickshell lane draws it) |
 | `hyprpolkitagent` package                         | 77      | `compositor/hyprland/autostart.nix`  |
 | `settings.extraConfig` windowrules 1-6            | 186-233 | `compositor/hyprland/keybinds.nix`   |
 | `workspace` (shared rules)                        | 235-262 | `compositor/hyprland/keybinds.nix`   |
-| `workspace` (a host's rules)                      | 235-262 | `hosts/<host>/default.nix`, `dx.hyprland.workspaces` |
+| `workspace` (a host's rules)                      | 235-262 | `hosts/<host>/default.nix`, after the shared rules |
 | `bind`, `bindm`                                   | 264-344 | `compositor/hyprland/keybinds.nix`; the SUPER+D vesktop bind is `hosts/osaka/default.nix` |
 | `input`                                           | 346-358 | `compositor/hyprland/keybinds.nix`   |
 | `hyprshot`, `hyprpicker` packages                 | 78-79   | `compositor/hyprland/keybinds.nix`   |
@@ -51,10 +51,10 @@ imports the single dendrite (`hyprlock`) it still wants.
 ## Per-host panels
 
 The provider owns the monitor list and the workspace list, not their contents.
-`dx.hyprland.monitors` takes `monitor =` lines verbatim after the catch-all
-fallback. `dx.hyprland.workspaces` takes extra `workspace =` rules, which
-`keybinds.nix` appends to its shared ones, so the result is one list. A host
-names its own panels in its file: osaka's sideways-T and its HDMI-A-1 rules are
+The provider writes only the catch-all fallback, and `keybinds.nix` the shared
+workspace rules. A host appends its own `monitor =` and `workspace =` lines in
+its file with `lib.mkAfter`, so the result is one list in order. A host names
+its own panels there: osaka's sideways-T and its HDMI-A-1 rules are
 in `hosts/osaka/default.nix`, and a host with no named panels gets the catch-all
 alone.
 

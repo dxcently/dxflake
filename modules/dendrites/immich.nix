@@ -1,20 +1,8 @@
-{
-  lib,
-  config,
-  ...
-}:
+{ lib, ... }:
 let
-  cfg = config.dx.immich;
+  mediaLocation = "/mnt/immich";
 in
 {
-  options.dx.immich = {
-    mediaLocation = lib.mkOption {
-      type = lib.types.path;
-      default = "/mnt/immich";
-      description = "Mountpoint for the Immich library, mounted by dx.nas-mounts.";
-    };
-  };
-
   config = {
     # Media lives on kaori; Postgres and Redis stay on sakaki's NVMe. NFS
     # cannot be trusted with Postgres' file locking, and the module already
@@ -24,7 +12,7 @@ in
       enable = true;
       host = "0.0.0.0"; # phones need to reach it off-box
       openFirewall = true;
-      mediaLocation = cfg.mediaLocation;
+      inherit mediaLocation;
     };
 
     # Melete's shell has no TTY, so an interactive sudo password prompt makes
@@ -60,7 +48,7 @@ in
       }
     ];
 
-    dx.nas-mounts.mounts.${cfg.mediaLocation} = {
+    dx.nas-mounts.mounts.${mediaLocation} = {
       export = "/volume1/immich";
       requiredBy = [ "immich-server" ];
     };

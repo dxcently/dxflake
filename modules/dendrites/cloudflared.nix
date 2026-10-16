@@ -5,7 +5,7 @@
 # that survives networks which kill WireGuard/tailscale (public/corporate
 # wifi), because it never opens a listening port; it only dials out over
 # https. Each `hostnames` entry is sent to Caddy on 127.0.0.1:8080, which
-# routes by Host header — so those entries and dx.caddy are a pair. Each
+# routes by Host header — so those entries and the Caddy virtualHosts are a pair. Each
 # `sshHostnames` entry instead lands on the box's own sshd (ssh://localhost:22)
 # with no Caddy involved, for hosts that want tunnel-borne ssh reachability
 # and nothing else (a laptop with no web service to expose). Such a login
@@ -29,15 +29,15 @@
 #        sops secrets/cloudflared-<hostname>.yaml   # key `credentials:` = the <uuid>.json content verbatim
 #      (sakaki, the first host wired here, kept the unsuffixed
 #      secrets/cloudflared.yaml — its credentialsSopsFile default.)
-#   4. In hosts/<hostname>/default.nix, import this file and dx.caddy.nix
+#   4. In hosts/<hostname>/default.nix, select this dendrite
 #      (only if `hostnames` is non-empty), then set:
 #        dx.cloudflared = {
 #          tunnelId = "<uuid>";                                # from step 2
 #          credentialsSopsFile = ../../secrets/cloudflared-<hostname>.yaml; # from step 3, omit for sakaki
-#          hostnames = [ "example.com" "www.example.com" ];     # http, keep in sync with dx.caddy.sites
+#          hostnames = [ "example.com" "www.example.com" ];     # http, keep in sync with services.caddy.virtualHosts
 #          sshHostnames = [ "<hostname>-ssh.example.com" ];     # ssh, no Caddy needed
 #        };
-#        dx.caddy.sites."example.com".webRoot = /var/www/personal;
+#        services.caddy.virtualHosts."http://example.com:8080".extraConfig = "root * /var/www/personal\nfile_server";
 #   5. In Cloudflare DNS: CNAME each hostname (both lists) -> <tunnelId>.cfargotunnel.com (proxied).
 #   6. sudo nixos-rebuild switch --flake .#<hostname>
 #   7. To reach an sshHostnames entry from another box:
@@ -74,8 +74,8 @@ in
       default = [ ];
       description = ''
         Public hostnames routed through the tunnel. All are sent to Caddy on
-        127.0.0.1:8080; Caddy routes by Host header. Should match the keys of
-        dx.caddy.sites.
+        127.0.0.1:8080; Caddy routes by Host header. Should match the hostnames
+        of services.caddy.virtualHosts.
       '';
     };
 

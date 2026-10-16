@@ -14,13 +14,10 @@ in
 {
   # The stylix option TREE comes from Aoide's nucleus on every host; a
   # second import here would be a second copy that does not deduplicate.
-  # Whether THIS dendrite's dxflake scheme actually applies is gated on
-  # dx.stylix.enable, off by default: a host names it explicitly. When
-  # Aoide's stylix lane is active, dx.stylix keeps only personal defaults
-  # and stays out of color ownership for
-  # `stylix.base16Scheme`/`stylix.polarity`.
-  options.dx.stylix.enable = lib.mkEnableOption "dxflake's own Stylix theme (Rosé Pine)";
-  config = lib.mkIf config.dx.stylix.enable {
+  # Selecting this dendrite is what applies dxflake's scheme. When Aoide's
+  # stylix lane is active, this keeps only personal defaults and stays out of
+  # color ownership for `stylix.base16Scheme`/`stylix.polarity`.
+  config = {
     stylix =
       (
         {

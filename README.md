@@ -247,7 +247,7 @@ Swap `<name>` for your host — it becomes the flake target.
    ```nix
    {
      habit.aggregation = {
-       base.enable = true;        # the machine's half: stylix
+       base.enable = true;        # the command line every host carries
        desktop.enable = true;     # audio, fonts, portals, login …
        shell = {
          enable = true;           # the compositor and the surfaces on it
@@ -481,7 +481,8 @@ A package the list does not carry yet gets its line there first; the catalogue e
 
 **Two kinds of module, by what they need from a host:**
 - **Selected = active** — no `options.dx.<name>.enable` at all; the module applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)
-- **`dx.` knobs for what genuinely varies** — a capability some hosts configure differently keeps `options.dx.<name>.<knob>` for that variance only, never for whether it runs (`caddy.sites`, `cloudflared.tunnelId`/`hostnames`, `immich.mediaLocation`, `inference.igpu`, `nas-mounts.server`/`mounts`).
+- **`dx.` knobs for what genuinely varies** — a capability some hosts configure differently keeps `options.dx.<name>.<knob>` for that variance only, never for whether it runs (`cloudflared.tunnelId`/`hostnames`, `nas-mounts.server`/`mounts`).
+- **One host's value is that host's file** — a value only one host sets is a plain NixOS option in that host's file, not a knob: the Caddy sites on sakaki, the iGPU flag on yomi-strix, osaka's Hyprland monitors and workspaces.
 
 Aggregations follow the same rule one level up: a group names each member once, in the half it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `module`, never a repeat across hosts.
 

@@ -10,8 +10,8 @@
 # dendrite's respectively, because which of them exists is a property of the
 # hardware, not of the compositor.
 #
-# Reads dx.hyprland.workspaces, which the hyprland provider declares, so this
-# file is selected only alongside that provider.
+# Selected only alongside the hyprland provider. A host's own workspace rules
+# come from its file, after these.
 {
   habit.home =
     {
@@ -33,16 +33,14 @@
 
       wayland.windowManager.hyprland = {
         settings = {
-          # Workspace Assignments: the shared rules here, then the host's own
-          # from dx.hyprland.workspaces. One list, so the order is this file's
-          # and then the host's.
+          # Workspace Assignments: the shared rules here. A host appends its own
+          # with lib.mkAfter in its file.
           workspace = [
             "special:scratch, on-created-empty:obsidian"
             "special:magic, on-created-empty:pear-desktop"
             "special:scratch, layout:scrolling"
             "special:replay, on-created-empty:gpu-screen-recorder-gtk"
-          ]
-          ++ osConfig.dx.hyprland.workspaces;
+          ];
 
           # Keybindings
           #

@@ -29,7 +29,6 @@
   habit.dendrites = {
     aoide.enable = true;
     autologin.enable = true;
-    caddy.enable = true;
     claude-code.enable = true;
     cloudflared.enable = true;
     eidolon.enable = true;
@@ -151,10 +150,25 @@
     # the openssh rule for loopback-borne logins (modules/dendrites/openssh.nix).
     sshHostnames = [ "sakaki-ssh.necoconeco.net" ];
   };
-  dx.caddy = {
-    sites = {
-      "jellyfin.necoconeco.net".proxy = "http://127.0.0.1:8096";
-      "syncthing.necoconeco.net".proxy = "http://127.0.0.1:8384";
+  # Site keys carry the explicit http:// scheme and :8080 port: without them Caddy
+  # would treat each hostname as an automatic-HTTPS :443 site and try to obtain
+  # certificates. Cloudflare's edge owns TLS; the origin is plain HTTP on loopback,
+  # every site bound to 127.0.0.1 only.
+  services.caddy = {
+    enable = true;
+    virtualHosts = {
+      "http://jellyfin.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8096
+
+
+      '';
+      "http://syncthing.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8384
+
+
+      '';
 
       # Melete's own app gateway -- native /login + session cookie, one
       # login for every app it fronts (scheduler-graph today; more of
@@ -164,7 +178,12 @@
       # sakaki-panel, the gateway is Rust-side and handles cookies itself,
       # so a bare proxy is enough (same shape as jellyfin/syncthing above,
       # which also front their own auth).
-      "melete.necoconeco.net".proxy = "http://127.0.0.1:8090";
+      "http://melete.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8090
+
+
+      '';
 
       # sakaki-panel now lives behind the melete gateway (folded at
       # /sakaki-panel/, same apps.gateway_apps as scheduler-graph) -- one
@@ -176,18 +195,42 @@
       # itself, so a bare proxy is enough). The claude.ai connector points
       # here because the tailscale funnel it used to ride is degraded by
       # tailscale#20746 (peerapi ingress drops).
-      "mcp.necoconeco.net".proxy = "http://127.0.0.1:8787";
+      "http://mcp.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8787
 
-      # Mneme's MCP server — same reasoning, same bare-proxy shape (mneme
+
+      '';
+
+      # Mneme's MCP server -- same reasoning, same bare-proxy shape (mneme
       # also does its own OAuth, issuer derived from the request host).
-      "mneme.necoconeco.net".proxy = "http://127.0.0.1:8000";
-      "mneme-a.necoconeco.net".proxy = "http://10.233.1.2:8000";
+      "http://mneme.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8000
+
+
+      '';
+      "http://mneme-a.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://10.233.1.2:8000
+
+
+      '';
 
       # Aoide's mail adapter, bare proxy: requests carry their own signature.
-      "aoide.necoconeco.net".proxy = "http://127.0.0.1:8712";
+      "http://aoide.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8712
 
-      "status.necoconeco.net".extraConfig = ''
+
+      '';
+
+      "http://status.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+
+
         redir https://melete.necoconeco.net/sakaki-panel{uri} 302
+
       '';
 
       # weedaq, public READ ONLY.
@@ -205,15 +248,23 @@
       # is not GET/HEAD is refused at the edge before it reaches Rune. The
       # scraper is unaffected -- it POSTs to 127.0.0.1:8110 on the box, where
       # Caddy never sees the request.
-      "weedaq.com".extraConfig = ''
+      "http://weedaq.com:8080".extraConfig = ''
+        bind 127.0.0.1
+
+
         @writes not method GET HEAD
         respond @writes "weedaq is read-only over the public hostname" 405
 
         reverse_proxy http://127.0.0.1:8110
+
       '';
 
-      "www.weedaq.com".extraConfig = ''
+      "http://www.weedaq.com:8080".extraConfig = ''
+        bind 127.0.0.1
+
+
         redir https://weedaq.com{uri} 301
+
       '';
 
       # Đồng, public with its own login. Port 8111 is the ungated loopback
@@ -240,65 +291,70 @@
       # the host cannot send the header that allows it, so Caddy does.
       #
       # Caddy evaluates handle/handle_path before a bare reverse_proxy
-      # regardless of textual order, so `proxy` stays the catch-all.
+      # regardless of textual order, so the bare `reverse_proxy` stays the catch-all.
       # See deploy/dong-workers.md §5 in dxcently/dong.
-      "dong.necoconeco.net" = {
-        proxy = "http://127.0.0.1:8111";
-        extraConfig = ''
-          handle_path /immich-photos/* {
-            reverse_proxy 127.0.0.1:8203
-          }
-          handle /api/share/upload    { reverse_proxy 127.0.0.1:8203 }
-          handle /api/share/parked/*  { reverse_proxy 127.0.0.1:8203 }
-          handle /static/sw.js {
-            header Service-Worker-Allowed "/"
-            reverse_proxy 127.0.0.1:8111
-          }
-        '';
-      };
+      "http://dong.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://127.0.0.1:8111
+
+        handle_path /immich-photos/* {
+          reverse_proxy 127.0.0.1:8203
+        }
+        handle /api/share/upload    { reverse_proxy 127.0.0.1:8203 }
+        handle /api/share/parked/*  { reverse_proxy 127.0.0.1:8203 }
+        handle /static/sw.js {
+          header Service-Worker-Allowed "/"
+          reverse_proxy 127.0.0.1:8111
+        }
+
+      '';
 
       # Scratch mockups, hand-copied into /var/www/tmp. no-cache on HTML for
       # the same reason as the wiki: edits must show on the next reload.
-      "tmp.necoconeco.net" = {
-        webRoot = "/var/www/tmp";
-        extraConfig = ''
-          encode zstd gzip
-          @html path *.html /
-          header @html Cache-Control "no-cache"
-        '';
-      };
+      "http://tmp.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+
+        root * /var/www/tmp
+        file_server
+        encode zstd gzip
+        @html path *.html /
+        header @html Cache-Control "no-cache"
+
+      '';
 
       # file_server, not a proxy: 90 prerendered pages, no runtime behind
-      # them. webRoot is a quoted STRING rather than a path literal -- a
+      # them. The webRoot is a quoted STRING rather than a path literal -- a
       # literal is copied into the nix store at eval, which would put 7.6M of
       # build output in a store path and turn every content edit into a full
       # nixos-rebuild. Served out of /var/www because /home/khoa is 0700 and
       # caddy (uid 239) cannot traverse it.
-      "fau-cyber-wiki-test.necoconeco.net" = {
-        webRoot = "/var/www/fau-cyber-wiki-test";
-        # HTML went out with no Cache-Control, so browsers heuristically cached
-        # it and a redeploy showed up late -- a stale sidebar/title lingered on
-        # pages visited before the change. no-cache keeps ETag revalidation but
-        # forces a conditional request every load: cheap 304s, edits visible on
-        # the next navigation. Assets carry a content hash in their URL, so they
-        # are left to cache normally and only HTML is matched.
-        extraConfig = ''
-          # Compress text at the origin. Cloudflare compresses at its edge for
-          # visitors, but Caddy was sending raw bytes to it and to anything that
-          # reaches the box directly; ~4x on CSS/JS/HTML either way.
-          encode zstd gzip
+      # HTML went out with no Cache-Control, so browsers heuristically cached
+      # it and a redeploy showed up late -- a stale sidebar/title lingered on
+      # pages visited before the change. no-cache keeps ETag revalidation but
+      # forces a conditional request every load: cheap 304s, edits visible on
+      # the next navigation. Assets carry a content hash in their URL, so they
+      # are left to cache normally and only HTML is matched.
+      "http://fau-cyber-wiki-test.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
 
-          @html path_regexp (\.html$|/$)
-          header @html Cache-Control "no-cache"
+        root * /var/www/fau-cyber-wiki-test
+        file_server
+        # Compress text at the origin. Cloudflare compresses at its edge for
+        # visitors, but Caddy was sending raw bytes to it and to anything that
+        # reaches the box directly; ~4x on CSS/JS/HTML either way.
+        encode zstd gzip
 
-          # Every CSS/JS link carries a build stamp in its query string that
-          # changes whenever the file does, so a cached copy can never go stale
-          # (a changed file is a new URL). Mark them immutable for a year. Fonts
-          # and images are not busted and keep the default.
-          @static path *.css *.js
-          header @static Cache-Control "public, max-age=31536000, immutable"
-        '';
-      };
+        @html path_regexp (\.html$|/$)
+        header @html Cache-Control "no-cache"
+
+        # Every CSS/JS link carries a build stamp in its query string that
+        # changes whenever the file does, so a cached copy can never go stale
+        # (a changed file is a new URL). Mark them immutable for a year. Fonts
+        # and images are not busted and keep the default.
+        @static path *.css *.js
+        header @static Cache-Control "public, max-age=31536000, immutable"
+
+      '';
     };
   };
 

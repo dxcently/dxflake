@@ -92,7 +92,7 @@ in
       # bug (tailscale#20746) degraded that path and both MCP servers now ride
       # the Cloudflare tunnel instead (mneme.necoconeco.net). If a public MCP
       # path is ever needed again, prefer adding a hostname to
-      # dx.cloudflared/dx.caddy in hosts/sakaki/default.nix.
+      # dx.cloudflared and the Caddy virtualHosts in hosts/sakaki/default.nix.
 
       # Binary is now Nix-seeded (mnemeSeed above), not hand-placed -- but
       # ConditionPathExists is kept as a defensive guard regardless. Env file

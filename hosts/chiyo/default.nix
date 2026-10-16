@@ -91,7 +91,6 @@
     hostNames = [ "100.102.235.52" ];
     publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqMuS6SKujGuBlEaJNOeyJPqN3uXUbiyi8BbHpVgkNS";
   };
-  dx.stylix.enable = false;
   # The door can exec an agent for peer-summoned sessions (`peer spawn
   # chiyo`), the same wiring sakaki carries — without it the door refuses
   # with "A2A spawn not configured" (observed live 2026-08-28, first
@@ -103,8 +102,8 @@
   # chiyo is the full AoideOS carrier: the complete Aoide paint stack owns the
   # session — compositor (Hyprland wiring + livery), stylix (base16 fan-out),
   # and quickshell (bar/dock/launcher/theming) — replacing dxflake's own
-  # Hyprland + Stylix dendrites, which stay unselected here (`dx.stylix.enable
-  # = false`) so only one writer ever touches the leaf options the two stacks
+  # Hyprland + Stylix dendrites, which stay unselected here so only one writer
+  # ever touches the leaf options the two stacks
   # share (see modules/dendrites/aoide.nix's header for the collision
   # reasoning). The hyprland lane is the BEHAVIOUR half (keybinds, input,
   # tiling layout) that pairs with the compositor lane's LOOK — without it
@@ -169,7 +168,7 @@
   # `settings` is a separate option from the `extraConfig`/`lines` option
   # Aoide's own lanes write to, so this merges alongside them
   # rather than colliding. Only chiyo's own entries are carried — the AOC/
-  # Samsung monitor block belongs to osaka's host (dx.hyprland.monitors),
+  # Samsung monitor block belongs to osaka's host (its Hyprland monitor lines),
   # not chiyo. Keybinds/decoration are otherwise NOT carried:
   # AoideOS owns those (the hyprland lane above). Animations are carried:
   # Aoide writes none, and Hyprland's built-in global is 800 ms.
@@ -196,7 +195,7 @@
       ];
     };
   };
-  # No web service runs here (no dx.caddy),
+  # No web service runs here (no services.caddy),
   # so this tunnel carries ssh only: sshHostnames routes straight to chiyo's
   # own sshd (already on by default, modules/dendrites/openssh.nix), with no
   # Caddy in the path. See modules/dendrites/cloudflared.nix for the

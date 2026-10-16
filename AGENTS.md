@@ -322,7 +322,7 @@ the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
 
 `modules/dendrites/compositor/hyprland/hyprland.nix` is the provider and does one
 job: make a Hyprland session RUN. Package, Wayland environment, the monitor
-list (a host names its panels in `dx.hyprland.monitors`), and the guarded
+list (a host names its panels in its own file, after the catch-all), and the guarded
 session handoff below. It installs nothing.
 
 Everything opinionated is a dendrite selected by name.

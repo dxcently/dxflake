@@ -17,6 +17,7 @@
 
   habit.dendrites = {
     bluetooth.enable = true;
+    stylix.enable = true;
     claude-code.enable = true;
     eidolon.enable = true;
     gpu = {
@@ -52,8 +53,10 @@
     ./disko.nix
   ];
 
-  dx.stylix.enable = true;
-  dx.inference.igpu = true; # Strix Halo — unified memory, not a discrete card
+  # Strix Halo — unified memory, not a discrete card. Ollama drops integrated
+  # GPUs unless told otherwise; without this an iGPU host silently runs CPU-only
+  # (verified in logs).
+  services.ollama.environmentVariables.OLLAMA_IGPU_ENABLE = "1";
 
   # Strix Halo (Ryzen AI Max) is new silicon — ride the latest kernel for the
   # freshest amdgpu. gttsize/ttm let the iGPU borrow a large slice of the unified

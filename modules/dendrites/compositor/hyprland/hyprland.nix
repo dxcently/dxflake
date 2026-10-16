@@ -15,27 +15,7 @@
 #
 # Nothing here installs a package. Package membership is the shell
 # aggregation's, and each ecosystem dendrite carries only what it itself calls.
-{ lib, ... }:
 {
-  options.dx.hyprland = {
-    monitors = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = ''
-        Hyprland `monitor =` lines, verbatim, after the catch-all fallback. A
-        host lists its own panels here.
-      '';
-    };
-    workspaces = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = ''
-        Hyprland `workspace =` rules a host adds to the shared ones in
-        keybinds.nix, which own the rest.
-      '';
-    };
-  };
-
   config = {
     programs.hyprland = {
       enable = true;
@@ -46,7 +26,6 @@
       {
         pkgs,
         lib,
-        osConfig,
         ...
       }:
       let
@@ -80,10 +59,8 @@
           xwayland.enable = true;
 
           settings = {
-            # Monitors: the catch-all first, then the host's panels from
-            # dx.hyprland.monitors. A host with no named panels gets only the
-            # catch-all.
-            monitor = [ ", preferred, auto, 1" ] ++ osConfig.dx.hyprland.monitors;
+            # The catch-all fallback. A host's own panels follow it, from its file.
+            monitor = [ ", preferred, auto, 1" ];
 
             # Environment Variables
             env = [

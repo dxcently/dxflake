@@ -26,27 +26,15 @@ let
   );
 in
 {
-  options.dx.inference = {
-    igpu = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = ''
-        This host's ROCm GPU is integrated (unified memory) rather than discrete.
-        Ollama drops integrated GPUs unless told otherwise, so this flips
-        OLLAMA_IGPU_ENABLE. Leave off for a discrete card.
-      '';
-    };
-  };
-
   config = {
     # Requires an AMD GPU wired up (ROCm userspace, amdgpu). The desktop hosts
-    # that turn this on also import dx.gpu-amd; assert on the driver it
+    # that turn this on also import the gpu-amd dendrite; assert on the driver it
     # actually sets so a misconfigured host fails loudly at eval instead of
     # silently falling back to CPU.
     assertions = [
       {
         assertion = lib.elem "amdgpu" config.services.xserver.videoDrivers;
-        message = "dx.inference requires the gpu-amd dendrite imported (amdgpu in services.xserver.videoDrivers).";
+        message = "inference requires the gpu-amd dendrite imported (amdgpu in services.xserver.videoDrivers).";
       }
     ];
 
@@ -63,10 +51,6 @@ in
         HSA_OVERRIDE_GFX_VERSION = gfxOverride;
         OLLAMA_KEEP_ALIVE = "30m";
         OLLAMA_FLASH_ATTENTION = "1";
-      }
-      // lib.optionalAttrs config.dx.inference.igpu {
-        # Without this, an iGPU host silently runs CPU-only (verified in logs).
-        OLLAMA_IGPU_ENABLE = "1";
       };
     };
 

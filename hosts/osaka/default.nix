@@ -36,11 +36,12 @@
 
   habit.dendrites = {
     aoide.enable = true;
+    stylix.enable = true;
     # Aoide's lanes over dxflake's own paint: the Quickshell surface (bar, dock,
     # launcher, OSD, wallpaper, herald), the lyra binary with its shellbridge,
     # the dunst daemon behind the herald (the shell aggregation ships only the
     # package, so no second daemon), and Aoide's stylix lane for colours
-    # (dx.stylix keeps fonts, cursors, icons). Aoide's compositor lane stays
+    # (the stylix dendrite keeps fonts, cursors, icons). Aoide's compositor lane stays
     # unselected so dxflake's Hyprland is the only compositor writer.
     quickshell.enable = true;
     lyra.enable = true;
@@ -105,7 +106,6 @@
   };
   users.groups.nixremote = { };
   nix.settings.trusted-users = [ "nixremote" ];
-  dx.stylix.enable = true;
   # The pairing popup (Aoide task #135). Raises the typed-code dialog the
   # moment an inbound pairing request parks, instead of it waiting in a
   # terminal for someone to go looking. The unit's gate is
@@ -134,7 +134,7 @@
   # dendrites: it needs nothing but graphical-session.target and a compositor
   # that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE, which the
   # compositor dendrite already provides. Colours follow the livery through
-  # Aoide's stylix lane while dx.stylix keeps fonts/cursors/icons.
+  # Aoide's stylix lane while the stylix dendrite keeps fonts/cursors/icons.
   #
   # Deselecting the quickshell lane (and lyra and dunst, which have no purpose
   # without the surface) is the whole revert: the waybar/awww/rofi stand-down
@@ -233,9 +233,30 @@
     home.file.".aoide/song/covers".source = ../../song/covers;
     # SUPER+D sends vesktop to workspace 3 on the vertical HDMI-A-1 panel, which
     # only osaka has.
-    wayland.windowManager.hyprland.settings.bind = [
-      "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
-    ];
+    wayland.windowManager.hyprland.settings = {
+      # osaka runs a sideways-T: the horizontal AOC meets the middle of the rotated
+      # Samsung. The Samsung is 1080x1920 after transform 3 and stays anchored at
+      # 1920x0, so the AOC (1080 tall) is dropped by (1920-1080)/2 = 420 to center
+      # its full right edge inside the tall panel; otherwise only the top ~half of
+      # the shared edge is crossable. Panels are pinned by description so geometry
+      # survives a DP/HDMI port swap.
+      monitor = lib.mkAfter [
+        "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1"
+        "desc:Samsung Electric Company C24F390 HCNN907588, 1920x1080@60, 1920x0, 1, transform, 3"
+      ];
+      workspace = lib.mkAfter [
+        "n, monitor:HDMI-A-1, default:true"
+        "special:discord, monitor:HDMI-A-1, on-created-empty:vesktop"
+        "2, monitor:HDMI-A-1, persistent:true"
+        # Every workspace on the vertical monitor uses the scrolling layout. The
+        # rule keys off the HDMI-A-1 connector because m[] selectors cannot hold a
+        # spaced description.
+        "m[HDMI-A-1], layout:scrolling"
+      ];
+      bind = [
+        "SUPER, D, exec, [workspace 3; monitor hdmi-a-1] vesktop"
+      ];
+    };
     # ANSI bright black is secondary text (e.g. nom's elapsed-time labels).
     # Override the template's base02 surface shade with muted ink. Ordered
     # after the kitty dendrite's include block, whose staged file carries that
@@ -253,27 +274,6 @@
     };
   };
   dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
-  # osaka runs a sideways-T: the horizontal AOC meets the middle of the rotated
-  # Samsung. The Samsung is 1080x1920 after transform 3 and stays anchored at
-  # 1920x0, so the AOC (1080 tall) is dropped by (1920-1080)/2 = 420 to center
-  # its full right edge inside the tall panel; otherwise only the top ~half of
-  # the shared edge is crossable. Panels are pinned by description so geometry
-  # survives a DP/HDMI port swap.
-  dx.hyprland = {
-    monitors = [
-      "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1"
-      "desc:Samsung Electric Company C24F390 HCNN907588, 1920x1080@60, 1920x0, 1, transform, 3"
-    ];
-    workspaces = [
-      "n, monitor:HDMI-A-1, default:true"
-      "special:discord, monitor:HDMI-A-1, on-created-empty:vesktop"
-      "2, monitor:HDMI-A-1, persistent:true"
-      # Every workspace on the vertical monitor uses the scrolling layout. The
-      # rule keys off the HDMI-A-1 connector because m[] selectors cannot hold a
-      # spaced description.
-      "m[HDMI-A-1], layout:scrolling"
-    ];
-  };
   # Two upstream package fixes for this nixpkgs pin. Osaka is
   # the only consumer of either package, so the overlay lives here rather
   # than in core.
