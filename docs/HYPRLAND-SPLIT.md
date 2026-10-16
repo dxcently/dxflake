@@ -27,12 +27,14 @@ imports the single dendrite (`hyprlock`) it still wants.
 | `home.sessionVariables.NIXOS_OZONE_WL`            | 81      | `compositor/hyprland/hyprland.nix`           |
 | `hyprland.{enable,systemd.enable,xwayland}`       | 85-104  | `compositor/hyprland/hyprland.nix`           |
 | session handoff + `hyprland-session.target`       | 70-72, 161-163, 184, 512-537 | `compositor/hyprland/hyprland.nix` |
-| `monitor`                                         | 134-141 | `compositor/hyprland/hyprland.nix`           |
+| `monitor` (catch-all)                             | 134-141 | `compositor/hyprland/hyprland.nix`           |
+| `monitor` (a host's panels)                       | 134-141 | `hosts/<host>/default.nix`, `dx.hyprland.monitors` |
 | `env`                                             | 143-148 | `compositor/hyprland/hyprland.nix`           |
 | `exec-once` (user programs)                       | 164-183 | `compositor/hyprland/autostart.nix`  |
 | `hyprpolkitagent` package                         | 77      | `compositor/hyprland/autostart.nix`  |
 | `settings.extraConfig` windowrules 1-6            | 186-233 | `compositor/hyprland/keybinds.nix`   |
-| `workspace`                                       | 235-262 | `compositor/hyprland/keybinds.nix`   |
+| `workspace` (shared rules)                        | 235-262 | `compositor/hyprland/keybinds.nix`   |
+| `workspace` (a host's rules)                      | 235-262 | `hosts/<host>/default.nix`, `dx.hyprland.workspaces` |
 | `bind`, `bindm`                                   | 264-344 | `compositor/hyprland/keybinds.nix`   |
 | `input`                                           | 346-358 | `compositor/hyprland/keybinds.nix`   |
 | `hyprshot`, `hyprpicker` packages                 | 78-79   | `compositor/hyprland/keybinds.nix`   |
@@ -45,6 +47,16 @@ imports the single dendrite (`hyprlock`) it still wants.
 | `layerrule` (aoide-*)                             | 401-410 | `compositor/hyprland/hyprglass.nix`  |
 | `plugin:hyprglass { … }` config                   | 450-473 | `compositor/hyprland/hyprglass.nix`  |
 | kitty aero-glass windowrules                      | 486-510 | `compositor/hyprland/hyprglass.nix`  |
+
+## Per-host panels
+
+The provider owns the monitor list and the workspace list, not their contents.
+`dx.hyprland.monitors` takes `monitor =` lines verbatim after the catch-all
+fallback. `dx.hyprland.workspaces` takes extra `workspace =` rules, which
+`keybinds.nix` appends to its shared ones, so the result is one list. A host
+names its own panels in its file: osaka's sideways-T and its HDMI-A-1 rules are
+in `hosts/osaka/default.nix`, and a host with no named panels gets the catch-all
+alone.
 
 ## Independently selectable, vs. private helper
 

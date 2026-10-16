@@ -248,6 +248,27 @@
     };
   };
   dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
+  # osaka runs a sideways-T: the horizontal AOC meets the middle of the rotated
+  # Samsung. The Samsung is 1080x1920 after transform 3 and stays anchored at
+  # 1920x0, so the AOC (1080 tall) is dropped by (1920-1080)/2 = 420 to center
+  # its full right edge inside the tall panel; otherwise only the top ~half of
+  # the shared edge is crossable. Panels are pinned by description so geometry
+  # survives a DP/HDMI port swap.
+  dx.hyprland = {
+    monitors = [
+      "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1"
+      "desc:Samsung Electric Company C24F390 HCNN907588, 1920x1080@60, 1920x0, 1, transform, 3"
+    ];
+    workspaces = [
+      "n, monitor:HDMI-A-1, default:true"
+      "special:discord, monitor:HDMI-A-1, on-created-empty:vesktop"
+      "2, monitor:HDMI-A-1, persistent:true"
+      # Every workspace on the vertical monitor uses the scrolling layout. The
+      # rule keys off the HDMI-A-1 connector because m[] selectors cannot hold a
+      # spaced description.
+      "m[HDMI-A-1], layout:scrolling"
+    ];
+  };
   # Two upstream package fixes for this nixpkgs pin. Osaka is
   # the only consumer of either package, so the overlay lives here rather
   # than in core.

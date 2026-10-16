@@ -15,7 +15,27 @@
 #
 # Nothing here installs a package. Package membership is the shell
 # aggregation's, and each ecosystem dendrite carries only what it itself calls.
+{ lib, ... }:
 {
+  options.dx.hyprland = {
+    monitors = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        Hyprland `monitor =` lines, verbatim, after the catch-all fallback. A
+        host lists its own panels here.
+      '';
+    };
+    workspaces = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        Hyprland `workspace =` rules a host adds to the shared ones in
+        keybinds.nix, which own the rest.
+      '';
+    };
+  };
+
   config = {
     programs.hyprland = {
       enable = true;
@@ -26,6 +46,7 @@
       {
         pkgs,
         lib,
+        osConfig,
         ...
       }:
       let
@@ -59,22 +80,10 @@
           xwayland.enable = true;
 
           settings = {
-            # Monitors
-            #
-            # osaka runs a sideways-T: the horizontal AOC meets the middle of the
-            # rotated Samsung. The Samsung is 1080x1920 after transform 3 and stays
-            # anchored at 1920x0, so the AOC (1080 tall) is dropped by
-            # (1920-1080)/2 = 420 to center its full right edge inside the tall
-            # panel — otherwise only the top ~half of the shared edge is crossable.
-            # Panels are pinned by description so geometry survives a DP/HDMI port
-            # swap. The scrolling rule in hyprland-keybinds still keys off the
-            # HDMI-A-1 connector (m[] selectors can't hold a spaced description).
-            monitor = [
-              ", preferred, auto, 1"
-              "eDP-1, 1920x1080@60, auto, 1.25"
-              "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1"
-              "desc:Samsung Electric Company C24F390 HCNN907588, 1920x1080@60, 1920x0, 1, transform, 3"
-            ];
+            # Monitors: the catch-all first, then the host's panels from
+            # dx.hyprland.monitors. A host with no named panels gets only the
+            # catch-all.
+            monitor = [ ", preferred, auto, 1" ] ++ osConfig.dx.hyprland.monitors;
 
             # Environment Variables
             env = [

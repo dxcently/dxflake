@@ -30,18 +30,16 @@
 
       wayland.windowManager.hyprland = {
         settings = {
-          # Workspace Assignments
+          # Workspace Assignments: the shared rules here, then the host's own
+          # from dx.hyprland.workspaces. One list, so the order is this file's
+          # and then the host's.
           workspace = [
-            "n, monitor:HDMI-A-1, default:true"
-            "special:discord, monitor:HDMI-A-1, on-created-empty:vesktop"
             "special:scratch, on-created-empty:obsidian"
             "special:magic, on-created-empty:pear-desktop"
             "special:scratch, layout:scrolling"
-            "2, monitor:HDMI-A-1, persistent:true"
             "special:replay, on-created-empty:gpu-screen-recorder-gtk"
-            # Every workspace on the vertical monitor uses the scrolling layout.
-            "m[HDMI-A-1], layout:scrolling"
-          ];
+          ]
+          ++ osConfig.dx.hyprland.workspaces;
 
           # Keybindings
           #
@@ -102,7 +100,7 @@
             "SUPER ALT, J, resizeactive, 0 40"
             "SUPER ALT, K, resizeactive, 0 -40"
             "SUPER ALT, L, resizeactive, 20 0"
-            # Scrolling layout (HDMI-A-1). No-ops on dwindle workspaces.
+            # Scrolling layout. No-ops on dwindle workspaces.
             "SUPER, p, layoutmsg, promote"
             "SUPER, comma, layoutmsg, fit visible"
             "SUPER, period, layoutmsg, fit active"

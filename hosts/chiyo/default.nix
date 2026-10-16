@@ -169,8 +169,8 @@
   # `settings` is a separate option from the `extraConfig`/`lines` option
   # Aoide's own lanes write to, so this merges alongside them
   # rather than colliding. Only chiyo's own entries are carried — the AOC/
-  # Samsung monitor block in the compositor dendrite belongs to
-  # osaka, not chiyo. Keybinds/decoration are otherwise NOT carried:
+  # Samsung monitor block belongs to osaka's host (dx.hyprland.monitors),
+  # not chiyo. Keybinds/decoration are otherwise NOT carried:
   # AoideOS owns those (the hyprland lane above). Animations are carried:
   # Aoide writes none, and Hyprland's built-in global is 800 ms.
   home-manager.users.${username} = {

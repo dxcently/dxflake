@@ -94,8 +94,8 @@
           new_status = "master";
         };
 
-        # HDMI-A-1 is a vertical monitor (transform 3). Its workspaces use the
-        # scrolling layout below; the tape grows downward so windows stack
+        # A vertical monitor (transform 3) takes the scrolling layout from a
+        # host's workspace rule. The tape grows downward so windows stack
         # top-to-bottom and you scroll through them instead of shrink-to-fit.
         scrolling = {
           direction = "down";

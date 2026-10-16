@@ -321,8 +321,9 @@ the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
 ## The Hyprland split
 
 `modules/dendrites/compositor/hyprland/hyprland.nix` is the provider and does one
-job: make a Hyprland session RUN. Package, Wayland environment, monitors, and
-the guarded session handoff below. It installs nothing.
+job: make a Hyprland session RUN. Package, Wayland environment, the monitor
+list (a host names its panels in `dx.hyprland.monitors`), and the guarded
+session handoff below. It installs nothing.
 
 Everything opinionated is a dendrite selected by name.
 `modules/dendrites/compositor/hyprland/` holds only what is written or compiled
