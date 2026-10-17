@@ -848,11 +848,11 @@
     "melete-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790583703,
-        "narHash": "sha256-6WjNqIda8cEdZgLDyDwEXStd0yGecSD4Ha0ZZZeQMR8=",
+        "lastModified": 1791500743,
+        "narHash": "sha256-ADeQP/SiTT9IJU4hEjtQQQKoo627WbihoA/VvgSnLLo=",
         "ref": "master",
-        "rev": "dddaa31d2d8443e78abb45ff28d77d7633fb21df",
-        "revCount": 677,
+        "rev": "fec7239f6deb096d151aa60850145f9d2ac5d123",
+        "revCount": 684,
         "type": "git",
         "url": "https://github.com/noah427/melete.git"
       },
