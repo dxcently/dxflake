@@ -16,9 +16,12 @@
   # machine never edited); staging one is a row in the bar's RICE menu or
   # `lyra rice mode stage <song>`.
   habit.song.available = [
-    "sonata"
     "cadenza"
+    "etude"
     "fugue"
+    "nocturne"
+    "quodlibet"
+    "sonata"
   ];
 
   habit.aggregation = {
