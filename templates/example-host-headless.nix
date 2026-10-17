@@ -4,7 +4,7 @@
 # Then:     add "<host>" to the host list in flake.nix.
 # Replace:  as example-host.nix.
 #
-# Every host selects `core` and `network`, the floor it carries; a copy keeps
+# Every host selects `nucleus` and `network`, the floor it carries; a copy keeps
 # both.
 #
 # The same interface, answered differently. Read it beside example-host.nix:
@@ -13,9 +13,8 @@
 # account with no Home Manager module behind it. Two machines, one vocabulary,
 # no `if hostname ==` anywhere.
 {
-  habit.aggregation.core.enable = true;
+  habit.aggregation.nucleus.enable = true;
   habit.aggregation.network.enable = true;
-  habit.aggregation.base.enable = true;
 
   habit.dendrites = {
     exampletool.enable = true;

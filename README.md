@@ -45,7 +45,7 @@ dxflake/
 │   │                        #   the catalogue, one generated entry per package line, `import ./aggregations`
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── aoide/ base/ core/ desktop/ gaming/ hyprland/ network/ shell/    # each default.nix is DATA,
+│   │   └── aoide/ desktop/ gaming/ hyprland/ network/ nucleus/ shell/        # each default.nix is DATA,
 │   │                                                         #   naming its members
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record
@@ -56,7 +56,7 @@ dxflake/
 │       ├── compositor/ gpu/                   #   a provider registry each; compositor/hyprland/
 │       │                                      #     holds the Hyprland provider and its dendrites
 │       ├── packages.nix      #   a plain list of package names: one catalogue entry each
-│       ├── boot.nix · networking.nix …  #   plain modules; the `core` aggregation selects them
+│       ├── boot.nix · networking.nix …  #   plain modules; the `nucleus` aggregation selects them
 │       ├── openssh.nix · avahi.nix · tailscale.nix     #   plain modules; the `network` aggregation selects them
 │       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
@@ -110,7 +110,7 @@ platform import the chosen dendrite files and the chosen provider files.
 ```nix
 {
   habit.aggregation = {
-    base.enable = true;
+    nucleus.enable = true;
     desktop.enable = true;
     gaming.enable = true;
     shell = {
@@ -131,7 +131,6 @@ platform import the chosen dendrite files and the chosen provider files.
     definition = ../../users/khoa.nix;
     home.enable = true;
     aggregation = {
-      base.enable = true;
       desktop.enable = true;
       hyprland.enable = true;
       shell.enable = true;
@@ -216,7 +215,7 @@ Adding a rice is a directory beside `transience/` and one line in the registry; 
 
 A capability-scoped fix — a package upstream broke, a setting everyone running the thing needs — is an **override record** under `modules/overrides/`, not a repeat across hosts. It names its dendrites, optionally the hosts it is confined to, and carries an `overlay`, a `system` module, a `home` module, or any combination; discovery finds it, so there is no catalogue line.
 
-> _To give a thing to every machine, name it in an aggregation every host selects — `core` or `network` — and it is everywhere. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._
+> _To give a thing to every machine, name it in an aggregation every host selects — `nucleus` or `network` — and it is everywhere. To give it to only some, write its name in the **catalogue** and let a machine — or a person — select it. To take a thing away entirely, strike its catalogue line; the file may go on sleeping on disk. Never again ask a meow-dule who it belongs to._
 
 ---
 
@@ -224,8 +223,8 @@ A capability-scoped fix — a package upstream broke, a setting everyone running
 
 Requires NixOS with flakes enabled (`nix.settings.experimental-features = [ "nix-command" "flakes" ];`).
 
-A host is a folder under `hosts/<name>/`: a generated `hardware.nix` and a `default.nix` holding this machine's selection. Every host selects `core`, `network` and the `postgresql` dendrite, and sets its own `system.stateVersion`; everything else is reached only when the host — or a user attached to it — selects it by catalogue name.
-A host may drop a member of `core` with `habit.dendrites.<name>.enable = false`, with three caveats: `boot` is the bootloader, so the host must declare its own or evaluation fails; `networking` carries the hostName, NetworkManager, the wg0 WireGuard config, the firewall line, one authorized key on the login account, and the network-manager-applet and wireguard-tools packages, so without it the hostName is `nixos`, NetworkManager and wg0 are gone, that key and both packages are gone, and the firewall stays up because NixOS defaults it on; and `system` carries the time zone, locale categories, nix settings and substituters, `allowUnfree`, the default editor and dconf, so without it the time zone is unset, unfree packages are refused, and the rest fall back to the platform defaults.
+A host is a folder under `hosts/<name>/`: a generated `hardware.nix` and a `default.nix` holding this machine's selection. Every host selects `nucleus`, `network` and the `postgresql` dendrite, and sets its own `system.stateVersion`; everything else is reached only when the host — or a user attached to it — selects it by catalogue name.
+A host may drop a member of `nucleus` with `habit.dendrites.<name>.enable = false`, with three caveats: `boot` is the bootloader, so the host must declare its own or evaluation fails; `networking` carries the hostName, NetworkManager, the wg0 WireGuard config, the firewall line, one authorized key on the login account, and the network-manager-applet and wireguard-tools packages, so without it the hostName is `nixos`, NetworkManager and wg0 are gone, that key and both packages are gone, and the firewall stays up because NixOS defaults it on; and `system` carries the time zone, locale categories, nix settings and substituters, `allowUnfree`, the default editor and dconf, so without it the time zone is unset, unfree packages are refused, and the rest fall back to the platform defaults.
 Swap `<name>` for your host — it becomes the flake target.
 
 1. Clone the repo:
@@ -247,7 +246,7 @@ Swap `<name>` for your host — it becomes the flake target.
    ```nix
    {
      habit.aggregation = {
-       base.enable = true;        # the command line every host carries
+       nucleus.enable = true;     # the machine and the command line every host carries
        desktop.enable = true;     # audio, fonts, portals, login …
        shell = {
          enable = true;           # the compositor and the surfaces on it
@@ -267,7 +266,6 @@ Swap `<name>` for your host — it becomes the flake target.
        definition = ../../users/khoa.nix;
        home.enable = true;
        aggregation = {
-         base.enable = true;      # the person's half: bash, git, neovim …
          desktop.enable = true;
          shell.enable = true;     # waybar, rofi, wlogout, satty
        };

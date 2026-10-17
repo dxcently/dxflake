@@ -21,7 +21,7 @@ habit="(builtins.getFlake \"github:dxcently/habit/$habitRev\")"
 cases=$(cat <<'EOF'
 realRegistryResolvesSakaki          ok      "age,aoide,aoide-nix,aoide-packages,aoide-secrets,aoided,arduino-ide,autologin,avahi,bat,boot,claude-code,clinfo,cloudflared,cowsay,curl,eidolon,fastfetch,fd,ffmpeg,file,fzf,godot,gptfdisk,htop,hugo,immich,jellyfin,jq,kimi-cli,lazygit,lm_sensors,lshw,melete,melete-adapter,mneme,nas-mounts,neovide,networking,ngrok,nix-tree,nixfmt,nodejs,openssh,poppler,postgresql,python,ripgrep,security,slskd,socat,sops,syncthing,system,tailscale,tinymist,transmission,typst,unar,unrar,unzip,usbutils,v4l-utils,vim,wget,xdg-utils,yt-dlp"
 realRegistryModulesImport             ok      true
-realRegistryInventory               ok      "aoide,base,core,network"
+realRegistryInventory               ok      "aoide,network,nucleus"
 packageEntriesNamedByLastSegment    ok      true
 packageEntriesClashWithHandWritten  error   names both a package line and a hand-written catalogue entry
 packageEntriesListedTwice           error   is listed twice

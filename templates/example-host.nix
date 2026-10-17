@@ -5,7 +5,7 @@
 #           flake.nix ever takes.
 # Replace:  <host>, the selection, the user, the platform settings below, and
 #           the stateVersion, which is the release you first install.
-# Every host selects `core` and `network`, the floor it carries; a copy keeps
+# Every host selects `nucleus` and `network`, the floor it carries; a copy keeps
 # both.
 #           `./hardware.nix` is a placeholder — generate your own with
 #           `nixos-generate-config`; the hardware in this tree's hosts is
@@ -24,9 +24,8 @@
   # owns the capability, so a host says what it runs in one place and needs no
   # separate `habit.dendrites.*` override to do it.
   habit.aggregation = {
-    core.enable = true;
+    nucleus.enable = true;
     network.enable = true;
-    base.enable = true;
 
     workspace = {
       enable = true;

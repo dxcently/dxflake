@@ -35,7 +35,7 @@
 # this baseline — paint is a per-host opt-in laid on TOP of this baseline, by
 # selecting Aoide's lanes in that host's own file, never inferred here.
 #
-# A core-only host keeps dxflake's own compositor + stylix dendrites (the
+# A host with no Aoide paint keeps dxflake's own compositor + stylix dendrites (the
 # compositor selected by the shell aggregation, stylix by the host) painting its desktop; with the
 # quickshell fact left off, aoided anchors to default.target and the door
 # rides it (loopback only). Such a host must never ALSO select Aoide's

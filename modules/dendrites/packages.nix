@@ -4,14 +4,14 @@
 # Not a dendrite and not a module: plain data. modules/default.nix turns each
 # line into a catalogue entry named by the path's last segment, so
 # `kdePackages.filelight` is `habit.dendrites.filelight`. The entry installs the
-# package into system.path at order 1400, after the core lists and before
+# package into system.path at order 1400, after the nucleus lists and before
 # anything that pins itself last. Collisions there resolve first-wins.
 #
 # A package that needs configuration is a dendrite of its own, and so is a
 # package a dendrite already owns (bash, git, kitty, satty ...): those lines
 # are not here. Each group below names the aggregation that selects it.
 [
-  # ── core ── the floor every host carries
+  # ── nucleus ── the floor every host carries
   "unrar" # extract RAR archives
   "unzip" # extract ZIP archives
   "unar" # universal unarchiver

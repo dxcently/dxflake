@@ -3,10 +3,9 @@
 { pkgs, ... }:
 {
   habit.aggregation = {
-    core.enable = true;
+    nucleus.enable = true;
     network.enable = true;
-    base.enable = true;
-    # Dev tooling comes free from base and core (git, neovim, …);
+    # Dev tooling comes free from nucleus (git, neovim, …);
     # desktop and shell bring the GUI.
     desktop.enable = true;
     shell = {
@@ -38,7 +37,6 @@
     home.enable = true;
     # The person, not the machine: these groups contribute home halves.
     aggregation = {
-      base.enable = true;
       desktop.enable = true;
       # The Hyprland-only half of the desktop (keybinds, decoration, autostart,
       # hyprglass). Separate from `shell` so a host on another compositor never

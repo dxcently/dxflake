@@ -1,7 +1,12 @@
-# core — what every host carries to boot, name itself and run Nix.
+# nucleus — what every host carries: the machine itself, and the command line.
 #
-# An aggregation body is DATA: the members it selects in the system half.
-# Members are ordinary dendrites, so a host that wants one gone says
+# An aggregation body is DATA: the members it selects in each half, the
+# provider choices it exposes, and any preference that rides along. It declares
+# no options and carries no gate; habit's composition wraps it in one. Members
+# are named by CATALOGUE NAME, so they stay where they are in
+# modules/dendrites/*.nix rather than being moved under this directory.
+#
+# `system.members` are the system half: a host that wants one gone says
 # `habit.dendrites.<name>.enable = false`, and these are the caveats:
 #
 # - `boot` is the bootloader. Deselected, the host must declare its own, or
@@ -23,8 +28,12 @@
 # - The package names are the floor every host carries: each is a catalogue
 #   entry of its own (modules/dendrites/packages.nix), so one is dropped with
 #   `habit.dendrites.<name>.enable = false` like any member.
+#
+# `home.members` are the home half, sent to every Home Manager user of a host
+# that selects nucleus: the prompt, editor, fuzzy history, and file and process
+# browsers.
 {
-  description = "The machine itself: bootloader, hostname and NetworkManager, the base packages, polkit and rtkit, the sops-nix secrets, and the Nix and locale settings.";
+  description = "The machine every host carries: bootloader, hostname and NetworkManager, the base packages, polkit and rtkit, the sops-nix secrets, and the Nix and locale settings; and the command line: prompt, editor, fuzzy history, file and process browsers.";
 
   system.members = [
     "boot"
@@ -74,5 +83,17 @@
     "python"
     "ffmpeg"
     "fastfetch"
+  ];
+
+  home.members = [
+    "bash"
+    "btop"
+    "direnv"
+    "git"
+    "mcfly"
+    "neovim"
+    "nh"
+    "starship"
+    "yazi"
   ];
 }

@@ -22,10 +22,9 @@
   ];
 
   habit.aggregation = {
-    core.enable = true;
+    nucleus.enable = true;
     aoide.enable = true;
     network.enable = true;
-    base.enable = true;
     desktop.enable = true;
     gaming.enable = true;
     shell = {
@@ -82,7 +81,6 @@
     home.enable = true;
     # The person, not the machine: these groups contribute home halves.
     aggregation = {
-      base.enable = true;
       desktop.enable = true;
       # The Hyprland-only half of the desktop (keybinds, decoration, autostart,
       # hyprglass). Separate from `shell` so a host on another compositor never
@@ -276,7 +274,7 @@
   dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
   # Two upstream package fixes for this nixpkgs pin. Osaka is
   # the only consumer of either package, so the overlay lives here rather
-  # than in core.
+  # than in nucleus.
   #
   # soundconverter 4.0.6 breaks under Python 3.14 (tests/test.py does
   # args[1:] on a None argv); skip the install-check.

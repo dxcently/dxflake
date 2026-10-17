@@ -1,4 +1,4 @@
-# modules/dendrites/ffmpeg.nix — ffmpeg, a member of `core`.
+# modules/dendrites/ffmpeg.nix — ffmpeg, a member of `nucleus`.
 #
 # Not a line in packages.nix: a package line installs at order 1400, behind any
 # dendrite's own packages, and jellyfin's ffmpeg (the jellyfin dendrite, default

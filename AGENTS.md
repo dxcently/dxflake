@@ -161,10 +161,11 @@ cold.
   Unknown fields, unknown targets and unknown host names fail on *every* host,
   naming the record — a broken record cannot hide on the machines it would not
   have applied to.
-- **Core and network** — the two aggregations every host selects.
-  `modules/aggregations/core/` is boot, networking, security, sops and system,
-  plus the package floor, `python` and `fastfetch`; `modules/aggregations/network/`
-  is avahi, openssh and tailscale. Each
+- **Nucleus and network** — the two aggregations every host selects.
+  `modules/aggregations/nucleus/` is boot, networking, security, sops and system,
+  plus the package floor, `python` and `fastfetch`, and the home half, the command
+  line (bash, git, neovim …) that the host line sends to every user;
+  `modules/aggregations/network/` is avahi, openssh and tailscale. Each
   host also selects the `postgresql` dendrite by name and sets its own
   `system.stateVersion`. A host drops a member with
   `habit.dendrites.<name>.enable = false`, with these caveats: `boot` is the
@@ -183,11 +184,11 @@ cold.
   keeps any of those four fails evaluation with "The option `sops' does not exist". `postgresql`
   is not the only thing that starts postgres: on sakaki immich does, so
   deselecting the dendrite there only restores nixpkgs' authentication defaults.
-  The package floor is core's members, one catalogue entry each, generated from
+  The package floor is nucleus's members, one catalogue entry each, generated from
   `modules/dendrites/packages.nix`: a plain list of names, not a module.
 - **Aoide** — `modules/aggregations/aoide/` is Aoide's service floor: `aoided`,
   `aoide-secrets`, `aoide-nix`, `aoide-packages` and `melete-adapter`, all
-  Aoide catalogue lanes. A host that runs Aoide selects it beside `core`
+  Aoide catalogue lanes. A host that runs Aoide selects it beside `nucleus`
   (`habit.aggregation.aoide.enable = true`); osaka, chiyo and sakaki do, and
   yomi-strix does not. `aoide-config` is left out on purpose: selecting it would
   freeze the host's `config.toml`. The `aoide` aggregation and the `aoide`

@@ -8,10 +8,9 @@
   habit.song.declared = "sonata";
 
   habit.aggregation = {
-    core.enable = true;
+    nucleus.enable = true;
     aoide.enable = true;
     network.enable = true;
-    base.enable = true;
     # desktop stays: it carries pipewire, fonts, fcitx5, portals and ly login —
     # none of those collide with Aoide's paint. The shell aggregation is NOT
     # selected here: Aoide's lanes paint instead.
@@ -58,7 +57,6 @@
     home.enable = true;
     # The person, not the machine: these groups contribute home halves.
     aggregation = {
-      base.enable = true;
       desktop.enable = true;
     };
     dendrites.pi-coding-agent.enable = true;

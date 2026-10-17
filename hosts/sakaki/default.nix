@@ -21,10 +21,9 @@
       bindMounts."/run/secrets/mneme.env".hostPath = "/run/secrets/mneme-a.env";
     };
 
-  habit.aggregation.core.enable = true;
+  habit.aggregation.nucleus.enable = true;
   habit.aggregation.aoide.enable = true;
   habit.aggregation.network.enable = true;
-  habit.aggregation.base.enable = true;
 
   habit.dendrites = {
     aoide.enable = true;
@@ -47,10 +46,6 @@
   habit.users.khoa = {
     definition = ../../users/khoa.nix;
     home.enable = true;
-    # The person, not the machine: these groups contribute home halves.
-    aggregation = {
-      base.enable = true;
-    };
     dendrites.pi-coding-agent.enable = true;
   };
 

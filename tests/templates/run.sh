@@ -38,7 +38,7 @@ t=$(mktemp -d) || exit 1
 trap 'rm -rf "$t"' EXIT
 T="$root/templates"
 
-mkdir -p "$t"/modules/{aggregations/base,aggregations/core,aggregations/network,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor/hyprland} \
+mkdir -p "$t"/modules/{aggregations/nucleus,aggregations/network,aggregations/workspace,aggregations/landmine,overrides,dendrites/notifications,dendrites/compositor/hyprland} \
          "$t"/hosts/{examplehost,exampleserver} "$t"/users "$t"/pkgs/example-tool
 
 cp "$T/example-default-registry.nix"          "$t/modules/default.nix"
@@ -73,22 +73,13 @@ EOF
 cat > "$t/modules/dendrites/compositor/landmine.nix" <<'EOF'
 throw "compositor/landmine.nix was imported — an unselected provider was evaluated"
 EOF
-cat > "$t/modules/aggregations/base/default.nix" <<'EOF'
-# The smallest an aggregation body gets: a name, and what it selects. Both
-# hosts take it, and it names a member workspace also names — two aggregations
-# wanting one dendrite on the same terms merge into one selection.
+cat > "$t/modules/aggregations/nucleus/default.nix" <<'EOF'
+# The floor both copied hosts select: a name, and what it selects. It names a
+# member workspace also names — two aggregations wanting one dendrite on the
+# same terms merge into one selection.
 {
   description = "What every host carries.";
   system.members = [ "exampletool" ];
-}
-EOF
-# The floor both copied hosts select. Its members are the real dendrites, which
-# this tree does not ship, so the body selects none; the checks below only ask
-# that the copied hosts reach it.
-cat > "$t/modules/aggregations/core/default.nix" <<'EOF'
-{
-  description = "Stands in for the floor every host selects.";
-  system.members = [ ];
 }
 EOF
 cat > "$t/modules/aggregations/network/default.nix" <<'EOF'
@@ -188,7 +179,9 @@ else
   check "enable = false beats group membership"   "false"    "$(g aOptOut)"
   check "group membership reaches the host"       "true"     "$(g aGroupMember)"
   check "user scope gets its own dendrites"       "3"        "$(g aUserDendrites)"
-  check "user selects the group's home half"      "workspace" "$(g 'aUserAggregation[0]')"
+  # The user's list also carries the groups the host sent (habit 0.5.0), so the
+  # check is membership, not position.
+  check "user selects the group's home half"      "true" "$(g 'aUserAggregation | index("workspace") != null')"
   # Second host, same vocabulary, different answers. niri and the landmine
   # aggregation sit right beside what these two selected and stay unread — the
   # resolution above would have thrown on import otherwise.
@@ -197,8 +190,8 @@ else
   check "no home where HM is off"                 "false"    "$(g bHome)"
   check "and the user selects nothing for it"     "0"        "$(g bUserDendrites)"
   # Both copied hosts reach the floor the templates tell them to select.
-  check "copied host selects the floor (examplehost)"  "base,core,network,workspace" "$(g 'aAggregation | join(",")')"
-  check "copied host selects the floor (exampleserver)" "base,core,network"          "$(g 'bAggregation | join(",")')"
+  check "copied host selects the floor (examplehost)"  "network,nucleus,workspace" "$(g 'aAggregation | join(",")')"
+  check "copied host selects the floor (exampleserver)" "network,nucleus"          "$(g 'bAggregation | join(",")')"
   # The override record. tripwire.nix targets a capability neither host
   # selected and throws in both its bodies; the deepSeq above would have caught
   # a call, so "unmatched work is never done" is proved, not asserted.
