@@ -10,13 +10,13 @@
 {
   # The song carries the livery (palette + component tiers) and nothing else —
   # host-agnostic by contract, so this one line is the whole rice swap.
-  habit.song.declared = "sonata";
+  habit.song.declared = "barcarolle";
   # Built in, not performed. Each switch refreshes these songs' copies in the
   # runtime songbook (`lyra rice refresh`: repo changes reach the files the
   # machine never edited); staging one is a row in the bar's RICE menu or
-  # `lyra rice mode stage <song>`. aoide.song stays sonata, so they add no
-  # livery and the overrides below still recolour sonata alone.
+  # `lyra rice mode stage <song>`.
   habit.song.available = [
+    "sonata"
     "cadenza"
     "fugue"
   ];
