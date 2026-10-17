@@ -6,6 +6,9 @@
 }:
 {
   habit.song.declared = "sonata";
+  # Built in, not performed: barcarolle is in the runtime songbook, staged from
+  # the RICE menu or `lyra rice mode stage barcarolle`, without a rebuild.
+  habit.song.available = [ "barcarolle" ];
 
   habit.aggregation = {
     nucleus.enable = true;
