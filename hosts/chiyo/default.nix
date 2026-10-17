@@ -100,6 +100,8 @@
     spawnAgent = "claude";
     spawnPath = [ pkgs.claude-code ];
   };
+  # The file `lyra rice declare --host` and the Declare button rewrite.
+  aoide.hostConfig = "/home/${username}/dxflake/hosts/chiyo/default.nix";
   # chiyo is the full AoideOS carrier: the complete Aoide paint stack owns the
   # session — compositor (Hyprland wiring + livery), stylix (base16 fan-out),
   # and quickshell (bar/dock/launcher/theming) — replacing dxflake's own
@@ -110,7 +112,7 @@
   # tiling layout) that pairs with the compositor lane's LOOK — without it
   # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
   # no window movement).
-  # Same Rosé Pine override as osaka's (hosts/osaka/default.nix).
+  # Rosé Pine over whichever song chiyo performs (osaka applies it to sonata only).
   # Blur re-renders behind every moving window; the UHD 620 can't afford it.
   aoide.livery.geometry.blurEnabled = false;
   aoide.livery.override = {

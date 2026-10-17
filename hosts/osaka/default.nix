@@ -126,6 +126,8 @@
   # does not exist on this box. It becomes AOIDE_FLAKE_ROOT on aoided and the
   # shellbridge, and `lyra preview` and `lyra rice declare` refuse a missing one.
   aoide.checkout = "/home/${username}/aoide";
+  # The file `lyra rice declare --host` and the Declare button rewrite.
+  aoide.hostConfig = "/home/${username}/dxflake/hosts/osaka/default.nix";
 
   # ── Aoide's face, laid over dxflake's own paint ───────────────────────────
   # The quickshell lane composes with dxflake's own Hyprland + Stylix
@@ -155,17 +157,17 @@
   # qml's own header names "background gone after rebuild" as the bug the
   # baked path exists to fix).
   #
-  # mkForce is load-bearing and it has a cost. sonata assigns this option
-  # null at normal priority, so a plain assignment here would collide the
-  # moment `aoide.song` goes back to "sonata" — mkForce keeps the song switch
-  # working in BOTH directions. What it buys with that: a future song that
-  # carries real cover art of its own will have it overridden on osaka.
-  # Delete this line to hand the cover note back to whatever song is playing.
-  aoide.livery.wallpaper = lib.mkForce ../../song/covers/hero.webp;
+  # mkForce is load-bearing: sonata assigns this option null at normal
+  # priority, so a plain assignment would collide. Scoped to sonata, so a song
+  # with cover art of its own (barcarolle) keeps it.
+  aoide.livery.wallpaper = lib.mkIf (config.aoide.song == "sonata") (
+    lib.mkForce ../../song/covers/hero.webp
+  );
 
   # Rosé Pine (song/songbook/transience/palette.nix) over sonata, host-scoped: the
   # song itself is shared with yomi-strix, so the override tier, not livery.json.
-  aoide.livery.override = {
+  # Any other song keeps its own palette.
+  aoide.livery.override = lib.mkIf (config.aoide.song == "sonata") {
     bg = "#191724";
     fg = "#e0def4";
     accent = "#ebbcba";
