@@ -21,9 +21,22 @@ in
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/${id}/latest.xpi";
           installation_mode = "normal_installed";
         });
+        profiles.default = {
+          isDefault = true;
+          userChrome = builtins.readFile ./userChrome.css;
+        };
+        # Tabs close on exit (startup.page stays at Firefox's default); pinned
+        # tabs are still restored, which is Firefox's deferred-session behaviour.
         settings = {
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.resistFingerprinting" = false;
+          "privacy.fingerprintingProtection" = true;
+          "browser.search.suggest.enabled" = true;
+          "browser.urlbar.suggest.searches" = true;
+          "browser.tabs.closeWindowWithLastTab" = false;
+          "general.autoScroll" = true;
+          "media.ffmpeg.vaapi.enabled" = true;
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
           # DRM: Widevine is off and LibreWolf stops the plugin manager from
           # fetching it, so all three are needed for playback.
           "media.eme.enabled" = true;
