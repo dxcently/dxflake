@@ -887,11 +887,11 @@
     "mneme-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790073082,
-        "narHash": "sha256-U9p9MC7abjLVq+VMb1EhmYPVhzs23LAFkY/9U1eVdyA=",
+        "lastModified": 1792212745,
+        "narHash": "sha256-4DE9z2xru5ySspbc+Rj94JDV1ZytZbBAkxtBNP6ldJY=",
         "ref": "master",
-        "rev": "6f9cf7fc2a6fa9d61c3e48b45e19bf50de643fe8",
-        "revCount": 190,
+        "rev": "504663ad3f3c3d52b0046ca8bdaeb47b9d7f9ca8",
+        "revCount": 202,
         "type": "git",
         "url": "https://github.com/noah427/mneme.git"
       },
