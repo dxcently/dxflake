@@ -1,25 +1,45 @@
 # sakaki — the server. Headless: Aoide runs here with no paint lanes and nothing
 # paints, so no desktop or shell aggregation and no graphical dendrite.
 { pkgs, habitGuest, ... }:
-{
-  # Spike: one mneme instance as a NixOS container, composed by habit like a host.
-  sops.secrets."mneme-a.env" = {
-    sopsFile = ../../secrets/mneme-a.yaml;
-    key = "env";
-  };
-  containers.mneme-a =
+let
+  # One mneme instance as a NixOS container: its sops env, the container, its tunnel hostname and its Caddy vhost.
+  # `name` gives mneme-<name>; `net` picks the container's /24, 10.233.<net>.0.
+  mnemeVariant =
+    name: net:
     let
-      g = habitGuest "mneme-a" ./guests/mneme-a.nix;
+      id = "mneme-${name}";
+      guest = "10.233.${toString net}.2";
+      g = habitGuest id ./guests/mneme.nix;
     in
     {
-      inherit (g) specialArgs;
-      config.imports = g.modules;
-      privateNetwork = true;
-      hostAddress = "10.233.1.1";
-      localAddress = "10.233.1.2";
-      # Decrypted by sops on the host; the container's systemd reads it as root.
-      bindMounts."/run/secrets/mneme.env".hostPath = "/run/secrets/mneme-a.env";
+      sops.secrets."${id}.env" = {
+        sopsFile = ../../secrets + "/${id}.yaml";
+        key = "env";
+      };
+      containers.${id} = {
+        inherit (g) specialArgs;
+        config.imports = g.modules;
+        privateNetwork = true;
+        hostAddress = "10.233.${toString net}.1";
+        localAddress = guest;
+        # Decrypted by sops on the host; the container's systemd reads it as root.
+        bindMounts."/run/secrets/mneme.env".hostPath = "/run/secrets/${id}.env";
+      };
+      dx.cloudflared.hostnames = [ "${id}.necoconeco.net" ];
+      services.caddy.virtualHosts."http://${id}.necoconeco.net:8080".extraConfig = ''
+        bind 127.0.0.1
+        reverse_proxy http://${guest}:8000
+
+
+      '';
     };
+in
+{
+  # mneme variants: one line each (add secrets/mneme-<name>.yaml first).
+  imports = [
+    ./hardware.nix
+    (mnemeVariant "a" 1)
+  ];
 
   habit.aggregation.nucleus.enable = true;
   habit.aggregation.aoide.enable = true;
@@ -48,8 +68,6 @@
     home.enable = true;
     dendrites.pi-coding-agent.enable = true;
   };
-
-  imports = [ ./hardware.nix ];
 
   # sakaki is headless: the shared syncthing dendrite (devices + the Magi
   # folder) is taken as-is, with the host making Nix authoritative and
@@ -106,8 +124,6 @@
       # (mneme.tailc27b51.ts.net -> 127.0.0.1:8000) is on the same buggy
       # tailscale path, so give it a Cloudflare route too.
       "mneme.necoconeco.net"
-      # mneme-a: a second mneme, the NixOS container below (its own vault and passphrase).
-      "mneme-a.necoconeco.net"
       # weedaq, read-only to the public, on its own registered domain rather
       # than a fold under the melete gateway: the gateway is all-or-nothing
       # (one apps/gate_token for every app it fronts; app.toml has no per-app
@@ -202,12 +218,6 @@
       "http://mneme.necoconeco.net:8080".extraConfig = ''
         bind 127.0.0.1
         reverse_proxy http://127.0.0.1:8000
-
-
-      '';
-      "http://mneme-a.necoconeco.net:8080".extraConfig = ''
-        bind 127.0.0.1
-        reverse_proxy http://10.233.1.2:8000
 
 
       '';
