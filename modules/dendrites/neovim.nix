@@ -240,8 +240,8 @@
               statusline = {
                 lualine = {
                   enable = true;
-                  theme = "auto";
-                };
+                  setupOpts.options.theme = "auto";
+};
               };
 
               autopairs.nvim-autopairs.enable = true;
