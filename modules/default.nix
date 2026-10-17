@@ -111,6 +111,7 @@ let
     kimi-cli = ./dendrites/kimi-cli.nix;
     kitty = ./dendrites/kitty.nix;
     laptop = ./dendrites/laptop.nix;
+    librewolf = ./dendrites/librewolf.nix;
     mcfly = ./dendrites/mcfly.nix;
     melete = ./dendrites/melete.nix;
     mneme = ./dendrites/mneme.nix;

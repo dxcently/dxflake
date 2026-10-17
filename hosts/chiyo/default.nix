@@ -152,6 +152,7 @@
   # aggregation that would otherwise carry them.
   habit.dendrites.brightnessctl.enable = true;
   habit.dendrites.ydotool.enable = true;
+  habit.dendrites.librewolf.enable = true;
   # upowerd on the system bus — the bar's battery gauge and the power stele
   # read Quickshell.Services.UPower, a client only; without the daemon every
   # battery renders as absent ("AC — no battery present").
