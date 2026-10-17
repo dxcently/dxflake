@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     habit = {
-      url = "github:dxcently/habit/v0.3.0";
+      url = "github:dxcently/habit/v0.4.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
