@@ -20,8 +20,9 @@
         bashrcExtra = ''
           command -v mcfly >/dev/null && eval "$(mcfly init bash)"
 
-          # Private github: fetches authenticate through nix's access-tokens;
-          # hand them the same gh login git uses.
+          # github: tarball fetches count against GitHub's API rate limit
+          # unless nix holds a token; hand it the gh login. The private repos
+          # are git+https and use git's credential helper instead.
           t=$(gh auth token 2>/dev/null) && export NIX_CONFIG="access-tokens = github.com=$t"
           unset t
 
