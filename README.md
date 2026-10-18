@@ -300,7 +300,7 @@ dxrebuild        # nh os switch /home/khoa/dxflake/
 dxupdate         # nh os switch /home/khoa/dxflake/ --update
 
 # same, but re-lock only the fast-moving first-party inputs
-dxbump           # re-lock melete/mneme/eidolon/eidolon-plugins/aoide only, then switch
+dxbump           # re-lock melete/mneme/eidolon-src/eidolon-plugins/aoide only, then switch
 
 # build + set as boot default, don't activate now
 dxboot           # nh os boot /home/khoa/dxflake/

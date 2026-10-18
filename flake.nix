@@ -39,10 +39,9 @@
     # says, re-locked on demand.
     #
     # harnox is deliberately NOT an input here. It is not a flake and nothing
-    # installs it on its own: it reaches the graph only as eidolon's own
-    # `flake = false` source input, on the rev eidolon's flake.lock names (see
-    # the eidolon input below). dxflake pins no harnox rev that could drift
-    # from that one.
+    # installs it on its own: it reaches the build only as a git dependency in
+    # eidolon's Cargo.lock, fetched at the rev that lock names (see eidolon-src
+    # below). dxflake pins no harnox rev that could drift from that one.
     #
     # `git+https:` and not `github:` — the tarball fetcher a `github:` URL
     # uses can only authenticate from a nix.conf `access-tokens` entry (a
@@ -56,7 +55,7 @@
     # cannot move, so every upstream commit would mean hand-editing this
     # file. With just `ref=master` the rev lives in flake.lock and one
     # command picks up new commits for the whole stack:
-    #   nix flake update melete-src mneme-src eidolon eidolon-plugins aoide
+    #   nix flake update melete-src mneme-src eidolon-src eidolon-plugins aoide
     # `dxbump` (modules/dendrites/bash.nix) runs exactly that, then switches.
     #
     # To build a DIRTY local worktree without pushing, override for that one
@@ -75,21 +74,16 @@
       url = "git+https://github.com/noah427/mneme.git?ref=master";
       flake = false;
     };
-    # Eidolon, unlike the other three, ships a real flake whose package
-    # already does the awkward part (it reassembles the `../harnox` sibling
-    # layout Cargo's `[patch]` table expects — nix/eidolon.nix in that repo).
-    # So it rides as a FLAKE input and dxflake writes no packaging of its
-    # own; modules/dendrites/eidolon.nix just installs
-    # inputs.eidolon.packages.<system>.default.
-    eidolon = {
+    # Eidolon is built from source like Melete and Mneme, so it rides as a
+    # `flake = false` source input and pkgs/eidolon-package.nix builds the
+    # crate. Its workspace links harnox through a git source in Cargo.lock
+    # (not a sibling `[patch]`), and importCargoLock fetches that with
+    # builtins.fetchGit, pinned by the rev the lock names. So harnox is not an
+    # input here, and dxflake pins no harnox rev: `nix flake update eidolon-src`
+    # moves eidolon, and harnox moves only when eidolon's Cargo.lock does.
+    eidolon-src = {
       url = "git+https://github.com/noah427/eidolon.git?ref=master";
-      inputs.nixpkgs.follows = "nixpkgs";
-      # harnox is eidolon's own input, not dxflake's: `flake = false` (a
-      # source, not a flake — nothing "installs" harnox), locked at the rev
-      # eidolon's own flake.lock names, which is why `nix flake update eidolon`
-      # is the harnox bump too. It is `github:` (private, tarball fetcher),
-      # which is why it reads the token bash.nix exports into NIX_CONFIG from
-      # khoa's gh login.
+      flake = false;
     };
     # Eidolon's plugins (github.com/dxcently/eidolon-plugins, PUBLIC): a flake
     # whose packages are the plugin daemons. `github:`, not git+https:, because

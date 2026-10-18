@@ -217,28 +217,6 @@
         "type": "github"
       }
     },
-    "eidolon": {
-      "inputs": {
-        "harnox": "harnox",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791604048,
-        "narHash": "sha256-zLzCV/GiqgoFf6wVUOzWaqKRGmKxKE6e0ulM/QDXkGw=",
-        "ref": "master",
-        "rev": "181c1b19cd805d100660b560842a13437d104c49",
-        "revCount": 407,
-        "type": "git",
-        "url": "https://github.com/noah427/eidolon.git"
-      },
-      "original": {
-        "ref": "master",
-        "type": "git",
-        "url": "https://github.com/noah427/eidolon.git"
-      }
-    },
     "eidolon-plugins": {
       "inputs": {
         "nixpkgs": [
@@ -257,6 +235,23 @@
         "owner": "dxcently",
         "repo": "eidolon-plugins",
         "type": "github"
+      }
+    },
+    "eidolon-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792281346,
+        "narHash": "sha256-R0AYGM5UR02PKk9Yu7WCKdecEMRjzwYOk/VQp3hnBmc=",
+        "ref": "master",
+        "rev": "0dd48a56cc56ce8ce3663674d6b4a06bb258acd1",
+        "revCount": 415,
+        "type": "git",
+        "url": "https://github.com/noah427/eidolon.git"
+      },
+      "original": {
+        "ref": "master",
+        "type": "git",
+        "url": "https://github.com/noah427/eidolon.git"
       }
     },
     "firefox-gnome-theme": {
@@ -432,23 +427,6 @@
         "owner": "dxcently",
         "ref": "v0.5.0",
         "repo": "habit",
-        "type": "github"
-      }
-    },
-    "harnox": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1791509502,
-        "narHash": "sha256-UDXZcFAMJbDDXSsO6WpeTCt1FGAK4hQULTpQJMucOIQ=",
-        "owner": "noah427",
-        "repo": "harnox",
-        "rev": "b38f4e5c090256ab55ef5133a8650a7bb6fa1abe",
-        "type": "github"
-      },
-      "original": {
-        "owner": "noah427",
-        "ref": "v0.3.15",
-        "repo": "harnox",
         "type": "github"
       }
     },
@@ -1206,8 +1184,8 @@
         "aoide": "aoide",
         "claude-desktop-nix-flake": "claude-desktop-nix-flake",
         "disko": "disko",
-        "eidolon": "eidolon",
         "eidolon-plugins": "eidolon-plugins",
+        "eidolon-src": "eidolon-src",
         "habit": "habit",
         "home-manager": "home-manager_2",
         "melete-src": "melete-src",
