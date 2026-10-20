@@ -116,6 +116,7 @@ let
     melete = ./dendrites/melete.nix;
     mneme = ./dendrites/mneme.nix;
     nas-mounts = ./dendrites/nas-mounts.nix;
+    netbird = ./dendrites/netbird.nix;
     neovim = ./dendrites/neovim.nix;
     networking = ./dendrites/networking.nix;
     nh = ./dendrites/nh.nix;
