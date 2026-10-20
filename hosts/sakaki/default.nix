@@ -268,7 +268,21 @@ in
         @writes not method GET HEAD
         respond @writes "weedaq is read-only over the public hostname" 405
 
-        reverse_proxy http://127.0.0.1:8110
+        # Prebuilt JSON, written by the post-scrape publish step into
+        # /var/www/weedaq (the /home/khoa 0700 reason the wiki lives there
+        # too). Data only changes at scrape time, so visitors read files
+        # instead of the app recomputing per request. A missing file 404s
+        # and the page falls back to the live /api/ route.
+        handle /data/* {
+          root * /var/www/weedaq
+          file_server
+          encode zstd gzip
+          header Cache-Control "public, max-age=300, stale-while-revalidate=3600"
+        }
+
+        handle {
+          reverse_proxy http://127.0.0.1:8110
+        }
 
       '';
 
@@ -377,6 +391,7 @@ in
     "d /var/www                     0755 root root - -"
     "d /var/www/tmp                 0755 khoa users - -"
     "d /var/www/fau-cyber-wiki-test 0755 khoa users - -"
+    "d /var/www/weedaq              0755 khoa users - -"
     "d /var/lib/fau-cyber-wiki      0755 khoa users - -"
   ];
 
