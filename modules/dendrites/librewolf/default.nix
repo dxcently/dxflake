@@ -1,29 +1,26 @@
 # LibreWolf, and the default web browser for every user who takes the home half.
-let
-  # Installed from AMO by the browser itself and kept current there, the way
-  # LibreWolf ships uBlock Origin; only adding or removing one needs a rebuild.
-  extensions = [
-    "78272b6fa58f4a1abaac99321d503a20@proton.me" # Proton Pass
-    "{8927f234-4dd9-48b1-bf76-44a9e153eee0}" # BetterCampus (Better Canvas)
-    "{60f82f00-9ad5-4de5-b31c-b16a47c51558}" # Cookie Quick Manager
-    "savewebpas@jeffersonscher.com" # Save webP as PNG or JPEG
-    "clipper@obsidian.md" # Obsidian Web Clipper
-    "{3c078156-979c-498b-8990-85f7987dd929}" # Sidebery
-  ];
-in
+#
+# No extension is declared here on purpose, neither as a policy nor as an
+# installed add-on: they come from the Firefox Account sync, so adding or
+# removing one is a browser action that needs no rebuild and no host edit.
+# Declaring `policies.ExtensionSettings` would pin each one to a policy's idea
+# of its version instead of letting the account keep it current.
 {
   habit.home =
     { lib, pkgs, ... }:
     {
       programs.librewolf = {
         enable = true;
-        policies.ExtensionSettings = lib.genAttrs extensions (id: {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/${id}/latest.xpi";
-          installation_mode = "normal_installed";
-        });
         profiles.default = {
           isDefault = true;
           userChrome = builtins.readFile ./userChrome.css;
+          # DoH first, system resolver on failure: networks that throttle port
+          # 53 stall every lookup otherwise. The tailnet stays on MagicDNS.
+          # In user.js, so it outranks a trr.mode left in prefs.js.
+          settings = {
+            "network.trr.mode" = 2;
+            "network.trr.excluded-domains" = "ts.net";
+          };
         };
         # Tabs close on exit (startup.page stays at Firefox's default); pinned
         # tabs are still restored, which is Firefox's deferred-session behaviour.
