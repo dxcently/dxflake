@@ -101,6 +101,7 @@
   "soundconverter" # audio format converter
   "udiskie" # automounter for removable media
   "filezilla" # FTP/SFTP client
+  "remmina" # RDP/VNC/SPICE remote desktop client
   "kdePackages.filelight" # disk usage as a sunburst
   "tor-browser" # Tor Browser Bundle
   "stremio-linux-shell" # media streaming front end
