@@ -120,6 +120,7 @@ let
     networking = ./dendrites/networking.nix;
     nh = ./dendrites/nh.nix;
     openai = ./dendrites/openai.nix;
+    opencode = ./dendrites/opencode.nix;
     openrazer = ./dendrites/openrazer.nix;
     openssh = ./dendrites/openssh.nix;
     pi-coding-agent = ./dendrites/pi-coding-agent.nix;

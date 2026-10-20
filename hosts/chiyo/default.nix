@@ -47,6 +47,7 @@
     hyprlock.enable = true;
     kimi-cli.enable = true;
     laptop.enable = true;
+    opencode.enable = true;
     ros.enable = true;
     syncthing.enable = true;
     postgresql.enable = true;
