@@ -32,6 +32,11 @@
         # Cookies, history, logins and site settings are left alone; the session
         # is still written to disk, so crash recovery still works.
         settings = {
+          # LibreWolf's own default is false (mozilla.cfg), and a profile with
+          # no account syncs nothing — which would quietly cost the extensions
+          # and the bookmarks that are now expected to arrive that way. A
+          # default, so signing out in the UI still sticks.
+          "identity.fxaccounts.enabled" = true;
           "browser.startup.page" = 1;
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.resistFingerprinting" = false;
