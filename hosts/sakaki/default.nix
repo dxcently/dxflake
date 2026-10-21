@@ -160,6 +160,14 @@ in
     # rides it as its Aoide `via`). Straight to sshd, no Caddy; key-only by
     # the openssh rule for loopback-borne logins (modules/dendrites/openssh.nix).
     sshHostnames = [ "sakaki-ssh.necoconeco.net" ];
+    # Raw TCP, not HTTP: syncthing's sync port, so a box on wifi that only lets
+    # 443 out (chiyo, most days) still reaches 22000. cloudflared hands the
+    # bytes straight to syncthing's own TLS — nothing here terminates or
+    # inspects them, and there is no Caddy virtualHost to keep in sync. The
+    # dialing side runs `cloudflared access tcp --hostname
+    # syncthing-sync.necoconeco.net --url 127.0.0.1:22001`; needs a CNAME to
+    # the tunnel (`cloudflared tunnel route dns <tunnelId> <hostname>`).
+    tcpHostnames."syncthing-sync.necoconeco.net" = "tcp://localhost:22000";
   };
   # Site keys carry the explicit http:// scheme and :8080 port: without them Caddy
   # would treat each hostname as an automatic-HTTPS :443 site and try to obtain

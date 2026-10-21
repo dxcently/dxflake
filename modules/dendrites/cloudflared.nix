@@ -36,9 +36,10 @@
 #          credentialsSopsFile = ../../secrets/cloudflared-<hostname>.yaml; # from step 3, omit for sakaki
 #          hostnames = [ "example.com" "www.example.com" ];     # http, keep in sync with services.caddy.virtualHosts
 #          sshHostnames = [ "<hostname>-ssh.example.com" ];     # ssh, no Caddy needed
+#          tcpHostnames."sync.example.com" = "tcp://localhost:22000"; # raw TCP, no Caddy needed
 #        };
 #        services.caddy.virtualHosts."http://example.com:8080".extraConfig = "root * /var/www/personal\nfile_server";
-#   5. In Cloudflare DNS: CNAME each hostname (both lists) -> <tunnelId>.cfargotunnel.com (proxied).
+#   5. In Cloudflare DNS: CNAME each hostname (every list) -> <tunnelId>.cfargotunnel.com (proxied).
 #   6. sudo nixos-rebuild switch --flake .#<hostname>
 #   7. To reach an sshHostnames entry from another box:
 #        cloudflared access ssh --hostname <hostname>-ssh.example.com --url localhost:2222 &
@@ -92,6 +93,24 @@ in
       '';
     };
 
+    # Raw TCP ingress: hostname -> origin URL on this host. Unlike `hostnames`
+    # nothing on the path speaks HTTP or terminates TLS — cloudflared hands the
+    # byte stream to the origin socket, so a protocol that brings its own TLS
+    # (syncthing's 22000, say) arrives intact. The dialing side runs
+    # `cloudflared access tcp --hostname <name> --url 127.0.0.1:<local-port>`
+    # and points its client at that local port.
+    tcpHostnames = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = { };
+      description = ''
+        Hostnames tunnelled as raw TCP to an origin URL on this host, e.g.
+        `"syncthing-sync.example.com" = "tcp://localhost:22000"`. No Caddy
+        virtualHost to keep in sync: this branch never becomes HTTP. The peer
+        side reaches it with `cloudflared access tcp --hostname <name> --url
+        127.0.0.1:<local-port>`.
+      '';
+    };
+
     credentialsSopsFile = lib.mkOption {
       type = lib.types.path;
       default = ../../secrets/cloudflared.yaml;
@@ -131,10 +150,12 @@ in
         default = "http_status:404";
         # Exact hostnames only — no wildcards. `hostnames` lands on Caddy's
         # loopback :8080 and Caddy does the hostname routing; `sshHostnames`
-        # goes straight to this host's own sshd, bypassing Caddy entirely.
+        # goes straight to this host's own sshd, bypassing Caddy entirely;
+        # `tcpHostnames` carries whatever protocol the origin speaks.
         ingress =
           lib.genAttrs cfg.hostnames (_: "http://127.0.0.1:8080")
-          // lib.genAttrs cfg.sshHostnames (_: "ssh://localhost:22");
+          // lib.genAttrs cfg.sshHostnames (_: "ssh://localhost:22")
+          // cfg.tcpHostnames;
       };
     };
 

@@ -206,6 +206,35 @@
     credentialsSopsFile = ../../secrets/cloudflared-chiyo.yaml;
     sshHostnames = [ "chiyo-ssh.necoconeco.net" ];
   };
+
+  # The off-tailnet sync path. This laptop spends its day on wifi that lets 443
+  # out and little else — controlplane.tailscale.com and syncthing's relays are
+  # both blackholed there, so neither the tailnet nor the public relay can find
+  # sakaki. sakaki therefore publishes its sync port through the tunnel as raw
+  # TCP, and this side parks it on 127.0.0.1:22001, one of the addresses on
+  # sakaki's device entry below. Nothing replaces the tailnet: the tunnel is
+  # only the last address in the list.
+  systemd.user.services.cloudflared-syncthing-sync = {
+    description = "cloudflared access tcp to sakaki's syncthing sync port";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.cloudflared}/bin/cloudflared access tcp --hostname syncthing-sync.necoconeco.net --url 127.0.0.1:22001";
+      Restart = "always";
+      RestartSec = 5;
+    };
+  };
+  # The device entry keeps every path, in the order syncthing should try them:
+  # `dynamic` (discovery + relays, for a network that lets them through),
+  # MagicDNS `sakaki` (a direct tailnet dial — discovery alone would not find
+  # it, since broadcast never crosses the tailnet), and the tunnel's local port
+  # as the fallback. There is no LAN path to keep: sakaki opens 22000 only on
+  # tailscale0. sakaki's own entry for chiyo stays `dynamic` — this side does
+  # the dialing.
+  services.syncthing.settings.devices.sakaki.addresses = [
+    "dynamic"
+    "tcp://sakaki:22000"
+    "tcp://127.0.0.1:22001"
+  ];
   boot = {
     initrd.kernelModules = [ "nvme" ];
     resumeDevice = "/dev/nvme0n1p3";
