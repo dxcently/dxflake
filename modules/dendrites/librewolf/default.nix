@@ -13,6 +13,14 @@
         enable = true;
         profiles.default = {
           isDefault = true;
+          # Home Manager owns profiles.ini as a read-only symlink into the
+          # store, so anything that would rewrite it (the profile manager,
+          # `--createprofile`) fails with "Error creating profile." This is
+          # the pairing home-manager documents for exactly that: the same
+          # id its own 'Profile Groups/57e99883.sqlite' and
+          # 'toolkit.profiles.storeID' already carry, so the old profile
+          # entry and the new group store agree and nothing needs rewriting.
+          storeId = "57e99883";
           userChrome = builtins.readFile ./userChrome.css;
           # DoH first, system resolver on failure: networks that throttle port
           # 53 stall every lookup otherwise. The tailnet stays on MagicDNS.
@@ -20,17 +28,29 @@
           settings = {
             "network.trr.mode" = 2;
             "network.trr.excluded-domains" = "ts.net";
+            # LibreWolf's own default sets this false (its mozilla.cfg, under
+            # [SECTION] WEBGL). A user.js pref outranks a default, which is the
+            # only reason it can be turned on from here at all.
+            "dom.webgpu.enabled" = true;
           };
         };
-        # Tabs close on exit (startup.page stays at Firefox's default); pinned
-        # tabs are still restored, which is Firefox's deferred-session behaviour.
+        # Tabs do not come back after a close, and nothing else is cleared with
+        # them. Two prefs: startup.page keeps a launch from restoring the
+        # session, and closeWindowWithLastTab goes back to Firefox's own default
+        # so the last tab closes its window and the process exits. With it false
+        # the window outlived its last tab, LibreWolf ran for days, and every
+        # "open" just re-showed a window that had never been closed — no clean
+        # shutdown, so nothing that happens on shutdown ever happened either.
+        # Cookies, history, logins and site settings are left alone; the session
+        # is still written to disk, so crash recovery still works.
         settings = {
+          "browser.startup.page" = 1;
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.resistFingerprinting" = false;
           "privacy.fingerprintingProtection" = true;
           "browser.search.suggest.enabled" = true;
           "browser.urlbar.suggest.searches" = true;
-          "browser.tabs.closeWindowWithLastTab" = false;
+          "browser.tabs.closeWindowWithLastTab" = true;
           "general.autoScroll" = true;
           "media.ffmpeg.vaapi.enabled" = true;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
