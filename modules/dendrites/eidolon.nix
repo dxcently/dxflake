@@ -105,6 +105,25 @@ in
         librewolfHostManifest = pkgs.runCommand "eidolon_librewolf.json" { } ''
           ${lib.getExe' plugins.librewolf "eidolon-librewolf"} --print-host-manifest > "$out"
         '';
+        # The browser half of the bridge: one local XPI, built from the plugin's
+        # own source (the flake input IS the checkout) and force-installed by
+        # policy, so the add-on is there on every start instead of being loaded
+        # by hand each session. A package cannot simply drop it into a profile —
+        # a browser ignores extensions it did not install itself — and LibreWolf
+        # refuses a policy install that is unsigned: about:policies#errors reads
+        # `Download failed - ERROR_SIGNSTATE_REQUIRED` for this exact XPI, which
+        # is why the librewolf dendrite turns signature enforcement off.
+        librewolfBridgeXpi =
+          pkgs.runCommand "eidolon-librewolf-bridge.xpi"
+            {
+              nativeBuildInputs = [ pkgs.zip ];
+            }
+            ''
+              mkdir -p ext
+              cp -r ${inputs.eidolon-plugins.outPath}/librewolf/extension/. ext/
+              cd ext
+              zip -qr "$out" .
+            '';
         # eidolon does not expand ~ or $XDG_RUNTIME_DIR in a [[driver]] socket, so
         # the path is literal. 1000 is khoa's uid on osaka and sakaki; the account
         # sets none, so this is the one place that assumes it.
@@ -176,6 +195,15 @@ in
         # the browser writes.
         home.file = lib.mkIf librewolfSelected {
           ".librewolf/native-messaging-hosts/eidolon_librewolf.json".source = librewolfHostManifest;
+        };
+
+        # One extension id, force-installed from that XPI; every other add-on is
+        # left alone (the AMO ones arrive through the account sync).
+        programs.librewolf = lib.mkIf librewolfSelected {
+          policies.ExtensionSettings."librewolf-bridge@eidolon.local" = {
+            installation_mode = "force_installed";
+            install_url = "file://${librewolfBridgeXpi}";
+          };
         };
 
         systemd.user.services = {

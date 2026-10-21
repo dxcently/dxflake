@@ -32,6 +32,15 @@
         # Cookies, history, logins and site settings are left alone; the session
         # is still written to disk, so crash recovery still works.
         settings = {
+          # The librewolf bridge (modules/dendrites/eidolon.nix) is a local XPI
+          # nobody has signed, and LibreWolf refuses to policy-install an
+          # unsigned add-on: about:policies#errors answers
+          # `Download failed - ERROR_SIGNSTATE_REQUIRED` for it. This pref is
+          # what lets it in, and it is browser-wide — the honest cost is that
+          # any unsigned XPI can now be installed from a file, not just this
+          # one. Remove this line and the bridge goes back to being a temporary
+          # add-on loaded by hand each session.
+          "xpinstall.signatures.required" = false;
           # LibreWolf's own default is false (mozilla.cfg), and a profile with
           # no account syncs nothing — which would quietly cost the extensions
           # and the bookmarks that are now expected to arrive that way. A
