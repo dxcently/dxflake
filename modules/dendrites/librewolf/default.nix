@@ -64,9 +64,22 @@
 
       # mimeapps.list stays app-writable (the Claude app registers claude:// in
       # it), so the default is re-asserted on each switch instead of owned.
+      # Every web document type, not just http/https/html: xhtml and the
+      # x-extension-* aliases were still pointing at zen.desktop, so a saved
+      # .xhtml or .shtml file opened in another browser from the file manager.
       home.activation.librewolfDefaultBrowser = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run ${pkgs.xdg-utils}/bin/xdg-mime default librewolf.desktop \
-          x-scheme-handler/http x-scheme-handler/https text/html
+          x-scheme-handler/http \
+          x-scheme-handler/https \
+          x-scheme-handler/ftp \
+          x-scheme-handler/chrome \
+          text/html \
+          application/xhtml+xml \
+          application/x-extension-htm \
+          application/x-extension-html \
+          application/x-extension-shtml \
+          application/x-extension-xhtml \
+          application/x-extension-xht
       '';
     };
 }
