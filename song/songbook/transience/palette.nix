@@ -41,6 +41,17 @@ in
 {
   inherit base16;
 
+  # The same palette as an `aoide.livery.override` — the venue tier a host
+  # states when it paints through Aoide's lanes instead of dxflake's own stylix
+  # dendrite. One source: the sixteen below, pinned slot by slot, so the song
+  # underneath cannot leak a colour in through a slot this file never named.
+  # `hot` is the trace colour (foam), while base0B stays pine through the
+  # slot-exact pass, which is exactly the split livery.json records.
+  override = (withHash anchors) // {
+    base16 = withHash base16;
+    window.borderInactive = "#${anchors.hot}";
+  };
+
   # Aoide's v0 livery schema, hash-prefixed. livery.json is generated from
   # exactly this attrset by regen-livery.sh.
   livery = {
