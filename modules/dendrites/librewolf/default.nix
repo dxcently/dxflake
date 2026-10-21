@@ -1,39 +1,27 @@
 # LibreWolf, and the default web browser for every user who takes the home half.
 #
-# No extension is declared here on purpose, neither as a policy nor as an
-# installed add-on: they come from the Firefox Account sync, so adding or
-# removing one is a browser action that needs no rebuild and no host edit.
-# Declaring `policies.ExtensionSettings` would pin each one to a policy's idea
-# of its version instead of letting the account keep it current.
+# The browser owns its profile. Nothing under ~/.librewolf is a home-manager
+# file, so the profile manager, `--createprofile`, the settings panes and
+# `about:config` all write where they like; a rebuild never fights a change
+# made in the UI, and ~/.librewolf can be the same profile on two machines.
+# That is also why `profiles.<name>` is gone: it wrote profiles.ini, user.js
+# and chrome/userChrome.css as read-only store symlinks, which made the file
+# unwritable (the profile manager answered "Error creating profile.") and
+# would have carried a /nix/store path into the other machine's profile.
+#
+# What remains here is defaults, never settings: `settings` below becomes
+# ~/.librewolf/librewolf.overrides.cfg, which LibreWolf reads as `defaultPref`,
+# so any value chosen in the UI outranks it. The two seeds cover a machine with
+# no profile yet and are skipped the moment the browser has an answer of its
+# own.
+#
+# No extension is declared: they come from the Firefox Account sync.
 {
   habit.home =
     { lib, pkgs, ... }:
     {
       programs.librewolf = {
         enable = true;
-        profiles.default = {
-          isDefault = true;
-          # Home Manager owns profiles.ini as a read-only symlink into the
-          # store, so anything that would rewrite it (the profile manager,
-          # `--createprofile`) fails with "Error creating profile." This is
-          # the pairing home-manager documents for exactly that: the same
-          # id its own 'Profile Groups/57e99883.sqlite' and
-          # 'toolkit.profiles.storeID' already carry, so the old profile
-          # entry and the new group store agree and nothing needs rewriting.
-          storeId = "57e99883";
-          userChrome = builtins.readFile ./userChrome.css;
-          # DoH first, system resolver on failure: networks that throttle port
-          # 53 stall every lookup otherwise. The tailnet stays on MagicDNS.
-          # In user.js, so it outranks a trr.mode left in prefs.js.
-          settings = {
-            "network.trr.mode" = 2;
-            "network.trr.excluded-domains" = "ts.net";
-            # LibreWolf's own default sets this false (its mozilla.cfg, under
-            # [SECTION] WEBGL). A user.js pref outranks a default, which is the
-            # only reason it can be turned on from here at all.
-            "dom.webgpu.enabled" = true;
-          };
-        };
         # Tabs do not come back after a close, and nothing else is cleared with
         # them. Two prefs: startup.page keeps a launch from restoring the
         # session, and closeWindowWithLastTab goes back to Firefox's own default
@@ -54,6 +42,13 @@
           "general.autoScroll" = true;
           "media.ffmpeg.vaapi.enabled" = true;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          # DoH first, system resolver on failure: networks that throttle port
+          # 53 stall every lookup otherwise. The tailnet stays on MagicDNS.
+          "network.trr.mode" = 2;
+          "network.trr.excluded-domains" = "ts.net";
+          # LibreWolf's own default is false (its mozilla.cfg, under
+          # [SECTION] WEBGL), so WebGPU is off unless something says otherwise.
+          "dom.webgpu.enabled" = true;
           # DRM: Widevine is off and LibreWolf stops the plugin manager from
           # fetching it, so all three are needed for playback.
           "media.eme.enabled" = true;
@@ -61,6 +56,26 @@
           "media.gmp-manager.updateEnabled" = true;
         };
       };
+
+      # Two seeds, each only when the browser has nothing there yet: profiles.ini
+      # so the profile is called `default` instead of a fresh random name, and
+      # the stylesheet. Both are copies, not links, so the browser and the
+      # account own them from then on. Ordered after linkGeneration, because that
+      # is the step that drops the symlinks this generation no longer manages —
+      # seeding before it would see the old link, skip, and lose the file.
+      # The seed carries no StoreID: that is the browser's to write, and a
+      # hardcoded one would disagree with the Profile Groups database on a
+      # machine that has its own.
+      home.activation.librewolfSeedProfile = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+        profileDir="$HOME/.librewolf/default"
+        run mkdir -p "$profileDir/chrome"
+        if [ ! -e "$HOME/.librewolf/profiles.ini" ]; then
+          run ${pkgs.coreutils}/bin/install -m644 ${./profiles.ini} "$HOME/.librewolf/profiles.ini"
+        fi
+        if [ ! -e "$profileDir/chrome/userChrome.css" ]; then
+          run ${pkgs.coreutils}/bin/install -m644 ${./userChrome.css} "$profileDir/chrome/userChrome.css"
+        fi
+      '';
 
       # mimeapps.list stays app-writable (the Claude app registers claude:// in
       # it), so the default is re-asserted on each switch instead of owned.
