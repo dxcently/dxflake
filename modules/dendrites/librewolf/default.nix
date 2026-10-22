@@ -141,29 +141,37 @@
             display: none !important;
           }
 
-          /* The chrome's font. The theme names none, so the chrome inherits the
-             desktop's — ucs-fonts "Fixed", a bitmap face — and Gecko renders a
-             bitmap at its own pixel size while laying the line box out for the
-             requested one. Those disagree by two or three pixels, which is the
-             clipping: the bottom of every bookmark label, the tab titles, and
-             the urlbar's placeholder. Dropping to 11px did not stop it (a
-             bitmap snaps to the nearest authored size, not the one asked for),
-             so this names a vector face at the size the theme was drawn for —
-             it is a 2011 theme written against Tahoma, not against a pixel
-             grid. Chrome only: this file cannot reach web content, so pages
-             keep the desktop's face. Verified in a reproduction of this
-             profile under a bare X session: with this, nothing clips; with the
-             bitmap face, everything does. */
-          :root {
-            font-family: "DejaVu Sans", "Liberation Sans", sans-serif !important;
-            font-size: 11px !important;
-            /* The theme sizes the urlbar for that same 11px text; four pixels
-               back is what its placeholder and its descenders need. */
-            --url_custom_height: 26px !important;
+          /* Room, not a different font. The theme draws its rows for an 11px
+             system font; this desktop's is the 14px bitmap face, and a bitmap
+             keeps its own pixel height whatever size is asked for, so the line
+             box outgrew the row and the bottoms were cut — bookmark names, tab
+             titles, the urlbar's placeholder. The font stays the desktop's and
+             the rows are given the height they need: the bookmarks toolbar with
+             its padding, the tabs, and a urlbar whose input is sized by its
+             content instead of the theme's 23px. Verified in a reproduction of
+             this profile with the bitmap face: nothing clips with these rows,
+             and everything does without them. Chrome only. */
+          #PersonalToolbar {
+            min-height: 32px !important;
+            padding-block: 5px !important;
+          }
+
+          #TabsToolbar {
+            --tab-min-height: 30px !important;
+          }
+
+          .tabbrowser-tab {
+            min-height: 30px !important;
+          }
+
+          #urlbar {
+            --url_custom_height: 30px !important;
           }
 
           #urlbar-input,
           #searchbar input {
+            height: auto !important;
+            min-height: 22px !important;
             line-height: 1.3 !important;
           }
 
