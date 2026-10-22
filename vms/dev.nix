@@ -11,6 +11,7 @@
     neovim.enable = true;
     yazi.enable = true;
     bash.enable = true;
+    fastfetch.enable = true;
   };
 
   habit.users.agent = {
