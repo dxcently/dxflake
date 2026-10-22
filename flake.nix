@@ -123,7 +123,7 @@
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
     # dxflake consumes Aoide as a flake input through its exports (nucleus
-    # module, overlay, livery, catalogue, songbook). Hosts are composed by
+    # module, overlay, theme, rices, parts). Hosts are composed by
     # habit, which Aoide builds on too: its habit follows ours so one copy is in
     # the graph. Its nixpkgs follows ours as well, so Aoide's packages build
     # against the pin the hosts run. Stylix, Hyprland and Quickshell are Aoide's
@@ -164,7 +164,7 @@
 
       aoideLanes = {
         quickshell = inputs.aoide.nixosModules.quickshell;
-        lyra = inputs.aoide.nixosModules.lyra;
+        strillix = inputs.aoide.nixosModules.strillix;
         dunst = inputs.aoide.nixosModules.dunst;
         clipboard = inputs.aoide.nixosModules.clipboard;
         screenshot = inputs.aoide.nixosModules.screenshot;
@@ -179,18 +179,26 @@
       };
 
       registry = (inputs.habit.lib.catalogues { inherit lib; }).mergeRegistries [
-        (import ./modules { } // { name = "dx"; })
+        (import ./modules { parts = inputs.aoide.parts; } // { name = "dx"; })
         {
           name = "aoide";
           catalogue = aoideLanes;
         }
       ];
 
-      songbookDir = inputs.aoide.songbookRoot;
-      songbook = inputs.aoide.lib.songbook {
-        inherit lib;
-        songbook = songbookDir;
-      };
+      # The rices: Aoide's book and dxflake's own, merged as one (Aoide's
+      # `lib.rices.merge`). Its hook answers habit's three rice hooks; a rice
+      # name both books define throws.
+      riceHook =
+        (inputs.aoide.lib.rices.merge {
+          inherit lib;
+          pkgs = nixpkgs.legacyPackages.${system};
+          books = [
+            inputs.aoide.ricesRoot
+            ./rices
+          ];
+        }).hook
+          { inherit registry; };
 
       hostNames = [
         "chiyo"
@@ -219,7 +227,7 @@
           # checks those names against this list so a typo fails loudly instead
           # of applying nowhere.
           knownHosts = hostNames;
-          inherit registry;
+          inherit (riceHook) registry;
           host = ./hosts/${name};
           overlays = [
             inputs.aoide.overlays.default
@@ -234,29 +242,11 @@
             inputs.aoide.nixosModules.nucleus
             inputs.disko.nixosModules.disko
           ];
-          selectionModules = [ songbook.selectionModule ];
-          extraModulesFor =
-            sel:
-            let
-              song = songbook.check {
-                inherit (sel) song;
-                lyra = sel.dendrites.lyra.enable;
-              };
-            in
-            songbook.songModules song
-            ++ [
-              {
-                _module.args = {
-                  inherit (songbook) song borrow;
-                  songbook = songbookDir;
-                };
-                aoide.song = song.declared;
-                aoide.songbook.builtIn = songbook.builtIn song;
-              }
-            ];
+          selectionModules = riceHook.selectionModules;
+          extraModulesFor = riceHook.extraModulesFor;
           specialArgs = {
             inherit username nixpkgs-stable inputs habitGuest;
-            resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
+            resolveAoideTheme = (inputs.aoide.lib.theme { inherit lib; }).resolve;
           };
         }
       );
