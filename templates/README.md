@@ -23,7 +23,7 @@ files nobody selected stayed unread.
 | a capability with several | `example-default-provider-registry.nix` | `modules/dendrites/<name>/default.nix` | one catalogue line naming the **directory** |
 | one of those implementations | `example-provider.nix` | `modules/dendrites/<name>/<provider>.nix` | one line in that directory's `default.nix` |
 | a group of capabilities | `example-aggregation.nix` | `modules/aggregations/<group>/default.nix` | nothing — discovery finds it; select it from a host |
-| a new look (a rice) | `example-provider.nix` | `song/songbook/<name>/rice.nix` | one line in `song/songbook/default.nix`; author `livery.json` beside it and lint it with `lyra livery lint` |
+| a new look (a rice) | `example-provider.nix` | `rices/<name>/rice.nix` | nothing — `rices/` is read by `lib.rices.merge`; author `theme.json` beside it and lint it with `strx theme lint` |
 | a machine | `example-host.nix` | `hosts/<host>/default.nix` | add `"<host>"` to the host list in `flake.nix` |
 | a headless machine | `example-host-headless.nix` | `hosts/<host>/default.nix` | same |
 | a person | `example-user.nix` | `users/<name>.nix` | attach from each host that wants them |
@@ -136,11 +136,8 @@ them. Keep imports, fetches and package computation inside those functions.
 
 ## Pending: songs and palettes
 
-There is no template for a Lyra song or palette yet. This flake consumes habit's
-`lib.composition` and Aoide's `lib.livery`, `nixosModules.nucleus`,
-`overlays.default` and `lib.songbook`, over Aoide's own `songbookRoot`
-(Aoide's `docs/architecture/PACKAGE-LAYOUT.md` § Songs, from a consumer's side;
-the palette note schema is its CONTRACTS §1). A song of this flake's own would
-need its own songbook directory, and a host performs from one directory only.
-The real examples live in Aoide's `song/songbook/<name>/rice.nix`, and the
-design is its `docs/architecture/NIX-COMPOSITION.md` § Lyra and songbook.
+There is no template for a Strillix rice yet. This flake consumes habit's
+`lib.composition` and Aoide's `lib.theme`, `lib.rices`, `nixosModules.nucleus`,
+`overlays.default` and `parts`, over Aoide's own `ricesRoot` (the rice shape is
+Aoide's CONTRACTS §5). The real examples live in Aoide's `rices/`, and a host
+performs from the books `riceHook` merges, `ricesRoot` and `./rices`.

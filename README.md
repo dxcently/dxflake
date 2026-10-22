@@ -14,7 +14,7 @@
 
 - A module is written **once, per capability, never per host.** A host is a selection, not an import list.
 - Selection is resolved **before** any NixOS module graph exists — a plain `lib.evalModules` pass over enable/provider options — so an unselected file is never read. Not `mkIf`: `mkIf` cannot keep an imported module's option declarations out of the graph that imported them.
-- Paths are named in exactly two kinds of place: the **catalogue** (`modules/default.nix`) and a **provider registry** (`modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix`). Hosts and aggregations use **names**, so a capability is removable by deleting its file and its one line.
+- Paths are named in exactly two kinds of place: the **catalogue** (`modules/default.nix`) and a **provider registry** (`modules/dendrites/<cap>/default.nix`, `modules/default.nix`'s slot lists). Hosts and aggregations use **names**, so a capability is removable by deleting its file and its one line.
 - One shape everywhere:
 
   ```nix
@@ -24,7 +24,7 @@
   ```
 
   Grouping is the aggregations' job, so `modules/dendrites/` stays flat — one folder only when a capability needs several files (`fastfetch/`, `cheatsheet/`), or is a provider registry (`gpu/`, `compositor/`). A provider registry gives each implementation its own folder: `compositor/hyprland/` holds the Hyprland provider entry plus every dendrite written against Hyprland itself, so another compositor never reads any of it.
-- `song/` mirrors Aoide's `song/` and the runtime `~/.aoide/song/` — `songbook/` the rices, `covers/` the shared art, `stage/` the gitignored hot layer — so a path that works in the repo works on the box.
+- `rices/` holds this flake's own Strillix rices, merged with Aoide's through `lib.rices.merge`; a rice is performed by `habit.rice.declared`, the shell look lives in `modules/aggregations/shell/transience/`.
 
 ### Tree
 
@@ -60,14 +60,9 @@ dxflake/
 │       ├── openssh.nix · avahi.nix · tailscale.nix     #   plain modules; the `network` aggregation selects them
 │       ├── fastfetch/ cheatsheet/             #   multi-file capabilities
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
-├── song/                     # rices, shared cover art; mirrors ~/.aoide/song/
-│   ├── songbook/             #   the rices. one directory each, the look only
-│   │   ├── default.nix       #   provider registry: names paths, imports none
-│   │   └── transience/       #   livery.json · rice.nix · design/ · source/
-│   ├── covers/               #   shared cover art, deployed to ~/.aoide/song/covers
-│   └── stage/                #   gitignored; lyra's hot layer, same path as ~/.aoide/song/stage
+├── rices/                    # this flake's Strillix rices: rice.nix · theme.json · hyprland.conf · widgets/
 ├── templates/                # copyable example-*.nix, one per authoring role
-├── tests/rice/               # the look has not drifted from the palette
+├── tests/rice/               # the shell look has not drifted from the palette
 ├── tests/selection/          # dxflake's real registry and a real host, composed through habit
 ├── tests/templates/          # proves templates/ still assembles into a real tree
 ├── tests/session-guard/      # a nested Hyprland must not walk off with the desktop
@@ -82,7 +77,7 @@ dxflake/
 | what it is | where | what it names | what it never does |
 |---|---|---|---|
 | **Catalogue** | `modules/default.nix` | one `name = ./path;` line per capability, by hand | walk the dendrite tree — a capability with no line is unreachable |
-| **Provider registry** | `modules/dendrites/<cap>/default.nix`, `song/songbook/default.nix` | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
+| **Provider registry** | `modules/dendrites/<cap>/default.nix`, `modules/default.nix`'s slot lists | `providers = { name = ./path; }`, one implementation each | import any of them — the unchosen file is never read |
 | **Aggregation** | `modules/aggregations/<group>/default.nix`, by directory name | its `members` by catalogue name, the `providers` a host may choose, its own deferred preference | declare options, carry `mkIf`, or take a `scope` argument — it is plain data |
 | **Selection** | the host's `default.nix`, resolved by `inputs.habit.lib.composition` | `habit.aggregation.*`, `habit.dendrites.*`, `habit.users.<u>.*` | import a file it did not resolve: pass one is gate → select, pass two is the platform import list |
 
@@ -193,7 +188,7 @@ habit.dendrites.gpu = {
 
 `intel.nix` is never read on that box — that is the whole point of the registry.
 
-**Change the look.** `song/songbook/default.nix` is a provider registry of rices:
+**Change the look.** The shell look is `modules/aggregations/shell/transience/look.nix`, a plain module; the rices are `rices/<name>/`:
 
 ```nix
 {
@@ -376,16 +371,16 @@ Those grants are not applied from this flake.
 On hosts that keep dxflake Hyprland behavior but run Aoide's stylix lane, which
 sets `aoide.stylix.enable` (for example Osaka), AOIDE owns baked theme ownership:
 
-- AOIDE resolves `aoide.livery` into a full scheme through `inputs.aoide.lib.livery`.
+- AOIDE resolves `strillix.theme` into a full scheme through `inputs.aoide.lib.theme`.
 - `stylix.base16Scheme` and `stylix.polarity` stay owned by AOIDE in that mode.
 - `modules/dendrites/stylix.nix` still provides dxflake font/cursor/icons and
   fixed targets for non-color assets, but does not override colors or polarity
   when AOIDE Stylix is active.
 - `modules/dendrites/compositor/hyprland/decoration.nix` derives active/inactive borders
-  from the resolved livery under AOIDE ownership, otherwise keeps historical
+  from the resolved theme under AOIDE ownership, otherwise keeps historical
   RGBA.
 
-Hosts without AOIDE Stylix ownership keep non-lyra fallback:
+Hosts without AOIDE Stylix ownership keep the fallback:
 
 - `stylix` remains fixed Rosé Pine + `dark` polarity.
 - Hyprland borders remain:
@@ -393,7 +388,7 @@ Hosts without AOIDE Stylix ownership keep non-lyra fallback:
   - `col.inactive_border = rgba(000000cc)`
 
 Host-only tests are still done as eval-only overrides (no file changes): use an
-`extendModules` eval to set `config.aoide.livery.override.accent` and confirm both:
+`extendModules` eval to set `config.strillix.theme.override.accent` and confirm both:
 
 - `config.stylix.base16Scheme.<slot>` (for authored-color propagation)
 - `config.home-manager.users.khoa.wayland.windowManager.hyprland.settings.general."col.active_border"`
@@ -484,7 +479,7 @@ A package the list does not carry yet gets its line there first; the catalogue e
 
 Aggregations follow the same rule one level up: a group names each member once, in the half it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `module`, never a repeat across hosts.
 
-**The look is a capability too.** `song/songbook/` is a provider registry of rices, and the `shell` aggregation answers it with `transience` — the look this desktop has always had, now written down instead of scattered. A rice owns the palette and the stylesheets; the dendrite owns whether the program runs, so swapping the rice never re-decides whether waybar exists. `song/songbook/transience/livery.json` is authored in Aoide's v0 livery schema and `source/waybar.css` uses Lyra's `{{group.key}}` template syntax, so `lyra livery lint` is a real check and the pure-Nix render and `lyra livery emit file` produce the same bytes — `./tests/rice/run.sh` asserts it. See `song/songbook/README.md`.
+**The look is a capability too.** The `shell` aggregation applies `transience`, the look this desktop has always had: a plain home module (`look.nix`) owning the palette and the waybar stylesheet, while `modules/dendrites/waybar.nix` owns whether the bar runs, so swapping the look never re-decides whether waybar exists. `transience/theme.json` is generated from `palette.nix` and linted with `strx theme lint`; `source/waybar.css` is a `{{base16.*}}` template that `strx theme emit file` and the pure-Nix render both fill, and `./tests/rice/run.sh` asserts they agree. See `modules/aggregations/shell/transience/design/intent.md`.
 
 **What you never touch:** `flake.nix`, or any module path outside `modules/default.nix` and the provider registry of the capability you are adding to — those are the only places a file is named. Need a new aggregation? Add a directory under `modules/aggregations/` with a `default.nix` holding its `description` and its halves; there is no import line to add, because discovery names it and the constructor supplies the gate. Want to park a capability without deleting it? Strike its catalogue line.
 
