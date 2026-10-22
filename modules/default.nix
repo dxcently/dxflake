@@ -151,6 +151,7 @@ let
     virtmanager = ./dendrites/virtmanager.nix;
     virtualisation = ./dendrites/virtualisation.nix;
     waybar = ./dendrites/waybar.nix;
+    wireshark = ./dendrites/wireshark.nix;
     wlogout = ./dendrites/wlogout.nix;
     xserver = ./dendrites/xserver.nix;
     yazi = ./dendrites/yazi.nix;
