@@ -59,7 +59,7 @@ Item {
 
     readonly property string mode: root.theme.riceMode
     readonly property string draft: (root.theme.modeRaw && root.theme.modeRaw.draft) || ""
-    readonly property string song: root.theme.songName
+    readonly property string song: root.theme.riceName
     readonly property bool canMenu: !!root.bridge && typeof root.bridge.riceMenu === "function"
 
     property bool pending: false       // a mode change was sent and has not landed
