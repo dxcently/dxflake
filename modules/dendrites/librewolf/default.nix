@@ -144,28 +144,26 @@
           /* Room, not a different font. The theme draws its rows for an 11px
              system font; this desktop's is the 14px bitmap face, and a bitmap
              keeps its own pixel height whatever size is asked for, so the line
-             box outgrew the row and the bottoms were cut — bookmark names, tab
-             titles, the urlbar's placeholder. The font stays the desktop's and
-             the rows are given the height they need: the bookmarks toolbar with
-             its padding, the tabs, and a urlbar whose input is sized by its
-             content instead of the theme's 23px. Verified in a reproduction of
-             this profile with the bitmap face: nothing clips with these rows,
-             and everything does without them. Chrome only. */
+             box outgrew the row and the bottoms were cut. The font stays the
+             desktop's, and only the two rows that were actually short get more:
+             the bookmarks toolbar (with padding) and the urlbar/searchbar, whose
+             inputs are sized by their content instead of the theme's 23px.
+
+             Tabs are deliberately NOT in this list. The theme's 12px tab height
+             is fine for the 14px face — rendered in a reproduction of this
+             profile, the tab titles are whole at it — and raising it is worse
+             than useless: a tab taller than the strip it sits in grows upward
+             over the app button, because the strip's own height comes from the
+             theme's other geometry. Leave the tab alone. Chrome only. */
           #PersonalToolbar {
             min-height: 32px !important;
             padding-block: 5px !important;
           }
 
-          #TabsToolbar {
-            --tab-min-height: 30px !important;
-          }
-
-          .tabbrowser-tab {
-            min-height: 30px !important;
-          }
-
-          #urlbar {
+          #urlbar,
+          #searchbar {
             --url_custom_height: 30px !important;
+            min-height: 30px !important;
           }
 
           #urlbar-input,
