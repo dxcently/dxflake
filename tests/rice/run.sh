@@ -24,6 +24,7 @@ work=$(mktemp -d); trap 'rm -rf "$work"' EXIT
 # is allowed near it. Every strx call below is also given an explicit file path,
 # so the staged rice is not even consulted.
 export STRILLIX_ROOT=$work/strillix-root
+export AOIDE_ROOT=$work/aoide-root
 mkdir -p "$STRILLIX_ROOT"
 
 # ── the record matches the source ────────────────────────────────────────────
