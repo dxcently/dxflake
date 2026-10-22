@@ -11,7 +11,7 @@
 // Song-local helper component (slots.md "Helper files"): uppercase-first
 // filename, resolved by TYPE NAME through the per-song qmldir the
 // derivation emits for any song carrying an uppercase-first widgets/ file
-// (modules/dendrites/strx/default.nix) -- no import statement needed by
+// (Aoide's modules/dendrites/strillix/ at revision bb5dbcca) -- no import statement needed by
 // a caller sitting in the same songs/fugue/ directory. Used by bar.qml,
 // notifications.qml and ricemode.qml.
 import QtQuick
