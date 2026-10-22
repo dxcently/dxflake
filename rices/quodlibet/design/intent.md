@@ -6,11 +6,11 @@ grammar — one ground, two hands, which is what a quodlibet is.
 
 ---
 
-## What this song is
+## What this rice is
 
 A quodlibet is the musical form defined by borrowing: a piece assembled from
 other people's existing tunes sounded together (Bach, Goldberg var. 30). This
-song owns no widget bodies at all. Its composition is plain attrset update
+rice owns no widget bodies at all. Its composition is plain attrset update
 over its two parents' already-resolved widget maps:
 
 ```nix
@@ -49,7 +49,7 @@ greyscale render, and it is checkable with arithmetic rather than taste: a
 near-black or near-white widget on this ground is wrong from across the
 room, no colour judgement required.
 
-Every hex in this song's `theme.json` is distinct from every hex in
+Every hex in this rice's `theme.json` is distinct from every hex in
 sonata's and fugue's — not required by any mechanism, but it turns "did the
 right palette reach this widget" into a pixel sample instead of an opinion:
 sample any borrowed widget's ground; `#f2ebde` means sonata leaked,
@@ -69,7 +69,7 @@ ramp (each stepping away from an extreme) needed to do.
 ## Slots dressed
 
 None, in the QML sense — quodlibet ships no `widgets/` directory. All 14
-slots resolve through the owner map to a foreign song: 11 to sonata, 3 to
+slots resolve through the owner map to a foreign rice: 11 to sonata, 3 to
 fugue. `packages` is empty (`[]`): fugue's borrowed `bar` shells out to
 nothing, and sonata's own `bar` record is entirely superseded, packages and
 all, by the `//` override rather than merged into.

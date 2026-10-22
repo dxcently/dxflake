@@ -18,7 +18,7 @@ let
   # background_blur, where the compositor does the blurring (hyprglass loads
   # under the same flag, modules/dendrites/compositor/hyprland/hyprglass.nix).
   # It does not gate translucency. Whether a terminal is translucent is the
-  # song's call, and it reaches kitty through the stage files `followsStage`
+  # rice's call, and it reaches kitty through the stage files `followsStage`
   # includes.
   aoideQuickshell = config.strillix.quickshell.enable;
 
@@ -123,17 +123,17 @@ in
                 # inert under Hyprland, so it is off on purpose and not left at the
                 # 1 above, which would imply a second blurrer that never runs.
                 #
-                # The opacity is the song's. A host with strillix includes the
+                # The opacity is the rice's. A host with strillix includes the
                 # declared and the staged terminal files below, the staged one
                 # last and always carrying a `background_opacity`, and the
                 # control socket with `dynamic_background_opacity` lets
                 # `rice stage` move the open windows to it. Where hyprland.conf
                 # comes from dxflake's own Hyprland dendrite, terminals carry no
                 # opacity rule (compositor/hyprland/hyprglass.nix), so the
-                # song's value is the whole say, focused or not. Where it comes
+                # rice's value is the whole say, focused or not. Where it comes
                 # from Aoide's compositor lane, that lane's
                 # `windowrule = opacity 1.0 0.80, match:class kitty` still
-                # multiplies the song's value by 0.80 when the window is
+                # multiplies the rice's value by 0.80 when the window is
                 # unfocused, glyphs included. Without strillix the opaque base above
                 # stands.
                 background_blur = 0;

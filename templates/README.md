@@ -134,7 +134,7 @@ which dendrites it targets. What an unmatched host never spends is the work —
 `overlay` and the `system` and `home` modules are functions, and nothing calls
 them. Keep imports, fetches and package computation inside those functions.
 
-## Pending: songs and palettes
+## Pending: rices and palettes
 
 There is no template for a Strillix rice yet. This flake consumes habit's
 `lib.composition` and Aoide's `lib.theme`, `lib.rices`, `nixosModules.nucleus`,

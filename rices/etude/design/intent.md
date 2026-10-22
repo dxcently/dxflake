@@ -9,7 +9,7 @@ end-to-end demo for the declared widget-type registry feature
 It declares one `demo` surface widget (`widgets/demo.qml`) to prove the whole
 pipeline (nix option → build-time `registry.json` walk → `rice lint`
 validation → `rice stage` hot-sync → `SongSurfaces.qml` runtime) actually
-renders something on screen. Not a real dressed song — no design intent
+renders something on screen. Not a real dressed rice — no design intent
 beyond that.
 
 ---

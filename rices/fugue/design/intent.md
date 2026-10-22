@@ -56,7 +56,7 @@ bar's own look, so fugue keeps it on the lattice instead of taking sonata's
 floor. `launcher` and `powermenu` are cut as bodies but kept as behaviour:
 the bar's `[pwr]` cell still calls the injected `powermenu` instance, and
 both slots fall through to sonata's marble bodies via the baseline chain.
-That is not a defect — it is the live proof that a minimal song is complete
+That is not a defect — it is the live proof that a minimal rice is complete
 because the fallback chain carries it.
 
 ## Cover
@@ -67,12 +67,12 @@ from `palette.bg`.
 ## Known hazard, not fixed here
 
 The stylix lane pins `polarity = lib.mkDefault "light"`
-(`modules/dendrites/stylix.nix`). A song may not set it — that is
-a host/lane option, out of a song's reach under CONTRACTS §5. Quickshell
+(`modules/dendrites/stylix.nix`). A rice may not set it — that is
+a host/lane option, out of a rice's reach under CONTRACTS §5. Quickshell
 surfaces read `theme.*` directly and render fully dark and correct under
 fugue regardless; Stylix-themed GTK/Qt apps may still pick light-variant
 chrome. The fix, if wanted, is a host line (`stylix.polarity = "dark";`) —
-out of scope for this song.
+out of scope for this rice.
 
 ## How to fill this rice further
 

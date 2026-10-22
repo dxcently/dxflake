@@ -39,7 +39,7 @@ were run against `source/waybar.css` and agree byte for byte.
 **waybar** — everything. `source/waybar.css` is the stylesheet, and `rice.nix`
 carries the bar's own composition: which modules sit left, centre and right,
 and how each one reads. The sheet is a template with `{{base16.baseXX}}`
-placeholders, Lyra's own syntax, filled at build time from the live Stylix
+placeholders, strillix's own syntax, filled at build time from the live Stylix
 palette — which is exactly what the sheet read before it was a file, so a host
 whose colours are repainted by Aoide's stylix lane is still repainted.
 
@@ -60,17 +60,17 @@ shared theme instead.
 dendrite. They are content, not rice, and stay shared: a second rice should be
 able to keep the same picture.
 
-## What Lyra can and cannot do with this
+## What strillix can and cannot do with this
 
 Works, verified: `theme lint`, `theme resolve`, `theme emit file|hyprctl|osc`.
 
 Does not apply: `rice compose`, `rice stage`, `rice draft`, `rice take`,
-`rice declare`. Those are the QML self-ricing loop — a song is `theme.json` +
+`rice declare`. Those are the QML self-ricing loop — a rice is `theme.json` +
 `rice.nix` + QML widget bodies mounted into Quickshell, and `rice declare`
-copies a song into the *Aoide* checkout. transience has no QML and is not
+copies a rice into the *Aoide* checkout. transience has no QML and is not
 Aoide's to hold. There is no widget kind, slot, or arrangement entry that can
 carry a GTK stylesheet, so staging and hot-load genuinely do not reach it.
 
-That is the honest boundary, and it is not a defect in Lyra: a Quickshell rice
+That is the honest boundary, and it is not a defect in strillix: a Quickshell rice
 engine is not obliged to theme GTK apps. The theme half — the palette, the
 schema, the emitters — is shared, and that is the part worth sharing.
