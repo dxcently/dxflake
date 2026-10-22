@@ -141,29 +141,30 @@
             display: none !important;
           }
 
-          /* Clipped labels. The theme draws its rows 22-26px tall and sets no
-             text size of its own — custom_base.css's only text metrics are the
-             14px inside a bookmark folder's ::before, an icon — so the chrome
-             inherits the desktop's system font. That is ucs-fonts "Fixed", a
-             bitmap face whose 14px line box is taller than a 22px row, which is
-             why the bottom of every label, and the search-engine indicator's
-             baseline, got cut. Naming a smaller size snaps to a smaller
-             authored bitmap rather than scaling (the family is a set of them),
-             so the pixel look survives and the row fits. Chrome only: this file
-             cannot reach web content. Two knobs: the size, and the line height
-             for rows the theme pins. */
+          /* The chrome's font. The theme names none, so the chrome inherits the
+             desktop's — ucs-fonts "Fixed", a bitmap face — and Gecko renders a
+             bitmap at its own pixel size while laying the line box out for the
+             requested one. Those disagree by two or three pixels, which is the
+             clipping: the bottom of every bookmark label, the tab titles, and
+             the urlbar's placeholder. Dropping to 11px did not stop it (a
+             bitmap snaps to the nearest authored size, not the one asked for),
+             so this names a vector face at the size the theme was drawn for —
+             it is a 2011 theme written against Tahoma, not against a pixel
+             grid. Chrome only: this file cannot reach web content, so pages
+             keep the desktop's face. Verified in a reproduction of this
+             profile under a bare X session: with this, nothing clips; with the
+             bitmap face, everything does. */
           :root {
-            font-size: 12px !important;
+            font-family: "DejaVu Sans", "Liberation Sans", sans-serif !important;
+            font-size: 11px !important;
+            /* The theme sizes the urlbar for that same 11px text; four pixels
+               back is what its placeholder and its descenders need. */
+            --url_custom_height: 26px !important;
           }
 
-          #TabsToolbar,
-          #nav-bar,
-          #PersonalToolbar,
-          #urlbar,
-          #searchbar,
-          toolbarbutton,
-          .bookmark-item {
-            line-height: 1.15 !important;
+          #urlbar-input,
+          #searchbar input {
+            line-height: 1.3 !important;
           }
 
           /* Would rather see no app button at all? Uncomment these two lines and
