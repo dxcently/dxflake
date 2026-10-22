@@ -23,7 +23,28 @@
       enable = true;
       provider = "amd";
     };
-    hyprlock.enable = true;
+    # The slots this host fills with dxflake's own providers. It performs no rice
+    # (Aoide's runtime is not selected here), so nothing else names them.
+    bar = {
+      enable = true;
+      provider = "waybar";
+    };
+    launcher = {
+      enable = true;
+      provider = "rofi";
+    };
+    powermenu = {
+      enable = true;
+      provider = "wlogout";
+    };
+    greeter = {
+      enable = true;
+      provider = "ly";
+    };
+    lock = {
+      enable = true;
+      provider = "hyprlock";
+    };
     inference.enable = true;
     kimi-cli.enable = true;
     # Codex + the ChatGPT desktop, dxflake's own dendrite rather than

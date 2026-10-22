@@ -5,29 +5,30 @@
   ...
 }:
 {
-  habit.song.declared = "sonata";
-  # Built in, not performed: barcarolle is in the runtime songbook, staged from
-  # the RICE menu or `lyra rice mode stage barcarolle`, without a rebuild.
-  habit.song.available = [ "barcarolle" ];
+  habit.rice.declared = "sonata";
+  # Built in, not performed: barcarolle is in the runtime rices, staged from
+  # the RICE menu or `strx rice mode stage barcarolle`, without a rebuild.
+  habit.rice.available = [ "barcarolle" ];
 
   habit.aggregation = {
     nucleus.enable = true;
     aoide.enable = true;
     network.enable = true;
-    # desktop stays: it carries pipewire, fonts, fcitx5, portals and ly login —
-    # none of those collide with Aoide's paint. The shell aggregation is NOT
+    # desktop stays: it carries pipewire, fonts, fcitx5 and portals — none of
+    # those collide with Aoide's paint. Login is the strillix greeter, the rice's
+    # greeter slot. The shell aggregation is NOT
     # selected here: Aoide's lanes paint instead.
     desktop.enable = true;
   };
 
   habit.dendrites = {
     aoide.enable = true;
-    # Aoide's paint carrier: the Quickshell surface, lyra, the dunst daemon
-    # behind the herald, Aoide's own clipboard and screenshot services, the
+    # Aoide's paint carrier: the Quickshell surface, the strillix runtime, the dunst daemon
+    # behind the notifications daemon, Aoide's own clipboard and screenshot services, the
     # hyprland behaviour lane (keybinds, input, tiling), and the stylix and
     # compositor lanes (catalogued as aoide-stylix and aoide-compositor).
     quickshell.enable = true;
-    lyra.enable = true;
+    strillix.enable = true;
     dunst.enable = true;
     clipboard.enable = true;
     screenshot.enable = true;
@@ -47,7 +48,10 @@
       enable = true;
       provider = "intel";
     };
-    hyprlock.enable = true;
+    lock = {
+      enable = true;
+      provider = "hyprlock";
+    };
     kimi-cli.enable = true;
     laptop.enable = true;
     ros.enable = true;
@@ -100,10 +104,10 @@
     spawnAgent = "claude";
     spawnPath = [ pkgs.claude-code ];
   };
-  # The file `lyra rice declare --host` and the Declare button rewrite.
-  aoide.hostConfig = "/home/${username}/dxflake/hosts/chiyo/default.nix";
+  # The file `strx rice declare --host` and the Declare button rewrite.
+  strillix.hostConfig = "/home/${username}/dxflake/hosts/chiyo/default.nix";
   # chiyo is the full AoideOS carrier: the complete Aoide paint stack owns the
-  # session — compositor (Hyprland wiring + livery), stylix (base16 fan-out),
+  # session — compositor (Hyprland wiring + theme), stylix (base16 fan-out),
   # and quickshell (bar/dock/launcher/theming) — replacing dxflake's own
   # Hyprland + Stylix dendrites, which stay unselected here so only one writer
   # ever touches the leaf options the two stacks
@@ -112,10 +116,10 @@
   # tiling layout) that pairs with the compositor lane's LOOK — without it
   # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
   # no window movement).
-  # Rosé Pine over whichever song chiyo performs (osaka applies it to sonata only).
+  # Rosé Pine over whichever rice chiyo performs (osaka applies it to sonata only).
   # Blur re-renders behind every moving window; the UHD 620 can't afford it.
-  aoide.livery.geometry.blurEnabled = false;
-  aoide.livery.override = {
+  strillix.theme.geometry.blurEnabled = false;
+  strillix.theme.override = {
     bg = "#191724";
     fg = "#e0def4";
     accent = "#ebbcba";
@@ -137,13 +141,12 @@
     window.borderInactive = "#9ccfd8";
   };
   stylix.polarity = "dark";
-  # The palette is baked into gtksourceview, so every livery change rebuilt
+  # The palette is baked into gtksourceview, so every theme change rebuilt
   # it (and virt-manager above it) here, where its 30 s test timeout fails.
   stylix.targets.gtksourceview.enable = false;
-  # Login stays dxflake's own ly (the desktop import above); the greeter lane
-  # is not selected, so nothing else claims `services.greetd`.
+  # Login is the strillix greeter on greetd: the declared rice's greeter slot.
   # Lock screen: chiyo does not select the shell aggregation, so it takes
-  # dxflake's hyprlock dendrite on its own (imported above). Aoide's own
+  # dxflake's hyprlock provider of the lock slot (set above). Aoide's own
   # hyprland lane binds SUPER+ESCAPE to hyprlock directly and
   # shellbridge's powermenu Lock action shells the same binary — Aoide ships
   # no lockscreen anchor of its own yet (modules/dendrites/hyprlock.nix), so
