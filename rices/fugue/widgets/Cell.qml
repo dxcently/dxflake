@@ -8,11 +8,11 @@
 // live cell wears a solid rule, never a glow (grammar rules 3-4). One
 // transition tier: 120ms linear on colour only (grammar rule 4).
 //
-// Song-local helper component (slots.md "Helper files"): uppercase-first
-// filename, resolved by TYPE NAME through the per-song qmldir the
-// derivation emits for any song carrying an uppercase-first widgets/ file
+// Rice-local helper component (slots.md "Helper files"): uppercase-first
+// filename, resolved by TYPE NAME through the per-rice qmldir the
+// derivation emits for any rice carrying an uppercase-first widgets/ file
 // (Aoide's modules/dendrites/strillix/ at revision bb5dbcca) -- no import statement needed by
-// a caller sitting in the same songs/fugue/ directory. Used by bar.qml,
+// a caller sitting in the same rices/fugue/ directory. Used by bar.qml,
 // notifications.qml and ricemode.qml.
 import QtQuick
 

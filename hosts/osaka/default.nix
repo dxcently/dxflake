@@ -159,7 +159,7 @@
   # desktop image — that is why the wallpaper read as broken rather than as a
   # chosen flat ground. This bakes osaka's own image as an immutable store
   # path, which is the seam that SURVIVES a rebuild: the live alternative,
-  # song/stage/cover.json, is runtime state nothing re-seeds (AoideWallpaper.
+  # $STRILLIX_ROOT/stage/wallpaper.json, is runtime state nothing re-seeds (AoideWallpaper.
   # qml's own header names "background gone after rebuild" as the bug the
   # baked path exists to fix).
   #
@@ -167,7 +167,7 @@
   # priority, so a plain assignment would collide. Scoped to sonata, so a rice
   # with cover art of its own (barcarolle) keeps it.
   strillix.theme.wallpaper = lib.mkIf (config.strillix.rice == "sonata") (
-    lib.mkForce ../../song/covers/hero.webp
+    lib.mkForce ../../wallpapers/hero.webp
   );
 
   # Rosé Pine (modules/aggregations/shell/transience/palette.nix) over sonata,
@@ -200,9 +200,9 @@
   # answers "no opinion" with its own 0.86 on every `rice stage`, so the venue
   # states one. Scoped to sonata: a rice with an opinion of its own (cadenza's
   # 0.7) owns it, and this then defines nothing for it to collide with.
-  # Aoide's seed publishes the value as song/declared/terminal-opacity.conf,
+  # Aoide's seed publishes the value as $STRILLIX_ROOT/declared/terminal-opacity.conf,
   # which covers a box that has never staged. A re-stage of sonata reads the
-  # declared twin (song/declared/theme.json), which carries no geometry yet,
+  # declared twin ($STRILLIX_ROOT/declared/theme.json), which carries no geometry yet,
   # so it honours this only once Aoide carries geometry into that twin. Until
   # then a re-stage of sonata writes Aoide's 0.86.
   strillix.theme.geometry.terminalOpacity = lib.mkIf (config.strillix.rice == "sonata") 1.0;

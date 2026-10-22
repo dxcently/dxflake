@@ -49,7 +49,7 @@
       ]
       ++ lib.optionals (!aoideQuickshell) [
         "awww-daemon"
-        "awww img -o DP-1 ~/dxflake/song/covers/hero.webp"
+        "awww img -o DP-1 ~/dxflake/wallpapers/hero.webp"
         "waybar"
       ]
       ++ [

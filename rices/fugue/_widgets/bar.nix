@@ -24,7 +24,7 @@
 # its own, so no `calendar` dependency either.
 #
 # `helpers`: bar.qml instantiates `Cell` (fugue's own uppercase helper, this
-# song's `qmldir` proof — `Cell.qml`).
+# rice's `qmldir` proof — `Cell.qml`).
 _: {
   file = "bar.qml";
 

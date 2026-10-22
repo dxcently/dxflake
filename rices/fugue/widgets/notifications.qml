@@ -10,7 +10,7 @@
 //
 // Grammar is unmistakably fugue's, not sonata's (design/intent.md "Why a
 // screenshot can never be confused with sonata"): each record draws as a
-// stack of Cell instances (Cell.qml, this song's own uppercase helper) --
+// stack of Cell instances (Cell.qml, this rice's own uppercase helper) --
 // flat rectangles, hairline separators, a 2px rule for the live/urgent
 // register, no marble, no crown glyph, no cast shadow.
 //
@@ -35,7 +35,7 @@ PanelWindow {
 
     // -- The ledger file -- read-only, watched -------------------------------
     // notifications.json is a CONDUCTING file (CONTRACTS.md section 4) --
-    // state/stage/, not song/stage/.
+    // state/stage/, not $STRILLIX_ROOT/stage/.
     readonly property string notificationsPath:
         (Quickshell.env("AOIDE_ROOT") || (Quickshell.env("HOME") + "/.aoide")) + "/state/stage/notifications.json"
     property var records: []

@@ -8,23 +8,23 @@
 // right and middle click all do one thing: open the menu, or close it. The
 // cell never switches; nothing changes until a row is chosen.
 // bridge.riceMenu(cb) fills the plate, top to bottom:
-//   songs                  the runtime songbook; a row sends
-//                          bridge.riceMode("stage", name). A song that does not
+//   rices                  the runtime rice book; a row sends
+//                          bridge.riceMode("stage", name). A rice that does not
 //                          load is a dim row that does nothing
-//   declarative · <song>   sends bridge.riceMode("declarative")
-//   drafts · <song>        the staged song's drafts, a row sends
+//   declarative · <rice>   sends bridge.riceMode("declarative")
+//   drafts · <rice>        the staged rice's drafts, a row sends
 //                          bridge.riceDraft("enter", name); the two fixed rows
 //                          send ("new") and ("save"); `save` is offered in
 //                          staging only (in draft mode writes already land in
 //                          the draft, in declarative nothing is unsaved)
-// What is live wears the 2px accent rule: the song staged now, the declarative
-// row while it is locked, the current draft. The last-staged song while locked
+// What is live wears the 2px accent rule: the rice staged now, the declarative
+// row while it is locked, the current draft. The last-staged rice while locked
 // wears a 1px rule at half strength. The marked rows only close the menu. In
-// draft mode the drafted song's row is live: it leaves the draft for plain
+// draft mode the drafted rice's row is live: it leaves the draft for plain
 // staging.
 // A stage, a declarative, an enter and a new each change what is live, so the
 // word reads `...` and every click is swallowed until theme.riceMode, the
-// draft name or the song changes, or 10s pass: the double click that sent two
+// draft name or the rice changes, or 10s pass: the double click that sent two
 // switches. A `save` changes nothing and holds nothing.
 //
 // The menu is marked by a narrow cell after `mode`, holding a drawn chevron
@@ -59,7 +59,7 @@ Item {
 
     readonly property string mode: root.theme.riceMode
     readonly property string draft: (root.theme.modeRaw && root.theme.modeRaw.draft) || ""
-    readonly property string song: root.theme.riceName
+    readonly property string rice: root.theme.riceName
     readonly property bool canMenu: !!root.bridge && typeof root.bridge.riceMenu === "function"
 
     property bool pending: false       // a mode change was sent and has not landed
@@ -68,7 +68,7 @@ Item {
     property int asked: 0              // which ask a reply belongs to
     property Item hotRow: null         // the menu row under the pointer
     readonly property bool ready: !!root.answer && root.answer.ok === true
-    readonly property var songs: root.ready && Array.isArray(root.answer.songs) ? root.answer.songs : []
+    readonly property var rices: root.ready && Array.isArray(root.answer.rices) ? root.answer.rices : []
     readonly property var drafts: root.ready && Array.isArray(root.answer.drafts) ? root.answer.drafts : []
 
     onModeChanged: root.pending = false
@@ -258,7 +258,7 @@ Item {
                     PickRow {
                         live: false
                         ink: 0.6
-                        label: "songs"
+                        label: "rices"
                     }
                     PickRow {
                         visible: !root.ready
@@ -267,10 +267,10 @@ Item {
                         label: !root.answer ? "..." : "" + (root.answer.message || "no answer")
                     }
                     Repeater {
-                        model: root.songs
+                        model: root.rices
                         PickRow {
                             required property var modelData
-                            readonly property bool here: root.ready && root.mode === "staging" && modelData.name === root.answer.song
+                            readonly property bool here: root.ready && root.mode === "staging" && modelData.name === root.answer.rice
                             readonly property bool last: root.ready && root.mode === "declarative" && modelData.name === root.answer.stagingSong
                             live: !!modelData.ok
                             ink: modelData.ok ? 1.0 : 0.4

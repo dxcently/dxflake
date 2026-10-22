@@ -1,12 +1,12 @@
 // bar.qml -- fugue's "bar" slot: the always-visible strip, hosted by
 // WidgetSlot (shell.qml's barWin PanelWindow reads this item's own
 // implicitHeight back for its own height/exclusiveZone -- CONTRACTS.md
-// section 5, "the song fully owns its own footprint").
+// section 5, "the rice fully owns its own footprint").
 //
 // design/intent.md's grammar: strict counterpoint, a fixed lattice, every
 // element a cell -- nothing ornamental. Where sonata's bar is a staff full
 // of note glyphs, fugue's bar is a row of Cell instances (Cell.qml, this
-// song's own uppercase helper), each one a flat rectangle with a 1px
+// rice's own uppercase helper), each one a flat rectangle with a 1px
 // hairline trailing edge and, when live, a 2px rule instead of a glow.
 //
 // Same KINDS of information sonata's bar carries, a minimal set:
@@ -32,7 +32,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 // The shell's WidgetSlot, for the embedded `ricemode` slot. This file lands at
-// $out/qml/songs/fugue/bar.qml, so two levels up is the shell's own qml/ root
+// $out/qml/rices/fugue/bar.qml, so two levels up is the shell's own qml/ root
 // (sonata's bar.qml reaches it the same way).
 import "../.."
 
@@ -130,7 +130,7 @@ Item {
 
     // -- Agent sessions -- state/stage/sessions.json + hooks.json -----------
     // CONDUCTING files (CONTRACTS.md section 4) -- state/stage/, not
-    // song/stage/.
+    // $STRILLIX_ROOT/stage/.
     property int sessionCount: 0
     property bool sessionsBlocked: false
     property bool hooksBlocked: false

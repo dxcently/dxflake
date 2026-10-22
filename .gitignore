@@ -26,9 +26,6 @@ secrets/*.dec.*
 .pi-subagents/
 .pi/
 
-# runtime state written by strillix/aoide, mirrors ~/.strillix/stage, never committed
-song/stage/
-
 # Local experiment notebooks and results — never config
 benchmarks/
 
