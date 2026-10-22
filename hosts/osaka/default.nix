@@ -142,11 +142,11 @@
   # compositor dendrite already provides. Colours follow the theme through
   # Aoide's stylix lane while the stylix dendrite keeps fonts/cursors/icons.
   #
-  # Deselecting the quickshell lane (and strillix and dunst, which have no purpose
-  # without the surface) is the whole revert: the waybar/awww/rofi stand-down
-  # in modules/dendrites/compositor/hyprland/ keys on `strillix.quickshell.enable`,
-  # so waybar, both awww wallpapers and SUPER+SPACE→rofi come back, and aoided
-  # anchors on default.target again.
+  # Deselecting the quickshell lane turns off the waybar/awww/rofi stand-down in
+  # modules/dendrites/compositor/hyprland/, which keys on `strillix.quickshell.enable`,
+  # so those come back, and aoided anchors on default.target again. It does not
+  # give back the bar, launcher and powermenu slots: the declared rice (barcarolle)
+  # pins them to strillix, so a revert needs a rice that does not pin them.
   #
   # With the lane on, aoided and the A2A door are `partOf`
   # graphical-session.target — the door lives and dies with the desktop
@@ -164,7 +164,7 @@
   # baked path exists to fix).
   #
   # mkForce is load-bearing: sonata assigns this option null at normal
-  # priority, so a plain assignment would collide. Scoped to sonata, so a song
+  # priority, so a plain assignment would collide. Scoped to sonata, so a rice
   # with cover art of its own (barcarolle) keeps it.
   strillix.theme.wallpaper = lib.mkIf (config.strillix.rice == "sonata") (
     lib.mkForce ../../song/covers/hero.webp
@@ -198,7 +198,7 @@
   };
   # sonata is opaque here. It has no terminalOpacity opinion, and Aoide
   # answers "no opinion" with its own 0.86 on every `rice stage`, so the venue
-  # states one. Scoped to sonata: a song with an opinion of its own (cadenza's
+  # states one. Scoped to sonata: a rice with an opinion of its own (cadenza's
   # 0.7) owns it, and this then defines nothing for it to collide with.
   # Aoide's seed publishes the value as song/declared/terminal-opacity.conf,
   # which covers a box that has never staged. A re-stage of sonata reads the
