@@ -188,23 +188,9 @@ habit.dendrites.gpu = {
 
 `intel.nix` is never read on that box — that is the whole point of the registry.
 
-**Change the look.** The shell look is `modules/aggregations/shell/transience/look.nix`, a plain module; the rices are `rices/<name>/`:
+**Change the look.** The shell look is `modules/aggregations/shell/transience/look.nix`, a plain home module the `shell` aggregation applies through its `home` half: `home = { members = [ "satty" ]; module = ./transience/look.nix; };`. Edit `transience/palette.nix`, regenerate `theme.json` with `regen-theme.sh`, and `./tests/rice/run.sh` checks the result.
 
-```nix
-{
-  providers = {
-    transience = ./transience/rice.nix;
-  };
-}
-```
-
-The shell aggregation carries the default (`modules/aggregations/shell/default.nix` sets `providers.rice = "transience"`), and a host overrides it there or per user:
-
-```nix
-habit.users.khoa.aggregation.shell.rice.provider = "transience";
-```
-
-Adding a rice is a directory beside `transience/` and one line in the registry; the wiring does not move.
+**Change the rice.** A rice is Aoide's shape and lives in `rices/<name>/` (`rice.nix`, `theme.json`, `hyprland.conf`, `widgets/`). A host performs one with `habit.rice.declared = "<name>";` and lists the rices it only builds in under `habit.rice.available`. A new rice is a new directory; `lib.rices.merge` discovers it, so no registry line is needed.
 
 **Shelve.** Strike the catalogue line and rename the file `_foo.nix`. The file sleeps on disk, nothing evaluates it, and no other line changes.
 
