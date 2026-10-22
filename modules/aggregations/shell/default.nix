@@ -20,6 +20,11 @@
 # tool belt below has nothing Hyprland-specific in it despite where those tools
 # are usually met.
 #
+# The bar, launcher and power menu are slots (modules/default.nix): this
+# aggregation does not pick them. A host that wants waybar, rofi and wlogout
+# names them on the slots, as yomi-strix does, because a rice body can also
+# name them and the two must not disagree.
+#
 # The Hyprland-ONLY pieces — keybinds, decoration, autostart, hyprglass — are
 # the `hyprland` aggregation's, precisely so that answering
 # `compositor.provider` with something else leaves them unselected and
@@ -57,18 +62,12 @@
   };
 
   home = {
-    members = [
-      "rofi"
-      "satty"
-      "waybar"
-      "wlogout"
-    ];
+    # satty is not a slot: it is the satty dendrite's, selected here.
+    members = [ "satty" ];
 
-    # The look the surfaces wear. Unlike `compositor` this one HAS a default:
-    # dxflake ships one rice, and transience is the look this desktop has always
-    # had, so a host that says nothing keeps it. song/songbook/default.nix is the
-    # registry; a host that wants another writes
-    # `habit.users.<u>.aggregation.shell.rice.provider`.
-    providers.rice = "transience";
+    # The look the surfaces wear: transience, the look this desktop has always
+    # had. It is a plain module, not a rice (see transience/look.nix), so the
+    # shell applies it wherever it is selected.
+    module = ./transience/look.nix;
   };
 }

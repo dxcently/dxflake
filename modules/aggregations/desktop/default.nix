@@ -1,15 +1,15 @@
 # desktop — a graphical session.
 #
-# The platform a session runs on: audio, fonts, input methods, portals, login.
+# The platform a session runs on: audio, fonts, input methods, portals. Login is
+# a greeter slot (modules/default.nix), not this aggregation's.
 # The session's own surfaces are the `shell` aggregation, which is why chiyo can
 # take this one and let Aoide draw the rest.
 {
-  description = "A graphical session: audio, fonts, input methods, portals, login.";
+  description = "A graphical session: audio, fonts, input methods, portals.";
 
   system = {
     members = [
       "desktop-hardware"
-      "displaymanager"
       "fcitx5"
       "flatpak"
       "fonts"

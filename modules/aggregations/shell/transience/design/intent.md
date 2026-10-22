@@ -20,17 +20,17 @@ rewrite of three dendrites.
 Rosé Pine, dark, the sixteen in `palette.nix` — the one source. Both consumers
 read it rather than hold their own copy: `modules/dendrites/stylix.nix` reads
 `palette.nix` directly for the scheme it pins to Stylix, the fan-out that
-paints GTK, Qt, kitty and the rest and stays the floor's business; `livery.json`
-is `regen-livery.sh`'s output, transience's generated record in Aoide's v0
-livery schema. Neither can drift from `palette.nix`, because neither carries
-its own hexes to drift with — `tests/rice`'s `liveryJsonIsGenerated` and
-`liveryMatchesStylixScheme` cases exist to catch a checked-in `livery.json`
+paints GTK, Qt, kitty and the rest and stays the floor's business; `theme.json`
+is `regen-theme.sh`'s output, transience's generated record in Aoide's v0
+theme schema. Neither can drift from `palette.nix`, because neither carries
+its own hexes to drift with — `tests/rice`'s `themeJsonIsGenerated` and
+`themeMatchesStylixScheme` cases exist to catch a checked-in `theme.json`
 that fell out of sync, or a real host that stopped reading `palette.nix` at
 all.
 
-Generating `livery.json` in Aoide's schema is not decoration. It means
-`lyra livery lint song/songbook/transience/livery.json` is a real check,
-`lyra livery resolve` prints the resolved set, and `lyra livery emit` can drive
+Generating `theme.json` in Aoide's schema is not decoration. It means
+`strx theme lint modules/aggregations/shell/transience/theme.json` is a real check,
+`strx theme resolve` prints the resolved set, and `strx theme emit` can drive
 the very same stylesheet template this rice renders through Nix. Both renderers
 were run against `source/waybar.css` and agree byte for byte.
 
@@ -54,7 +54,7 @@ dock on screen is Aoide's Quickshell `aoide-dock` surface; dxflake only
 references its namespace, in `compositor/hyprland/hyprglass.nix`'s layerrules and in one
 keybind. Preserving it means not substituting one and not drawing a second
 surface beside it. transience carries the same palette into it through the
-shared livery instead.
+shared theme instead.
 
 **the wallpapers** — `song/covers/`, set by `awww img` from the autostart
 dendrite. They are content, not rice, and stay shared: a second rice should be
@@ -62,15 +62,15 @@ able to keep the same picture.
 
 ## What Lyra can and cannot do with this
 
-Works, verified: `livery lint`, `livery resolve`, `livery emit file|hyprctl|osc`.
+Works, verified: `theme lint`, `theme resolve`, `theme emit file|hyprctl|osc`.
 
 Does not apply: `rice compose`, `rice stage`, `rice draft`, `rice take`,
-`rice declare`. Those are the QML self-ricing loop — a song is `livery.json` +
+`rice declare`. Those are the QML self-ricing loop — a song is `theme.json` +
 `rice.nix` + QML widget bodies mounted into Quickshell, and `rice declare`
 copies a song into the *Aoide* checkout. transience has no QML and is not
 Aoide's to hold. There is no widget kind, slot, or arrangement entry that can
 carry a GTK stylesheet, so staging and hot-load genuinely do not reach it.
 
 That is the honest boundary, and it is not a defect in Lyra: a Quickshell rice
-engine is not obliged to theme GTK apps. The livery half — the palette, the
+engine is not obliged to theme GTK apps. The theme half — the palette, the
 schema, the emitters — is shared, and that is the part worth sharing.
