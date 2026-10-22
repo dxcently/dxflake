@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "0",
+  "polarity": "dark",
+  "palette": {
+    "bg": "#12121c",
+    "fg": "#e6e6f0",
+    "accent": "#7c5cff",
+    "urgent": "#ff5c7c"
+  },
+  "bar": {
+    "bg": "#12121c",
+    "fg": "#e6e6f0",
+    "accent": "#7c5cff"
+  },
+  "notif": {
+    "bg": "#12121c",
+    "fg": "#e6e6f0",
+    "urgent": "#ff5c7c"
+  },
+  "window": {
+    "border": "#7c5cff",
+    "borderInactive": "#12121c"
+  },
+  "widgets": {
+    "demo": {
+      "kind": "surface",
+      "namespace": "aoide-etude-demo",
+      "layer": "overlay",
+      "shortcut": "aoide:etude-demo",
+      "blur": true
+    }
+  }
+}
