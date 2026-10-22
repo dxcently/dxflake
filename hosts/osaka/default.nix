@@ -223,20 +223,13 @@
     };
   };
 
-  # ── The wallpaper picker's library ───────────────────────────────────────
-  # SUPER+W summons AoideWallpaperPicker, which enumerates its grid by shelling
-  # `ls -1 $AOIDE_ROOT/song/covers` and, on a pick, stages the chosen path into
-  # song/stage/cover.json — which AoideWallpaper watches and hot-swaps to. But
-  # nothing in Aoide ever CREATES that directory (the quickshell lane deploys
-  # only run/qml/), so on osaka it did not exist and the picker opened onto an
-  # empty grid. Pointing it at dxflake's own wallpaper collection makes the
-  # switcher useful immediately, and keeps the venue's images in the venue.
+  # ── Host wallpapers ─────────────────────────────────────────────────────
+  # The wallpaper picker reads Strillix's `$STRILLIX_ROOT/wallpapers`, a plain
+  # user-writable library the user fills. This host links nothing into it, so
+  # the picker's grid is whatever the user has put there.
   #
-  # The baked cover above stays the DEFAULT ground that survives a rebuild;
-  # this is the live override seam on top of it. Path tracks `aoide.root`'s
-  # default of ~/.aoide — retarget both together if that option ever moves.
+  # The baked cover above stays the DEFAULT ground that survives a rebuild.
   home-manager.users.${username} = {
-    home.file.".aoide/song/covers".source = ../../song/covers;
     # SUPER+D sends vesktop to workspace 3 on the vertical HDMI-A-1 panel, which
     # only osaka has.
     wayland.windowManager.hyprland.settings = {
