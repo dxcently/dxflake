@@ -131,6 +131,16 @@
             padding-inline-start: var(--appbutton_in_titlebar, 95px) !important;
           }
 
+          /* The theme pulls the "List all tabs" button down into the toolbar
+             with a 20px top margin (custom_bookmarks.css, which also swaps its
+             icon for a bare dropdown arrow), so it reads as a stray button
+             floating beside the tabs. What it lists is the tab strip itself, on
+             a strip that no longer needs a dropdown for it. Zeroing the margin
+             instead keeps the button and just puts it back in line. */
+          #TabsToolbar #alltabs-button {
+            display: none !important;
+          }
+
           /* Would rather see no app button at all? Uncomment these two lines and
              the padding above can go with them.
           #PanelUI-button { display: none !important; }
