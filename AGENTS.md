@@ -241,6 +241,10 @@ to destination.
 - **A user** — one definition under `users/`, attached by the hosts that want
   it. `users/khoa.nix` is one module: the account, plus `habit.home` for the
   shared home floor. There are no per-host copies.
+- **A VM preset** — `vms/<name>.nix`, a whole habit host for
+  `snowglobe summon <vm> --preset <name>` that attaches `habit.users.agent`
+  (`users/agent.nix`: the agent's home; the account is snowglobe's).
+  `lib.snowglobeOffer` lists it; a `_`-prefixed file is parked.
 
 A host file is ONE module: `habit.*` selection first, then its own platform
 settings beside it. Those settings are an ordinary NixOS module: hardware

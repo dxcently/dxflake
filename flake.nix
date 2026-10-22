@@ -216,6 +216,29 @@
           specialArgs = { inherit username nixpkgs-stable inputs; };
         };
 
+      # The package overlays of every system composed here: hosts and snowglobe VMs
+      # share this one list.
+      overlays = [
+        inputs.aoide.overlays.default
+        # The Zen package has no nixpkgs attribute; the catalogue names it as
+        # pkgs.zen-browser, so this is where pkgs learns it.
+        (_final: prev: {
+          zen-browser = inputs.zen-browser.packages.${prev.stdenv.hostPlatform.system}.default;
+        })
+      ];
+
+      # What every host's modules receive; a snowglobe VM gets the same set with the
+      # agent as its user.
+      hostArgs = {
+        inherit
+          username
+          nixpkgs-stable
+          inputs
+          habitGuest
+          ;
+        resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
+      };
+
       hosts = lib.genAttrs hostNames (
         name:
         composition.mkNixosHost {
@@ -225,16 +248,8 @@
           # checks those names against this list so a typo fails loudly instead
           # of applying nowhere.
           knownHosts = hostNames;
-          inherit registry;
+          inherit registry overlays;
           host = ./hosts/${name};
-          overlays = [
-            inputs.aoide.overlays.default
-            # The Zen package has no nixpkgs attribute; the catalogue names it as
-            # pkgs.zen-browser, so this is where pkgs learns it.
-            (_final: prev: {
-              zen-browser = inputs.zen-browser.packages.${prev.stdenv.hostPlatform.system}.default;
-            })
-          ];
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
           extraModules = [
             inputs.aoide.nixosModules.nucleus
@@ -260,12 +275,62 @@
                 aoide.songbook.builtIn = songbook.builtIn song;
               }
             ];
-          specialArgs = {
-            inherit username nixpkgs-stable inputs habitGuest;
-            resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
-          };
+          specialArgs = hostArgs;
         }
       );
+
+      # The VM snowglobe boots (`snowglobe summon`): the hosts' registry and overlays,
+      # with the agent as its user. A preset is a whole habit host (vms/<preset>.nix);
+      # picks generate one. snowglobe adds microvm, its guest base and the hostname.
+      # No songbook hooks and no disko: a VM performs no song and has no disk of its own to lay out.
+      snowglobeVm =
+        {
+          name,
+          dendrites ? [ ],
+          groups ? [ ],
+          preset ? null,
+        }:
+        (composition.mkNixosHost {
+          inherit nixpkgs system;
+          inherit registry overlays;
+          hostName = name;
+          knownHosts = hostNames ++ [ name ];
+          host =
+            if preset == null then
+              {
+                _file = "snowglobe VM ${name}";
+                habit.dendrites = lib.genAttrs dendrites (_: {
+                  enable = true;
+                });
+                habit.aggregation = lib.genAttrs groups (_: {
+                  enable = true;
+                });
+                habit.users.agent = {
+                  definition = ./users/agent.nix;
+                  home.enable = true;
+                };
+              }
+            else
+              lib.throwIf (dendrites != [ ] || groups != [ ])
+                "snowglobeVm ${name}: a preset is a whole host, so it takes no dendrites or groups"
+                ./vms/${preset}.nix;
+          homeManagerModule = inputs.home-manager.nixosModules.home-manager;
+          extraModules = [ inputs.aoide.nixosModules.nucleus ];
+          specialArgs = hostArgs // {
+            username = "agent";
+          };
+        }).system;
+
+      # What snowglobe may name. `_`-prefixed files in vms/ are parked.
+      snowglobeOffer = {
+        dendrites = builtins.attrNames registry.catalogue;
+        groups = builtins.attrNames registry.aggregations;
+        presets = map (lib.removeSuffix ".nix") (
+          builtins.filter (f: lib.hasSuffix ".nix" f && !lib.hasPrefix "_" f) (
+            builtins.attrNames (builtins.readDir ./vms)
+          )
+        );
+      };
     in
     {
       nixosConfigurations = lib.mapAttrs (_: h: h.system) hosts;
@@ -279,5 +344,9 @@
       # The merged catalogue hosts are composed from, so other flakes (snowglobe
       # templates) can compose guests from the same dendrites instead of a copy.
       inherit registry;
+
+      # For snowglobe, which composes its VMs from this flake: a VM's nixosSystem,
+      # and what it may name (plain JSON). See vms/README.md.
+      lib = { inherit snowglobeVm snowglobeOffer; };
     };
 }
