@@ -37,7 +37,6 @@
         rev = "cf5e772b9cc68e0c66b78d25e871355cc2ccaaf2";
         hash = "sha256-IaCFRvkHrJbGHwFWsl2gtvmECyapOddbnHnKeGpBiXY=";
       };
-      chromeFiles = builtins.readDir "${chromeTheme}/155-156";
     in
     {
       programs.librewolf = {
@@ -94,19 +93,56 @@
         };
       };
 
-      # The stylesheet, and the only files in the profile Nix states: everything
-      # the theme ships except its User.js (whose two prefs are in `settings`
-      # above) is linked in by name, so `@import` lines inside userChrome.css
-      # resolve against the same directory and an update to the theme lands on
-      # the next switch. `userContent.css` rides along — the about: and error
-      # pages are part of the look. chrome/ is a look, not browser state: the
-      # browser reads it and never writes it.
-      home.file = lib.mapAttrs' (
-        name: _:
-        lib.nameValuePair ".librewolf/default/chrome/${name}" {
-          source = "${chromeTheme}/155-156/${name}";
-        }
-      ) (lib.filterAttrs (name: _: name != "User.js") chromeFiles);
+      # chrome/ is the one thing in the profile Nix states, because a look is
+      # configuration and not browser state: the browser reads chrome/ and never
+      # writes it. Three entries, and the shape is the point.
+      #
+      # The theme goes in whole as `theme/`, because its files speak to each
+      # other in relative paths: userChrome.css imports `custom_*.css` beside
+      # it, and those reach `images/` the same way. Firefox, however, reads
+      # exactly one `userChrome.css` and one `userContent.css`, so those two are
+      # the seam: they import the theme, and then say what this desktop wants on
+      # top of it. A theme update replaces `theme/` and cannot overwrite a line
+      # written here.
+      home.file = {
+        ".librewolf/default/chrome/theme".source = "${chromeTheme}/155-156";
+
+        ".librewolf/default/chrome/userChrome.css".text = ''
+          @import url("theme/userChrome.css");
+
+          /* The compositor is the window manager. Hyprland closes, moves and
+             resizes from its own binds, so the client-side buttons are three
+             widgets of chrome with nothing behind them. This hides them; it does
+             not take the drag region, which the strip keeps. */
+          .titlebar-buttonbox-container,
+          #titlebar .titlebar-button,
+          .titlebar-button {
+            display: none !important;
+          }
+
+          /* The app button is absolutely positioned over the start of the tab
+             strip, and the theme only pads the strip to clear it on the paths
+             where the Menu bar is enabled — with the menubar hidden the first
+             tab slides under the word "Firefox". Pad the strip unconditionally,
+             with the theme's own width, so the two cannot meet. The theme's own
+             padded rules are more specific, so where they apply they win and
+             this changes nothing. */
+          #TabsToolbar {
+            padding-inline-start: var(--appbutton_in_titlebar, 95px) !important;
+          }
+
+          /* Would rather see no app button at all? Uncomment these two lines and
+             the padding above can go with them.
+          #PanelUI-button { display: none !important; }
+          */
+        '';
+
+        # Imports from inside theme/ for the same reason: the about: and error
+        # pages reference `images/`, which resolves beside the file that names it.
+        ".librewolf/default/chrome/userContent.css".text = ''
+          @import url("theme/userContent.css");
+        '';
+      };
 
       # One seed, only when the browser has nothing there yet: profiles.ini, so
       # the profile is called `default` instead of a fresh random name. A copy,
