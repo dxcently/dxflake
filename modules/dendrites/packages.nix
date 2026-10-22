@@ -69,8 +69,8 @@
   "playerctl" # MPRIS2 media player controller
   "ffmpegthumbnailer" # video thumbnails via libffmpeg
   "obs-studio" # screen recording and live streaming
-  "grim" # Wayland screenshot capture (lyra screen shot's backend)
-  "slurp" # region picker for grim (lyra screen shot --pick)
+  "grim" # Wayland screenshot capture (strx screen shot's backend)
+  "slurp" # region picker for grim (strx screen shot --pick)
   "losslesscut-bin" # lossless video/audio trimmer
   "scrcpy" # display and control Android devices
   "zen-browser" # Zen, a Firefox-based web browser
