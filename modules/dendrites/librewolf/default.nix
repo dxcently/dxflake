@@ -1,13 +1,15 @@
 # LibreWolf, and the default web browser for every user who takes the home half.
 #
-# The browser owns its profile. Nothing under ~/.librewolf is a home-manager
-# file, so the profile manager, `--createprofile`, the settings panes and
-# `about:config` all write where they like; a rebuild never fights a change
-# made in the UI, and ~/.librewolf can be the same profile on two machines.
-# That is also why `profiles.<name>` is gone: it wrote profiles.ini, user.js
-# and chrome/userChrome.css as read-only store symlinks, which made the file
-# unwritable (the profile manager answered "Error creating profile.") and
-# would have carried a /nix/store path into the other machine's profile.
+# The browser owns its profile. Apart from the stylesheet below, nothing under
+# ~/.librewolf is a home-manager file, so the profile manager, `--createprofile`,
+# the settings panes and `about:config` all write where they like; a rebuild
+# never fights a change made in the UI, and ~/.librewolf can be the same profile
+# on two machines. That is also why `profiles.<name>` is gone: it wrote
+# profiles.ini, user.js and chrome/userChrome.css as read-only store symlinks,
+# which made the file unwritable (the profile manager answered "Error creating
+# profile.") and would have carried a /nix/store path into the other machine's
+# profile. chrome/ is the one exception and a narrow one: it is a look, the
+# browser only ever reads it, and a look belongs in the repo.
 #
 # What remains here is defaults, never settings: `settings` below becomes
 # ~/.librewolf/librewolf.overrides.cfg, which LibreWolf reads as `defaultPref`,
@@ -19,6 +21,24 @@
 {
   habit.home =
     { lib, pkgs, ... }:
+    let
+      # The classic Firefox chrome: github.com/DiegoSainzPardoLaso
+      # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `155-156` set is the
+      # one this browser is (LibreWolf 156.0); the `157` set is the same theme
+      # moved to the next chrome, for whenever the pin does.
+      #
+      # Its User.js asks for two prefs, and both are in `settings` below:
+      # legacyUserProfileCustomizations.stylesheets (already true, which is what
+      # makes the browser read chrome/ at all) and hoverPreview off, so a tab
+      # shows the classic tooltip instead of a thumbnail card.
+      chromeTheme = pkgs.fetchFromGitHub {
+        owner = "DiegoSainzPardoLaso";
+        repo = "Firefox-Classic-Theme-155-158";
+        rev = "cf5e772b9cc68e0c66b78d25e871355cc2ccaaf2";
+        hash = "sha256-IaCFRvkHrJbGHwFWsl2gtvmECyapOddbnHnKeGpBiXY=";
+      };
+      chromeFiles = builtins.readDir "${chromeTheme}/155-156";
+    in
     {
       programs.librewolf = {
         enable = true;
@@ -63,6 +83,9 @@
           # LibreWolf's own default is false (its mozilla.cfg, under
           # [SECTION] WEBGL), so WebGPU is off unless something says otherwise.
           "dom.webgpu.enabled" = true;
+          # The classic chrome's own User.js asks for this: a tab shows the old
+          # tooltip instead of the thumbnail preview card.
+          "browser.tabs.hoverPreview.enabled" = false;
           # DRM: Widevine is off and LibreWolf stops the plugin manager from
           # fetching it, so all three are needed for playback.
           "media.eme.enabled" = true;
@@ -71,23 +94,32 @@
         };
       };
 
-      # Two seeds, each only when the browser has nothing there yet: profiles.ini
-      # so the profile is called `default` instead of a fresh random name, and
-      # the stylesheet. Both are copies, not links, so the browser and the
-      # account own them from then on. Ordered after linkGeneration, because that
-      # is the step that drops the symlinks this generation no longer manages —
-      # seeding before it would see the old link, skip, and lose the file.
-      # The seed carries no StoreID: that is the browser's to write, and a
-      # hardcoded one would disagree with the Profile Groups database on a
-      # machine that has its own.
+      # The stylesheet, and the only files in the profile Nix states: everything
+      # the theme ships except its User.js (whose two prefs are in `settings`
+      # above) is linked in by name, so `@import` lines inside userChrome.css
+      # resolve against the same directory and an update to the theme lands on
+      # the next switch. `userContent.css` rides along — the about: and error
+      # pages are part of the look. chrome/ is a look, not browser state: the
+      # browser reads it and never writes it.
+      home.file = lib.mapAttrs' (
+        name: _:
+        lib.nameValuePair ".librewolf/default/chrome/${name}" {
+          source = "${chromeTheme}/155-156/${name}";
+        }
+      ) (lib.filterAttrs (name: _: name != "User.js") chromeFiles);
+
+      # One seed, only when the browser has nothing there yet: profiles.ini, so
+      # the profile is called `default` instead of a fresh random name. A copy,
+      # not a link, so the browser owns it — the profile manager and
+      # `--createprofile` have to be able to write it. Ordered after
+      # linkGeneration, because that is the step that drops the symlinks this
+      # generation no longer manages: seeding before it would see the old link,
+      # skip, and lose the file. It carries no StoreID: that is the browser's to
+      # write, and a hardcoded one would disagree with the Profile Groups
+      # database on a machine that has its own.
       home.activation.librewolfSeedProfile = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
-        profileDir="$HOME/.librewolf/default"
-        run mkdir -p "$profileDir/chrome"
         if [ ! -e "$HOME/.librewolf/profiles.ini" ]; then
           run ${pkgs.coreutils}/bin/install -m644 ${./profiles.ini} "$HOME/.librewolf/profiles.ini"
-        fi
-        if [ ! -e "$profileDir/chrome/userChrome.css" ]; then
-          run ${pkgs.coreutils}/bin/install -m644 ${./userChrome.css} "$profileDir/chrome/userChrome.css"
         fi
       '';
 
