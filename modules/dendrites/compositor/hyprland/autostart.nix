@@ -20,15 +20,15 @@
     }:
     let
       # Aoide's Quickshell is a SURFACE owner: once it runs it draws the
-      # bar, the wallpaper, the launcher, the OSD and the notification herald
+      # bar, the wallpaper, the launcher, the OSD and the notification notifications
       # itself. dxflake's own waybar + awww draw the same surfaces, so on a host
       # that selects the quickshell lane they must stand down or both stacks
       # paint at once — two bars layered, two wallpapers racing the same output.
       #
-      # Keyed on the `aoide.quickshell.enable` fact, never on a host name. Read
+      # Keyed on the `strillix.quickshell.enable` fact, never on a host name. Read
       # through `osConfig` because the fact is a NixOS option and this is the
       # home half.
-      aoideQuickshell = osConfig.aoide.quickshell.enable;
+      aoideQuickshell = osConfig.strillix.quickshell.enable;
     in
     {
       # This dendrite's own dependency, not free-floating membership: the

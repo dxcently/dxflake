@@ -21,7 +21,7 @@
       ...
     }:
     let
-      aoideQuickshell = osConfig.aoide.quickshell.enable;
+      aoideQuickshell = osConfig.strillix.quickshell.enable;
     in
     {
       # Its own dependencies, not free-floating membership: the screenshot and

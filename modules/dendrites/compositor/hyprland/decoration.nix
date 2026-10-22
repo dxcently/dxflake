@@ -6,7 +6,7 @@
 # keybinds with someone else's paint says so by not selecting this.
 #
 # Border colour is the one place look reaches outside itself. When Aoide's
-# stylix lane owns the palette the borders follow the resolved livery;
+# stylix lane owns the palette the borders follow the resolved theme;
 # otherwise they fall back to the flake's own plain white/black pair. Both
 # branches were here before the split and neither changed.
 {
@@ -14,26 +14,26 @@
     {
       osConfig,
       lib,
-      resolveAoideLivery,
+      resolveAoideTheme,
       ...
     }:
     let
-      ownsAoideStylix = osConfig.aoide.stylix.enable;
-      resolvedLivery = resolveAoideLivery osConfig.aoide.livery;
-      liveryActiveBorder =
+      ownsAoideStylix = osConfig.strillix.stylix.enable;
+      resolvedLivery = resolveAoideTheme osConfig.strillix.theme;
+      themeActiveBorder =
         if resolvedLivery.window.border != null then
           resolvedLivery.window.border
         else
           resolvedLivery.palette.accent;
-      liveryInactiveBorder =
+      themeInactiveBorder =
         if resolvedLivery.window.borderInactive != null then
           resolvedLivery.window.borderInactive
         else
           resolvedLivery.palette.bg;
       activeBorder =
-        if ownsAoideStylix then "rgb(${lib.removePrefix "#" liveryActiveBorder})" else "rgba(ffffff99)";
+        if ownsAoideStylix then "rgb(${lib.removePrefix "#" themeActiveBorder})" else "rgba(ffffff99)";
       inactiveBorder =
-        if ownsAoideStylix then "rgb(${lib.removePrefix "#" liveryInactiveBorder})" else "rgba(000000cc)";
+        if ownsAoideStylix then "rgb(${lib.removePrefix "#" themeInactiveBorder})" else "rgba(000000cc)";
     in
     {
       wayland.windowManager.hyprland.settings = {

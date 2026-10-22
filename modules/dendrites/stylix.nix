@@ -5,11 +5,10 @@
   ...
 }:
 let
-  aoideStylix = config.aoide.stylix.enable;
-  # dxflake ships one rice today, so the floor's fixed scheme is that
-  # rice's palette. When a second rice lands this moves behind the `rice`
-  # provider (song/songbook/default.nix).
-  transiencePalette = import ../../song/songbook/transience/palette.nix;
+  aoideStylix = config.strillix.stylix.enable;
+  # dxflake's floor scheme is transience's palette, the look the shell wears.
+  # When a second look lands this moves behind a provider.
+  transiencePalette = import ../aggregations/shell/transience/palette.nix;
 in
 {
   # The stylix option TREE comes from Aoide's nucleus on every host; a

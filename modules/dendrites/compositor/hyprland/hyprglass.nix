@@ -34,7 +34,7 @@
       ...
     }:
     let
-      aoideQuickshell = osConfig.aoide.quickshell.enable;
+      aoideQuickshell = osConfig.strillix.quickshell.enable;
       stylixPolarity =
         if (config ? stylix && config.stylix ? polarity) then config.stylix.polarity else "dark";
       hyprglassTheme = if stylixPolarity == "light" then "light" else "dark";
@@ -75,7 +75,7 @@
         #
         # Preserve Aoide's gloss tuning, but align the active preset with the
         # active Stylix polarity. The plugin validates this at runtime, so it
-        # must not be hardcoded across both dark and light livery selections.
+        # must not be hardcoded across both dark and light theme selections.
         #
         # manage_window_blur is a GLOBAL toggle in v0.7.0 — there is no
         # per-class targeting (confirmed against the built plugin's key table).
