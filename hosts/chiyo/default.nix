@@ -15,8 +15,8 @@
     aoide.enable = true;
     network.enable = true;
     # desktop stays: it carries pipewire, fonts, fcitx5 and portals — none of
-    # those collide with Aoide's paint. Login is the strillix greeter, the rice's
-    # greeter slot. The shell aggregation is NOT
+    # those collide with Aoide's paint. Login is ly, themed from strillix.theme, because sonata ships no
+    # greeter face. The shell aggregation is NOT
     # selected here: Aoide's lanes paint instead.
     desktop.enable = true;
   };
@@ -144,7 +144,7 @@
   # The palette is baked into gtksourceview, so every theme change rebuilt
   # it (and virt-manager above it) here, where its 30 s test timeout fails.
   stylix.targets.gtksourceview.enable = false;
-  # Login is the strillix greeter on greetd: the declared rice's greeter slot.
+  # Login is ly, themed from strillix.theme: sonata ships no greeter face, so Aoide's greeter falls back to ly on tty1.
   # Lock screen: chiyo does not select the shell aggregation, so it takes
   # dxflake's hyprlock provider of the lock slot (set above). Aoide's own
   # hyprland lane binds SUPER+ESCAPE to hyprlock directly and
