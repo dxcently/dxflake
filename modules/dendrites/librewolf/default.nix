@@ -141,6 +141,31 @@
             display: none !important;
           }
 
+          /* Clipped labels. The theme draws its rows 22-26px tall and sets no
+             text size of its own — custom_base.css's only text metrics are the
+             14px inside a bookmark folder's ::before, an icon — so the chrome
+             inherits the desktop's system font. That is ucs-fonts "Fixed", a
+             bitmap face whose 14px line box is taller than a 22px row, which is
+             why the bottom of every label, and the search-engine indicator's
+             baseline, got cut. Naming a smaller size snaps to a smaller
+             authored bitmap rather than scaling (the family is a set of them),
+             so the pixel look survives and the row fits. Chrome only: this file
+             cannot reach web content. Two knobs: the size, and the line height
+             for rows the theme pins. */
+          :root {
+            font-size: 12px !important;
+          }
+
+          #TabsToolbar,
+          #nav-bar,
+          #PersonalToolbar,
+          #urlbar,
+          #searchbar,
+          toolbarbutton,
+          .bookmark-item {
+            line-height: 1.15 !important;
+          }
+
           /* Would rather see no app button at all? Uncomment these two lines and
              the padding above can go with them.
           #PanelUI-button { display: none !important; }
