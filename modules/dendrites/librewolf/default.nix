@@ -20,7 +20,12 @@
 # No extension is declared: they come from the Firefox Account sync.
 {
   habit.home =
-    { lib, pkgs, ... }:
+    {
+      lib,
+      pkgs,
+      config,
+      ...
+    }:
     let
       # Tabs: one switch. `false` (the default) means the browser's own tab strip
       # and its in-sidebar tab list are both off and Sidebery is the only tab UI —
@@ -33,6 +38,41 @@
       # window. `~/.local/share/lw-review/lw-sidebar.sh` normalises all four while
       # the browser is closed and relaunches it.
       nativeTabs = true;
+
+      # The default browser has to start with the caller's loader variables out
+      # of the way, because an app that hands a URL to `librewolf.desktop` hands
+      # its own runtime along with it. LibreWolf then resolves libnss3 from the
+      # caller's closure rather than its own and dies before a window exists:
+      #
+      #   XPCOMGlueLoad error for …/librewolf/libxul.so:
+      #   …/nss-3.112.5/lib/libnss3.so: version `NSS_3.113' not found
+      #   Couldn't load XPCOM.
+      #
+      # Claude Desktop is the caller here: its wrapper exports GTK/Qt library
+      # paths, and Electron spawns `xdg-open` with stdio ignored, so the failure
+      # is silent — the browser simply never opens. Nothing in the session is
+      # wrong, which is why the same `xdg-open` from a terminal works.
+      launcher = pkgs.writeShellScriptBin "librewolf-launch" ''
+        # A profile lock left behind by a browser that was killed or closed
+        # uncleanly does not only name a pid: it names the host that wrote it,
+        # and here that is `127.0.0.2` while the browser's own host name is the
+        # machine's. A lock whose owner is gone therefore still reads as "in use
+        # somewhere else", and LibreWolf answers with
+        #   LibreWolf is already running, but is not responding.
+        # instead of starting. A dead pid is a dead owner whatever the host says,
+        # so drop the lock and let the browser start.
+        lock="$HOME/.librewolf/default/lock"
+        if [ -L "$lock" ]; then
+          owner=$(readlink "$lock")
+          pid=''${owner##*:+}
+          case $pid in
+            *[!0-9]* | "") ;;
+            *) kill -0 "$pid" 2>/dev/null || rm -f "$lock" "$HOME/.librewolf/default/.parentlock" ;;
+          esac
+        fi
+        exec ${pkgs.coreutils}/bin/env -u LD_LIBRARY_PATH -u LD_PRELOAD -u LD_AUDIT \
+          ${config.programs.librewolf.package}/bin/librewolf "$@"
+      '';
 
       # The classic Firefox chrome: github.com/DiegoSainzPardoLaso
       # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `155-156` set is the
@@ -443,6 +483,49 @@
         ".librewolf/default/chrome/userContent.css".text = ''
           @import url("theme/userContent.css");
         '';
+      };
+
+      # The entry above is the package's; this one is the same browser declared
+      # by this module so its Exec goes through `launcher`. It keeps the packaged
+      # entry's name, icon, MIME list, window class and actions, and only adds
+      # the clearing of LD_LIBRARY_PATH. `xdg.desktopEntries` installs it as a
+      # hiPrio package, so in the profile's share/applications it replaces the
+      # packaged `librewolf.desktop` of the same name — which is the file
+      # xdg-open reads on the way to every handoff.
+      xdg.desktopEntries.librewolf = {
+        name = "LibreWolf";
+        genericName = "Web Browser";
+        comment = "LibreWolf, a privacy-focused browser";
+        categories = [
+          "Network"
+          "WebBrowser"
+        ];
+        mimeType = [
+          "text/html"
+          "text/xml"
+          "application/xhtml+xml"
+          "application/vnd.mozilla.xul+xml"
+          "x-scheme-handler/http"
+          "x-scheme-handler/https"
+        ];
+        exec = "${launcher}/bin/librewolf-launch --name librewolf %U";
+        icon = "librewolf";
+        startupNotify = true;
+        settings.StartupWMClass = "librewolf";
+        actions = {
+          new-private-window = {
+            name = "New Private Window";
+            exec = "${launcher}/bin/librewolf-launch --private-window %U";
+          };
+          new-window = {
+            name = "New Window";
+            exec = "${launcher}/bin/librewolf-launch --new-window %U";
+          };
+          profile-manager-window = {
+            name = "Profile Manager";
+            exec = "${launcher}/bin/librewolf-launch --ProfileManager";
+          };
+        };
       };
 
       # One seed, only when the browser has nothing there yet: profiles.ini, so
