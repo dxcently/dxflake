@@ -261,6 +261,16 @@
           }
 
 
+          /* The launcher's buttons pad themselves with
+             `var(--sidebar-launcher-button-padding-inline, var(--space-medium))`,
+             and that variable is *set* by the parent document rather than by the
+             shadow sheet — which is why it can be narrowed from here when the
+             property is set on an ancestor, unlike `--button-size-icon`, which the
+             shadow root's own `:host` rule owns. */
+          #sidebar-container {
+            --sidebar-launcher-button-padding-inline: 0px;
+          }
+
           /* The launcher's width is NOT CSS: it is profile state, recorded in
              `sidebar.backupState` as launcherWidth/expandedLauncherWidth, and at
              286px it turned the column into a wide empty panel with four icons
