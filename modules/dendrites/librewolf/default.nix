@@ -22,6 +22,18 @@
   habit.home =
     { lib, pkgs, ... }:
     let
+      # Tabs: one switch. `false` (the default) means the browser's own tab strip
+      # and its in-sidebar tab list are both off and Sidebery is the only tab UI —
+      # the arrangement this desktop runs. `true` brings the stock tab strip back
+      # and leaves the sidebar to whatever panel it was last on.
+      #
+      # Flipping this is not enough on its own: Firefox keeps the sidebar's own
+      # state in prefs.js (sidebar.verticalTabs, sidebar.backupState) and in
+      # xulstore.json (vertical-tabs.collapsed), and it rewrites those from the
+      # window. `~/.local/share/lw-review/lw-sidebar.sh` normalises all four while
+      # the browser is closed and relaunches it.
+      nativeTabs = false;
+
       # The classic Firefox chrome: github.com/DiegoSainzPardoLaso
       # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `155-156` set is the
       # one this browser is (LibreWolf 156.0); the `157` set is the same theme
@@ -65,11 +77,9 @@
           # and the bookmarks that are now expected to arrive that way. A
           # default, so signing out in the UI still sticks.
           "identity.fxaccounts.enabled" = true;
-          # Tabs are Sidebery's: the browser's own tab strip is collapsed in the
-          # sheet and the native vertical-tab list is off. The sidebar itself
-          # stays, pinned open, because that is where Sidebery lives.
+          # With `nativeTabs = false`: no native vertical-tab list, and the
+          # sidebar pinned open because that is where Sidebery lives.
           "sidebar.revamp" = true;
-          "sidebar.verticalTabs" = false;
           "sidebar.visibility" = "always-show";
           "browser.startup.page" = 1;
           "privacy.sanitize.sanitizeOnShutdown" = false;
@@ -96,6 +106,10 @@
           "media.eme.enabled" = true;
           "media.gmp-widevinecdm.enabled" = true;
           "media.gmp-manager.updateEnabled" = true;
+        }
+        // lib.optionalAttrs (!nativeTabs) {
+          # the browser's own tab list inside the sidebar
+          "sidebar.verticalTabs" = false;
         };
       };
 
@@ -179,21 +193,23 @@
             line-height: 1.3 !important;
           }
 
-          /* Tabs live in Sidebery: the browser's own tab strip is collapsed to
-             nothing, and the page keeps the full width under the toolbars. The
-             app button was pinned to the titlebar row the theme expects; with no
-             strip there is no such row, so it goes back into the nav bar. */
-          #TabsToolbar {
-            visibility: collapse !important;
-          }
+          ${lib.optionalString (!nativeTabs) ''
+            /* Tabs live in Sidebery: the browser's own tab strip is collapsed to
+               nothing, and the page keeps the full width under the toolbars. The
+               app button was pinned to the titlebar row the theme expects; with no
+               strip there is no such row, so it goes back into the nav bar. */
+            #TabsToolbar {
+              visibility: collapse !important;
+            }
 
-          /* The browser's own tab list inside the sidebar is `#vertical-tabs`,
-             built at runtime. `sidebar.verticalTabs = false` is the pref that
-             turns it off; this is the same decision in CSS, so the list cannot
-             appear beside Sidebery even if a pref never gets read. */
-          #vertical-tabs {
-            display: none !important;
-          }
+            /* The browser's own tab list inside the sidebar is `#vertical-tabs`,
+               built at runtime. `sidebar.verticalTabs = false` is the pref that
+               turns it off; this is the same decision in CSS, so the list cannot
+               appear beside Sidebery even if a pref never gets read. */
+            #vertical-tabs {
+              display: none !important;
+            }
+          ''}
 
           #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
             position: static !important;
