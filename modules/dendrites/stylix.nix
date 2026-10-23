@@ -78,6 +78,8 @@ in
         autoEnable = true;
         targets = {
           librewolf.enable = false;
+          # Nothing here reads ~/.Xresources, and its xrdb merge fails on Xwayland.
+          xresources.enable = false;
           gtk.enable = true;
           kitty.enable = true;
           neovim.enable = false;
