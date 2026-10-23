@@ -82,6 +82,20 @@
     "fastfetch"
   ];
 
+  # Both targets write ~/.Xresources unconditionally. Nothing here reads it, and
+  # its xrdb merge fails on Xwayland. Guarded on `stylix`, so a host without
+  # Stylix's home module (sakaki) takes nothing.
+  home.module =
+    { lib, options, ... }:
+    {
+      config = lib.optionalAttrs (options ? stylix) {
+        stylix.targets = {
+          xresources.enable = false;
+          sxiv.enable = false;
+        };
+      };
+    };
+
   home.members = [
     "bash"
     "btop"
