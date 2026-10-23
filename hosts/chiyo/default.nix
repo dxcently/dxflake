@@ -117,7 +117,7 @@
   # tiling layout) that pairs with the compositor lane's LOOK — without it
   # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
   # no window movement).
-  # Rosé Pine over whichever song chiyo performs (osaka applies it to sonata only).
+  # Rosé Pine over whichever rice chiyo performs (osaka applies it to sonata only).
   # The palette is the rice's, not this host's: the fixed Rosé Pine, read from
   # the one file that authors it, so chiyo and osaka paint identically rather
   # than each carrying a copy of the same sixteen hexes — which is how they

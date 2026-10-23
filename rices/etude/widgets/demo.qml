@@ -1,18 +1,18 @@
 // demo.qml — etude's "demo" slot: a throwaway proof-of-concept widget for
 // the declared widget-type registry (Phase 6 end-to-end demo,
 // CONTRACTS.md §5 / `aoide.arrangement.widgets`). Hosted by
-// SongSurfaces.qml's data-driven SurfaceSlot (not a fixed shell.qml anchor)
+// RiceSurfaces.qml's data-driven SurfaceSlot (not a fixed shell.qml anchor)
 // — same PanelWindow-rooted shape CONTRACTS.md §5 documents for a slot that
 // owns its own layer/namespace (mirrors sonata's widgets/powermenu.qml, the
 // existing reference for a window-owning slot).
 //
 // The declared `shortcut` ("aoide:etude-demo", rice.nix/theme.json) is
-// wired by SongSurfaces.qml ITSELF — one GlobalShortcut per declared entry,
+// wired by RiceSurfaces.qml ITSELF — one GlobalShortcut per declared entry,
 // calling `.toggle()` on the loaded item. This file must NOT register its
 // own GlobalShortcut for the same appid/name, or the two would collide.
 //
 // Fixed injected-prop contract (CONTRACTS.md §5): only `theme` + `bridge` —
-// SongSurfaces.qml passes no extras.
+// RiceSurfaces.qml passes no extras.
 
 import QtQuick
 import Quickshell

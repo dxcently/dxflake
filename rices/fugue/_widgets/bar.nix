@@ -8,7 +8,7 @@
 #
 # widgets/bar.qml embeds `WidgetSlot { slot: "ricemode" }` (the rice-mode
 # control, first cell of the right row). fugue authors that slot itself
-# (`ricemode.nix`), so it is a key of this composition and `composeSong`'s
+# (`ricemode.nix`), so it is a key of this composition and `composeRice`'s
 # closure holds. At runtime the slot still resolves through `StagingEngine`,
 # which is how quodlibet's borrowed bar reaches fugue's body.
 #
