@@ -15,6 +15,7 @@
     # none of those collide with Aoide's paint. The shell aggregation is NOT
     # selected here: Aoide's lanes paint instead.
     desktop.enable = true;
+    forensic-tools.enable = true; # the forensics suite: autopsy, imhex, guymager and the sleuthkit CLI.
   };
 
   habit.dendrites = {
@@ -34,7 +35,6 @@
       enable = true;
       provider = "hyprland";
     };
-    autopsy.enable = true;
     bluetooth.enable = true;
     claude-code.enable = true;
     claude-desktop.enable = true;
@@ -108,30 +108,13 @@
   # tiling layout) that pairs with the compositor lane's LOOK — without it
   # chiyo would have a themed but unusable session (no SUPER+SPACE launcher,
   # no window movement).
-  # Same Rosé Pine override as osaka's (hosts/osaka/default.nix).
+  # The palette is the rice's, not this host's: the fixed Rosé Pine, read from
+  # the one file that authors it, so chiyo and osaka paint identically rather
+  # than each carrying a copy of the same sixteen hexes — which is how they
+  # drifted apart in the two slots they disagreed on (hot and base0F).
   # Blur re-renders behind every moving window; the UHD 620 can't afford it.
   aoide.livery.geometry.blurEnabled = false;
-  aoide.livery.override = {
-    bg = "#191724";
-    fg = "#e0def4";
-    accent = "#ebbcba";
-    urgent = "#eb6f92";
-    hot = "#31748f";
-    base16 = {
-      base01 = "#1f1d2e";
-      base02 = "#26233a";
-      base03 = "#6e6a86";
-      base04 = "#908caa";
-      base06 = "#e0def4";
-      base07 = "#524f67";
-      base09 = "#f6c177";
-      base0C = "#9ccfd8";
-      base0D = "#c4a7e7";
-      base0E = "#f6c177";
-      base0F = "#524f67";
-    };
-    window.borderInactive = "#9ccfd8";
-  };
+  aoide.livery.override = (import ../../song/songbook/transience/palette.nix).override;
   stylix.polarity = "dark";
   # The palette is baked into gtksourceview, so every livery change rebuilt
   # it (and virt-manager above it) here, where its 30 s test timeout fails.
