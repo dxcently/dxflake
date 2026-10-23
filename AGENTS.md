@@ -80,8 +80,8 @@ cold.
   `homes = n` refuses more than `n` users' homes on one host. A rule only
   refuses, it never selects, and a failing rule names itself and what it broke.
   The rules, their messages and what a rule cannot express are in habit's
-  [`docs/rules.md`](https://github.com/dxcently/habit/blob/676cccc3423922f768da89e6d8e049e81e96f248/docs/rules.md)
-  at v0.7.0 (676cccc).
+  [`docs/rules.md`](https://github.com/dxcently/habit/blob/b9b3789d71df8a54faa00b483c28e760927636b4/docs/rules.md)
+  at v0.7.1 (b9b3789).
 - **Dendrite** — a selectable capability, with two halves. One file is a plain
   NixOS module, which is its system half; `habit.home = { … };` beside it is its
   home half. Or a directory whose `default.nix` lists `providers = { … }` and
