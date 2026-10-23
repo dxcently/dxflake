@@ -216,13 +216,14 @@ in
   # of its users selected. See modules/aggregations/default.nix.
   aggregations = import ./aggregations;
 
-  # Each dendrite whose code writes `sops.*` needs sops. melete and immich are
-  # kept to sakaki by policy: the rule refuses them elsewhere, and says nothing
-  # about what their code can run on. mneme has no `hosts` rule: its container
-  # `mneme-a` is a habit host, and `hosts` takes only the known hosts.
+  # Each dendrite whose code writes `sops.*` needs sops, and immich, which writes
+  # `dx.nas-mounts.mounts`, needs nas-mounts. melete is kept to sakaki by policy:
+  # the rule refuses it elsewhere, and says nothing about what its code can run
+  # on. mneme has no `hosts` rule: its container `mneme-a` is a habit host, and
+  # `hosts` takes only the known hosts.
   rules = {
     cloudflared.needs = [ "sops" ];
-    immich.hosts = [ "sakaki" ];
+    immich.needs = [ "nas-mounts" ];
     melete.hosts = [ "sakaki" ];
     slskd.needs = [ "sops" ];
     syncthing.needs = [ "sops" ];
