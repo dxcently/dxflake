@@ -73,7 +73,7 @@ Item {
 
     onModeChanged: root.pending = false
     onDraftChanged: root.pending = false
-    onSongChanged: root.pending = false
+    onRiceChanged: root.pending = false
     Timer { interval: 10000; running: root.pending; onTriggered: root.pending = false }
 
     function gesture() {
@@ -271,7 +271,7 @@ Item {
                         PickRow {
                             required property var modelData
                             readonly property bool here: root.ready && root.mode === "staging" && modelData.name === root.answer.rice
-                            readonly property bool last: root.ready && root.mode === "declarative" && modelData.name === root.answer.stagingSong
+                            readonly property bool last: root.ready && root.mode === "declarative" && modelData.name === root.answer.stagingRice
                             live: !!modelData.ok
                             ink: modelData.ok ? 1.0 : 0.4
                             label: modelData.ok ? "" + modelData.name
@@ -295,7 +295,7 @@ Item {
                     PickRow {
                         live: false
                         ink: 0.6
-                        label: root.ready && root.answer.draftsSong ? "drafts · " + root.answer.draftsSong : "drafts"
+                        label: root.ready && root.answer.draftsRice ? "drafts · " + root.answer.draftsRice : "drafts"
                     }
                     PickRow {
                         visible: root.ready && root.drafts.length === 0
