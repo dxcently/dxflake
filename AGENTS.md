@@ -180,8 +180,9 @@ cold.
   refused, and the rest fall back to the platform defaults); and `openssh` is the
   only sshd, which a host routing ssh through `dx.cloudflared` needs. `sops` is
   sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing` and
-  `slskd` dendrites write: deselected, the module is not imported, so a host that
-  keeps any of those four fails evaluation with "The option `sops' does not exist". `postgresql`
+  `slskd` dendrites write, and the registry's `rules` (below) refuse a host that
+  keeps any of those four with sops switched off, naming each dendrite and the
+  switch. `postgresql`
   is not the only thing that starts postgres: on sakaki immich does, so
   deselecting the dendrite there only restores nixpkgs' authentication defaults.
   The package floor is nucleus's members, one catalogue entry each, generated from
