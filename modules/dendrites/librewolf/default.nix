@@ -279,6 +279,14 @@
              not assumed. It is corrected in the profile (44px), which is where it
              belongs. */
 
+          /* More room around the sidebar panel: the panel sits flush against the
+             page and the window, so it reads as part of the toolbox. A margin on
+             the box separates it without touching what Sidebery draws inside. */
+          #sidebar-box {
+            margin-inline-end: 6px !important;
+            margin-block: 4px 6px !important;
+          }
+
           #sidebar-search-container {
             padding-inline: 10px !important;
           }
