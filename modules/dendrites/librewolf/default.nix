@@ -203,6 +203,22 @@
             padding-inline-start: 0 !important;
           }
 
+          /* The nav bar's fields take the space that is left rather than running
+             past the toolbar buttons: both the urlbar and the search bar flex,
+             each with its own margin, so whichever is in the bar fills it. */
+          #urlbar-container,
+          #search-container,
+          #searchbar {
+            flex: 1 1 auto !important;
+            min-width: 8em !important;
+            width: auto !important;
+          }
+
+          #urlbar,
+          #searchbar {
+            margin-inline: 4px !important;
+          }
+
           /* The classic toolbox is a full-width block and the sidebar is a
              column beside the page; when the sidebar is pinned open the side tab
              strip can end up painted over the nav bar and the bookmarks bar.
