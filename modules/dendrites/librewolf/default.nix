@@ -195,6 +195,13 @@
               border-radius: 0 !important;
             }
 
+            /* a row reads as a row: one divider under every tab, the new-tab
+               button included, so the column does not look like floating boxes */
+            #vertical-tabs .tabbrowser-tab,
+            #vertical-tabs #tabs-newtab-button {
+              border-bottom: 1px solid #a8a5a0 !important;
+            }
+
             #vertical-tabs #tabs-newtab-button {
               flex: 1 1 auto !important;
               min-width: 0 !important;
@@ -255,6 +262,28 @@
              picked up the window's white, so name the panel's colour */
           #sidebar-main {
             background-color: #ebebed !important;
+          }
+
+          /* The launcher column's tools: the theme's button box is a 16px icon
+             with no margin, so at the bottom of the column they end up touching
+             each other. Give each one a proper box and space, and keep the
+             column stacking rather than lining them up sideways. */
+          #sidebar-main {
+            flex-direction: column !important;
+          }
+
+          #sidebar-main > * {
+            flex: 0 0 auto !important;
+          }
+
+          #sidebar-main toolbarbutton,
+          #sidebar-main .toolbarbutton-1 {
+            min-width: 28px !important;
+            min-height: 28px !important;
+            margin-block: 3px !important;
+            padding: 0 !important;
+            -moz-box-pack: center !important;
+            -moz-box-align: center !important;
           }
 
           #sidebar-search-container {
