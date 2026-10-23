@@ -173,6 +173,89 @@
             line-height: 1.3 !important;
           }
 
+          /* Side (vertical) tabs. The theme feeds one horizontal tab height into
+             both strips, so vertical rows came out as 33x18 favicon-only squares
+             that still carried the horizontal tab's borders and background
+             images, and its "+" button did not line up with them. A row here is
+             a row: tall enough for a title and a close button, no horizontal
+             art. Scoped, so the horizontal strip is untouched. */
+          @media (-moz-pref("sidebar.verticalTabs")) {
+            #vertical-tabs .tabbrowser-tab {
+              min-height: 30px !important;
+              max-height: none !important;
+            }
+
+            /* the theme's square-tab art lives on the tab and its .tab-background,
+               not on .tab-content — measured: a 1px border and a vertical gradient
+               still drew after resetting .tab-content alone */
+            #vertical-tabs .tabbrowser-tab,
+            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
+              border: 0 !important;
+              background-image: none !important;
+              border-radius: 0 !important;
+            }
+
+            #vertical-tabs #tabs-newtab-button {
+              flex: 1 1 auto !important;
+              min-width: 0 !important;
+              min-height: 26px !important;
+              margin-inline: 0 !important;
+            }
+
+            /* The theme fixes the app button to the top-left of the titlebar.
+               With side tabs there is no titlebar row, so it landed on
+               sidebar-toggle/back/forward; put it back in the nav bar. */
+            /* specificity has to match the theme's rule, which is
+               `#main-window:is([tabsintitlebar],[customtitlebar]) #PanelUI-button`
+               with !important — a bare #PanelUI-button loses to it */
+            #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
+              position: static !important;
+            }
+
+            #TabsToolbar {
+              padding-inline-start: 0 !important;
+            }
+          }
+
+          /* The sidebar's panel fill stopped ~7px short of the window bottom — its
+             own bottom radius and margin — and the launcher column beside it was
+             white against the panel's grey, so it read as unpainted. */
+          #sidebar-box,
+          #sidebar {
+            block-size: 100% !important;
+            height: 100% !important;
+            margin-block-end: 0 !important;
+            border-radius: 0 !important;
+          }
+
+          /* the launcher column is white against the panel's #ebebed; inherit
+             picked up the window's white, so name the panel's colour */
+          #sidebar-main {
+            background-color: #ebebed !important;
+          }
+
+          #sidebar-search-container {
+            padding-inline: 10px !important;
+          }
+
+          #sidebar-search-box {
+            margin-inline: 0 !important;
+            width: 100% !important;
+          }
+
+          /* Menus: the popup's fill and its items' insets, stated here so the
+             background covers its items with the same margin top and bottom. */
+          menupopup {
+            padding: 3px !important;
+          }
+
+          menupopup > menuitem,
+          menupopup > menu {
+            padding-block: 3px !important;
+            padding-inline: 4px !important;
+            margin: 0 !important;
+          }
+
           /* Would rather see no app button at all? Uncomment these two lines and
              the padding above can go with them.
           #PanelUI-button { display: none !important; }
