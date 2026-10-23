@@ -260,18 +260,12 @@
             border-radius: 0 !important;
           }
 
-          /* The launcher column is `#sidebar-container` > `html:sidebar-main`.
-             The type selector for that element never matched — it is in the HTML
-             namespace and a bare type selector in a XUL chrome sheet does not
-             reach across it — but its container is a XUL box with an id, so the
-             whole column goes, and with it the three launcher icons that sat
-             there at 12px (they were sized from `--button-size-icon:
-             var(--tab-min-height)`, which the theme pins to the tab strip's
-             12px). Tabs are Sidebery's; this column has no job left. */
-          #sidebar-container,
-          *|sidebar-main {
-            display: none !important;
-          }
+          /* The sidebar's own launcher column is left alone: `sidebar-main` is
+             `html:sidebar-main`, and hiding it (alone or with its
+             #sidebar-container) hands Sidebery a wider panel, so Sidebery
+             re-lays its own toolbar from a column into a row — a worse arrangement
+             than the column it replaced. The column stays, and Sidebery keeps the
+             width it expects. */
 
           #sidebar-search-container {
             padding-inline: 10px !important;
