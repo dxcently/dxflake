@@ -163,31 +163,13 @@
   # Delete this line to hand the cover note back to whatever song is playing.
   aoide.livery.wallpaper = lib.mkForce ../../song/covers/hero.webp;
 
-  # Rosé Pine (song/songbook/transience/palette.nix) over sonata, host-scoped: the
-  # song itself is shared with yomi-strix, so the override tier, not livery.json.
-  aoide.livery.override = {
-    bg = "#191724";
-    fg = "#e0def4";
-    accent = "#ebbcba";
-    urgent = "#eb6f92";
-    # Bright enough for status text on the dark background; also recolours base0B.
-    hot = "#6eafc7";
-    base16 = {
-      base01 = "#1f1d2e";
-      base02 = "#26233a";
-      base03 = "#6e6a86";
-      base04 = "#908caa";
-      base06 = "#e0def4";
-      base07 = "#524f67";
-      base09 = "#f6c177";
-      base0C = "#9ccfd8";
-      base0D = "#c4a7e7";
-      base0E = "#f6c177";
-      # Workspace 1 and other base0F text need an accent, not a surface shade.
-      base0F = "#b6a3cf";
-    };
-    window.borderInactive = "#9ccfd8";
-  };
+  # Rosé Pine (song/songbook/transience/palette.nix) over sonata, in the
+  # override tier rather than livery.json: the song itself is shared with
+  # yomi-strix. The palette is read from the rice, not restated here, so this
+  # host and chiyo are the same sixteen colours; a host that wants its own
+  # accent back states that one slot (`aoide.livery.override.base16.base0F = …`)
+  # and the rest stays the rice's.
+  aoide.livery.override = (import ../../song/songbook/transience/palette.nix).override;
   # sonata is opaque here. It has no terminalOpacity opinion, and Aoide
   # answers "no opinion" with its own 0.86 on every `rice stage`, so the venue
   # states one. Scoped to sonata: a song with an opinion of its own (cadenza's
