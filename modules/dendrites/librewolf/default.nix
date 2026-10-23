@@ -219,6 +219,13 @@
             margin-inline: 4px !important;
           }
 
+          /* the app button belongs at the start of the nav bar, not stranded at
+             the far right beside the toolbar buttons */
+          #PanelUI-button {
+            order: -1 !important;
+            -moz-box-ordinal-group: 0 !important;
+          }
+
           /* The classic toolbox is a full-width block and the sidebar is a
              column beside the page; when the sidebar is pinned open the side tab
              strip can end up painted over the nav bar and the bookmarks bar.
@@ -262,6 +269,12 @@
              launcher icon came out 12px tall and they piled up. Name the size on
              the host: the shadow tree gets it, the tab strip keeps its own. */
           sidebar-main {
+            /* The launcher column is a custom element in the light DOM, so unlike
+               its shadow contents it can be hidden outright. With tabs in
+               Sidebery the column is a second, narrower tab/launcher strip that
+               never has the room to look right — take it out and let the sidebar
+               be Sidebery's panel. */
+            display: none !important;
             --button-size-icon: 22px;
             --button-min-height: 22px;
             /* the launcher's own sheet pads every button with
