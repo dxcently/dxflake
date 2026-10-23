@@ -50,6 +50,15 @@ in
         # carries the defaults a missing file would also get, and the [plugins.*]
         # declarations that `eidolon plugins sync` reconciles against.
         #
+        # The librewolf bridge is the mirror of the browser plugin: it owns no
+        # browser, and reads only the tab a person attaches by clicking, in
+        # their own LibreWolf, for as long as that `activeTab` grant lasts. It
+        # declares no service either — the process that has to run is the
+        # native messaging host LibreWolf starts, so the wiring here is the
+        # manifest that names it, below, and the profile that loads the
+        # extension. The extension itself is an operator's act (about:debugging
+        # → Load Temporary Add-on → the plugin's extension/manifest.json).
+        #
         # Only config.toml is managed. secrets/, policy.rn, ui.rn and tools/ are
         # seeded and rewritten by Eidolon itself and must stay writable.
         #
@@ -72,6 +81,47 @@ in
           ref = "${pluginRef}"
           trust = true
         '';
+        # Host-written, not aggregation-selected, for the reason the gates above
+        # give: an unselected dendrite's enable is null, and this one has to be
+        # true on a host that selects it by name. Every host that runs the
+        # bridge also has to run LibreWolf, so the host's own selection is the
+        # only fact that decides it.
+        librewolfSelected = osConfig.habit.dendrites.librewolf.enable == true;
+        librewolfPlugin = lib.optionalString librewolfSelected ''
+
+          [plugins.librewolf]
+          repo = "dxcently/eidolon-plugins"
+          ref = "${pluginRef}"
+          trust = true
+          grants = [ "file:~/.config/eidolon/librewolf.token" ]
+        '';
+        # LibreWolf starts this when the extension asks for it, so the manifest
+        # has to sit where a Firefox-family browser looks and its `path` has to
+        # be absolute. The binary prints its own manifest, which is the one
+        # place the host name and the extension id are written down; asking it
+        # at build time keeps this file from restating them.
+        librewolfHostManifest = pkgs.runCommand "eidolon_librewolf.json" { } ''
+          ${lib.getExe' plugins.librewolf "eidolon-librewolf"} --print-host-manifest > "$out"
+        '';
+        # The browser half of the bridge: one local XPI, built from the plugin's
+        # own source (the flake input IS the checkout) and force-installed by
+        # policy, so the add-on is there on every start instead of being loaded
+        # by hand each session. A package cannot simply drop it into a profile —
+        # a browser ignores extensions it did not install itself — and LibreWolf
+        # refuses a policy install that is unsigned: about:policies#errors reads
+        # `Download failed - ERROR_SIGNSTATE_REQUIRED` for this exact XPI, which
+        # is why the librewolf dendrite turns signature enforcement off.
+        librewolfBridgeXpi =
+          pkgs.runCommand "eidolon-librewolf-bridge.xpi"
+            {
+              nativeBuildInputs = [ pkgs.zip ];
+            }
+            ''
+              mkdir -p ext
+              cp -r ${inputs.eidolon-plugins.outPath}/librewolf/extension/. ext/
+              cd ext
+              zip -qr "$out" .
+            '';
         # eidolon does not expand ~ or $XDG_RUNTIME_DIR in a [[driver]] socket, so
         # the path is literal. 1000 is khoa's uid on osaka and sakaki; the account
         # sets none, so this is the one place that assumes it.
@@ -126,6 +176,7 @@ in
             grants = [ "secret:ollama" ]
           ''
           + hyprlandPlugin
+          + librewolfPlugin
           + claudeDriver
           + "\n"
         );
@@ -135,6 +186,23 @@ in
 
         # grim, wlrctl and wtype: the hyprland plugin's verbs run them from PATH.
         home.packages = lib.optional graphical plugins.hyprland;
+
+        # Where a Firefox-family browser looks for a native messaging host on
+        # Linux. A file, not a profile: ~/.librewolf is the browser's own, and a
+        # manifest is the one thing in it Nix can state without stealing a file
+        # the browser writes.
+        home.file = lib.mkIf librewolfSelected {
+          ".librewolf/native-messaging-hosts/eidolon_librewolf.json".source = librewolfHostManifest;
+        };
+
+        # One extension id, force-installed from that XPI; every other add-on is
+        # left alone (the AMO ones arrive through the account sync).
+        programs.librewolf = lib.mkIf librewolfSelected {
+          policies.ExtensionSettings."librewolf-bridge@eidolon.local" = {
+            installation_mode = "force_installed";
+            install_url = "file://${librewolfBridgeXpi}";
+          };
+        };
 
         systemd.user.services = {
           eidolon-plugins-sync = {

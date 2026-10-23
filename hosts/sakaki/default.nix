@@ -160,6 +160,14 @@ in
     # rides it as its Aoide `via`). Straight to sshd, no Caddy; key-only by
     # the openssh rule for loopback-borne logins (modules/dendrites/openssh.nix).
     sshHostnames = [ "sakaki-ssh.necoconeco.net" ];
+    # Raw TCP, not HTTP: syncthing's sync port, so a box on wifi that only lets
+    # 443 out (chiyo, most days) still reaches 22000. cloudflared hands the
+    # bytes straight to syncthing's own TLS — nothing here terminates or
+    # inspects them, and there is no Caddy virtualHost to keep in sync. The
+    # dialing side runs `cloudflared access tcp --hostname
+    # syncthing-sync.necoconeco.net --url 127.0.0.1:22001`; needs a CNAME to
+    # the tunnel (`cloudflared tunnel route dns <tunnelId> <hostname>`).
+    tcpHostnames."syncthing-sync.necoconeco.net" = "tcp://localhost:22000";
   };
   # Site keys carry the explicit http:// scheme and :8080 port: without them Caddy
   # would treat each hostname as an automatic-HTTPS :443 site and try to obtain
@@ -260,7 +268,21 @@ in
         @writes not method GET HEAD
         respond @writes "weedaq is read-only over the public hostname" 405
 
-        reverse_proxy http://127.0.0.1:8110
+        # Prebuilt JSON, written by the post-scrape publish step into
+        # /var/www/weedaq (the /home/khoa 0700 reason the wiki lives there
+        # too). Data only changes at scrape time, so visitors read files
+        # instead of the app recomputing per request. A missing file 404s
+        # and the page falls back to the live /api/ route.
+        handle /data/* {
+          root * /var/www/weedaq
+          file_server
+          encode zstd gzip
+          header Cache-Control "public, max-age=300, stale-while-revalidate=3600"
+        }
+
+        handle {
+          reverse_proxy http://127.0.0.1:8110
+        }
 
       '';
 
@@ -369,6 +391,7 @@ in
     "d /var/www                     0755 root root - -"
     "d /var/www/tmp                 0755 khoa users - -"
     "d /var/www/fau-cyber-wiki-test 0755 khoa users - -"
+    "d /var/www/weedaq              0755 khoa users - -"
     "d /var/lib/fau-cyber-wiki      0755 khoa users - -"
   ];
 

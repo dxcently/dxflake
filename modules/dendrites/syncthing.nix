@@ -20,11 +20,32 @@
 
         # Device IDs are public keys, not secrets. Full mesh: every host lists
         # all peers; syncthing recognises and skips its own ID.
+        #
+        # `addresses` is stated rather than left unset because the merge only
+        # rewrites the keys it is given: an entry without the field leaves
+        # whatever a GUI hand-added sitting there. sakaki had collected an
+        # `http://sakaki:8384/` and the `https://syncthing.necoconeco.net/` GUI
+        # URL on all four devices, and a device address can only ever be a sync
+        # transport (`tcp://`, `quic://`, `relay://`, `dynamic`) — those two
+        # just log "unknown address scheme". mkDefault, so a host can still pin
+        # a real one, as chiyo does for sakaki's tailnet + tunnel addresses.
         settings.devices = {
-          osaka.id = "ICIE4UH-666HVCM-KPAEZQ7-3OBPKGH-SASKGQL-WTEOB6A-2HKH5T3-YUGSJAM";
-          chiyo.id = "MK4SI4Y-JHQKOSU-36UTDSI-3RVV2MU-D7B2SH7-LFYPPT5-QJJHVVT-SRTXAAA";
-          sakaki.id = "WARFWSG-FCCCDJN-MTDRJZO-S4KX2DZ-WYOMZK7-3MWDZ4F-TNJYJJT-QWN6DAW";
-          phone.id = "ZQXTIHW-7EBAKMX-6ETRCJQ-QSG6OI7-4TFBE5O-W5VD4UE-E2JH2HV-O6ATDQQ";
+          osaka = {
+            id = "ICIE4UH-666HVCM-KPAEZQ7-3OBPKGH-SASKGQL-WTEOB6A-2HKH5T3-YUGSJAM";
+            addresses = lib.mkDefault [ "dynamic" ];
+          };
+          chiyo = {
+            id = "MK4SI4Y-JHQKOSU-36UTDSI-3RVV2MU-D7B2SH7-LFYPPT5-QJJHVVT-SRTXAAA";
+            addresses = lib.mkDefault [ "dynamic" ];
+          };
+          sakaki = {
+            id = "WARFWSG-FCCCDJN-MTDRJZO-S4KX2DZ-WYOMZK7-3MWDZ4F-TNJYJJT-QWN6DAW";
+            addresses = lib.mkDefault [ "dynamic" ];
+          };
+          phone = {
+            id = "ZQXTIHW-7EBAKMX-6ETRCJQ-QSG6OI7-4TFBE5O-W5VD4UE-E2JH2HV-O6ATDQQ";
+            addresses = lib.mkDefault [ "dynamic" ];
+          };
         };
         settings.folders."Magi" = {
           id = "vmvrr-kwdze";

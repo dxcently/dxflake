@@ -121,10 +121,12 @@ let
     melete = ./dendrites/melete.nix;
     mneme = ./dendrites/mneme.nix;
     nas-mounts = ./dendrites/nas-mounts.nix;
+    netbird = ./dendrites/netbird.nix;
     neovim = ./dendrites/neovim.nix;
     networking = ./dendrites/networking.nix;
     nh = ./dendrites/nh.nix;
     openai = ./dendrites/openai.nix;
+    opencode = ./dendrites/opencode.nix;
     openrazer = ./dendrites/openrazer.nix;
     openssh = ./dendrites/openssh.nix;
     pi-coding-agent = ./dendrites/pi-coding-agent.nix;
