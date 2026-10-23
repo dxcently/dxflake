@@ -65,11 +65,12 @@
           # and the bookmarks that are now expected to arrive that way. A
           # default, so signing out in the UI still sticks.
           "identity.fxaccounts.enabled" = true;
-          # Tabs are Sidebery's: no native tab strip (collapsed in the sheet) and
-          # no native vertical-tab strip either. Sidebery renders in the classic
-          # sidebar, which is the one it was written for.
-          "sidebar.revamp" = false;
+          # Tabs are Sidebery's: the browser's own tab strip is collapsed in the
+          # sheet and the native vertical-tab list is off. The sidebar itself
+          # stays, pinned open, because that is where Sidebery lives.
+          "sidebar.revamp" = true;
           "sidebar.verticalTabs" = false;
+          "sidebar.visibility" = "always-show";
           "browser.startup.page" = 1;
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.resistFingerprinting" = false;
@@ -209,12 +210,12 @@
             z-index: 1 !important;
           }
 
-          @media (-moz-pref("sidebar.verticalTabs")) {
-            #sidebar-box,
-            sidebar-main {
-              position: relative !important;
-              z-index: 1 !important;
-            }
+          /* the sidebar is always open now, so it stays in normal flow: the
+             toolbox paints above it (z-index above) and it never overlaps */
+          #sidebar-box,
+          sidebar-main {
+            position: relative !important;
+            z-index: 1 !important;
           }
 
           /* The sidebar's panel fill stopped ~7px short of the window bottom — its
