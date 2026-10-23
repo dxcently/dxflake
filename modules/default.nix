@@ -159,8 +159,6 @@ let
     yazi = ./dendrites/yazi.nix;
   };
 
-  # Each line of dendrites/packages.nix is a generated entry, merged beside the
-  # hand-written ones; the generator throws on a clash.
   # The component slots (CONTRACTS.md §2, §5). Each is filled by Aoide's
   # `strillix` provider, and by a dxflake provider where dxflake has one. A rice
   # body names a provider per slot, so all ten must exist here.
