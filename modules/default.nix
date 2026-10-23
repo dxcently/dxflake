@@ -213,4 +213,16 @@ in
   # is imported here, and the constructor imports only the ones this host or one
   # of its users selected. See modules/aggregations/default.nix.
   aggregations = import ./aggregations;
+
+  # Each dendrite whose code writes `sops.*` needs sops; melete and immich run
+  # on sakaki only. mneme has no `hosts` rule: its container `mneme-a` is a habit
+  # host, and `hosts` takes only the known hosts.
+  rules = {
+    cloudflared.needs = [ "sops" ];
+    immich.hosts = [ "sakaki" ];
+    melete.hosts = [ "sakaki" ];
+    slskd.needs = [ "sops" ];
+    syncthing.needs = [ "sops" ];
+    tailscale.needs = [ "sops" ];
+  };
 }
