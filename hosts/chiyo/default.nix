@@ -15,6 +15,7 @@
     # none of those collide with Aoide's paint. The shell aggregation is NOT
     # selected here: Aoide's lanes paint instead.
     desktop.enable = true;
+    forensic-tools.enable = true; # the forensics suite: autopsy, imhex, guymager and the sleuthkit CLI.
   };
 
   habit.dendrites = {
@@ -34,7 +35,6 @@
       enable = true;
       provider = "hyprland";
     };
-    autopsy.enable = true;
     bluetooth.enable = true;
     claude-code.enable = true;
     claude-desktop.enable = true;
