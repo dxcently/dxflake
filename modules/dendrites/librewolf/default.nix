@@ -22,6 +22,18 @@
   habit.home =
     { lib, pkgs, ... }:
     let
+      # Tabs: one switch. `false` (the default) means the browser's own tab strip
+      # and its in-sidebar tab list are both off and Sidebery is the only tab UI —
+      # the arrangement this desktop runs. `true` brings the stock tab strip back
+      # and leaves the sidebar to whatever panel it was last on.
+      #
+      # Flipping this is not enough on its own: Firefox keeps the sidebar's own
+      # state in prefs.js (sidebar.verticalTabs, sidebar.backupState) and in
+      # xulstore.json (vertical-tabs.collapsed), and it rewrites those from the
+      # window. `~/.local/share/lw-review/lw-sidebar.sh` normalises all four while
+      # the browser is closed and relaunches it.
+      nativeTabs = true;
+
       # The classic Firefox chrome: github.com/DiegoSainzPardoLaso
       # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `155-156` set is the
       # one this browser is (LibreWolf 156.0); the `157` set is the same theme
@@ -65,6 +77,10 @@
           # and the bookmarks that are now expected to arrive that way. A
           # default, so signing out in the UI still sticks.
           "identity.fxaccounts.enabled" = true;
+          # With `nativeTabs = false`: no native vertical-tab list, and the
+          # sidebar pinned open because that is where Sidebery lives.
+          "sidebar.revamp" = true;
+          "sidebar.visibility" = "always-show";
           "browser.startup.page" = 1;
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.resistFingerprinting" = false;
@@ -90,6 +106,10 @@
           "media.eme.enabled" = true;
           "media.gmp-widevinecdm.enabled" = true;
           "media.gmp-manager.updateEnabled" = true;
+        }
+        // lib.optionalAttrs (!nativeTabs) {
+          # the browser's own tab list inside the sidebar
+          "sidebar.verticalTabs" = false;
         };
       };
 
@@ -173,48 +193,158 @@
             line-height: 1.3 !important;
           }
 
-          /* Side (vertical) tabs. The theme feeds one horizontal tab height into
-             both strips, so vertical rows came out as 33x18 favicon-only squares
-             that still carried the horizontal tab's borders and background
-             images, and its "+" button did not line up with them. A row here is
-             a row: tall enough for a title and a close button, no horizontal
-             art. Scoped, so the horizontal strip is untouched. */
+          ${lib.optionalString (!nativeTabs) ''
+            /* Tabs live in Sidebery: the browser's own tab strip is collapsed to
+               nothing, and the page keeps the full width under the toolbars. The
+               app button was pinned to the titlebar row the theme expects; with no
+               strip there is no such row, so it goes back into the nav bar. */
+            #TabsToolbar {
+              visibility: collapse !important;
+            }
+
+            /* The browser's own tab list inside the sidebar is `#vertical-tabs`,
+               built at runtime. `sidebar.verticalTabs = false` is the pref that
+               turns it off; this is the same decision in CSS, so the list cannot
+               appear beside Sidebery even if a pref never gets read. */
+            #vertical-tabs {
+              display: none !important;
+            }
+          ''}
+
+          /* Native side tabs. The theme feeds one height into both strips
+             (`--classic_squared_tabs_tab_height`, 12px), which is right for the
+             horizontal strip and far too short for a vertical row carrying a
+             title and a close button. Raise it only in the mode that needs it —
+             the media query is false while the strip is horizontal, so nothing
+             about the normal tabs changes. */
           @media (-moz-pref("sidebar.verticalTabs")) {
-            #vertical-tabs .tabbrowser-tab {
-              min-height: 30px !important;
-              max-height: none !important;
+            :root {
+              --classic_squared_tabs_tab_height: 26px !important;
             }
 
-            /* the theme's square-tab art lives on the tab and its .tab-background,
-               not on .tab-content — measured: a 1px border and a vertical gradient
-               still drew after resetting .tab-content alone */
             #vertical-tabs .tabbrowser-tab,
-            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
-              border: 0 !important;
-              background-image: none !important;
-              border-radius: 0 !important;
-            }
-
             #vertical-tabs #tabs-newtab-button {
-              flex: 1 1 auto !important;
-              min-width: 0 !important;
-              min-height: 26px !important;
-              margin-inline: 0 !important;
+              box-sizing: border-box !important;
+              width: 100% !important;
+              margin: 0 !important;
+              border-bottom: 1px solid #8f8c87 !important;
+              background-clip: padding-box !important;
             }
 
-            /* The theme fixes the app button to the top-left of the titlebar.
-               With side tabs there is no titlebar row, so it landed on
-               sidebar-toggle/back/forward; put it back in the nav bar. */
-            /* specificity has to match the theme's rule, which is
-               `#main-window:is([tabsintitlebar],[customtitlebar]) #PanelUI-button`
-               with !important — a bare #PanelUI-button loses to it */
+            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
+              margin: 0 !important;
+              border-radius: 0 !important;
+              background-clip: padding-box !important;
+            }
+
+            /* A vertical row is one horizontal line: icon, label, close. The
+               theme's horizontal art leaves the close button stacked above the
+               icon and the label overlapping the row below, so the row is laid
+               out explicitly here; `justify-content: center` is what centres the
+               icon when the strip is compact and the label is not shown. */
+            #vertical-tabs .tabbrowser-tab .tab-content {
+              display: flex !important;
+              flex-direction: row !important;
+              align-items: center !important;
+              justify-content: center !important;
+              gap: 4px !important;
+              overflow: hidden !important;
+            }
+
+            #vertical-tabs .tab-icon-image {
+              order: 1 !important;
+              margin: 0 !important;
+              align-self: center !important;
+            }
+
+            #vertical-tabs .tab-label-container,
+            #vertical-tabs .tab-secondary-label {
+              order: 2 !important;
+              min-width: 0 !important;
+            }
+
+            #vertical-tabs .tab-close-button {
+              order: 3 !important;
+              position: static !important;
+              margin: 0 0 0 auto !important;
+              align-self: center !important;
+              inset: auto !important;
+            }
+          }
+
+          /* The tab strip and the nav bar were sharing rows: the app button
+             started at y≈28 while the tabs ran to y≈46, so the tabs painted over
+             the toolbar's top edge. The strip gets a height of its own and the
+             theme's negative pull on maximized windows goes with it. */
+          #TabsToolbar {
+            min-height: 30px !important;
+            /* 3px up, as asked: the strip's own row sits a touch low against the
+               window's top edge */
+            margin-top: -3px !important;
+            padding-block: 2px 0 !important;
+          }
+
+          /* Normal tabs: the app button belongs in the strip's left corner, on
+             the window's top edge, which is where the theme puts it — and the
+             strip pads itself by `--appbutton_in_titlebar` for exactly that.
+             Only the side-tab mode has no strip to sit in, so only that mode
+             sends it back into the nav bar. */
+          @media (-moz-pref("sidebar.verticalTabs")) {
             #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
               position: static !important;
             }
+          }
 
-            #TabsToolbar {
-              padding-inline-start: 0 !important;
+          #nav-bar {
+            padding-inline-start: 0 !important;
+          }
+
+          /* The nav bar's fields take the space that is left rather than running
+             past the toolbar buttons: both the urlbar and the search bar flex,
+             each with its own margin, so whichever is in the bar fills it. */
+          #urlbar-container,
+          #search-container,
+          #searchbar {
+            flex: 1 1 auto !important;
+            min-width: 8em !important;
+            width: auto !important;
+          }
+
+          #urlbar,
+          #searchbar {
+            margin-inline: 4px !important;
+          }
+
+          /* in side-tab mode the app button is in the nav bar, so it should lead
+             it rather than trail the toolbar buttons */
+          @media (-moz-pref("sidebar.verticalTabs")) {
+            #PanelUI-button {
+              order: -1 !important;
+              -moz-box-ordinal-group: 0 !important;
             }
+          }
+
+          /* The classic toolbox is a full-width block and the sidebar is a
+             column beside the page; when the sidebar is pinned open the side tab
+             strip can end up painted over the nav bar and the bookmarks bar.
+             Two things keep it underneath: the toolbox paints above the browser
+             column, and the sidebar column stays in normal flow rather than
+             being positioned over the toolbox. */
+          #navigator-toolbox {
+            position: relative !important;
+            z-index: 5 !important;
+          }
+
+          #browser {
+            z-index: 1 !important;
+          }
+
+          /* the sidebar is always open now, so it stays in normal flow: the
+             toolbox paints above it (z-index above) and it never overlaps */
+          #sidebar-box,
+          sidebar-main {
+            position: relative !important;
+            z-index: 1 !important;
           }
 
           /* The sidebar's panel fill stopped ~7px short of the window bottom — its
@@ -228,10 +358,56 @@
             border-radius: 0 !important;
           }
 
-          /* the launcher column is white against the panel's #ebebed; inherit
-             picked up the window's white, so name the panel's colour */
-          #sidebar-main {
-            background-color: #ebebed !important;
+
+          /* The launcher's buttons pad themselves with
+             `var(--sidebar-launcher-button-padding-inline, var(--space-medium))`,
+             and that variable is *set* by the parent document rather than by the
+             shadow sheet — which is why it can be narrowed from here when the
+             property is set on an ancestor, unlike `--button-size-icon`, which the
+             shadow root's own `:host` rule owns. */
+          #sidebar-container {
+            --sidebar-launcher-button-padding-inline: 0px;
+          }
+
+          /* The launcher's width is NOT CSS: it is profile state, recorded in
+             `sidebar.backupState` as launcherWidth/expandedLauncherWidth, and at
+             286px it turned the column into a wide empty panel with four icons
+             lined up across the top. Neither `sidebar-main` (an HTML-namespaced
+             custom element) nor `*|sidebar-main` reaches it from here — measured,
+             not assumed. It is corrected in the profile (44px), which is where it
+             belongs. */
+
+          /* More room around the sidebar panel: the panel sits flush against the
+             page and the window, so it reads as part of the toolbox. A margin on
+             the box separates it without touching what Sidebery draws inside. */
+          #sidebar-box {
+            margin-inline-end: 6px !important;
+            margin-block: 4px 6px !important;
+          }
+
+          /* The sidebar's own close button sits inside the header and, with the
+             theme's 16px button box, ends up inset in a grey slab instead of on
+             the panel's top-right corner. Put it there and give it a hit area the
+             size of a button. */
+          #sidebar-header {
+            align-items: center !important;
+            padding-inline-end: 0 !important;
+          }
+
+          #sidebar-close {
+            margin: 0 !important;
+            align-self: flex-start !important;
+            width: 24px !important;
+            min-width: 24px !important;
+            height: 24px !important;
+            max-height: 24px !important;
+            -moz-box-align: center !important;
+            -moz-box-pack: center !important;
+          }
+
+          #sidebar-close > .toolbarbutton-icon {
+            width: 12px !important;
+            height: 12px !important;
           }
 
           #sidebar-search-container {

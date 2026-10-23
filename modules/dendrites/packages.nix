@@ -97,6 +97,10 @@
   "winetricks" # helper for Wine prefixes
   "protontricks" # winetricks for Proton/Steam
 
+  # ── forensic-tools ── imaging, triage and hex-level inspection
+  "imhex" # hex editor for reverse engineers, with the pattern language
+  "sleuthkit" # The Sleuth Kit CLI: fls, icat, mmls, blkcat, tsk_recover
+
   # ── host-selected ── any host may take any of these
   "soundconverter" # audio format converter
   "udiskie" # automounter for removable media
