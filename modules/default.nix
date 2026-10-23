@@ -105,6 +105,7 @@ let
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/gtk.nix;
+    guymager = ./dendrites/guymager.nix;
     hyprglass = ./dendrites/compositor/hyprland/hyprglass.nix;
     hyprland-autostart = ./dendrites/compositor/hyprland/autostart.nix;
     hyprland-decoration = ./dendrites/compositor/hyprland/decoration.nix;
