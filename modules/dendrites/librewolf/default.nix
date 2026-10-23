@@ -268,7 +268,8 @@
              there at 12px (they were sized from `--button-size-icon:
              var(--tab-min-height)`, which the theme pins to the tab strip's
              12px). Tabs are Sidebery's; this column has no job left. */
-          #sidebar-container {
+          #sidebar-container,
+          *|sidebar-main {
             display: none !important;
           }
 
