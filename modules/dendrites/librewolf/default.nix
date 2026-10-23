@@ -32,7 +32,7 @@
       # xulstore.json (vertical-tabs.collapsed), and it rewrites those from the
       # window. `~/.local/share/lw-review/lw-sidebar.sh` normalises all four while
       # the browser is closed and relaunches it.
-      nativeTabs = false;
+      nativeTabs = true;
 
       # The classic Firefox chrome: github.com/DiegoSainzPardoLaso
       # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `155-156` set is the
@@ -210,6 +210,33 @@
               display: none !important;
             }
           ''}
+
+          /* Native side tabs. The theme feeds one height into both strips
+             (`--classic_squared_tabs_tab_height`, 12px), which is right for the
+             horizontal strip and far too short for a vertical row carrying a
+             title and a close button. Raise it only in the mode that needs it —
+             the media query is false while the strip is horizontal, so nothing
+             about the normal tabs changes. */
+          @media (-moz-pref("sidebar.verticalTabs")) {
+            :root {
+              --classic_squared_tabs_tab_height: 26px !important;
+            }
+
+            #vertical-tabs .tabbrowser-tab,
+            #vertical-tabs #tabs-newtab-button {
+              box-sizing: border-box !important;
+              width: 100% !important;
+              margin: 0 !important;
+              border-bottom: 1px solid #8f8c87 !important;
+              background-clip: padding-box !important;
+            }
+
+            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
+              margin: 0 !important;
+              border-radius: 0 !important;
+              background-clip: padding-box !important;
+            }
+          }
 
           #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
             position: static !important;
