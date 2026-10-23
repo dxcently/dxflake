@@ -238,6 +238,16 @@
             }
           }
 
+          /* The tab strip and the nav bar were sharing rows: the app button
+             started at y≈28 while the tabs ran to y≈46, so the tabs painted over
+             the toolbar's top edge. The strip gets a height of its own and the
+             theme's negative pull on maximized windows goes with it. */
+          #TabsToolbar {
+            min-height: 30px !important;
+            margin-top: 0 !important;
+            padding-block: 2px !important;
+          }
+
           #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
             position: static !important;
           }
