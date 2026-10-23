@@ -288,6 +288,7 @@
   habit.dendrites.filelight.enable = true;
   habit.dendrites.tor-browser.enable = true;
   habit.dendrites.librewolf.enable = true;
+  habit.dendrites.wireshark.enable = true;
   habit.dendrites.stremio-linux-shell.enable = true;
   boot = {
     initrd.kernelModules = [ "nvme" ];

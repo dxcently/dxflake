@@ -154,6 +154,7 @@ let
     vesktop = ./dendrites/vesktop.nix;
     virtmanager = ./dendrites/virtmanager.nix;
     virtualisation = ./dendrites/virtualisation.nix;
+    wireshark = ./dendrites/wireshark.nix;
     xserver = ./dendrites/xserver.nix;
     yazi = ./dendrites/yazi.nix;
   };

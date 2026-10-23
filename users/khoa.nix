@@ -24,6 +24,7 @@
       "docker"
       "cdrom"
       "openrazer"
+      "wireshark"
     ];
   };
   nix.settings.allowed-users = [ "khoa" ];

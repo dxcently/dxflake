@@ -147,6 +147,7 @@
   habit.dendrites.ydotool.enable = true;
   habit.dendrites.librewolf.enable = true;
   habit.dendrites.netbird.enable = true;
+  habit.dendrites.wireshark.enable = true;
   # upowerd on the system bus — the bar's battery gauge and the power stele
   # read Quickshell.Services.UPower, a client only; without the daemon every
   # battery renders as absent ("AC — no battery present").
