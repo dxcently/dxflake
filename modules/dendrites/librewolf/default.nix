@@ -217,6 +217,29 @@
             }
           }
 
+          /* The classic toolbox is a full-width block and the sidebar is a
+             column beside the page; when the sidebar is pinned open the side tab
+             strip can end up painted over the nav bar and the bookmarks bar.
+             Two things keep it underneath: the toolbox paints above the browser
+             column, and the sidebar column stays in normal flow rather than
+             being positioned over the toolbox. */
+          #navigator-toolbox {
+            position: relative !important;
+            z-index: 5 !important;
+          }
+
+          #browser {
+            z-index: 1 !important;
+          }
+
+          @media (-moz-pref("sidebar.verticalTabs")) {
+            #sidebar-main,
+            #sidebar-box {
+              position: relative !important;
+              z-index: 1 !important;
+            }
+          }
+
           /* The sidebar's panel fill stopped ~7px short of the window bottom — its
              own bottom radius and margin — and the launcher column beside it was
              white against the panel's grey, so it read as unpainted. */
