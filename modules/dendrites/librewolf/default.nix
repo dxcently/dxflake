@@ -248,8 +248,15 @@
             padding-block: 2px !important;
           }
 
-          #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
-            position: static !important;
+          /* Normal tabs: the app button belongs in the strip's left corner, on
+             the window's top edge, which is where the theme puts it — and the
+             strip pads itself by `--appbutton_in_titlebar` for exactly that.
+             Only the side-tab mode has no strip to sit in, so only that mode
+             sends it back into the nav bar. */
+          @media (-moz-pref("sidebar.verticalTabs")) {
+            #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
+              position: static !important;
+            }
           }
 
           #nav-bar {
@@ -272,11 +279,13 @@
             margin-inline: 4px !important;
           }
 
-          /* the app button belongs at the start of the nav bar, not stranded at
-             the far right beside the toolbar buttons */
-          #PanelUI-button {
-            order: -1 !important;
-            -moz-box-ordinal-group: 0 !important;
+          /* in side-tab mode the app button is in the nav bar, so it should lead
+             it rather than trail the toolbar buttons */
+          @media (-moz-pref("sidebar.verticalTabs")) {
+            #PanelUI-button {
+              order: -1 !important;
+              -moz-box-ordinal-group: 0 !important;
+            }
           }
 
           /* The classic toolbox is a full-width block and the sidebar is a
