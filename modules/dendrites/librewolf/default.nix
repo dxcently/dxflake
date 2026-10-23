@@ -65,6 +65,11 @@
           # and the bookmarks that are now expected to arrive that way. A
           # default, so signing out in the UI still sticks.
           "identity.fxaccounts.enabled" = true;
+          # Tabs are Sidebery's: no native tab strip (collapsed in the sheet) and
+          # no native vertical-tab strip either. Sidebery renders in the classic
+          # sidebar, which is the one it was written for.
+          "sidebar.revamp" = false;
+          "sidebar.verticalTabs" = false;
           "browser.startup.page" = 1;
           "privacy.sanitize.sanitizeOnShutdown" = false;
           "privacy.resistFingerprinting" = false;
@@ -173,84 +178,20 @@
             line-height: 1.3 !important;
           }
 
-          /* Side (vertical) tabs. The theme feeds one horizontal tab height into
-             both strips, so vertical rows came out as 33x18 favicon-only squares
-             that still carried the horizontal tab's borders and background
-             images, and its "+" button did not line up with them. A row here is
-             a row: tall enough for a title and a close button, no horizontal
-             art. Scoped, so the horizontal strip is untouched. */
-          @media (-moz-pref("sidebar.verticalTabs")) {
-            #vertical-tabs .tabbrowser-tab {
-              min-height: 30px !important;
-              max-height: none !important;
-            }
+          /* Tabs live in Sidebery: the browser's own tab strip is collapsed to
+             nothing, and the page keeps the full width under the toolbars. The
+             app button was pinned to the titlebar row the theme expects; with no
+             strip there is no such row, so it goes back into the nav bar. */
+          #TabsToolbar {
+            visibility: collapse !important;
+          }
 
-            /* the theme's square-tab art lives on the tab and its .tab-background,
-               not on .tab-content — measured: a 1px border and a vertical gradient
-               still drew after resetting .tab-content alone */
-            #vertical-tabs .tabbrowser-tab,
-            /* the theme separates rows with a flex gap (sidebar rows included),
-               which is the 2px of column showing between one divider and the next
-               row; close it, and drop the background's own bottom edge so the
-               divider on the row is the only line */
-            #vertical-tabs #tabbrowser-tabs {
-              gap: 0 !important;
-            }
+          #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
+            position: static !important;
+          }
 
-            #vertical-tabs .tabbrowser-tab .tab-background {
-              border-bottom: 0 !important;
-            }
-
-            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
-              border: 0 !important;
-              background-image: none !important;
-              border-radius: 0 !important;
-            }
-
-            /* A row reads as a row: one divider under every tab, the new-tab
-               button included. The theme's own paint sits on the tab and its
-               .tab-background, so the divider needs box-sizing, no margin and
-               a background clipped to the padding box — otherwise it either
-               stops short of the row's edges or is covered by the tab's fill. */
-            #vertical-tabs .tabbrowser-tab,
-            #vertical-tabs #tabs-newtab-button {
-              box-sizing: border-box !important;
-              width: 100% !important;
-              margin: 0 !important;
-              border-bottom: 1px solid #8f8c87 !important;
-              background-clip: padding-box !important;
-            }
-
-            /* no panel-coloured gap between rows: the theme insets .tab-background,
-               which left 2px of column showing between one row's divider and the
-               next row, so the divider read as a border around a floating box
-               rather than a line between rows */
-            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
-              background-clip: padding-box !important;
-              margin-block: 0 !important;
-              border-radius: 0 !important;
-            }
-
-            #vertical-tabs #tabs-newtab-button {
-              flex: 1 1 auto !important;
-              min-width: 0 !important;
-              min-height: 26px !important;
-              margin-inline: 0 !important;
-            }
-
-            /* The theme fixes the app button to the top-left of the titlebar.
-               With side tabs there is no titlebar row, so it landed on
-               sidebar-toggle/back/forward; put it back in the nav bar. */
-            /* specificity has to match the theme's rule, which is
-               `#main-window:is([tabsintitlebar],[customtitlebar]) #PanelUI-button`
-               with !important — a bare #PanelUI-button loses to it */
-            #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
-              position: static !important;
-            }
-
-            #TabsToolbar {
-              padding-inline-start: 0 !important;
-            }
+          #nav-bar {
+            padding-inline-start: 0 !important;
           }
 
           /* The classic toolbox is a full-width block and the sidebar is a
@@ -296,8 +237,15 @@
              launcher icon came out 12px tall and they piled up. Name the size on
              the host: the shadow tree gets it, the tab strip keeps its own. */
           sidebar-main {
-            --button-size-icon: 26px;
-            --button-min-height: 26px;
+            --button-size-icon: 22px;
+            --button-min-height: 22px;
+            /* the launcher's own sheet pads every button with
+               `var(--sidebar-launcher-button-padding-inline, var(--space-medium))`,
+               which the parent document supplies; three of those do not fit a
+               34px column, so they crowd. Tighten the padding and give the column
+               the room for three icons side by side. */
+            --sidebar-launcher-button-padding-inline: 3px;
+            min-width: 44px !important;
             background-color: #ebebed !important;
           }
 
