@@ -260,12 +260,14 @@
             border-radius: 0 !important;
           }
 
-          /* The sidebar's own launcher column is left alone: `sidebar-main` is
-             `html:sidebar-main`, and hiding it (alone or with its
-             #sidebar-container) hands Sidebery a wider panel, so Sidebery
-             re-lays its own toolbar from a column into a row — a worse arrangement
-             than the column it replaced. The column stays, and Sidebery keeps the
-             width it expects. */
+
+          /* The launcher's width is NOT CSS: it is profile state, recorded in
+             `sidebar.backupState` as launcherWidth/expandedLauncherWidth, and at
+             286px it turned the column into a wide empty panel with four icons
+             lined up across the top. Neither `sidebar-main` (an HTML-namespaced
+             custom element) nor `*|sidebar-main` reaches it from here — measured,
+             not assumed. It is corrected in the profile (44px), which is where it
+             belongs. */
 
           #sidebar-search-container {
             padding-inline: 10px !important;
