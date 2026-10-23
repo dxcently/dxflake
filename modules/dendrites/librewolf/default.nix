@@ -487,8 +487,9 @@
 
       # The entry above is the package's; this one is the same browser declared
       # by this module so its Exec goes through `launcher`. It keeps the packaged
-      # entry's name, icon, MIME list, window class and actions, and only adds
-      # the clearing of LD_LIBRARY_PATH. `xdg.desktopEntries` installs it as a
+      # entry's name, icon, MIME list, window class and actions. The launcher
+      # clears LD_LIBRARY_PATH, LD_PRELOAD and LD_AUDIT and does the profile-lock
+      # cleanup. `xdg.desktopEntries` installs it as a
       # hiPrio package, so in the profile's share/applications it replaces the
       # packaged `librewolf.desktop` of the same name — which is the file
       # xdg-open reads on the way to every handoff.
