@@ -260,31 +260,16 @@
             border-radius: 0 !important;
           }
 
-          /* The launcher column is a custom element (`sidebar-main`, no id) with a
-             shadow root, so nothing inside it is reachable from here — and the
-             two rules that mattered are custom properties, which do inherit in.
-             Its own sheet sizes every button from `--tab-min-height`
-             (sidebar-main.css: `--button-size-icon: var(--tab-min-height)`), and
-             the theme pins that root variable to 12px for the tab strip, so each
-             launcher icon came out 12px tall and they piled up. Name the size on
-             the host: the shadow tree gets it, the tab strip keeps its own. */
-          sidebar-main {
-            /* The launcher column is a custom element in the light DOM, so unlike
-               its shadow contents it can be hidden outright. With tabs in
-               Sidebery the column is a second, narrower tab/launcher strip that
-               never has the room to look right — take it out and let the sidebar
-               be Sidebery's panel. */
+          /* The launcher column is `#sidebar-container` > `html:sidebar-main`.
+             The type selector for that element never matched — it is in the HTML
+             namespace and a bare type selector in a XUL chrome sheet does not
+             reach across it — but its container is a XUL box with an id, so the
+             whole column goes, and with it the three launcher icons that sat
+             there at 12px (they were sized from `--button-size-icon:
+             var(--tab-min-height)`, which the theme pins to the tab strip's
+             12px). Tabs are Sidebery's; this column has no job left. */
+          #sidebar-container {
             display: none !important;
-            --button-size-icon: 22px;
-            --button-min-height: 22px;
-            /* the launcher's own sheet pads every button with
-               `var(--sidebar-launcher-button-padding-inline, var(--space-medium))`,
-               which the parent document supplies; three of those do not fit a
-               34px column, so they crowd. Tighten the padding and give the column
-               the room for three icons side by side. */
-            --sidebar-launcher-button-padding-inline: 3px;
-            min-width: 44px !important;
-            background-color: #ebebed !important;
           }
 
           #sidebar-search-container {
