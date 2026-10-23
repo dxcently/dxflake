@@ -73,6 +73,15 @@ cold.
   it. A name with no catalogue line is unreachable, which is what shelving means
   now (the `_` filename prefix is the older convention and still marks parked
   files).
+- **Rules** — the catalogue's optional `rules` field, in `modules/default.nix`:
+  a map from catalogue name to plain data, read beside the selection and never
+  importing anything. `needs = [ … ]` refuses a selection whose system or home
+  half lacks a named need; `hosts = [ … ]` refuses a selection on any other host;
+  `homes = n` refuses more than `n` users' homes on one host. A rule only
+  refuses, it never selects, and a failing rule names itself and what it broke.
+  The rules, their messages and what a rule cannot express are in habit's
+  [`docs/rules.md`](https://github.com/dxcently/habit/blob/676cccc3423922f768da89e6d8e049e81e96f248/docs/rules.md)
+  at v0.7.0 (676cccc).
 - **Dendrite** — a selectable capability, with two halves. One file is a plain
   NixOS module, which is its system half; `habit.home = { … };` beside it is its
   home half. Or a directory whose `default.nix` lists `providers = { … }` and
@@ -213,6 +222,10 @@ to destination.
   Nothing else.
 - **A provider** — add the file and one line to that dendrite's `providers`
   registry; select it where wanted.
+- **A capability that needs another, or belongs to one machine** — a `rules`
+  entry in `modules/default.nix`: `needs = [ … ]` or `hosts = [ … ]`. The rule
+  holds plain catalogue names and host names, and the build refuses a selection
+  that breaks it.
 - **A group** — a directory under `modules/aggregations/` whose `default.nix`
   holds the data above. Discovery finds it; there is no import line anywhere.
 - **A backend-specific member** — one an aggregation cannot name because only
