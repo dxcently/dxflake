@@ -187,6 +187,14 @@
             visibility: collapse !important;
           }
 
+          /* The browser's own tab list inside the sidebar is `#vertical-tabs`,
+             built at runtime. `sidebar.verticalTabs = false` is the pref that
+             turns it off; this is the same decision in CSS, so the list cannot
+             appear beside Sidebery even if a pref never gets read. */
+          #vertical-tabs {
+            display: none !important;
+          }
+
           #main-window:is([tabsintitlebar], [customtitlebar]) #PanelUI-button {
             position: static !important;
           }
