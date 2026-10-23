@@ -236,6 +236,40 @@
               border-radius: 0 !important;
               background-clip: padding-box !important;
             }
+
+            /* A vertical row is one horizontal line: icon, label, close. The
+               theme's horizontal art leaves the close button stacked above the
+               icon and the label overlapping the row below, so the row is laid
+               out explicitly here; `justify-content: center` is what centres the
+               icon when the strip is compact and the label is not shown. */
+            #vertical-tabs .tabbrowser-tab .tab-content {
+              display: flex !important;
+              flex-direction: row !important;
+              align-items: center !important;
+              justify-content: center !important;
+              gap: 4px !important;
+              overflow: hidden !important;
+            }
+
+            #vertical-tabs .tab-icon-image {
+              order: 1 !important;
+              margin: 0 !important;
+              align-self: center !important;
+            }
+
+            #vertical-tabs .tab-label-container,
+            #vertical-tabs .tab-secondary-label {
+              order: 2 !important;
+              min-width: 0 !important;
+            }
+
+            #vertical-tabs .tab-close-button {
+              order: 3 !important;
+              position: static !important;
+              margin: 0 0 0 auto !important;
+              align-self: center !important;
+              inset: auto !important;
+            }
           }
 
           /* The tab strip and the nav bar were sharing rows: the app button
@@ -244,8 +278,10 @@
              theme's negative pull on maximized windows goes with it. */
           #TabsToolbar {
             min-height: 30px !important;
-            margin-top: 0 !important;
-            padding-block: 2px !important;
+            /* 3px up, as asked: the strip's own row sits a touch low against the
+               window's top edge */
+            margin-top: -3px !important;
+            padding-block: 2px 0 !important;
           }
 
           /* Normal tabs: the app button belongs in the strip's left corner, on
@@ -347,6 +383,31 @@
           #sidebar-box {
             margin-inline-end: 6px !important;
             margin-block: 4px 6px !important;
+          }
+
+          /* The sidebar's own close button sits inside the header and, with the
+             theme's 16px button box, ends up inset in a grey slab instead of on
+             the panel's top-right corner. Put it there and give it a hit area the
+             size of a button. */
+          #sidebar-header {
+            align-items: center !important;
+            padding-inline-end: 0 !important;
+          }
+
+          #sidebar-close {
+            margin: 0 !important;
+            align-self: flex-start !important;
+            width: 24px !important;
+            min-width: 24px !important;
+            height: 24px !important;
+            max-height: 24px !important;
+            -moz-box-align: center !important;
+            -moz-box-pack: center !important;
+          }
+
+          #sidebar-close > .toolbarbutton-icon {
+            width: 12px !important;
+            height: 12px !important;
           }
 
           #sidebar-search-container {
