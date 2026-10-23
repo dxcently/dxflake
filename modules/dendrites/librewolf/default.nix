@@ -189,17 +189,46 @@
                not on .tab-content — measured: a 1px border and a vertical gradient
                still drew after resetting .tab-content alone */
             #vertical-tabs .tabbrowser-tab,
+            /* the theme separates rows with a flex gap (sidebar rows included),
+               which is the 2px of column showing between one divider and the next
+               row; close it, and drop the background's own bottom edge so the
+               divider on the row is the only line */
+            #vertical-tabs #tabbrowser-tabs {
+              gap: 0 !important;
+            }
+
+            #vertical-tabs .tabbrowser-tab .tab-background {
+              border-bottom: 0 !important;
+            }
+
             #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
               border: 0 !important;
               background-image: none !important;
               border-radius: 0 !important;
             }
 
-            /* a row reads as a row: one divider under every tab, the new-tab
-               button included, so the column does not look like floating boxes */
+            /* A row reads as a row: one divider under every tab, the new-tab
+               button included. The theme's own paint sits on the tab and its
+               .tab-background, so the divider needs box-sizing, no margin and
+               a background clipped to the padding box — otherwise it either
+               stops short of the row's edges or is covered by the tab's fill. */
             #vertical-tabs .tabbrowser-tab,
             #vertical-tabs #tabs-newtab-button {
-              border-bottom: 1px solid #a8a5a0 !important;
+              box-sizing: border-box !important;
+              width: 100% !important;
+              margin: 0 !important;
+              border-bottom: 1px solid #8f8c87 !important;
+              background-clip: padding-box !important;
+            }
+
+            /* no panel-coloured gap between rows: the theme insets .tab-background,
+               which left 2px of column showing between one row's divider and the
+               next row, so the divider read as a border around a floating box
+               rather than a line between rows */
+            #vertical-tabs .tabbrowser-tab :is(.tab-background, .tab-content) {
+              background-clip: padding-box !important;
+              margin-block: 0 !important;
+              border-radius: 0 !important;
             }
 
             #vertical-tabs #tabs-newtab-button {
@@ -240,8 +269,8 @@
           }
 
           @media (-moz-pref("sidebar.verticalTabs")) {
-            #sidebar-main,
-            #sidebar-box {
+            #sidebar-box,
+            sidebar-main {
               position: relative !important;
               z-index: 1 !important;
             }
@@ -258,32 +287,18 @@
             border-radius: 0 !important;
           }
 
-          /* the launcher column is white against the panel's #ebebed; inherit
-             picked up the window's white, so name the panel's colour */
-          #sidebar-main {
+          /* The launcher column is a custom element (`sidebar-main`, no id) with a
+             shadow root, so nothing inside it is reachable from here — and the
+             two rules that mattered are custom properties, which do inherit in.
+             Its own sheet sizes every button from `--tab-min-height`
+             (sidebar-main.css: `--button-size-icon: var(--tab-min-height)`), and
+             the theme pins that root variable to 12px for the tab strip, so each
+             launcher icon came out 12px tall and they piled up. Name the size on
+             the host: the shadow tree gets it, the tab strip keeps its own. */
+          sidebar-main {
+            --button-size-icon: 26px;
+            --button-min-height: 26px;
             background-color: #ebebed !important;
-          }
-
-          /* The launcher column's tools: the theme's button box is a 16px icon
-             with no margin, so at the bottom of the column they end up touching
-             each other. Give each one a proper box and space, and keep the
-             column stacking rather than lining them up sideways. */
-          #sidebar-main {
-            flex-direction: column !important;
-          }
-
-          #sidebar-main > * {
-            flex: 0 0 auto !important;
-          }
-
-          #sidebar-main toolbarbutton,
-          #sidebar-main .toolbarbutton-1 {
-            min-width: 28px !important;
-            min-height: 28px !important;
-            margin-block: 3px !important;
-            padding: 0 !important;
-            -moz-box-pack: center !important;
-            -moz-box-align: center !important;
           }
 
           #sidebar-search-container {
