@@ -134,6 +134,8 @@
   aoide.checkout = "/home/${username}/aoide";
   # The file `strx rice declare --host` and the Declare button rewrite.
   strillix.hostConfig = "/home/${username}/dxflake/hosts/osaka/default.nix";
+  # The rotated HDMI-A-1 took the greeter; the greeter belongs on DP-1.
+  strillix.greeter.output = "DP-1";
 
   # ── Aoide's face, laid over dxflake's own paint ───────────────────────────
   # The quickshell lane composes with dxflake's own Hyprland + Stylix
