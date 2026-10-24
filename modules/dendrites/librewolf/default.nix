@@ -339,6 +339,18 @@
             padding-inline-start: 0 !important;
           }
 
+          /* The theme pulls the nav bar 7.5px up under the strip
+             (custom_navBar.css, `margin-top: -7.5px`) so the selected tab
+             merges into it — on this strip's taller row that sinks the tabs
+             into the toolbar's buttons instead. The bar starts below the strip,
+             and gets 4px more room above its fields. `#main-window` outranks
+             the theme's `:root:not([lwtheme-image]) #nav-bar`. */
+          #main-window #nav-bar {
+            margin-top: 0 !important;
+            padding-top: 8px !important;
+            height: 36px !important;
+          }
+
           /* The nav bar's fields take the space that is left rather than running
              past the toolbar buttons: both the urlbar and the search bar flex,
              each with its own margin, so whichever is in the bar fills it. */
