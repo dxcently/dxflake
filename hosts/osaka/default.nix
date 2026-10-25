@@ -8,17 +8,20 @@
   ...
 }:
 {
-  # The song carries the livery (palette + component tiers) and nothing else —
+  # The rice carries the theme (palette + component tiers) and nothing else —
   # host-agnostic by contract, so this one line is the whole rice swap.
-  habit.song.declared = "sonata";
-  # Built in, not performed. Each switch refreshes these songs' copies in the
-  # runtime songbook (`lyra rice refresh`: repo changes reach the files the
+  habit.rice.declared = "barcarolle";
+  # Built in, not performed. Each switch refreshes these rices' copies in the
+  # runtime rices (`strx rice refresh`: repo changes reach the files the
   # machine never edited); staging one is a row in the bar's RICE menu or
-  # `lyra rice mode stage <song>`. aoide.song stays sonata, so they add no
-  # livery and the overrides below still recolour sonata alone.
-  habit.song.available = [
+  # `strx rice mode stage <rice>`.
+  habit.rice.available = [
     "cadenza"
+    "etude"
     "fugue"
+    "nocturne"
+    "quodlibet"
+    "sonata"
   ];
 
   habit.aggregation = {
@@ -37,13 +40,13 @@
     aoide.enable = true;
     stylix.enable = true;
     # Aoide's lanes over dxflake's own paint: the Quickshell surface (bar, dock,
-    # launcher, OSD, wallpaper, herald), the lyra binary with its shellbridge,
-    # the dunst daemon behind the herald (the shell aggregation ships only the
+    # launcher, OSD, wallpaper, notifications), the strillix runtime with its
+    # shellbridge, the dunst daemon behind the notifications (the shell aggregation ships only the
     # package, so no second daemon), and Aoide's stylix lane for colours
     # (the stylix dendrite keeps fonts, cursors, icons). Aoide's compositor lane stays
     # unselected so dxflake's Hyprland is the only compositor writer.
     quickshell.enable = true;
-    lyra.enable = true;
+    strillix.enable = true;
     dunst.enable = true;
     aoide-stylix.enable = true;
     autopsy.enable = true;
@@ -57,7 +60,10 @@
       provider = "amd";
     };
     gpu-screen-recorder.enable = true;
-    hyprlock.enable = true;
+    lock = {
+      enable = true;
+      provider = "hyprlock";
+    };
     inference.enable = true;
     k3b.enable = true;
     kimi-cli.enable = true;
@@ -124,21 +130,25 @@
 
   # The dev checkout is ~/aoide here; the option's default is ~/Aoide, which
   # does not exist on this box. It becomes AOIDE_FLAKE_ROOT on aoided and the
-  # shellbridge, and `lyra preview` and `lyra rice declare` refuse a missing one.
+  # shellbridge, and `strx preview` and `strx rice declare` refuse a missing one.
   aoide.checkout = "/home/${username}/aoide";
+  # The file `strx rice declare --host` and the Declare button rewrite.
+  strillix.hostConfig = "/home/${username}/dxflake/hosts/osaka/default.nix";
+  # The rotated HDMI-A-1 took the greeter; the greeter belongs on DP-1.
+  strillix.greeter.output = "DP-1";
 
   # ── Aoide's face, laid over dxflake's own paint ───────────────────────────
   # The quickshell lane composes with dxflake's own Hyprland + Stylix
   # dendrites: it needs nothing but graphical-session.target and a compositor
   # that exports WAYLAND_DISPLAY/HYPRLAND_INSTANCE_SIGNATURE, which the
-  # compositor dendrite already provides. Colours follow the livery through
+  # compositor dendrite already provides. Colours follow the theme through
   # Aoide's stylix lane while the stylix dendrite keeps fonts/cursors/icons.
   #
-  # Deselecting the quickshell lane (and lyra and dunst, which have no purpose
-  # without the surface) is the whole revert: the waybar/awww/rofi stand-down
-  # in modules/dendrites/compositor/hyprland/ keys on `aoide.quickshell.enable`,
-  # so waybar, both awww wallpapers and SUPER+SPACE→rofi come back, and aoided
-  # anchors on default.target again.
+  # Deselecting the quickshell lane turns off the waybar/awww/rofi stand-down in
+  # modules/dendrites/compositor/hyprland/, which keys on `strillix.quickshell.enable`,
+  # so those come back, and aoided anchors on default.target again. It does not
+  # give back the bar, launcher and powermenu slots: the declared rice (barcarolle)
+  # pins them to strillix, so a revert needs a rice that does not pin them.
   #
   # With the lane on, aoided and the A2A door are `partOf`
   # graphical-session.target — the door lives and dies with the desktop
@@ -151,35 +161,36 @@
   # desktop image — that is why the wallpaper read as broken rather than as a
   # chosen flat ground. This bakes osaka's own image as an immutable store
   # path, which is the seam that SURVIVES a rebuild: the live alternative,
-  # song/stage/cover.json, is runtime state nothing re-seeds (AoideWallpaper.
+  # $STRILLIX_ROOT/stage/wallpaper.json, is runtime state nothing re-seeds (AoideWallpaper.
   # qml's own header names "background gone after rebuild" as the bug the
   # baked path exists to fix).
   #
-  # mkForce is load-bearing and it has a cost. sonata assigns this option
-  # null at normal priority, so a plain assignment here would collide the
-  # moment `aoide.song` goes back to "sonata" — mkForce keeps the song switch
-  # working in BOTH directions. What it buys with that: a future song that
-  # carries real cover art of its own will have it overridden on osaka.
-  # Delete this line to hand the cover note back to whatever song is playing.
-  aoide.livery.wallpaper = lib.mkForce ../../song/covers/hero.webp;
+  # mkForce is load-bearing: sonata assigns this option null at normal
+  # priority, so a plain assignment would collide. Scoped to sonata, so a rice
+  # with cover art of its own (barcarolle) keeps it.
+  strillix.theme.wallpaper = lib.mkIf (config.strillix.rice == "sonata") (
+    lib.mkForce ../../wallpapers/hero.webp
+  );
 
-  # Rosé Pine (song/songbook/transience/palette.nix) over sonata, in the
-  # override tier rather than livery.json: the song itself is shared with
-  # yomi-strix. The palette is read from the rice, not restated here, so this
+  # Rosé Pine (modules/aggregations/shell/transience/palette.nix) over sonata, in the
+  # override tier rather than theme.json: the rice itself is shared with
+  # yomi-strix. The palette is read from the file, not restated here, so this
   # host and chiyo are the same sixteen colours; a host that wants its own
-  # accent back states that one slot (`aoide.livery.override.base16.base0F = …`)
-  # and the rest stays the rice's.
-  aoide.livery.override = (import ../../song/songbook/transience/palette.nix).override;
+  # accent back states that one slot (`strillix.theme.override.base16.base0F = …`)
+  # and the rest stays the palette's.
+  strillix.theme.override = lib.mkIf (config.strillix.rice == "sonata") (
+    import ../../modules/aggregations/shell/transience/palette.nix
+  ).override;
   # sonata is opaque here. It has no terminalOpacity opinion, and Aoide
   # answers "no opinion" with its own 0.86 on every `rice stage`, so the venue
-  # states one. Scoped to sonata: a song with an opinion of its own (cadenza's
+  # states one. Scoped to sonata: a rice with an opinion of its own (cadenza's
   # 0.7) owns it, and this then defines nothing for it to collide with.
-  # Aoide's seed publishes the value as song/declared/terminal-opacity.conf,
+  # Aoide's seed publishes the value as $STRILLIX_ROOT/declared/terminal-opacity.conf,
   # which covers a box that has never staged. A re-stage of sonata reads the
-  # declared twin (song/declared/livery.json), which carries no geometry yet,
+  # declared twin ($STRILLIX_ROOT/declared/theme.json), which carries no geometry yet,
   # so it honours this only once Aoide carries geometry into that twin. Until
   # then a re-stage of sonata writes Aoide's 0.86.
-  aoide.livery.geometry.terminalOpacity = lib.mkIf (config.aoide.song == "sonata") 1.0;
+  strillix.theme.geometry.terminalOpacity = lib.mkIf (config.strillix.rice == "sonata") 1.0;
   stylix.polarity = "dark";
   # Keep the serif look, with a fixed-width face for terminals and code.
   stylix.fonts = {
@@ -197,20 +208,13 @@
     };
   };
 
-  # ── The wallpaper picker's library ───────────────────────────────────────
-  # SUPER+W summons AoideWallpaperPicker, which enumerates its grid by shelling
-  # `ls -1 $AOIDE_ROOT/song/covers` and, on a pick, stages the chosen path into
-  # song/stage/cover.json — which AoideWallpaper watches and hot-swaps to. But
-  # nothing in Aoide ever CREATES that directory (the quickshell lane deploys
-  # only run/qml/), so on osaka it did not exist and the picker opened onto an
-  # empty grid. Pointing it at dxflake's own wallpaper collection makes the
-  # switcher useful immediately, and keeps the venue's images in the venue.
+  # ── Host wallpapers ─────────────────────────────────────────────────────
+  # The wallpaper picker reads Strillix's `$STRILLIX_ROOT/wallpapers`, a plain
+  # user-writable library the user fills. This host links nothing into it, so
+  # the picker's grid is whatever the user has put there.
   #
-  # The baked cover above stays the DEFAULT ground that survives a rebuild;
-  # this is the live override seam on top of it. Path tracks `aoide.root`'s
-  # default of ~/.aoide — retarget both together if that option ever moves.
+  # The baked cover above stays the DEFAULT ground that survives a rebuild.
   home-manager.users.${username} = {
-    home.file.".aoide/song/covers".source = ../../song/covers;
     # SUPER+D sends vesktop to workspace 3 on the vertical HDMI-A-1 panel, which
     # only osaka has.
     wayland.windowManager.hyprland.settings = {

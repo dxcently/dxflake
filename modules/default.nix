@@ -20,8 +20,15 @@
 # file name.
 {
   packages ? import ./dendrites/packages.nix,
+  # Aoide's component providers (`inputs.aoide.parts`): the `strillix` provider
+  # of each slot, a bare path. Only a host that selects a slot reads its entry.
+  parts ? { },
 }:
 let
+  strillixPart =
+    name:
+    parts.${name} or (throw "modules/default.nix: the strillix provider of the '${name}' slot is not in parts; pass inputs.aoide.parts");
+
   file = toString ./dendrites/packages.nix;
 
   # `kdePackages.filelight` is catalogue entry `filelight`.
@@ -87,7 +94,6 @@ let
     compositor = ./dendrites/compositor;
     desktop-hardware = ./dendrites/desktop-hardware.nix;
     direnv = ./dendrites/direnv.nix;
-    displaymanager = ./dendrites/displaymanager.nix;
     fastfetch = ./dendrites/fastfetch;
     ffmpeg = ./dendrites/ffmpeg.nix;
     fcitx5 = ./dendrites/fcitx5.nix;
@@ -104,7 +110,6 @@ let
     hyprland-autostart = ./dendrites/compositor/hyprland/autostart.nix;
     hyprland-decoration = ./dendrites/compositor/hyprland/decoration.nix;
     hyprland-keybinds = ./dendrites/compositor/hyprland/keybinds.nix;
-    hyprlock = ./dendrites/hyprlock.nix;
     immich = ./dendrites/immich.nix;
     inference = ./dendrites/inference.nix;
     jellyfin = ./dendrites/jellyfin.nix;
@@ -132,8 +137,6 @@ let
     printing = ./dendrites/printing.nix;
     python = ./dendrites/python.nix;
     qt = ./dendrites/qt.nix;
-    rice = ../song/songbook;
-    rofi = ./dendrites/rofi.nix;
     ros = ./dendrites/ros.nix;
     satty = ./dendrites/satty.nix;
     security = ./dendrites/security.nix;
@@ -151,16 +154,53 @@ let
     vesktop = ./dendrites/vesktop.nix;
     virtmanager = ./dendrites/virtmanager.nix;
     virtualisation = ./dendrites/virtualisation.nix;
-    waybar = ./dendrites/waybar.nix;
     wireshark = ./dendrites/wireshark.nix;
-    wlogout = ./dendrites/wlogout.nix;
     xserver = ./dendrites/xserver.nix;
     yazi = ./dendrites/yazi.nix;
   };
 
-  # Each line of dendrites/packages.nix is a generated entry, merged beside the
-  # hand-written ones; the generator throws on a clash.
-  catalogue = handWritten // checked;
+  # The component slots (CONTRACTS.md §2, §5). Each is filled by Aoide's
+  # `strillix` provider, and by a dxflake provider where dxflake has one. A rice
+  # body names a provider per slot, so all ten must exist here.
+  slots = {
+    bar = {
+      providers = {
+        waybar = ./dendrites/waybar.nix;
+        strillix = strillixPart "bar";
+      };
+    };
+    launcher = {
+      providers = {
+        rofi = ./dendrites/rofi.nix;
+        strillix = strillixPart "launcher";
+      };
+    };
+    powermenu = {
+      providers = {
+        wlogout = ./dendrites/wlogout.nix;
+        strillix = strillixPart "powermenu";
+      };
+    };
+    notifications.providers.strillix = strillixPart "notifications";
+    wallpaper.providers.strillix = strillixPart "wallpaper";
+    dock.providers.strillix = strillixPart "dock";
+    calendar.providers.strillix = strillixPart "calendar";
+    switcher.providers.strillix = strillixPart "switcher";
+    lock = {
+      providers = {
+        hyprlock = ./dendrites/hyprlock.nix;
+        strillix = strillixPart "lock";
+      };
+    };
+    greeter = {
+      providers = {
+        ly = ./dendrites/displaymanager.nix;
+        strillix = strillixPart "greeter";
+      };
+    };
+  };
+
+  catalogue = handWritten // slots // checked;
 in
 {
   inherit catalogue;
@@ -175,4 +215,18 @@ in
   # is imported here, and the constructor imports only the ones this host or one
   # of its users selected. See modules/aggregations/default.nix.
   aggregations = import ./aggregations;
+
+  # Each dendrite whose code writes `sops.*` needs sops, and immich, which writes
+  # `dx.nas-mounts.mounts`, needs nas-mounts. melete is kept to sakaki by policy:
+  # the rule refuses it elsewhere, and says nothing about what its code can run
+  # on. mneme has no `hosts` rule: its container `mneme-a` is a habit host, and
+  # `hosts` takes only the known hosts.
+  rules = {
+    cloudflared.needs = [ "sops" ];
+    immich.needs = [ "nas-mounts" ];
+    melete.hosts = [ "sakaki" ];
+    slskd.needs = [ "sops" ];
+    syncthing.needs = [ "sops" ];
+    tailscale.needs = [ "sops" ];
+  };
 }

@@ -34,7 +34,7 @@
       ...
     }:
     let
-      aoideQuickshell = osConfig.aoide.quickshell.enable;
+      aoideQuickshell = osConfig.strillix.quickshell.enable;
       stylixPolarity =
         if (config ? stylix && config.stylix ? polarity) then config.stylix.polarity else "dark";
       hyprglassTheme = if stylixPolarity == "light" then "light" else "dark";
@@ -48,7 +48,7 @@
         # result — without this pair the plugin loads and shows nothing, which is
         # the usual "hyprglass isn't working" report. The bar is glassed like the
         # dock, launcher and powermenu: an opaque bar has no translucent pixels
-        # for either to paint, so only a translucent song's ground shows it.
+        # for either to paint, so only a translucent rice's ground shows it.
         # aoide-bar also takes `blur_popups`, so its popouts frost too.
         # aoide-calendar is the one surface pinned blur OFF, so its cut-out day
         # grid shows the desktop crisply.
@@ -75,22 +75,22 @@
         #
         # Preserve Aoide's gloss tuning, but align the active preset with the
         # active Stylix polarity. The plugin validates this at runtime, so it
-        # must not be hardcoded across both dark and light livery selections.
+        # must not be hardcoded across both dark and light theme selections.
         #
         # manage_window_blur is a GLOBAL toggle in v0.7.0 — there is no
         # per-class targeting (confirmed against the built plugin's key table).
         # It stays on because the shader only paints visible translucent
-        # fragments: a kitty whose song gives it a translucent background gains
+        # fragments: a kitty whose rice gives it a translucent background gains
         # refraction, while an opaque terminal is untouched, as is every other
         # opaque window.
         #
         # The namespace list is the four surfaces Aoide glasses. Every Aoide bar draws
         # under the one aoide-bar namespace, so one entry covers them all.
-        # It is static here on purpose: Aoide's compositor lane appends song-declared
+        # It is static here on purpose: Aoide's compositor lane appends rice-declared
         # widget surfaces too, but only `kind = "surface"` widgets ever get a layer
         # surface of their own, and nocturne's sole widget (`vigil`) is `kind = "dock"` —
         # it mounts as an Item inside aoide-dock and is already covered by the
-        # dock's own entry. A song declaring a real surface widget would want
+        # dock's own entry. A rice declaring a real surface widget would want
         # its namespace added here by hand.
         extraConfig = lib.optionalString aoideQuickshell ''
           plugin:hyprglass {
@@ -107,14 +107,14 @@
           }
 
           # ── Terminal window rule (pairs with the kitty dendrite) ───────────
-          # Terminals carry no opacity rule: the song's terminal opacity is the
+          # Terminals carry no opacity rule: the rice's terminal opacity is the
           # whole say for kitty, focused or not. It reaches kitty as its own
           # `background_opacity` (declared fragment, then the stage), which
           # makes the default background translucent and leaves glyphs opaque;
           # a Hyprland `opacity` rule would multiply it and dim the glyphs too.
           # Behind a translucent terminal the compositor still blurs
           # (`decoration.blur.ignore_opacity`) and hyprglass refracts, so an
-          # opaque song shows neither. No window is faded here either: nothing
+          # opaque rice shows neither. No window is faded here either: nothing
           # sets `inactive_opacity`, and media and browser windows carry
           # arbitrary content that must never be faded.
           #

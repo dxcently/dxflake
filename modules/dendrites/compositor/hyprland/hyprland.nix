@@ -15,12 +15,16 @@
 #
 # Nothing here installs a package. Package membership is the shell
 # aggregation's, and each ecosystem dendrite carries only what it itself calls.
+{ lib, ... }:
 {
   config = {
     programs.hyprland = {
       enable = true;
       withUWSM = true;
     };
+    # The session a greeter with no picker launches (the strillix greeter names
+    # it). This dendrite runs hyprland through UWSM, so the UWSM session is named.
+    services.displayManager.defaultSession = lib.mkDefault "hyprland-uwsm";
 
     habit.home =
       {

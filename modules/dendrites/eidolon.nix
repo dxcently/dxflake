@@ -1,6 +1,6 @@
 # eidolon — the interactive Rust coding harness (github.com/noah427/eidolon),
-# installed from its OWN flake (the `eidolon` input — see flake.nix). The CLI is
-# a package on PATH. The plugins it loads (github.com/dxcently/eidolon-plugins)
+# built from its `eidolon-src` flake input by pkgs/eidolon-package.nix. The CLI
+# is a package on PATH. The plugins it loads (github.com/dxcently/eidolon-plugins)
 # are declared in its config.toml, and the daemons among them are user units
 # here.
 {
@@ -10,17 +10,15 @@
   ...
 }:
 let
-  # Eidolon builds from its OWN flake (the `eidolon` input, pinned to
-  # github.com/noah427/eidolon master — see flake.nix). That repo's
-  # nix/eidolon.nix already reassembles the `../harnox` sibling layout its
-  # Cargo `[patch]` table expects, and its flake.lock pins the harnox rev
-  # matching the tag in its Cargo.toml, so there is nothing for dxflake to
-  # package here. `nix flake update eidolon` is the whole upgrade path.
-  #
+  # Built from the `eidolon-src` flake input (github.com/noah427/eidolon
+  # master), never the dev worktree at ~/eidolon. See flake.nix for how to
+  # pick up a new commit (`dxbump`).
+  eidolonPkg = pkgs.callPackage ../../pkgs/eidolon-package.nix {
+    src = inputs.eidolon-src;
+  };
+
   # The CLI is not a service: Eidolon is an interactive terminal harness, so
   # it is a package on PATH. Its plugins' daemons are user units below.
-  # The dev worktree at ~/eidolon is for editing it, and never what this installs.
-  eidolonPkg = inputs.eidolon.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   # The plugin flake. Its packages run the daemons, and its `rev` is the ref
   # every plugin is declared at: the directory `eidolon plugins sync` installs

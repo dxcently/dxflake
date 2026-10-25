@@ -38,7 +38,7 @@ imports the single dendrite (`hyprlock`) it still wants.
 | `bind`, `bindm`                                   | 264-344 | `compositor/hyprland/keybinds.nix`; the SUPER+D vesktop bind is `hosts/osaka/default.nix` |
 | `input`                                           | 346-358 | `compositor/hyprland/keybinds.nix`   |
 | `hyprshot`, `hyprpicker` packages                 | 78-79   | `compositor/hyprland/keybinds.nix`   |
-| `general` (incl. livery borders)                  | 360-368 | `compositor/hyprland/decoration.nix` |
+| `general` (incl. theme borders)                  | 360-368 | `compositor/hyprland/decoration.nix` |
 | `decoration`                                      | 370-387 | `compositor/hyprland/decoration.nix` |
 | `layerrule` (waybar)                              | 398-400 | `compositor/hyprland/decoration.nix` |
 | `animations`                                      | 412-423 | `compositor/hyprland/decoration.nix` |

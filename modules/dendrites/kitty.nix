@@ -7,28 +7,28 @@
 let
   # Conduct-by-default is CORE Aoide behaviour, not paint — a conducted shell is
   # a tracked, typeable-into session whether or not anything draws it, so this
-  # keys on `aoide.enable` rather than on `aoide.quickshell.enable`. The shell only
+  # keys on `aoide.enable` rather than on `strillix.quickshell.enable`. The shell only
   # decides whether the dock's terminals gadget VISUALISES the graph. Concretely
   # that lands it on osaka and chiyo, skips sakaki (headless — this whole
   # dendrite is off there), and skips yomi-strix, which runs aoide.enable =
   # false and drives its own Aoide from a separate flake.
   conductShell = config.aoide.enable;
 
-  # `aoide.quickshell.enable` gates one thing here: zeroing kitty's own
+  # `strillix.quickshell.enable` gates one thing here: zeroing kitty's own
   # background_blur, where the compositor does the blurring (hyprglass loads
   # under the same flag, modules/dendrites/compositor/hyprland/hyprglass.nix).
   # It does not gate translucency. Whether a terminal is translucent is the
-  # song's call, and it reaches kitty through the stage files `followsStage`
+  # rice's call, and it reaches kitty through the stage files `followsStage`
   # includes.
-  aoideQuickshell = config.aoide.quickshell.enable;
+  aoideQuickshell = config.strillix.quickshell.enable;
 
-  # The terminals follow a stage. The lyra lane is the only writer of the two
+  # The terminals follow a stage. The strillix lane is the only writer of the two
   # files included below (its seed the declared fragment, `rice stage` the
-  # staged colours), so a host without lyra opens no control socket and
+  # staged colours), so a host without strillix opens no control socket and
   # includes nothing. Read here, not in `habit.home`, whose `config` is
   # Home Manager's.
-  followsStage = config.aoide.lyra.enable;
-  aoideRoot = config.aoide.root;
+  followsStage = config.strillix.enable;
+  strillixRoot = config.strillix.root;
 in
 {
   config = {
@@ -123,18 +123,18 @@ in
                 # inert under Hyprland, so it is off on purpose and not left at the
                 # 1 above, which would imply a second blurrer that never runs.
                 #
-                # The opacity is the song's. A host with lyra includes the
+                # The opacity is the rice's. A host with strillix includes the
                 # declared and the staged terminal files below, the staged one
                 # last and always carrying a `background_opacity`, and the
                 # control socket with `dynamic_background_opacity` lets
                 # `rice stage` move the open windows to it. Where hyprland.conf
                 # comes from dxflake's own Hyprland dendrite, terminals carry no
                 # opacity rule (compositor/hyprland/hyprglass.nix), so the
-                # song's value is the whole say, focused or not. Where it comes
+                # rice's value is the whole say, focused or not. Where it comes
                 # from Aoide's compositor lane, that lane's
                 # `windowrule = opacity 1.0 0.80, match:class kitty` still
-                # multiplies the song's value by 0.80 when the window is
-                # unfocused, glyphs included. Without lyra the opaque base above
+                # multiplies the rice's value by 0.80 when the window is
+                # unfocused, glyphs included. Without strillix the opaque base above
                 # stands.
                 background_blur = 0;
               }
@@ -165,8 +165,8 @@ in
           # log line, so a host that has never staged keeps its baked colours.
           (lib.mkIf followsStage {
             extraConfig = lib.mkAfter ''
-              include ${aoideRoot}/song/declared/terminal-opacity.conf
-              include ${aoideRoot}/song/stage/terminal-colors.conf
+              include ${strillixRoot}/declared/terminal-opacity.conf
+              include ${strillixRoot}/stage/terminal-colors.conf
             '';
           })
         ];

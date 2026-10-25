@@ -39,11 +39,11 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1792079937,
-        "narHash": "sha256-h0ga6126rjcXUufqao87eyLE/bzTAzPTQMMu6KqAYZs=",
+        "lastModified": 1792858870,
+        "narHash": "sha256-12ad0mMLmaxdLRyEMfE/29rSjfGlwgUxYe7Z7VFqIXI=",
         "ref": "main",
-        "rev": "fe9a9886b747c00e09ddbfd585459103d8b09576",
-        "revCount": 2110,
+        "rev": "751d9ed851821dea77f45fe6ce0a3977db134534",
+        "revCount": 2359,
         "type": "git",
         "url": "https://github.com/dxcently/Aoide.git"
       },
@@ -217,28 +217,6 @@
         "type": "github"
       }
     },
-    "eidolon": {
-      "inputs": {
-        "harnox": "harnox",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791604048,
-        "narHash": "sha256-zLzCV/GiqgoFf6wVUOzWaqKRGmKxKE6e0ulM/QDXkGw=",
-        "ref": "master",
-        "rev": "181c1b19cd805d100660b560842a13437d104c49",
-        "revCount": 407,
-        "type": "git",
-        "url": "https://github.com/noah427/eidolon.git"
-      },
-      "original": {
-        "ref": "master",
-        "type": "git",
-        "url": "https://github.com/noah427/eidolon.git"
-      }
-    },
     "eidolon-plugins": {
       "inputs": {
         "nixpkgs": [
@@ -257,6 +235,23 @@
         "owner": "dxcently",
         "repo": "eidolon-plugins",
         "type": "github"
+      }
+    },
+    "eidolon-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1792281346,
+        "narHash": "sha256-R0AYGM5UR02PKk9Yu7WCKdecEMRjzwYOk/VQp3hnBmc=",
+        "ref": "master",
+        "rev": "0dd48a56cc56ce8ce3663674d6b4a06bb258acd1",
+        "revCount": 415,
+        "type": "git",
+        "url": "https://github.com/noah427/eidolon.git"
+      },
+      "original": {
+        "ref": "master",
+        "type": "git",
+        "url": "https://github.com/noah427/eidolon.git"
       }
     },
     "firefox-gnome-theme": {
@@ -421,34 +416,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1792260086,
-        "narHash": "sha256-6eAY4e02zQoGLtO5ijoRO+rFBREtZY4gbkT5evmaezY=",
+        "lastModified": 1792766992,
+        "narHash": "sha256-EXO7DxKdPObQt1R5PvvMkmU6wwwhq0a+oYsypbFqZy8=",
         "owner": "dxcently",
         "repo": "habit",
-        "rev": "4e1a5d69649e98f1db65605c0683f54a5314cb13",
+        "rev": "b9b3789d71df8a54faa00b483c28e760927636b4",
         "type": "github"
       },
       "original": {
         "owner": "dxcently",
-        "ref": "v0.5.0",
+        "ref": "v0.7.1",
         "repo": "habit",
-        "type": "github"
-      }
-    },
-    "harnox": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1791509502,
-        "narHash": "sha256-UDXZcFAMJbDDXSsO6WpeTCt1FGAK4hQULTpQJMucOIQ=",
-        "owner": "noah427",
-        "repo": "harnox",
-        "rev": "b38f4e5c090256ab55ef5133a8650a7bb6fa1abe",
-        "type": "github"
-      },
-      "original": {
-        "owner": "noah427",
-        "ref": "v0.3.15",
-        "repo": "harnox",
         "type": "github"
       }
     },
@@ -480,11 +458,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790365885,
-        "narHash": "sha256-iQ0ebhiVo64NktTnwft9hNxlFu4j5cvljVxyJaEVIP4=",
+        "lastModified": 1792098797,
+        "narHash": "sha256-u4DIIZgznEGzByxXrxWCXK19VcMtTBmi/M9gZ7Jk9bM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7b4c5ec4bedaf1e062bbc1bcaeddbc6bd242aa1b",
+        "rev": "640725978b99076e18e069f6e7d2959124584f8f",
         "type": "github"
       },
       "original": {
@@ -848,11 +826,11 @@
     "melete-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790583703,
-        "narHash": "sha256-6WjNqIda8cEdZgLDyDwEXStd0yGecSD4Ha0ZZZeQMR8=",
+        "lastModified": 1791500743,
+        "narHash": "sha256-ADeQP/SiTT9IJU4hEjtQQQKoo627WbihoA/VvgSnLLo=",
         "ref": "master",
-        "rev": "dddaa31d2d8443e78abb45ff28d77d7633fb21df",
-        "revCount": 677,
+        "rev": "fec7239f6deb096d151aa60850145f9d2ac5d123",
+        "revCount": 684,
         "type": "git",
         "url": "https://github.com/noah427/melete.git"
       },
@@ -887,11 +865,11 @@
     "mneme-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1790073082,
-        "narHash": "sha256-U9p9MC7abjLVq+VMb1EhmYPVhzs23LAFkY/9U1eVdyA=",
+        "lastModified": 1792212745,
+        "narHash": "sha256-4DE9z2xru5ySspbc+Rj94JDV1ZytZbBAkxtBNP6ldJY=",
         "ref": "master",
-        "rev": "6f9cf7fc2a6fa9d61c3e48b45e19bf50de643fe8",
-        "revCount": 190,
+        "rev": "504663ad3f3c3d52b0046ca8bdaeb47b9d7f9ca8",
+        "revCount": 202,
         "type": "git",
         "url": "https://github.com/noah427/mneme.git"
       },
@@ -1002,11 +980,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1790463110,
-        "narHash": "sha256-hKlVl12B1dF0Q5vd9dY3lIJM5mFGWYSlXwSLAqHZ1+s=",
+        "lastModified": 1791956154,
+        "narHash": "sha256-jBYGPi4udQ9uo4KQp9m2J0546nJVQitG15gvZSaVVAs=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "e158d9ed9b51c98974c5e66e1ba1c9e0255fecaa",
+        "rev": "55bfb4d7437bd4e09ab7cba58a43bd68eb310044",
         "type": "github"
       },
       "original": {
@@ -1075,11 +1053,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790221470,
-        "narHash": "sha256-TzyWd4i7YCpqoF9xB8mfgDJ2sviAZysKH9R8YbQGjqA=",
+        "lastModified": 1792175215,
+        "narHash": "sha256-XD64JVLV8iE4lR+W5gkTweEaT+SBwOrSy0+le2WgITI=",
         "owner": "notashelf",
         "repo": "nvf",
-        "rev": "95afe7a794216f53e217c5148c6fbe0b668192cf",
+        "rev": "a736b60b1e2019931168979951c94dc46e342957",
         "type": "github"
       },
       "original": {
@@ -1124,11 +1102,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790340365,
-        "narHash": "sha256-SNbVKxCfjcZGrkODFRb2hFKWfcVIKAx1PvzZlQJo2X0=",
+        "lastModified": 1791170410,
+        "narHash": "sha256-pyru9MpuXRiyq0Bd4q0nHpL4T6HCuZT4B+alcgAYE4A=",
         "owner": "pyproject-nix",
         "repo": "build-system-pkgs",
-        "rev": "32156c9d9777eba86b09ad0e3299e6cd6e3fa46f",
+        "rev": "953d35d03a51dbecaf3feb3fb679eb63e90ebeb4",
         "type": "github"
       },
       "original": {
@@ -1144,11 +1122,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788394333,
-        "narHash": "sha256-xYOP0Xym1eVGUaHFx+eJEaycFGoiCbst3fZf0xFHP78=",
+        "lastModified": 1791657700,
+        "narHash": "sha256-vcCAvhtA7hG+/gOge29hYHy7I/dLkIsr5nLx4sFEQic=",
         "owner": "pyproject-nix",
         "repo": "pyproject.nix",
-        "rev": "6a8a7881d75b6f98967e7b8069f4ead331384301",
+        "rev": "ddc400a6883b042646d0940e65971bb7f7e96107",
         "type": "github"
       },
       "original": {
@@ -1206,8 +1184,8 @@
         "aoide": "aoide",
         "claude-desktop-nix-flake": "claude-desktop-nix-flake",
         "disko": "disko",
-        "eidolon": "eidolon",
         "eidolon-plugins": "eidolon-plugins",
+        "eidolon-src": "eidolon-src",
         "habit": "habit",
         "home-manager": "home-manager_2",
         "melete-src": "melete-src",
@@ -1311,11 +1289,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790498116,
-        "narHash": "sha256-rs9meAYxW3zzrh43yaW7htrqCD+X9+pupDPHN86fumI=",
+        "lastModified": 1792056300,
+        "narHash": "sha256-YU1LjDe1o2Ymg5zEiCHbmMXLkDCtxHQRiVqZ3nC5GGk=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "5efb5a6f4f5ab192817d28557dd4d650fa14d866",
+        "rev": "44931708c62937c2b1bf7953902989fa5bb9ee1b",
         "type": "github"
       },
       "original": {
@@ -1494,11 +1472,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790341335,
-        "narHash": "sha256-wFnDm/o/4OebDlpGFyVXP8DLUx0/gR/jUFuGqmTwsQg=",
+        "lastModified": 1792151315,
+        "narHash": "sha256-PMtgvHuGijoIAtPtrBm7kJOI6fxzX4LYPAIK+QVGY+Y=",
         "owner": "pyproject-nix",
         "repo": "uv2nix",
-        "rev": "a24323e9e6ecbbf305c238845ff6c612d50467c0",
+        "rev": "7aba73a3d85454f1118f8cf9de97979b4d26bcac",
         "type": "github"
       },
       "original": {

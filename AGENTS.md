@@ -73,6 +73,15 @@ cold.
   it. A name with no catalogue line is unreachable, which is what shelving means
   now (the `_` filename prefix is the older convention and still marks parked
   files).
+- **Rules** — the catalogue's optional `rules` field, in `modules/default.nix`:
+  a map from catalogue name to plain data, read beside the selection and never
+  importing anything. `needs = [ … ]` refuses a selection whose system or home
+  half lacks a named need; `hosts = [ … ]` refuses a selection on any other host;
+  `homes = n` refuses more than `n` users' homes on one host. A rule only
+  refuses, it never selects, and a failing rule names itself and what it broke.
+  The rules, their messages and what a rule cannot express are in habit's
+  [`docs/rules.md`](https://github.com/dxcently/habit/blob/b9b3789d71df8a54faa00b483c28e760927636b4/docs/rules.md)
+  at v0.7.1 (b9b3789).
 - **Dendrite** — a selectable capability, with two halves. One file is a plain
   NixOS module, which is its system half; `habit.home = { … };` beside it is its
   home half. Or a directory whose `default.nix` lists `providers = { … }` and
@@ -180,8 +189,9 @@ cold.
   refused, and the rest fall back to the platform defaults); and `openssh` is the
   only sshd, which a host routing ssh through `dx.cloudflared` needs. `sops` is
   sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing` and
-  `slskd` dendrites write: deselected, the module is not imported, so a host that
-  keeps any of those four fails evaluation with "The option `sops' does not exist". `postgresql`
+  `slskd` dendrites write, and the registry's `rules` (below) refuse a host that
+  keeps any of those four with sops switched off, naming each dendrite and the
+  switch. `postgresql`
   is not the only thing that starts postgres: on sakaki immich does, so
   deselecting the dendrite there only restores nixpkgs' authentication defaults.
   The package floor is nucleus's members, one catalogue entry each, generated from
@@ -212,6 +222,10 @@ to destination.
   Nothing else.
 - **A provider** — add the file and one line to that dendrite's `providers`
   registry; select it where wanted.
+- **A capability that needs another, or belongs to one machine** — a `rules`
+  entry in `modules/default.nix`: `needs = [ … ]` or `hosts = [ … ]`. The rule
+  holds plain catalogue names and host names, and the build refuses a selection
+  that breaks it.
 - **A group** — a directory under `modules/aggregations/` whose `default.nix`
   holds the data above. Discovery finds it; there is no import line anywhere.
 - **A backend-specific member** — one an aggregation cannot name because only
@@ -222,11 +236,11 @@ to destination.
   host selects it by name. A package that needs configuration is a dendrite of
   its own (`python.nix`), and a package a dendrite owns is installed by that
   dendrite's system half, with no line in the list.
-- **A rice** — structurally a provider, so `example-provider.nix` is still the
-  template, but it lives at `song/songbook/<name>/rice.nix` beside its `livery.json`,
-  `design/intent.md` and source assets, and `song/songbook/default.nix` is its
-  registry. The look only; the wiring stays in the dendrites.
-  `song/songbook/transience/` is the worked example.
+- **A rice** — a folder under `rices/<name>/` with a `rice.nix` body, a
+  `theme.json`, a `hyprland.conf` and its `widgets/`, in Aoide's rice shape
+  (AOIDE's CONTRACTS §5). The rice is performed by naming it in
+  `habit.rice.declared`; it needs Aoide's strillix runtime, which is why the look
+  below is not one. The look only; the wiring stays in the slots and dendrites.
 - **A shared preference or package fix** — the owning group's `default.nix`,
   once, in the half it rides: `system.module` for a deferred platform
   preference, `home.module` for a home one. Never repeated across hosts.
@@ -282,10 +296,10 @@ hosts against habit's composition, and checks the same non-evaluation there. It
 also runs the override template's `system` half through the real NixOS module
 system, so "real options" is checked rather than claimed.
 
-`tests/rice/` covers the look: that transience's authored `livery.json` still
+`tests/rice/` covers the look: that transience's generated `theme.json` still
 agrees with the Stylix scheme that actually paints, that every `{{base16.*}}`
 placeholder in the stylesheet is filled, that the pure-Nix render and
-`lyra livery emit file` produce the same bytes, and that look and wiring have
+`strx theme emit file` produce the same bytes, and that look and wiring have
 not leaked back into each other. Drift in a look is silent — nothing fails to
 evaluate, the desktop just comes up slightly wrong — so each pair that can
 drift gets an assertion.
@@ -298,30 +312,27 @@ flake and fails if home-manager's unguarded lines are back. A host the fix
 cannot reach is named in the runner with its reason and reports `KNOWN` — and
 fails if it ever comes back clean, so the exemption cannot outlive the bug.
 
-## The rice
+## The rice and the shell's look
 
-The look is a capability with providers, like the compositor:
-`song/songbook/` is the registry, one directory per rice, and the `shell`
-aggregation answers it — `transience` by default, because dxflake ships one
-rice and that is the look this desktop has always had.
-`habit.users.<u>.aggregation.shell.rice.provider` is where a host says
-otherwise.
+Two things, kept apart. A **rice** is Aoide's: a body in `rices/<name>/`,
+performed by a host naming it in `habit.rice.declared` and merged with Aoide's
+own rices through `inputs.aoide.lib.rices.merge` (`flake.nix`'s `riceHook`). A
+built-in rice requires the strillix runtime (`modules/nucleus/assertions.nix`),
+so a host that runs none cannot perform one.
 
-A **rice** is the palette and the stylesheets. A **dendrite** is whether the
-program runs. `modules/dendrites/waybar.nix` is `enable` and a systemd
-decision; `song/songbook/transience/rice.nix` is the sheet and the bar's own
-composition. Swapping the rice must never mean re-deciding whether the bar
-exists, and `tests/rice` fails if either side grows back into the other.
+The **look** is dxflake's own: `modules/aggregations/shell/transience/look.nix`,
+a plain home module the `shell` aggregation applies wherever it is selected. It
+owns the waybar stylesheet and the palette. `modules/dendrites/waybar.nix` is
+`enable` and a systemd decision; the look is the sheet and the bar's composition.
+Swapping the look must never mean re-deciding whether the bar exists, and
+`tests/rice` fails if either side grows back into the other.
 
-`song/songbook/transience/livery.json` is authored in **Aoide's v0 livery schema**,
-which is the whole bridge and is deliberately the only one: `lyra livery lint`
-is a real check on it, and `source/waybar.css` uses Lyra's own `{{group.key}}`
-template syntax, so the identical file renders through pure Nix at build time
-and through `lyra livery emit file` at runtime — `tests/rice` asserts the two
-agree byte for byte. Nothing here is declared into Aoide, nothing stages or
-hot-loads, and `lyra rice compose/stage/draft/declare` do not apply: those are
-the QML self-ricing loop, and no arrangement entry can carry a GTK stylesheet.
-`song/songbook/transience/design/intent.md` records the boundary in full.
+`transience/theme.json` is generated from `palette.nix` (`regen-theme.sh`) in
+Aoide's v0 theme schema, which `strx theme lint` checks. `source/waybar.css` is
+a `{{base16.*}}` template that `strx theme emit file` and the pure-Nix render
+both fill; `tests/rice` asserts the two agree byte for byte. The look is not
+declared into Aoide, and `strx rice compose/stage/declare` do not apply to it.
+`modules/aggregations/shell/transience/design/intent.md` records the boundary.
 
 ## The Hyprland split
 
@@ -407,7 +418,7 @@ Aoide's packages build against the nixpkgs the hosts run). Stylix, Hyprland and
 Quickshell are Aoide's inputs and reach hosts only through its exports; dxflake
 declares none of them, and a dendrite that wants one asks Aoide for an export.
 Hosts are built through the Aoide input's exports: `nixosModules.nucleus`,
-`overlays.default`, `lib.livery` and the lanes named in `aoideLanes`. The
+`overlays.default`, `lib.theme`, `lib.rices` and the lanes named in `aoideLanes`. The
 registry is dxflake's own and those lanes merged by habit's `mergeRegistries`,
 so a name both define is an error, never a silent winner. The `aoide`
 aggregation's five members are lanes too, named there beside the rest;
@@ -416,17 +427,17 @@ aggregation's five members are lanes too, named there beside the rest;
 as `aoide-stylix` and `aoide-compositor`. The nucleus carries Aoide's option
 contract and the Stylix module, so no dendrite imports the Stylix module itself.
 Cross-lane questions are read from Aoide's enable facts
-(`aoide.quickshell.enable`, `aoide.stylix.enable`), never from a lane's own
-option. Songs come through `lib.songbook` over Aoide's `songbookRoot` export,
-wired by the `selectionModules` and `extraModulesFor` hooks in `flake.nix`: a
-host performs one of Aoide's songs by writing `habit.song.declared` in its host
-module, and lists the songs it only builds in, to stage without a rebuild, as
-`habit.song.available`. No path into the Aoide input is named anywhere; do not
-add one. A host may name a runtime path on the box, such as the dev checkout
-(`aoide.checkout`) or the runtime root, which are places the box keeps, never
-paths into the input. `song/songbook/` here is the `shell` aggregation's
-provider registry of rices, a different thing from the songbook directory
-`lib.songbook` reads, and the two are not unioned.
+(`strillix.quickshell.enable`, `strillix.stylix.enable`), never from a lane's own
+option. Rices come through `lib.rices.merge` over Aoide's `ricesRoot` and
+`./rices`; `riceHook`'s `selectionModules` and `extraModulesFor` are the wiring. A
+host performs one rice by writing `habit.rice.declared`, and lists the rices it
+only builds in, to stage without a rebuild, as `habit.rice.available`. A rice
+name both books define is an error. The ten component slots are in
+`modules/default.nix`: each takes Aoide's `parts.<slot>` as its `strillix`
+provider, beside dxflake's own provider where one exists (waybar, rofi, wlogout,
+hyprlock, ly). No path into the Aoide input is named anywhere; do not add one.
+A host may name a runtime path on the box, such as the dev checkout
+(`aoide.checkout`) or `strillix.hostConfig`, never a path into the input.
 
 Melete and Mneme (`modules/dendrites/{melete,mneme}.nix`) are sakaki-only. Both
 build from their canonical **private** GitHub repos — `noah427/melete`,

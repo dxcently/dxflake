@@ -22,9 +22,6 @@
 #   Deselected, the time zone is unset, unfree packages are refused, and the rest
 #   fall back to the platform defaults. `system.stateVersion` is the host's own
 #   (hosts/<name>/default.nix) whether or not `system` is selected.
-# - `sops` is sops-nix, the module behind every `sops.*` option. Deselected, it is
-#   not imported, so a host that keeps tailscale, cloudflared, syncthing or slskd
-#   fails evaluation with "The option `sops' does not exist".
 # - The package names are the floor every host carries: each is a catalogue
 #   entry of its own (modules/dendrites/packages.nix), so one is dropped with
 #   `habit.dendrites.<name>.enable = false` like any member.
@@ -84,6 +81,20 @@
     "ffmpeg"
     "fastfetch"
   ];
+
+  # Both targets write ~/.Xresources unconditionally. Nothing here reads it, and
+  # its xrdb merge fails on Xwayland. Guarded on `stylix`, so a host without
+  # Stylix's home module (sakaki) takes nothing.
+  home.module =
+    { lib, options, ... }:
+    {
+      config = lib.optionalAttrs (options ? stylix) {
+        stylix.targets = {
+          xresources.enable = false;
+          sxiv.enable = false;
+        };
+      };
+    };
 
   home.members = [
     "bash"

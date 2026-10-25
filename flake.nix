@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     habit = {
-      url = "github:dxcently/habit/v0.5.0";
+      url = "github:dxcently/habit/v0.7.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
@@ -39,10 +39,9 @@
     # says, re-locked on demand.
     #
     # harnox is deliberately NOT an input here. It is not a flake and nothing
-    # installs it on its own: it reaches the graph only as eidolon's own
-    # `flake = false` source input, on the rev eidolon's flake.lock names (see
-    # the eidolon input below). dxflake pins no harnox rev that could drift
-    # from that one.
+    # installs it on its own: it reaches the build only as a git dependency in
+    # eidolon's Cargo.lock, fetched at the rev that lock names (see eidolon-src
+    # below). dxflake pins no harnox rev that could drift from that one.
     #
     # `git+https:` and not `github:` — the tarball fetcher a `github:` URL
     # uses can only authenticate from a nix.conf `access-tokens` entry (a
@@ -56,7 +55,7 @@
     # cannot move, so every upstream commit would mean hand-editing this
     # file. With just `ref=master` the rev lives in flake.lock and one
     # command picks up new commits for the whole stack:
-    #   nix flake update melete-src mneme-src eidolon eidolon-plugins aoide
+    #   nix flake update melete-src mneme-src eidolon-src eidolon-plugins aoide
     # `dxbump` (modules/dendrites/bash.nix) runs exactly that, then switches.
     #
     # To build a DIRTY local worktree without pushing, override for that one
@@ -75,21 +74,16 @@
       url = "git+https://github.com/noah427/mneme.git?ref=master";
       flake = false;
     };
-    # Eidolon, unlike the other three, ships a real flake whose package
-    # already does the awkward part (it reassembles the `../harnox` sibling
-    # layout Cargo's `[patch]` table expects — nix/eidolon.nix in that repo).
-    # So it rides as a FLAKE input and dxflake writes no packaging of its
-    # own; modules/dendrites/eidolon.nix just installs
-    # inputs.eidolon.packages.<system>.default.
-    eidolon = {
+    # Eidolon is built from source like Melete and Mneme, so it rides as a
+    # `flake = false` source input and pkgs/eidolon-package.nix builds the
+    # crate. Its workspace links harnox through a git source in Cargo.lock
+    # (not a sibling `[patch]`), and importCargoLock fetches that with
+    # builtins.fetchGit, pinned by the rev the lock names. So harnox is not an
+    # input here, and dxflake pins no harnox rev: `nix flake update eidolon-src`
+    # moves eidolon, and harnox moves only when eidolon's Cargo.lock does.
+    eidolon-src = {
       url = "git+https://github.com/noah427/eidolon.git?ref=master";
-      inputs.nixpkgs.follows = "nixpkgs";
-      # harnox is eidolon's own input, not dxflake's: `flake = false` (a
-      # source, not a flake — nothing "installs" harnox), locked at the rev
-      # eidolon's own flake.lock names, which is why `nix flake update eidolon`
-      # is the harnox bump too. It is `github:` (private, tarball fetcher),
-      # which is why it reads the token bash.nix exports into NIX_CONFIG from
-      # khoa's gh login.
+      flake = false;
     };
     # Eidolon's plugins (github.com/dxcently/eidolon-plugins, PUBLIC): a flake
     # whose packages are the plugin daemons. `github:`, not git+https:, because
@@ -129,7 +123,7 @@
 
     # ── Aoide (AoideOS) integration ────────────────────────────────────────
     # dxflake consumes Aoide as a flake input through its exports (nucleus
-    # module, overlay, livery, catalogue, songbook). Hosts are composed by
+    # module, overlay, theme, rices, parts). Hosts are composed by
     # habit, which Aoide builds on too: its habit follows ours so one copy is in
     # the graph. Its nixpkgs follows ours as well, so Aoide's packages build
     # against the pin the hosts run. Stylix, Hyprland and Quickshell are Aoide's
@@ -170,7 +164,7 @@
 
       aoideLanes = {
         quickshell = inputs.aoide.nixosModules.quickshell;
-        lyra = inputs.aoide.nixosModules.lyra;
+        strillix = inputs.aoide.nixosModules.strillix;
         dunst = inputs.aoide.nixosModules.dunst;
         clipboard = inputs.aoide.nixosModules.clipboard;
         screenshot = inputs.aoide.nixosModules.screenshot;
@@ -185,18 +179,26 @@
       };
 
       registry = (inputs.habit.lib.catalogues { inherit lib; }).mergeRegistries [
-        (import ./modules { } // { name = "dx"; })
+        (import ./modules { parts = inputs.aoide.parts; } // { name = "dx"; })
         {
           name = "aoide";
           catalogue = aoideLanes;
         }
       ];
 
-      songbookDir = inputs.aoide.songbookRoot;
-      songbook = inputs.aoide.lib.songbook {
-        inherit lib;
-        songbook = songbookDir;
-      };
+      # The rices: Aoide's book and dxflake's own, merged as one (Aoide's
+      # `lib.rices.merge`). Its hook answers habit's three rice hooks; a rice
+      # name both books define throws.
+      riceHook =
+        (inputs.aoide.lib.rices.merge {
+          inherit lib;
+          pkgs = nixpkgs.legacyPackages.${system};
+          books = [
+            inputs.aoide.ricesRoot
+            ./rices
+          ];
+        }).hook
+          { inherit registry; };
 
       hostNames = [
         "chiyo"
@@ -236,7 +238,7 @@
           inputs
           habitGuest
           ;
-        resolveAoideLivery = (inputs.aoide.lib.livery { inherit lib; }).resolve;
+        resolveAoideTheme = (inputs.aoide.lib.theme { inherit lib; }).resolve;
       };
 
       hosts = lib.genAttrs hostNames (
@@ -248,33 +250,16 @@
           # checks those names against this list so a typo fails loudly instead
           # of applying nowhere.
           knownHosts = hostNames;
-          inherit registry overlays;
+          inherit overlays;
+          inherit (riceHook) registry;
           host = ./hosts/${name};
           homeManagerModule = inputs.home-manager.nixosModules.home-manager;
           extraModules = [
             inputs.aoide.nixosModules.nucleus
             inputs.disko.nixosModules.disko
           ];
-          selectionModules = [ songbook.selectionModule ];
-          extraModulesFor =
-            sel:
-            let
-              song = songbook.check {
-                inherit (sel) song;
-                lyra = sel.dendrites.lyra.enable;
-              };
-            in
-            songbook.songModules song
-            ++ [
-              {
-                _module.args = {
-                  inherit (songbook) song borrow;
-                  songbook = songbookDir;
-                };
-                aoide.song = song.declared;
-                aoide.songbook.builtIn = songbook.builtIn song;
-              }
-            ];
+          selectionModules = riceHook.selectionModules;
+          extraModulesFor = riceHook.extraModulesFor;
           specialArgs = hostArgs;
         }
       );
@@ -282,7 +267,7 @@
       # The VM snowglobe boots (`snowglobe summon`): the hosts' registry and overlays,
       # with the agent as its user. A preset is a whole habit host (vms/<preset>.nix);
       # picks generate one. snowglobe adds microvm, its guest base and the hostname.
-      # No songbook hooks and no disko: a VM performs no song and has no disk of its own to lay out.
+      # No rice hooks and no disko: a VM wears no rice and has no disk of its own to lay out.
       snowglobeVm =
         {
           name,
