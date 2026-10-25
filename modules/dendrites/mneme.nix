@@ -153,6 +153,8 @@ in
             "HOME=/var/lib/mneme"
             "MNEME_VAULT_DIR=/var/lib/mneme/vault"
             "MNEME_BIND_ADDR=0.0.0.0:8000"
+            # Registered clients and live tokens survive a restart, so claude.ai keeps its connector (hashes only, 0600).
+            "MNEME_AUTH_STATE_FILE=/var/lib/mneme/auth.json"
           ];
           EnvironmentFile = "/run/secrets/mneme.env";
           ExecStart = "${mnemePkg}/bin/mneme";
