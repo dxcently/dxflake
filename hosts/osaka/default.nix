@@ -255,6 +255,8 @@
     snowglobe = {
       enable = true;
       budget.mem = 40960;
+      # VMs composed from this flake's dendrites, groups and vms/ presets (summon --dendrite/--group/--preset).
+      registry = "git+file:///home/khoa/dxflake?ref=main";
     };
   };
   dx.nas-mounts.mounts."/mnt/kaori-media".export = "/volume1/media";
