@@ -131,10 +131,10 @@
     # The structure a host RUNS is Aoide's; dxflake's own tree stays the venue
     # (hosts, hardware, secrets). Every host fetches the same published Aoide
     # source, locked in flake.lock, without needing a local Aoide checkout.
-    # snowglobe: disposable NixOS microVMs for agents. A local repo for now (no
-    # remote), so only hosts built from osaka can resolve it until it is pushed.
+    # snowglobe: disposable NixOS microVMs for agents. A private repo, fetched with
+    # the rebuilding user's git credentials (like mneme-src).
     snowglobe = {
-      url = "git+file:///home/khoa/snowglobe";
+      url = "git+https://github.com/dxcently/snowglobe.git?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };

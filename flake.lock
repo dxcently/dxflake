@@ -1269,17 +1269,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1792829905,
-        "narHash": "sha256-ofu09G9apXt5S1TNihMjTIf5J88n5wN6b6xw8nwvUj4=",
-        "ref": "refs/heads/main",
-        "rev": "4ba92baac650750a2c68f589957a02c3a5e88b9a",
-        "revCount": 96,
+        "lastModified": 1792903250,
+        "narHash": "sha256-F1QPvQTEHZI8soU1nm2RuKzFFts+z8NMOipMSieyOyU=",
+        "ref": "main",
+        "rev": "202e367479a05c2e111c5b3168574b7bdc1e06d0",
+        "revCount": 100,
         "type": "git",
-        "url": "file:///home/khoa/snowglobe"
+        "url": "https://github.com/dxcently/snowglobe.git"
       },
       "original": {
+        "ref": "main",
         "type": "git",
-        "url": "file:///home/khoa/snowglobe"
+        "url": "https://github.com/dxcently/snowglobe.git"
       }
     },
     "sops-nix": {
