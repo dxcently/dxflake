@@ -75,9 +75,10 @@
       '';
 
       # The classic Firefox chrome: github.com/DiegoSainzPardoLaso
-      # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `155-156` set is the
-      # one this browser is (LibreWolf 156.0); the `157` set is the same theme
-      # moved to the next chrome, for whenever the pin does.
+      # /Firefox-Classic-Theme-155-158, main at cf5e772. Its `157` set is the
+      # one this browser is (LibreWolf 157); the `155-156` set styles the
+      # urlbar results for the older markup and leaves the type icon stranded
+      # at the row's right edge here.
       #
       # Its User.js asks for two prefs, and both are in `settings` below:
       # legacyUserProfileCustomizations.stylesheets (already true, which is what
@@ -165,7 +166,7 @@
       # top of it. A theme update replaces `theme/` and cannot overwrite a line
       # written here.
       home.file = {
-        ".librewolf/default/chrome/theme".source = "${chromeTheme}/155-156";
+        ".librewolf/default/chrome/theme".source = "${chromeTheme}/157";
 
         ".librewolf/default/chrome/userChrome.css".text = ''
           @import url("theme/userChrome.css");
@@ -469,6 +470,30 @@
           #sidebar-search-box {
             margin-inline: 0 !important;
             width: 100% !important;
+          }
+
+          /* Urlbar results: the theme's classic two lines — favicon and title,
+             then the url under the title. It stacks `.urlbarView-row-inner` as
+             a column, which was right while the favicon sat inside the title's
+             wrapper; in 157 the favicon is the row's own child, so the column
+             gave it a line to itself. The row goes back to favicon | body, and
+             only the body's title and url stack. */
+          .urlbarView-row-inner {
+            flex-direction: row !important;
+          }
+
+          .urlbarView-row-body {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+          }
+
+          .urlbarView-row-body-top {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+
+          .urlbarView-url {
+            margin-inline-start: 0 !important;
           }
 
           /* Menus: the popup's fill and its items' insets, stated here so the
