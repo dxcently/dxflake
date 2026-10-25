@@ -39,13 +39,15 @@ dxflake/
 │       ├── default.nix       #   a selection, then this host's own settings
 │       └── hardware.nix
 ├── users/
-│   └── khoa.nix              # ONE shared account — a module + `habit.home`
+│   ├── khoa.nix              # ONE shared account — a module + `habit.home`
+│   └── agent.nix             # snowglobe VMs' agent: `habit.home` only, the account is snowglobe's
+├── vms/                      # snowglobe VM presets, one whole habit host each (lib.snowglobeVm)
 ├── modules/
 │   ├── default.nix           # THE REGISTRY, a function of `packages` (default: dendrites/packages.nix).
 │   │                        #   the catalogue, one generated entry per package line, `import ./aggregations`
 │   ├── aggregations/         # the groups, one directory each
 │   │   ├── default.nix       #   readDir, one level: `name = path`. imports no body
-│   │   └── aoide/ desktop/ gaming/ hyprland/ network/ nucleus/ shell/        # each default.nix is DATA,
+│   │   └── aoide/ cli/ desktop/ gaming/ hyprland/ network/ nucleus/ shell/   # each default.nix is DATA,
 │   │                                                         #   naming its members
 │   ├── overrides/            # capability-scoped fixes. empty is a real answer
 │   │   └── default.nix       #   readDir, one level: every `*.nix` beside it is a record

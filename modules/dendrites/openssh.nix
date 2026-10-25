@@ -1,10 +1,10 @@
-{...}: {
+{ lib, ... }: {
   services.openssh = {
     enable = true;
     settings = {
       # Forbid root login through SSH.
       PermitRootLogin = "no";
-      PasswordAuthentication = true;
+      PasswordAuthentication = lib.mkDefault true;
     };
     # A login that arrives from loopback is key-only. cloudflared hands every
     # tunnel-borne `sshHostnames` connection to sshd from localhost

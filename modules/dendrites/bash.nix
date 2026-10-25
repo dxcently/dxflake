@@ -15,7 +15,7 @@
           fi
         '';
         initExtra = ''
-          fastfetch
+          command -v fastfetch >/dev/null && fastfetch
         '';
         bashrcExtra = ''
           command -v mcfly >/dev/null && eval "$(mcfly init bash)"
