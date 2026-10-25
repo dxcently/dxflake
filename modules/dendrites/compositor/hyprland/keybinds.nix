@@ -36,8 +36,6 @@
           # Workspace Assignments: the shared rules here. A host appends its own
           # with lib.mkAfter in its file.
           workspace = [
-            "special:scratch, on-created-empty:obsidian"
-            "special:magic, on-created-empty:pear-desktop"
             "special:scratch, layout:scrolling"
             "special:replay, on-created-empty:gpu-screen-recorder-gtk"
           ];
@@ -198,12 +196,6 @@
 
           windowrule {
             name = windowrule-5
-            workspace = special:magic
-            match:title = ^(YT Music)$
-          }
-
-          windowrule {
-            name = windowrule-6
             workspace = special:scratch
             match:class = ^([Oo]bsidian)$
           }

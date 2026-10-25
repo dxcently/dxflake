@@ -43,7 +43,7 @@
       "zoom-us"
       "obsidian"
       "anki-bin"
-      "pear-desktop"
+      "limusic"
       "gimp3-with-plugins"
       "webcamoid"
       "orca-slicer"

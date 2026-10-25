@@ -81,7 +81,6 @@
   "zoom-us" # video conferencing
   "obsidian" # markdown personal knowledge base
   "anki-bin" # spaced repetition flashcards
-  "pear-desktop" # unofficial YouTube Music client
   "gimp3-with-plugins" # GNU Image Manipulation Program
   "webcamoid" # webcam capture with effects
   "orca-slicer" # G-code slicer for 3D printing

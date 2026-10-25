@@ -118,6 +118,7 @@ let
     kitty = ./dendrites/kitty.nix;
     laptop = ./dendrites/laptop.nix;
     librewolf = ./dendrites/librewolf;
+    limusic = ./dendrites/limusic.nix;
     mcfly = ./dendrites/mcfly.nix;
     melete = ./dendrites/melete.nix;
     mneme = ./dendrites/mneme.nix;
