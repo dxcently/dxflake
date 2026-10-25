@@ -1,6 +1,6 @@
 # sakaki — the server. Headless: Aoide runs here with no paint lanes and nothing
 # paints, so no desktop or shell aggregation and no graphical dendrite.
-{ pkgs, habitGuest, ... }:
+{ pkgs, inputs, habitGuest, ... }:
 let
   # One mneme instance as a NixOS container: its sops env, the container, its tunnel hostname and its Caddy vhost.
   # `name` gives mneme-<name>; `net` picks the container's /24, 10.233.<net>.0.
@@ -18,12 +18,14 @@ let
       };
       containers.${id} = {
         inherit (g) specialArgs;
-        config.imports = g.modules;
+        # snowglobe's container module: the host's snowglobed lists it and reaches agent@<guest> (ssh, exec, aoide link).
+        config.imports = g.modules ++ [ inputs.snowglobe.nixosModules.container { snowglobe.container.aoide = pkgs.aoide; } ];
         privateNetwork = true;
         hostAddress = "10.233.${toString net}.1";
         localAddress = guest;
         # Decrypted by sops on the host; the container's systemd reads it as root.
         bindMounts."/run/secrets/mneme.env".hostPath = "/run/secrets/${id}.env";
+        bindMounts."/run/snowglobe".hostPath = "/run/snowglobe-keys/khoa";
       };
       dx.cloudflared.hostnames = [ "${id}.necoconeco.net" ];
       services.caddy.virtualHosts."http://${id}.necoconeco.net:8080".extraConfig = ''
@@ -61,12 +63,19 @@ in
     slskd.enable = true;
     syncthing.enable = true;
     transmission.enable = true;
+    snowglobe.enable = true;
   };
 
   habit.users.khoa = {
     definition = ../../users/khoa.nix;
     home.enable = true;
     dendrites.pi-coding-agent.enable = true;
+  };
+
+  # snowglobe: half of the 13 GB left after the services, so VMs never starve mneme or Aoide.
+  home-manager.users.khoa.snowglobe = {
+    enable = true;
+    budget.mem = 8192;
   };
 
   # sakaki is headless: the shared syncthing dendrite (devices + the Magi
