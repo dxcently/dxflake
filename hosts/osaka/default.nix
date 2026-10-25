@@ -255,6 +255,8 @@
     snowglobe = {
       enable = true;
       budget.mem = 40960;
+      # sakaki's snowglobed in this UI, through an ssh tunnel (a stopgap until aoide's gate carries it).
+      peers = [ "sakaki" ];
       # VMs composed from this flake's dendrites, groups and vms/ presets (summon --dendrite/--group/--preset).
       registry = "git+file:///home/khoa/dxflake?ref=main";
     };
