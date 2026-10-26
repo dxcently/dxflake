@@ -1269,11 +1269,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792958860,
-        "narHash": "sha256-doktNkvaVvfBdko3CR0wj1pHFZBbS/vlKYg1yuh3OtE=",
+        "lastModified": 1792974177,
+        "narHash": "sha256-n3N6xLpqpF/FM/8BkpEhyc55Z1fGi/BlO6YiZksfAgQ=",
         "ref": "main",
-        "rev": "173dfcd8835b14743e405829110856d869f38828",
-        "revCount": 116,
+        "rev": "70e943f3673a8467c8a8e85b7cb0beee30f96b4e",
+        "revCount": 122,
         "type": "git",
         "url": "https://github.com/dxcently/snowglobe.git"
       },
