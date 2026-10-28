@@ -56,7 +56,6 @@
         "wl-paste --type text --watch cliphist store"
         "wl-paste --type image --watch cliphist store"
         "fcitx5"
-        "[workspace 1 silent] zen"
       ];
     };
 }
