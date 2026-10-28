@@ -141,6 +141,14 @@ in
             default_model = "ollama:deepseek-v4.1-flash"
             default_persona = "Rook ♜"
 
+            # yolo = true is `--yolo` said once, for every launch: every question
+            # the gate raises is a yes. The three refusals on the merits still
+            # refuse, every waived call is journaled as such, and `:yolo` throws
+            # the switch off for a session. `enabled` is left at its default, so
+            # this is a standing answer only while there is a gate to answer.
+            [policy]
+            yolo = true
+
             # Both MCP servers bind loopback on sakaki (mneme :8000, melete :8787).
             # Off sakaki, the user unit eidolon-mcp-forward.service forwards them
             # onto this host's loopback. Passphrases the harness exchanges for a
