@@ -257,6 +257,8 @@
       budget.mem = 40960;
       # sakaki's snowglobed in this UI, through an ssh tunnel (a stopgap until aoide's gate carries it).
       peers = [ "sakaki" ];
+      # ~/snowglobe is the snowglobe repo here; drop folders are off inside a git tree.
+      filesDir = "/home/khoa/snowglobe-files";
       # VMs composed from this flake's dendrites, groups and vms/ presets (summon --dendrite/--group/--preset).
       registry = "git+file:///home/khoa/dxflake?ref=main";
     };
