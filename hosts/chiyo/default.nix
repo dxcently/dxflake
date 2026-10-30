@@ -1,5 +1,6 @@
 # chiyo — the laptop, and the full AoideOS paint carrier.
 {
+  lib,
   pkgs,
   username,
   ...
@@ -188,6 +189,18 @@
         ", XF86MonBrightnessUp, exec, brightnessctl s 5%+"
       ];
     };
+    # a laptop locks sooner
+    services.hypridle.settings.listener = lib.mkForce [
+      {
+        timeout = 600;
+        on-timeout = "loginctl lock-session";
+      }
+      {
+        timeout = 900;
+        on-timeout = "hyprctl dispatch dpms off";
+        on-resume = "hyprctl dispatch dpms on";
+      }
+    ];
   };
   # No web service runs here (no services.caddy),
   # so this tunnel carries ssh only: sshHostnames routes straight to chiyo's

@@ -56,11 +56,11 @@
           };
           listener = [
             {
-              timeout = 600;
+              timeout = 1800;
               on-timeout = "loginctl lock-session";
             }
             {
-              timeout = 900;
+              timeout = 2100;
               on-timeout = "hyprctl dispatch dpms off";
               on-resume = "hyprctl dispatch dpms on";
             }
