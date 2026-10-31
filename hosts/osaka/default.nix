@@ -78,6 +78,8 @@
     ros.enable = true;
     syncthing.enable = true;
     snowglobe.enable = true;
+    # Aoide's CI: the runner `nix flake check` runs on, for pushes only.
+    github-runner.enable = true;
     virtualisation.enable = true;
     comin.enable = true;
     postgresql.enable = true;
