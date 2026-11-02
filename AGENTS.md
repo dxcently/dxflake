@@ -1,7 +1,6 @@
 # AGENTS.md — dxflake
 
-A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server ·
-`yomi-strix` desktop).
+A multi-host NixOS flake (`chiyo` laptop · `osaka` workstation · `sakaki` server).
 This file is a **registry**: where things live and how to add them. For the *why*,
 read `README.md` and `~/Aoide/docs/architecture/NIX-COMPOSITION.md`, which is the
 authoritative design this tree implements. To add a file, start from
@@ -199,8 +198,8 @@ cold.
 - **Aoide** — `modules/aggregations/aoide/` is Aoide's service floor: `aoided`,
   `aoide-secrets`, `aoide-nix`, `aoide-packages` and `melete-adapter`, all
   Aoide catalogue lanes. A host that runs Aoide selects it beside `nucleus`
-  (`habit.aggregation.aoide.enable = true`); osaka, chiyo and sakaki do, and
-  yomi-strix does not. `aoide-config` is left out on purpose: selecting it would
+  (`habit.aggregation.aoide.enable = true`); osaka, chiyo and sakaki all do.
+  `aoide-config` is left out on purpose: selecting it would
   freeze the host's `config.toml`. The `aoide` aggregation and the `aoide`
   dendrite share a name and live in separate namespaces (`habit.aggregation`
   and `habit.dendrites`), so neither shadows the other.
@@ -239,8 +238,8 @@ to destination.
 - **A rice** — a folder under `rices/<name>/` with a `rice.nix` body, a
   `theme.json`, a `hyprland.conf` and its `widgets/`, in Aoide's rice shape
   (AOIDE's CONTRACTS §5). The rice is performed by naming it in
-  `habit.rice.declared`; it needs Aoide's strillix runtime, which is why the look
-  below is not one. The look only; the wiring stays in the slots and dendrites.
+  `habit.rice.declared`; it needs Aoide's strillix runtime. The look only; the
+  wiring stays in the slots and dendrites.
 - **A shared preference or package fix** — the owning group's `default.nix`,
   once, in the half it rides: `system.module` for a deferred platform
   preference, `home.module` for a home one. Never repeated across hosts.
@@ -281,7 +280,6 @@ nixfmt <file>.nix                          # format (repo style)
 ./tests/selection/run.sh                   # dxflake's real registry and a real host, composed through habit
 ./tests/templates/run.sh                   # templates/ still copyable and correct
 ./tests/session-guard/run.sh               # nested Hyprland cannot take the desktop
-./tests/rice/run.sh                        # the rice and the palette have not drifted
 nix eval .#nixosConfigurations.<name>.config.system.build.toplevel.drvPath
 sudo nixos-rebuild switch --flake .#<name> # apply to a host (User only)
 ```
@@ -296,14 +294,6 @@ hosts against habit's composition, and checks the same non-evaluation there. It
 also runs the override template's `system` half through the real NixOS module
 system, so "real options" is checked rather than claimed.
 
-`tests/rice/` covers the look: that transience's generated `theme.json` still
-agrees with the Stylix scheme that actually paints, that every `{{base16.*}}`
-placeholder in the stylesheet is filled, that the pure-Nix render and
-`strx theme emit file` produce the same bytes, and that look and wiring have
-not leaked back into each other. Drift in a look is silent — nothing fails to
-evaluate, the desktop just comes up slightly wrong — so each pair that can
-drift gets an assertion.
-
 `tests/session-guard/` covers the session handoff (below). Its behavioural half
 runs the shipped guard script against a stubbed `hyprctl`/`systemctl`/`dbus`,
 over instance lists derived from a real `hyprctl instances -j` captured during
@@ -312,27 +302,20 @@ flake and fails if home-manager's unguarded lines are back. A host the fix
 cannot reach is named in the runner with its reason and reports `KNOWN` — and
 fails if it ever comes back clean, so the exemption cannot outlive the bug.
 
-## The rice and the shell's look
+## The rice and the palette
 
-Two things, kept apart. A **rice** is Aoide's: a body in `rices/<name>/`,
-performed by a host naming it in `habit.rice.declared` and merged with Aoide's
-own rices through `inputs.aoide.lib.rices.merge` (`flake.nix`'s `riceHook`). A
-built-in rice requires the strillix runtime (`modules/nucleus/assertions.nix`),
-so a host that runs none cannot perform one.
+A **rice** is Aoide's: a body in `rices/<name>/`, performed by a host naming it
+in `habit.rice.declared` and merged with Aoide's own rices through
+`inputs.aoide.lib.rices.merge` (`flake.nix`'s `riceHook`). A built-in rice
+requires the strillix runtime (`modules/nucleus/assertions.nix`), so a host
+that runs none cannot perform one. Every desktop host paints through Aoide's
+strillix surfaces; dxflake ships no bar, launcher, power menu or greeter of its
+own.
 
-The **look** is dxflake's own: `modules/aggregations/shell/transience/look.nix`,
-a plain home module the `shell` aggregation applies wherever it is selected. It
-owns the waybar stylesheet and the palette. `modules/dendrites/waybar.nix` is
-`enable` and a systemd decision; the look is the sheet and the bar's composition.
-Swapping the look must never mean re-deciding whether the bar exists, and
-`tests/rice` fails if either side grows back into the other.
-
-`transience/theme.json` is generated from `palette.nix` (`regen-theme.sh`) in
-Aoide's v0 theme schema, which `strx theme lint` checks. `source/waybar.css` is
-a `{{base16.*}}` template that `strx theme emit file` and the pure-Nix render
-both fill; `tests/rice` asserts the two agree byte for byte. The look is not
-declared into Aoide, and `strx rice compose/stage/declare` do not apply to it.
-`modules/aggregations/shell/transience/design/intent.md` records the boundary.
+The **palette** is `modules/aggregations/shell/palette.nix`, Rosé Pine, the one
+source of the sixteen: `modules/dendrites/stylix.nix` reads `.base16` for the
+Stylix floor, and osaka and chiyo read `.override` for
+`strillix.theme.override`, so the two hosts paint identically.
 
 ## The Hyprland split
 
@@ -345,9 +328,9 @@ Everything opinionated is a dendrite selected by name.
 `modules/dendrites/compositor/hyprland/` holds only what is written or compiled
 against Hyprland itself — `hyprland-keybinds`, `hyprland-decoration`,
 `hyprland-autostart`, `hyprglass` — and the `hyprland` aggregation names
-exactly those four. The surfaces `waybar`/`rofi`/`satty`/`wlogout` are
-compositor-agnostic, so they sit at the dendrite root like every other
-single-file capability and belong to `shell`, which selects the Wayland tool
+exactly those four. `satty` is compositor-agnostic, so it sits at the dendrite
+root like every other single-file capability and belongs to `shell`, which
+selects the Wayland tool
 belt as members and installs `dunst` in its own `module`. That folder is the
 hyprland provider's: one folder per provider under the `compositor` registry,
 holding the provider entry and everything written against that compositor. Nothing walks it; each
@@ -434,8 +417,8 @@ host performs one rice by writing `habit.rice.declared`, and lists the rices it
 only builds in, to stage without a rebuild, as `habit.rice.available`. A rice
 name both books define is an error. The ten component slots are in
 `modules/default.nix`: each takes Aoide's `parts.<slot>` as its `strillix`
-provider, beside dxflake's own provider where one exists (waybar, rofi, wlogout,
-hyprlock, ly). No path into the Aoide input is named anywhere; do not add one.
+provider, beside dxflake's own provider where one exists (hyprlock). No path
+into the Aoide input is named anywhere; do not add one.
 A host may name a runtime path on the box, such as the dev checkout
 (`aoide.checkout`) or `strillix.hostConfig`, never a path into the input.
 

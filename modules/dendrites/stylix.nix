@@ -6,9 +6,8 @@
 }:
 let
   aoideStylix = config.strillix.stylix.enable;
-  # dxflake's floor scheme is transience's palette, the look the shell wears.
-  # When a second look lands this moves behind a provider.
-  transiencePalette = import ../aggregations/shell/transience/palette.nix;
+  # dxflake's floor scheme: the one palette osaka and chiyo also paint Aoide with.
+  palette = import ../aggregations/shell/palette.nix;
 in
 {
   # The stylix option TREE comes from Aoide's nucleus on every host; a
@@ -24,7 +23,7 @@ in
         }
         // lib.optionalAttrs (!aoideStylix) {
           polarity = "dark";
-          base16Scheme = transiencePalette.base16;
+          base16Scheme = palette.base16;
         }
       )
       // {
@@ -82,7 +81,6 @@ in
           kitty.enable = true;
           neovim.enable = false;
           nvf.enable = false;
-          waybar.enable = false;
           vesktop.enable = false;
           qt = {
             enable = true;

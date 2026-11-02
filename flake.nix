@@ -208,7 +208,6 @@
         "chiyo"
         "osaka"
         "sakaki"
-        "yomi-strix"
       ];
 
       # A NixOS guest (container or microVM) composed from the same registry as the hosts.

@@ -9,9 +9,8 @@ let
   # a tracked, typeable-into session whether or not anything draws it, so this
   # keys on `aoide.enable` rather than on `strillix.quickshell.enable`. The shell only
   # decides whether the dock's terminals gadget VISUALISES the graph. Concretely
-  # that lands it on osaka and chiyo, skips sakaki (headless — this whole
-  # dendrite is off there), and skips yomi-strix, which runs aoide.enable =
-  # false and drives its own Aoide from a separate flake.
+  # that lands it on osaka and chiyo and skips sakaki (headless — this whole
+  # dendrite is off there).
   conductShell = config.aoide.enable;
 
   # `strillix.quickshell.enable` gates one thing here: zeroing kitty's own

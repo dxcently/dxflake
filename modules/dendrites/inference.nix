@@ -7,8 +7,8 @@
 let
   # ROCm ships tuned tensile kernels for only a handful of gfx targets — gfx1100
   # chief among gfx11 parts. Every other RDNA3/3.5 chip rides those gfx1100
-  # kernels via HSA_OVERRIDE_GFX_VERSION: yomi-strix's Strix Halo iGPU (gfx1151)
-  # and osaka's discrete Navi 33 (gfx1102) both need it. If a future ROCm gains
+  # kernels via HSA_OVERRIDE_GFX_VERSION: osaka's discrete Navi 33 (gfx1102)
+  # needs it. If a future ROCm gains
   # native support for a given target, drop the override for that host.
   gfxOverride = "11.0.0";
 

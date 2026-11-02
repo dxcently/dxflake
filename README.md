@@ -24,7 +24,7 @@
   ```
 
   Grouping is the aggregations' job, so `modules/dendrites/` stays flat — one folder only when a capability needs several files (`fastfetch/`, `cheatsheet/`), or is a provider registry (`gpu/`, `compositor/`). A provider registry gives each implementation its own folder: `compositor/hyprland/` holds the Hyprland provider entry plus every dendrite written against Hyprland itself, so another compositor never reads any of it.
-- `rices/` holds this flake's own Strillix rices, merged with Aoide's through `lib.rices.merge`; a rice is performed by `habit.rice.declared`, the shell look lives in `modules/aggregations/shell/transience/`.
+- `rices/` holds this flake's own Strillix rices, merged with Aoide's through `lib.rices.merge`; a rice is performed by `habit.rice.declared`, and the one palette lives in `modules/aggregations/shell/palette.nix`.
 
 ### Tree
 
@@ -34,8 +34,7 @@ dxflake/
 ├── hosts/
 │   ├── chiyo/                # laptop · Intel iGPU
 │   ├── osaka/                # workstation · AMD GPU
-│   ├── sakaki/               # headless server
-│   └── yomi-strix/           # desktop · Strix Halo
+│   └── sakaki/               # headless server
 │       ├── default.nix       #   a selection, then this host's own settings
 │       └── hardware.nix
 ├── users/
@@ -64,7 +63,6 @@ dxflake/
 │       └── _shelved.nix      #   no catalogue line — parked, not deleted
 ├── rices/                    # this flake's Strillix rices: rice.nix · theme.json · hyprland.conf · widgets/
 ├── templates/                # copyable example-*.nix, one per authoring role
-├── tests/rice/               # the shell look has not drifted from the palette
 ├── tests/selection/          # dxflake's real registry and a real host, composed through habit
 ├── tests/templates/          # proves templates/ still assembles into a real tree
 ├── tests/session-guard/      # a nested Hyprland must not walk off with the desktop
@@ -190,7 +188,7 @@ habit.dendrites.gpu = {
 
 `intel.nix` is never read on that box — that is the whole point of the registry.
 
-**Change the look.** The shell look is `modules/aggregations/shell/transience/look.nix`, a plain home module the `shell` aggregation applies through its `home` half: `home = { members = [ "satty" ]; module = ./transience/look.nix; };`. Edit `transience/palette.nix`, regenerate `theme.json` with `regen-theme.sh`, and `./tests/rice/run.sh` checks the result.
+**Change the palette.** `modules/aggregations/shell/palette.nix` is the one source of the sixteen: `modules/dendrites/stylix.nix` reads `.base16` for the Stylix floor, and osaka and chiyo read `.override` for `strillix.theme.override`.
 
 **Change the rice.** A rice is Aoide's shape and lives in `rices/<name>/` (`rice.nix`, `theme.json`, `hyprland.conf`, `widgets/`). A host performs one with `habit.rice.declared = "<name>";` and lists the rices it only builds in under `habit.rice.available`. A new rice is a new directory; `lib.rices.merge` discovers it, so no registry line is needed.
 
@@ -250,7 +248,7 @@ Swap `<name>` for your host — it becomes the flake target.
        home.enable = true;
        aggregation = {
          desktop.enable = true;
-         shell.enable = true;     # waybar, rofi, wlogout, satty
+         shell.enable = true;     # satty and the Wayland tool belt
        };
      };
 
@@ -262,7 +260,7 @@ Swap `<name>` for your host — it becomes the flake target.
 4. Add the name to the host list in `flake.nix` — that is the whole registration:
 
    ```nix
-   hosts = lib.genAttrs [ "chiyo" "osaka" "sakaki" "yomi-strix" "<name>" ] (name: …);
+   hosts = lib.genAttrs [ "chiyo" "osaka" "sakaki" "<name>" ] (name: …);
    ```
 
 5. Rebuild, then reboot:
@@ -335,7 +333,7 @@ Aoide's `habit` and `nixpkgs` inputs follow dxflake's. dxflake declares no
 `stylix`, `hyprland` or `quickshell` input: those are Aoide's, and reach the
 hosts through its exports.
 
-Osaka and yomi-strix enable dxflake's own `openai` dendrite for the Codex CLI and official ChatGPT Linux desktop; neither sets an upstream Aoide flag for it. Osaka pairs it with its Aoide session tracking, yomi-strix manages the rest of its Aoide integration from its own flake at ~/Aoide.
+Osaka enables dxflake's own `openai` dendrite for the Codex CLI and official ChatGPT Linux desktop, without an upstream Aoide flag for it, and pairs it with its Aoide session tracking.
 
 Aoide node grants (`read`/`message`/`spawn`) are runtime-owned in this repo.
 Each receiving host grants only the other two peers:
@@ -443,7 +441,7 @@ An **aggregation** is a directory under `modules/aggregations/`, and its `defaul
     members = [ "awww" "wl-clipboard" ];   # packages are members too: one catalogue entry each
   };
 
-  home.members = [ "rofi" "satty" "waybar" "wlogout" ];
+  home.members = [ "satty" ];
 }
 ```
 
@@ -463,11 +461,9 @@ A package the list does not carry yet gets its line there first; the catalogue e
 **Two kinds of module, by what they need from a host:**
 - **Selected = active** — no `options.dx.<name>.enable` at all; the module applies the moment it is selected, and dropping the selection is how a host opts out. (`bluetooth.nix`, `aoide.nix`, and every capability with no knobs of its own)
 - **`dx.` knobs for what genuinely varies** — a capability some hosts configure differently keeps `options.dx.<name>.<knob>` for that variance only, never for whether it runs (`cloudflared.tunnelId`/`hostnames`, `nas-mounts.server`/`mounts`).
-- **One host's value is that host's file** — a value only one host sets is a plain NixOS option in that host's file, not a knob: the Caddy sites on sakaki, the iGPU flag on yomi-strix, osaka's Hyprland monitors and workspaces.
+- **One host's value is that host's file** — a value only one host sets is a plain NixOS option in that host's file, not a knob: the Caddy sites on sakaki, osaka's Hyprland monitors and workspaces.
 
 Aggregations follow the same rule one level up: a group names each member once, in the half it rides, and a host or a user says the word. A shared preference that belongs to the whole group rides that half's deferred `module`, never a repeat across hosts.
-
-**The look is a capability too.** The `shell` aggregation applies `transience`, the look this desktop has always had: a plain home module (`look.nix`) owning the palette and the waybar stylesheet, while `modules/dendrites/waybar.nix` owns whether the bar runs, so swapping the look never re-decides whether waybar exists. `transience/theme.json` is generated from `palette.nix` and linted with `strx theme lint`; `source/waybar.css` is a `{{base16.*}}` template that `strx theme emit file` and the pure-Nix render both fill, and `./tests/rice/run.sh` asserts they agree. See `modules/aggregations/shell/transience/design/intent.md`.
 
 **What you never touch:** `flake.nix`, or any module path outside `modules/default.nix` and the provider registry of the capability you are adding to — those are the only places a file is named. Need a new aggregation? Add a directory under `modules/aggregations/` with a `default.nix` holding its `description` and its halves; there is no import line to add, because discovery names it and the constructor supplies the gate. Want to park a capability without deleting it? Strike its catalogue line.
 
@@ -497,17 +493,16 @@ nix eval --json .#inventory.<host> | jq   # what this host resolved, and from wh
 ---
 
 ## What's in here:
-- hyprland + waybar + awww
-- hyprlock + wlogout
+- hyprland + Aoide's Strillix shell (bar, launcher, dock, power menu)
+- hyprlock
 - yazi + thunar file browser
-- rofi launcher
 - dunst notifications
 - hyprshot + satty screenshots
 - bash + kitty
 - neovim (nvf)
 - stylix theming
 - fcitx5 input method
-- multihost (chiyo + osaka + sakaki + yomi-strix)
+- multihost (chiyo + osaka + sakaki)
 - a nested Hyprland that cannot steal your session out from under you
 - sops-nix secrets
 - jellyfin + steam + aagl on osaka

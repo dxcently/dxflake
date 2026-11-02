@@ -166,24 +166,9 @@ let
   # `strillix` provider, and by a dxflake provider where dxflake has one. A rice
   # body names a provider per slot, so all ten must exist here.
   slots = {
-    bar = {
-      providers = {
-        waybar = ./dendrites/waybar.nix;
-        strillix = strillixPart "bar";
-      };
-    };
-    launcher = {
-      providers = {
-        rofi = ./dendrites/rofi.nix;
-        strillix = strillixPart "launcher";
-      };
-    };
-    powermenu = {
-      providers = {
-        wlogout = ./dendrites/wlogout.nix;
-        strillix = strillixPart "powermenu";
-      };
-    };
+    bar.providers.strillix = strillixPart "bar";
+    launcher.providers.strillix = strillixPart "launcher";
+    powermenu.providers.strillix = strillixPart "powermenu";
     notifications.providers.strillix = strillixPart "notifications";
     wallpaper.providers.strillix = strillixPart "wallpaper";
     dock.providers.strillix = strillixPart "dock";
@@ -195,12 +180,7 @@ let
         strillix = strillixPart "lock";
       };
     };
-    greeter = {
-      providers = {
-        ly = ./dendrites/displaymanager.nix;
-        strillix = strillixPart "greeter";
-      };
-    };
+    greeter.providers.strillix = strillixPart "greeter";
   };
 
   catalogue = handWritten // slots // checked;

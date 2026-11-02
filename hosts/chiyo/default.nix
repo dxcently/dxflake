@@ -103,7 +103,7 @@
   # drifted apart in the two slots they disagreed on (hot and base0F).
   # Blur re-renders behind every moving window; the UHD 620 can't afford it.
   strillix.theme.geometry.blurEnabled = false;
-  strillix.theme.override = (import ../../modules/aggregations/shell/transience/palette.nix).override;
+  strillix.theme.override = (import ../../modules/aggregations/shell/palette.nix).override;
   stylix.polarity = "dark";
   # The palette is baked into gtksourceview, so every theme change rebuilt
   # it (and virt-manager above it) here, where its 30 s test timeout fails.

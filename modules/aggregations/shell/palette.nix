@@ -1,12 +1,12 @@
-# modules/aggregations/shell/transience/palette.nix — the one source of the transience palette.
+# modules/aggregations/shell/palette.nix — the one source of the desktop palette.
 # Rosé Pine, dark, the sixteen this desktop has always worn.
 #
 # Bare hex is canonical, because that is what modules/dendrites/stylix.nix's
-# `base16Scheme` wants untouched. Aoide's v0 theme schema wants `#rrggbb`;
+# `base16Scheme` wants untouched. Aoide's theme tier wants `#rrggbb`;
 # `withHash` adds the character back so no hex is ever written twice. Both
 # consumers import this file directly:
 #   * stylix.nix reads `.base16` for `stylix.base16Scheme`.
-#   * regen-theme.sh reads `.theme` and writes it out as theme.json.
+#   * osaka and chiyo read `.override` for `strillix.theme.override`.
 let
   base16 = {
     base00 = "191724";
@@ -46,31 +46,9 @@ in
   # dendrite. One source: the sixteen below, pinned slot by slot, so the rice
   # underneath cannot leak a colour in through a slot this file never named.
   # `hot` is the trace colour (foam), while base0B stays pine through the
-  # slot-exact pass, which is exactly the split theme.json records.
+  # slot-exact pass.
   override = (withHash anchors) // {
     base16 = withHash base16;
     window.borderInactive = "#${anchors.hot}";
-  };
-
-  # Aoide's v0 theme schema, hash-prefixed. theme.json is generated from
-  # exactly this attrset by regen-theme.sh.
-  theme = {
-    schemaVersion = "0";
-    palette = withHash anchors;
-    base16 = withHash base16;
-    bar = withHash {
-      bg = anchors.bg;
-      fg = anchors.fg;
-      accent = anchors.accent;
-    };
-    notif = withHash {
-      bg = anchors.bg;
-      fg = anchors.fg;
-      urgent = anchors.urgent;
-    };
-    window = withHash {
-      border = anchors.accent;
-      borderInactive = anchors.bg;
-    };
   };
 }

@@ -9,8 +9,8 @@
 # Everything opinionated is an ecosystem dendrite selected by name. What is
 # written against Hyprland itself — keybinds, decoration, autostart, hyprglass —
 # lives in this folder beside this file and is named by the hyprland
-# aggregation; the compositor-agnostic surfaces (waybar, rofi, satty, wlogout)
-# sit at the dendrite root and are named by shell. docs/HYPRLAND-SPLIT.md maps
+# aggregation; the compositor-agnostic surfaces (satty) sit at the dendrite
+# root and are named by shell. docs/HYPRLAND-SPLIT.md maps
 # every old block to its owner.
 #
 # Nothing here installs a package. Package membership is the shell

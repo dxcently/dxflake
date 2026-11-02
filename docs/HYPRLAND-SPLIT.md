@@ -66,7 +66,7 @@ by exactly one aggregation:
 | name                   | path                                          | half        | named by     |
 | ---------------------- | --------------------------------------------- | ----------- | ------------ |
 | `compositor`           | `dendrites/compositor` (provider)             | system+home | `shell`      |
-| `rofi` `satty` `waybar` `wlogout` | `dendrites/<name>.nix`             | home        | `shell`      |
+| `satty`                | `dendrites/satty.nix`                         | home        | `shell`      |
 | `hyprland-autostart`   | `dendrites/compositor/hyprland/autostart.nix` | home        | `hyprland`   |
 | `hyprland-decoration`  | `dendrites/compositor/hyprland/decoration.nix`| home        | `hyprland`   |
 | `hyprland-keybinds`    | `dendrites/compositor/hyprland/keybinds.nix`  | home        | `hyprland`   |
@@ -91,8 +91,8 @@ everything written or compiled against that compositor: the four members the
 `hyprland` aggregation names, and nothing else. A host that answers with
 another provider never imports the folder, so none of it is evaluated. Nothing
 walks the folder, and every dendrite in it is reachable only through its own
-catalogue line. The surfaces (`rofi`, `satty`, `waybar`, `wlogout`) predate the
-split and are compositor-agnostic, which is why they sit at the root and belong
+catalogue line. The surfaces (`satty`; `rofi`, `waybar` and `wlogout` went with
+yomi-strix, the last host that drew them) predate the split and are compositor-agnostic, which is why they sit at the root and belong
 to `shell`. What a host gets is still decided by the aggregation that names a
 dendrite, never by where it sits.
 

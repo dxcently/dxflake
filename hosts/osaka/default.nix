@@ -175,14 +175,14 @@
     lib.mkForce ../../wallpapers/hero.webp
   );
 
-  # Rosé Pine (modules/aggregations/shell/transience/palette.nix) over sonata, in the
-  # override tier rather than theme.json: the rice itself is shared with
-  # yomi-strix. The palette is read from the file, not restated here, so this
+  # Rosé Pine (modules/aggregations/shell/palette.nix) over sonata, in the
+  # override tier rather than theme.json: the rice itself is shared. The
+  # palette is read from the file, not restated here, so this
   # host and chiyo are the same sixteen colours; a host that wants its own
   # accent back states that one slot (`strillix.theme.override.base16.base0F = …`)
   # and the rest stays the palette's.
   strillix.theme.override = lib.mkIf (config.strillix.rice == "sonata") (
-    import ../../modules/aggregations/shell/transience/palette.nix
+    import ../../modules/aggregations/shell/palette.nix
   ).override;
   # sonata is opaque here. It has no terminalOpacity opinion, and Aoide
   # answers "no opinion" with its own 0.86 on every `rice stage`, so the venue
