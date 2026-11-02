@@ -288,7 +288,11 @@ in
         # and the page falls back to the live /api/ route.
         handle /data/* {
           root * /var/www/weedaq
-          file_server
+          # publish.py writes .zst/.gz beside every .json; serve those
+          # directly instead of compressing each response on the fly.
+          file_server {
+            precompressed zstd gzip
+          }
           encode zstd gzip
           header Cache-Control "public, max-age=300, stale-while-revalidate=3600"
         }
