@@ -74,6 +74,8 @@
   };
 
   imports = [ ./hardware.nix ];
+  # A desktop applies main at its next boot; this says when one is waiting.
+  services.comin.desktop.enable = true;
   # The door can exec an agent for peer-summoned sessions (`peer spawn
   # chiyo`), the same wiring sakaki carries — without it the door refuses
   # with "A2A spawn not configured" (observed live 2026-08-28, first

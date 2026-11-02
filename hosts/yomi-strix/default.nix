@@ -72,6 +72,8 @@
     ./hardware.nix
     ./disko.nix
   ];
+  # A desktop applies main at its next boot; this says when one is waiting.
+  services.comin.desktop.enable = true;
 
   # Strix Halo — unified memory, not a discrete card. Ollama drops integrated
   # GPUs unless told otherwise; without this an iGPU host silently runs CPU-only

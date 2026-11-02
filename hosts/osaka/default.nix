@@ -99,6 +99,8 @@
   };
 
   imports = [ ./hardware.nix ];
+  # A desktop applies main at its next boot; this says when one is waiting.
+  services.comin.desktop.enable = true;
   # Build machine for the hosts that select osaka-builder. Each client's
   # nix-daemon signs in with its own SSH host key, so no new secret exists.
   users.users.nixremote = {
