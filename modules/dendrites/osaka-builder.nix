@@ -3,6 +3,9 @@
 # osaka lists each client's host key (hosts/osaka/default.nix). When osaka is
 # unreachable Nix builds locally.
 #
+# osaka is reached on the LAN: it sits on a different tailnet from its clients.
+# Off the LAN the connect gives up after five seconds and the build runs here.
+#
 # A client is trusted on osaka's store, so whatever it adds there reaches every
 # host osaka builds for. sakaki faces the internet and builds for itself.
 {
@@ -11,7 +14,7 @@
     settings.builders-use-substitutes = true;
     buildMachines = [
       {
-        hostName = "100.102.235.52"; # osaka's tailscale address: reachable off the LAN too
+        hostName = "192.168.1.201";
         sshUser = "nixremote";
         sshKey = "/etc/ssh/ssh_host_ed25519_key";
         protocol = "ssh-ng";
@@ -28,7 +31,11 @@
     ];
   };
   programs.ssh.knownHosts.osaka = {
-    hostNames = [ "100.102.235.52" ];
+    hostNames = [ "192.168.1.201" ];
     publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPqMuS6SKujGuBlEaJNOeyJPqN3uXUbiyi8BbHpVgkNS";
   };
+  programs.ssh.extraConfig = ''
+    Host 192.168.1.201
+      ConnectTimeout 5
+  '';
 }
