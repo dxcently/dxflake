@@ -188,9 +188,9 @@ cold.
   editor and dconf (deselected, the time zone is unset, unfree packages are
   refused, and the rest fall back to the platform defaults); and `openssh` is the
   only sshd, which a host routing ssh through `dx.cloudflared` needs. `sops` is
-  sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing` and
-  `slskd` dendrites write, and the registry's `rules` (below) refuse a host that
-  keeps any of those four with sops switched off, naming each dendrite and the
+  sops-nix, whose `sops.*` options the `tailscale`, `cloudflared`, `syncthing`,
+  `slskd` and `comin` dendrites write, and the registry's `rules` (below) refuse a host that
+  keeps any of those five with sops switched off, naming each dendrite and the
   switch. `postgresql`
   is not the only thing that starts postgres: on sakaki immich does, so
   deselecting the dendrite there only restores nixpkgs' authentication defaults.

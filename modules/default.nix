@@ -90,6 +90,7 @@ let
     claude-code = ./dendrites/claude-code.nix;
     claude-desktop = ./dendrites/claude-desktop.nix;
     cloudflared = ./dendrites/cloudflared.nix;
+    comin = ./dendrites/comin.nix;
     composekey = ./dendrites/composekey.nix;
     compositor = ./dendrites/compositor;
     desktop-hardware = ./dendrites/desktop-hardware.nix;
@@ -131,6 +132,7 @@ let
     opencode = ./dendrites/opencode.nix;
     openrazer = ./dendrites/openrazer.nix;
     openssh = ./dendrites/openssh.nix;
+    osaka-builder = ./dendrites/osaka-builder.nix;
     pi-coding-agent = ./dendrites/pi-coding-agent.nix;
     pipewire = ./dendrites/pipewire.nix;
     portmaster = ./dendrites/portmaster.nix;
@@ -224,6 +226,7 @@ in
   # `hosts` takes only the known hosts.
   rules = {
     cloudflared.needs = [ "sops" ];
+    comin.needs = [ "sops" ];
     immich.needs = [ "nas-mounts" ];
     melete.hosts = [ "sakaki" ];
     slskd.needs = [ "sops" ];

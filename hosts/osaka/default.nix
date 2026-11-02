@@ -79,6 +79,7 @@
     syncthing.enable = true;
     snowglobe.enable = true;
     virtualisation.enable = true;
+    comin.enable = true;
     postgresql.enable = true;
   };
 
@@ -98,8 +99,8 @@
   };
 
   imports = [ ./hardware.nix ];
-  # Build machine for chiyo (its nix.buildMachines). chiyo's nix-daemon
-  # signs in with chiyo's own SSH host key, so no new secret exists.
+  # Build machine for the hosts that select osaka-builder. Each client's
+  # nix-daemon signs in with its own SSH host key, so no new secret exists.
   users.users.nixremote = {
     isSystemUser = true;
     group = "nixremote";

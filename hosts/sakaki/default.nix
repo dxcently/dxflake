@@ -59,6 +59,7 @@ in
     melete.enable = true;
     mneme.enable = true;
     nas-mounts.enable = true;
+    comin.enable = true;
     postgresql.enable = true;
     slskd.enable = true;
     syncthing.enable = true;
@@ -71,6 +72,9 @@ in
     home.enable = true;
     dendrites.pi-coding-agent.enable = true;
   };
+
+  # The server has no session to disturb, so it follows main live.
+  dx.comin.operation = "switch";
 
   # snowglobe: half of the 13 GB left after the services, so VMs never starve mneme or Aoide.
   home-manager.users.khoa.snowglobe = {

@@ -50,6 +50,7 @@
     # Codex + the ChatGPT desktop, dxflake's own dendrite rather than
     # `aoide.openai.enable` — this host sets no upstream Aoide flag at all now.
     openai.enable = true;
+    comin.enable = true;
     postgresql.enable = true;
   };
 
