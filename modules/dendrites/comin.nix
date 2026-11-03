@@ -1,6 +1,7 @@
-# comin — pull-based deploys. Each host polls dxflake's main branch and builds
-# its own nixosConfigurations.<hostName>; a commit that fails to build is never
-# applied, so the running system stays put.
+# comin — pull-based deploys. Each host polls dxflake's main branch, builds
+# its own nixosConfigurations.<hostName> and switches to it live (comin's
+# default operation); a commit that fails to build is never applied, so the
+# running system stays put.
 #
 # dxflake is public, so comin's own fetch needs no token. The flake's private
 # inputs (melete, mneme, eidolon, Aoide, snowglobe) and their cargo git
@@ -11,7 +12,6 @@
 # shell out to git, which reads only a credential helper.
 {
   config,
-  lib,
   pkgs,
   inputs,
   ...
@@ -27,20 +27,6 @@ in
 {
   imports = [ inputs.comin.nixosModules.comin ];
 
-  # `remotes` is a list, so a host cannot reach into it to change one field.
-  options.dx.comin.operation = lib.mkOption {
-    type = lib.types.enum [
-      "switch"
-      "boot"
-    ];
-    default = "boot";
-    description = ''
-      How a new main commit is applied. `boot` waits for the next reboot, so a
-      desktop never has services restarted under a live session; `switch`
-      follows main live.
-    '';
-  };
-
   config = {
     services.comin = {
       enable = true;
@@ -48,7 +34,6 @@ in
         {
           name = "origin";
           url = "https://github.com/dxcently/dxflake.git";
-          branches.main.operation = config.dx.comin.operation;
         }
       ];
     };

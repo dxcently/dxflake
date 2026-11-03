@@ -74,7 +74,7 @@
   };
 
   imports = [ ./hardware.nix ];
-  # A desktop applies main at its next boot; this says when one is waiting.
+  # Says on the desktop when comin has switched to a new main commit.
   services.comin.desktop.enable = true;
   # The door can exec an agent for peer-summoned sessions (`peer spawn
   # chiyo`), the same wiring sakaki carries — without it the door refuses

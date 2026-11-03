@@ -73,9 +73,6 @@ in
     dendrites.pi-coding-agent.enable = true;
   };
 
-  # The server has no session to disturb, so it follows main live.
-  dx.comin.operation = "switch";
-
   # snowglobe: half of the 13 GB left after the services, so VMs never starve mneme or Aoide.
   home-manager.users.khoa.snowglobe = {
     enable = true;
