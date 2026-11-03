@@ -39,11 +39,11 @@
         "stylix": "stylix"
       },
       "locked": {
-        "lastModified": 1793503517,
-        "narHash": "sha256-a8Ykh9hEM2qvz/2+ENC6RF5CYcvwyvKLGtW9MuVL5AI=",
+        "lastModified": 1793664670,
+        "narHash": "sha256-a85j71T9XZc2OoDWJkBCNV0LD9YAGKL17MtsngXYd7g=",
         "ref": "main",
-        "rev": "21ffa6c96b0978ec5cfd4a2451abbeac094552bb",
-        "revCount": 2623,
+        "rev": "bb09efe93cf7285ee56a803f8cd2cbaa4a6d5f33",
+        "revCount": 2637,
         "type": "git",
         "url": "https://github.com/dxcently/Aoide.git"
       },
@@ -246,11 +246,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792128000,
-        "narHash": "sha256-aj9a3TAIDjlYRuNVyGbAYN0YGIIX7mdFK+miUWmFZPc=",
+        "lastModified": 1793224849,
+        "narHash": "sha256-DbvX+lYhVYESUftI8+EQXkMSnJpgIixoLjljpRcOc9I=",
         "owner": "dxcently",
         "repo": "eidolon-plugins",
-        "rev": "8dd6eb1cc4b098eeeaf23273c778c709f30c6610",
+        "rev": "f9937401889cb5d815294dc674659683ae8eef91",
         "type": "github"
       },
       "original": {
@@ -262,11 +262,11 @@
     "eidolon-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1792281346,
-        "narHash": "sha256-R0AYGM5UR02PKk9Yu7WCKdecEMRjzwYOk/VQp3hnBmc=",
+        "lastModified": 1793507571,
+        "narHash": "sha256-8ue48TBzGyl8je878NaUXXkAgzwJvdLIt9PwY/3ime4=",
         "ref": "master",
-        "rev": "0dd48a56cc56ce8ce3663674d6b4a06bb258acd1",
-        "revCount": 415,
+        "rev": "8d49d1420e1ebcf92918b9ff5b80eefdececa1e6",
+        "revCount": 629,
         "type": "git",
         "url": "https://github.com/noah427/eidolon.git"
       },
@@ -903,11 +903,11 @@
     "mneme-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1792212745,
-        "narHash": "sha256-4DE9z2xru5ySspbc+Rj94JDV1ZytZbBAkxtBNP6ldJY=",
+        "lastModified": 1792906543,
+        "narHash": "sha256-uyknHybOSPYXHb95yQfW7kzgrk0ukgPgqSlRaqYNbLM=",
         "ref": "master",
-        "rev": "504663ad3f3c3d52b0046ca8bdaeb47b9d7f9ca8",
-        "revCount": 202,
+        "rev": "007e1341047150222ec95934f42b99c4c7a7e4d0",
+        "revCount": 205,
         "type": "git",
         "url": "https://github.com/noah427/mneme.git"
       },
