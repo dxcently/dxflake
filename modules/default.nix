@@ -117,6 +117,7 @@ let
     k3b = ./dendrites/k3b.nix;
     kimi-cli = ./dendrites/kimi-cli.nix;
     kitty = ./dendrites/kitty.nix;
+    lact = ./dendrites/lact.nix;
     laptop = ./dendrites/laptop.nix;
     librewolf = ./dendrites/librewolf;
     limusic = ./dendrites/limusic.nix;

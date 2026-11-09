@@ -66,6 +66,7 @@
     };
     inference.enable = true;
     k3b.enable = true;
+    lact.enable = true;
     kimi-cli.enable = true;
     nas-mounts.enable = true;
     # Codex + the ChatGPT desktop, from dxflake's own dendrite. This replaces
@@ -226,9 +227,10 @@
       # 1920x0, so the AOC (1080 tall) is dropped by (1920-1080)/2 = 420 to center
       # its full right edge inside the tall panel; otherwise only the top ~half of
       # the shared edge is crossable. Panels are pinned by description so geometry
-      # survives a DP/HDMI port swap.
+      # survives a DP/HDMI port swap. The AOC runs FreeSync for fullscreen only
+      # (vrr 2), so the desktop never flickers.
       monitor = lib.mkAfter [
-        "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1"
+        "desc:AOC 24G1WG4 0x000391EC, 1920x1080@144, 0x420, 1, vrr, 2"
         "desc:Samsung Electric Company C24F390 HCNN907588, 1920x1080@60, 1920x0, 1, transform, 3"
       ];
       workspace = lib.mkAfter [
