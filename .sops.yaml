@@ -5,12 +5,6 @@ keys:
   - &osaka age1hqw5zp8eg0h9fus9524pun6mfe39p987uewk5yr4yxs2peezuqfqc6qrmg
 
 creation_rules:
-  # The CI runner's token: only the host that runs it, and khoa to edit it.
-  - path_regex: secrets/github-runner\.yaml$
-    key_groups:
-      - age:
-        - *khoa
-        - *osaka
   - path_regex: secrets/.*\.yaml$
     key_groups:
       - age:

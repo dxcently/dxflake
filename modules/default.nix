@@ -103,7 +103,6 @@ let
     fonts = ./dendrites/fonts.nix;
     eidolon = ./dendrites/eidolon.nix;
     git = ./dendrites/git.nix;
-    github-runner = ./dendrites/github-runner.nix;
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/gtk.nix;
@@ -208,7 +207,6 @@ in
   rules = {
     cloudflared.needs = [ "sops" ];
     comin.needs = [ "sops" ];
-    github-runner.needs = [ "sops" ];
     immich.needs = [ "nas-mounts" ];
     melete.hosts = [ "sakaki" ];
     slskd.needs = [ "sops" ];
