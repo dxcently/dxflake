@@ -4,6 +4,7 @@
 }:
 {
   config = {
+    boot.kernelModules = [ "ntsync" ];
     programs = {
       steam = {
         enable = true;

@@ -19,4 +19,12 @@
     "winetricks"
     "protontricks"
   ];
+
+  # Valve's Steam Deck scheduler, through sched_ext.
+  system.module = {
+    services.scx = {
+      enable = true;
+      scheduler = "scx_lavd";
+    };
+  };
 }
