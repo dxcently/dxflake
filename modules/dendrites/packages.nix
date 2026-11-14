@@ -100,6 +100,29 @@
   "imhex" # hex editor for reverse engineers, with the pattern language
   "sleuthkit" # The Sleuth Kit CLI: fls, icat, mmls, blkcat, tsk_recover
 
+  # ── offsec ── a Kali-style kit: recon, web, exploitation, passwords, RE
+  "nmap" # network scanner and service fingerprinting
+  "amass" # attack-surface and subdomain mapping
+  "subfinder" # passive subdomain discovery
+  "theharvester" # OSINT: emails, hosts and names for a domain
+  "burpsuite" # intercepting web proxy (Community)
+  "zap" # OWASP ZAP web application scanner
+  "sqlmap" # automatic SQL injection
+  "ffuf" # fast web fuzzer
+  "gobuster" # directory, DNS and vhost brute-forcing
+  "nuclei" # template-driven vulnerability scanner
+  "metasploit" # exploitation framework (msfconsole)
+  "exploitdb" # Exploit-DB archive with searchsploit
+  "responder" # LLMNR/NBT-NS/mDNS poisoner
+  "netcat-openbsd" # TCP/UDP swiss army knife (nc)
+  "hashcat" # GPU password cracker
+  "john" # John the Ripper, jumbo
+  "thc-hydra" # online login brute-forcer (not `hydra`, which is Nix's CI)
+  "seclists" # wordlists: usernames, passwords, fuzzing payloads
+  "ghidra" # NSA reverse-engineering suite
+  "radare2" # reverse-engineering framework (r2)
+  "binwalk" # firmware analysis and extraction
+
   # ── host-selected ── any host may take any of these
   "soundconverter" # audio format converter
   "udiskie" # automounter for removable media

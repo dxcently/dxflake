@@ -21,6 +21,7 @@
     # selected here: Aoide's lanes paint instead.
     desktop.enable = true;
     forensic-tools.enable = true; # the forensics suite: autopsy, imhex, guymager and the sleuthkit CLI.
+    offsec.enable = true;
   };
 
   habit.dendrites = {
@@ -126,7 +127,6 @@
   habit.dendrites.ydotool.enable = true;
   habit.dendrites.librewolf.enable = true;
   habit.dendrites.netbird.enable = true;
-  habit.dendrites.wireshark.enable = true;
   habit.dendrites.globalprotect.enable = true;
   # upowerd on the system bus — the bar's battery gauge and the power stele
   # read Quickshell.Services.UPower, a client only; without the daemon every

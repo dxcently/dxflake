@@ -30,6 +30,7 @@
     network.enable = true;
     desktop.enable = true;
     gaming.enable = true;
+    offsec.enable = true;
     shell = {
       enable = true;
       compositor.provider = "hyprland";
@@ -301,7 +302,6 @@
   habit.dendrites.filelight.enable = true;
   habit.dendrites.tor-browser.enable = true;
   habit.dendrites.librewolf.enable = true;
-  habit.dendrites.wireshark.enable = true;
   habit.dendrites.globalprotect.enable = true;
   habit.dendrites.stremio-linux-shell.enable = true;
   boot = {
