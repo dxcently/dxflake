@@ -103,6 +103,7 @@ let
     fonts = ./dendrites/fonts.nix;
     eidolon = ./dendrites/eidolon.nix;
     git = ./dendrites/git.nix;
+    globalprotect = ./dendrites/globalprotect.nix;
     gpu = ./dendrites/gpu;
     gpu-screen-recorder = ./dendrites/gpu-screen-recorder.nix;
     gtk = ./dendrites/gtk.nix;
