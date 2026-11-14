@@ -6,7 +6,7 @@
 // owns its own layer/namespace (mirrors sonata's widgets/powermenu.qml, the
 // existing reference for a window-owning slot).
 //
-// The declared `shortcut` ("aoide:etude-demo", rice.nix/theme.json) is
+// The declared `shortcut` ("strillix:etude-demo", rice.nix/theme.json) is
 // wired by RiceSurfaces.qml ITSELF — one GlobalShortcut per declared entry,
 // calling `.toggle()` on the loaded item. This file must NOT register its
 // own GlobalShortcut for the same appid/name, or the two would collide.
@@ -37,7 +37,7 @@ PanelWindow {
     color: "transparent"
     visible: root.shown
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "aoide-etude-demo"
+    WlrLayershell.namespace: "strillix-etude-demo"
     WlrLayershell.keyboardFocus: root.shown ? WlrKeyboardFocus.Exclusive
                                             : WlrKeyboardFocus.None
 

@@ -9,7 +9,7 @@
 #
 # It only ever paints TRANSLUCENT content, so it is inert on an opaque desktop.
 # That is why every part of it rides `aoideQuickshell` rather than plain selection:
-# the surfaces it is aimed at (aoide-bar, -dock, -launcher, -powermenu) exist
+# the surfaces it is aimed at (strillix-bar, -dock, -launcher, -powermenu) exist
 # only when Aoide's Quickshell draws them. Selected without that shell, this
 # dendrite is a no-op by construction — which is what lets the shell
 # aggregation name it unconditionally.
@@ -49,23 +49,23 @@
         # the usual "hyprglass isn't working" report. The bar is glassed like the
         # dock, launcher and powermenu: an opaque bar has no translucent pixels
         # for either to paint, so only a translucent rice's ground shows it.
-        # aoide-bar also takes `blur_popups`, so its popouts frost too.
-        # aoide-calendar is the one surface pinned blur OFF, so its cut-out day
+        # strillix-bar also takes `blur_popups`, so its popouts frost too.
+        # strillix-calendar is the one surface pinned blur OFF, so its cut-out day
         # grid shows the desktop crisply.
         #
         # The waybar rule is NOT here — it belongs to the desktop this flake
         # draws without Aoide's Quickshell, so hyprland-decoration owns it.
         settings.layerrule = lib.optionals aoideQuickshell [
-          "blur on, match:namespace aoide-bar"
-          "blur on, match:namespace aoide-dock"
-          "blur on, match:namespace aoide-launcher"
-          "blur on, match:namespace aoide-powermenu"
-          "ignore_alpha 0.05, match:namespace aoide-bar"
-          "ignore_alpha 0.05, match:namespace aoide-dock"
-          "ignore_alpha 0.05, match:namespace aoide-launcher"
-          "ignore_alpha 0.05, match:namespace aoide-powermenu"
-          "blur_popups on, match:namespace aoide-bar"
-          "blur off, match:namespace aoide-calendar"
+          "blur on, match:namespace strillix-bar"
+          "blur on, match:namespace strillix-dock"
+          "blur on, match:namespace strillix-launcher"
+          "blur on, match:namespace strillix-powermenu"
+          "ignore_alpha 0.05, match:namespace strillix-bar"
+          "ignore_alpha 0.05, match:namespace strillix-dock"
+          "ignore_alpha 0.05, match:namespace strillix-launcher"
+          "ignore_alpha 0.05, match:namespace strillix-powermenu"
+          "blur_popups on, match:namespace strillix-bar"
+          "blur off, match:namespace strillix-calendar"
         ];
 
         # Written through the top-level `extraConfig` (a sibling of `settings`,
@@ -85,11 +85,11 @@
         # opaque window.
         #
         # The namespace list is the four surfaces Aoide glasses. Every Aoide bar draws
-        # under the one aoide-bar namespace, so one entry covers them all.
+        # under the one strillix-bar namespace, so one entry covers them all.
         # It is static here on purpose: Aoide's compositor lane appends rice-declared
         # widget surfaces too, but only `kind = "surface"` widgets ever get a layer
         # surface of their own, and nocturne's sole widget (`vigil`) is `kind = "dock"` —
-        # it mounts as an Item inside aoide-dock and is already covered by the
+        # it mounts as an Item inside strillix-dock and is already covered by the
         # dock's own entry. A rice declaring a real surface widget would want
         # its namespace added here by hand.
         extraConfig = lib.optionalString aoideQuickshell ''
@@ -101,7 +101,7 @@
               }
               layers {
                   enabled = 1
-                  namespaces = aoide-bar, aoide-dock, aoide-launcher, aoide-powermenu
+                  namespaces = strillix-bar, strillix-dock, strillix-launcher, strillix-powermenu
                   preset = glass
               }
           }

@@ -166,7 +166,7 @@
   # desktop image — that is why the wallpaper read as broken rather than as a
   # chosen flat ground. This bakes osaka's own image as an immutable store
   # path, which is the seam that SURVIVES a rebuild: the live alternative,
-  # $STRILLIX_ROOT/stage/wallpaper.json, is runtime state nothing re-seeds (AoideWallpaper.
+  # $STRILLIX_ROOT/stage/wallpaper.json, is runtime state nothing re-seeds (StrillixWallpaper.
   # qml's own header names "background gone after rebuild" as the bug the
   # baked path exists to fix).
   #

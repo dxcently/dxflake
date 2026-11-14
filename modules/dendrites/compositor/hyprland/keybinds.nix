@@ -45,7 +45,7 @@
           # Aoide's summoned surfaces (launcher, dock, wallpaper picker) have no
           # CLI entry point at all — each registers an appid under hyprland-
           # global-shortcuts-v1 from inside the running Quickshell process, so
-          # `global, aoide:<name>` is the ONLY way to reach them (the old
+          # `global, strillix:<name>` is the ONLY way to reach them (the old
           # `aoide shell launcher`/`dock` commands are unimplemented stubs).
           # Without these binds the shell would draw a bar and nothing the
           # keyboard could summon.
@@ -62,12 +62,12 @@
           ++ (
             if aoideQuickshell then
               [
-                "SUPER, SPACE, global, aoide:launcher"
-                "SUPER, G, global, aoide:dock"
-                "SUPER, W, global, aoide:wallpaper"
-                "SUPER, C, global, aoide:clipboard"
-                "SUPER SHIFT, Escape, global, aoide:powermenu"
-                "SUPER, Tab, global, aoide:switcher"
+                "SUPER, SPACE, global, strillix:launcher"
+                "SUPER, G, global, strillix:dock"
+                "SUPER, W, global, strillix:wallpaper"
+                "SUPER, C, global, strillix:clipboard"
+                "SUPER SHIFT, Escape, global, strillix:powermenu"
+                "SUPER, Tab, global, strillix:switcher"
               ]
             else
               [

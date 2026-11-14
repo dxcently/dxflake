@@ -156,7 +156,7 @@ PanelWindow {
     implicitWidth: root.cardW + 1
     implicitHeight: Math.max(1, stack.implicitHeight)
     WlrLayershell.layer: WlrLayer.Overlay
-    WlrLayershell.namespace: "aoide-notifications"
+    WlrLayershell.namespace: "strillix-notifications"
 
     Column {
         id: stack

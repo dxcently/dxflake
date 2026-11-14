@@ -44,9 +44,9 @@
           strillix.theme.wallpaper = null;
           strillix.layout.widgets.demo = {
             kind = "surface";
-            namespace = "aoide-etude-demo";
+            namespace = "strillix-etude-demo";
             layer = "overlay";
-            shortcut = "aoide:etude-demo";
+            shortcut = "strillix:etude-demo";
             blur = true;
           };
         };
