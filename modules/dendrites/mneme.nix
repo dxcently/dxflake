@@ -97,7 +97,11 @@ in
       # Binary is now Nix-seeded (mnemeSeed above), not hand-placed -- but
       # ConditionPathExists is kept as a defensive guard regardless. Env file
       # at ~/.config/melete/mneme.env (user-managed, not in the Nix store,
-      # unaffected by the seed).
+      # unaffected by the seed). systemd reads it only at start, and mneme
+      # hashes MNEME_AUTH_PASSWORD then, so an edit takes effect only after
+      # `systemctl restart mneme.service` -- until then every client mints
+      # against the old passphrase and is refused "incorrect operator
+      # passphrase".
       systemd.services.mneme = {
         description = "Mneme — Obsidian vault MCP server";
         after = [ "network-online.target" ];
