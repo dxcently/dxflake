@@ -262,11 +262,11 @@
     "eidolon-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1793507571,
-        "narHash": "sha256-8ue48TBzGyl8je878NaUXXkAgzwJvdLIt9PwY/3ime4=",
+        "lastModified": 1794913931,
+        "narHash": "sha256-PRm29MGfoXxGb176pcDSQOYKigwPxY43Rt0qILVkgLA=",
         "ref": "master",
-        "rev": "8d49d1420e1ebcf92918b9ff5b80eefdececa1e6",
-        "revCount": 629,
+        "rev": "4f3d0bce49184e5722197bd37aa265dbd09fc6a1",
+        "revCount": 661,
         "type": "git",
         "url": "https://github.com/noah427/eidolon.git"
       },
