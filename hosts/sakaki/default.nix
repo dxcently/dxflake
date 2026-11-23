@@ -17,6 +17,7 @@ let
         key = "env";
       };
       containers.${id} = {
+        autoStart = true;
         inherit (g) specialArgs;
         # snowglobe's container module: the host's snowglobed lists it and reaches agent@<guest> (ssh, exec, aoide link).
         config.imports = g.modules ++ [ inputs.snowglobe.nixosModules.container { snowglobe.container.aoide = pkgs.aoide; } ];
